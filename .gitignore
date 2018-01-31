@@ -1,0 +1,17 @@
+# OS X
+.DS_Store
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Dependency directories
+node_modules
+
+# Cordova Files
+/platforms
+/plugins
+
+# config files
+config.xml

@@ -1,0 +1,24 @@
+{
+    "name": "arches",
+    "displayName": "Arches",
+    "version": "1.0.0",
+    "description": "An application to manage resources in Arches.",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Farallon Geographics, Inc.",
+    "license": "AGPLv3",
+    "dependencies": {
+        "cordova-ios": "4.5.4",
+        "cordova-plugin-whitelist": "^1.3.3"
+    },
+    "cordova": {
+        "plugins": {
+            "cordova-plugin-whitelist": {}
+        },
+        "platforms": [
+            "ios"
+        ]
+    }
+}
