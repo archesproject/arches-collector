@@ -1,3 +1,4 @@
+<script>
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -16,10 +17,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-var app = {
+
+export default {
+    name: 'cordova',
+    template: '<div></div>',
+    data() {
+        return {
+            ready: this.$store.state.cordova.deviceready
+        }
+    },
+    computed: {
+        deviceready() {
+            return this.$store.state.cordova.deviceready;
+        }
+    },
+    //ready: false,
     // Application Constructor
-    initialize: function() {
+    initialize: function(store) {
+        this.$store = store;
+        console.log(this.ready);
         document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
+        this.ready = true;
+        console.log(this.ready);
+        return this.ready;
+        //this.$store.state.cordova.commit('deviceready', this.ready);
     },
 
     // deviceready Event Handler
@@ -27,7 +48,10 @@ var app = {
     // Bind any cordova events here. Common events are:
     // 'pause', 'resume', etc.
     onDeviceReady: function() {
-        this.receivedEvent('deviceready');
+        this.ready = true;
+        console.log(this.ready);
+        this.$store.commit('deviceready', this.ready);
+        //this.receivedEvent('deviceready');
     },
 
     // Update DOM on a Received Event
@@ -42,5 +66,4 @@ var app = {
         console.log('Received Event: ' + id);
     }
 };
-
-app.initialize();
+</script>
