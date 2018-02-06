@@ -7,38 +7,36 @@ import Vue from 'vue'
 import VueOnsen from 'vue-onsenui'
 import store from './store'
 import App from './App'
-import Cordova from './components/CordovaPage'
+import Cordova from './assets/js/cordova'
 
 Vue.config.productionTip = false
 
 Vue.use(VueOnsen)
+Vue.use(Cordova)
 
 /* eslint-disable no-new */
-new Vue({
+window.archesvue = new Vue({
     el: '#app',
     store,
-    template: '<App/>',
+    data:{
+        deviceready: false
+    },
+    template: '<App :deviceready="deviceready"/>',
     components: { 
-        App,
-        Cordova
+        App
     },
     mounted: function () {
         this.$nextTick(() => {
             // Code that will run only after the
             // entire view has been rendered
             
-            this.ready = Cordova.initialize(store);
-            //document.addEventListener('deviceready', this.$options.onDeviceReady.bind(this.$options), false);
+            Vue.cordova.on('deviceready', function(){
+                this.deviceready = true;
+
+                // or you could do this if you want to use the store, 
+                // then you wouldn't have to pass in the value into the template
+                // this.$store.state.cordova.commit('deviceready', this.deviceready);
+            },this);
         })
-    },
-    // deviceready Event Handler
-    //
-    // Bind any cordova events here. Common events are:
-    // 'pause', 'resume', etc.
-    onDeviceReady: function() {
-        this.ready = true;
-        console.log(this.ready);
-        this.store.commit('deviceready', this.ready);
-        //this.receivedEvent('deviceready');
-    },
+    }
 })

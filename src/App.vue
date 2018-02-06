@@ -1,6 +1,6 @@
 <template>
   <v-ons-page id="app">
-    <splash-page></splash-page>
+    <splash-page :deviceready="deviceready"></splash-page>
   </v-ons-page>
 </template>
 
@@ -9,6 +9,7 @@ import SplashPage from './components/SplashPage';
 
 export default {
   name: 'app',
+  props: ['deviceready'],
   components: {
     SplashPage
   }

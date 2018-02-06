@@ -2,8 +2,13 @@
   <v-ons-page>
     <div class="splash">
       <div class="blink">
-        <p class="event listening">Connecting to Device {{deviceready}}</p>
-        <p class="event received">Device is Ready {{deviceready}}</p>
+        <div v-if="!deviceready">
+            <p class="event listening">Connecting to Device</p>
+        </div>
+        <div v-else>
+            <p class="event received">Device is Ready</p>
+            {{deviceready}}
+        </div>
       </div>
       <router-view/>
     </div>
@@ -13,11 +18,12 @@
 <script>
 export default {
   name: 'splashpage',
-  computed: {
-    deviceready() {
-      return this.$store.state.cordova.deviceready;
-    }
-  },
+  props: ['deviceready']
+  // computed: {
+  //   deviceready() {
+  //     return this.$store.state.cordova.deviceready;
+  //   }
+  // },
 }
 </script>
 
@@ -38,15 +44,6 @@ export default {
                                    /* offset horizontal: half of text area width */
 }
 
-/* Landscape layout (with min-width) */
-@media screen and (min-aspect-ratio: 1/1) and (min-width:400px) {
-    .splash {
-        /* background-position:left center;*/
-        /* padding:75px 0px 75px 170px;  padding-top + padding-bottom + text area = image height */
-        /* margin:-90px 0px 0px -198px;  offset vertical: half of image height */
-                                      /* offset horizontal: half of image width and text area width */
-    }
-}
 .event {
     border-radius:4px;
     -webkit-border-radius:4px;
@@ -58,12 +55,10 @@ export default {
 
 .event.listening {
     background-color:#333333;
-    display:block;
 }
 
 .event.received {
     background-color:#4B946A;
-    display:none;
 }
 
 @keyframes fade {
