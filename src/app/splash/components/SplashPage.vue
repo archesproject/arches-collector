@@ -31,7 +31,7 @@ export default {
 <style scoped>
 /* Portrait layout (default) */
 .splash {
-    background:url(../assets/img/arches_logo.png) no-repeat center top; /* 170px x 200px */
+    background:url(../../../assets/img/arches_logo.png) no-repeat center top; /* 170px x 200px */
     background-size: 75%;
     position:absolute;             /* position in the center of the screen */
     left:50%;

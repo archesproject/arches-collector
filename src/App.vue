@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import SplashPage from './components/SplashPage';
+import SplashPage from './app/splash/components/SplashPage';
 
 export default {
   name: 'app',
