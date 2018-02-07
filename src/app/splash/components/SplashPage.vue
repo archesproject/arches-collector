@@ -17,14 +17,14 @@
 
 <script>
 export default {
-  name: 'splashpage',
-  props: ['deviceready']
+    name: 'splashpage',
+    props: ['deviceready']
   // computed: {
   //   deviceready() {
   //     return this.$store.state.cordova.deviceready;
   //   }
   // },
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

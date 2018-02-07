@@ -11,7 +11,7 @@ export default new Vuex.Store({
                 deviceready: false
             },
             mutations: {
-                deviceready (state, ready) {
+                deviceready(state, ready) {
                     state.deviceready = ready;
                 }
             }

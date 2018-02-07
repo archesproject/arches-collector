@@ -19,6 +19,7 @@ module.exports = {
   rules: {
     "semi": ["error", "always"],
     "indent": ["error", 4],
+    "space-before-function-paren": ["error", "never"],
     // allow async-await
     'generator-star-spacing': 'off',
     // allow debugger during development

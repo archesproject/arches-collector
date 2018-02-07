@@ -3,31 +3,30 @@ exports.install = function(Vue, options) {
     // declare global Vue.cordova object
     Vue.cordova = Vue.cordova || {
         deviceready: false
-    }
+    };
 
     // Cordova events wrapper
     // this allows us to do stuff like this:
     // Vue.cordova.on("pause", function(){}, this)
-    Vue.cordova.on = function(eventName, cb, scope){
+    Vue.cordova.on = function(eventName, cb, scope) {
         var self = this;
-        if (!scope){
+        if (!scope) {
             scope = self;
         }
         document.addEventListener(eventName, cb.bind(scope), false);
-    }
+    };
 
     // let Vue know that deviceready has been triggered
-    document.addEventListener('deviceready', function(){
+    document.addEventListener('deviceready', function() {
         Vue.cordova.deviceready = true;
 
-        Vue.cordova.navigator = typeof navigator !== 'undefined' ? navigator : undefined;
-        Vue.cordova.console = typeof console !== 'undefined' ? console : undefined;
-        Vue.cordova.cordova = typeof cordova !== 'undefined' ? cordova : undefined;
-        Vue.cordova.device = typeof device !== 'undefined' ? device : undefined;
-        Vue.cordova.FileTransfer = typeof FileTransfer !== 'undefined' ? FileTransfer : undefined;
-        Vue.cordova.FileUploadOptions = typeof FileUploadOptions !== 'undefined' ? FileUploadOptions : undefined;
-        Vue.cordova.Media = typeof Media !== 'undefined' ? Media : undefined;
-        Vue.cordova.StatusBar = typeof StatusBar !== 'undefined' ? StatusBar : undefined;
+        Vue.cordova.navigator = typeof window.navigator !== 'undefined' ? window.navigator : undefined;
+        Vue.cordova.console = typeof window.console !== 'undefined' ? window.console : undefined;
+        Vue.cordova.cordova = typeof window.cordova !== 'undefined' ? window.cordova : undefined;
+        Vue.cordova.device = typeof window.device !== 'undefined' ? window.device : undefined;
+        Vue.cordova.FileTransfer = typeof window.FileTransfer !== 'undefined' ? window.FileTransfer : undefined;
+        Vue.cordova.Media = typeof window.Media !== 'undefined' ? window.Media : undefined;
+        Vue.cordova.StatusBar = typeof window.StatusBar !== 'undefined' ? window.StatusBar : undefined;
 
         // navigator.camera
         // navigator.compass
@@ -43,10 +42,7 @@ exports.install = function(Vue, options) {
         // cordova.InAppBrowser.open()
         // device.cordova
         // FileTransfer
-        // FileUploadOptions
         // Media
         // StatusBar
-
-    }, false)
-
-}
+    }, false);
+};
