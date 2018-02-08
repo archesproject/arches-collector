@@ -2,12 +2,13 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import 'onsenui/css/onsenui.css';
 import 'onsenui/css/onsen-css-components.css';
+import './assets/css/index.css'
 
 import Vue from 'vue';
 import VueOnsen from 'vue-onsenui';
-import store from './store';
-import App from './App';
 import Cordova from './assets/js/cordova';
+import store from './store';
+import router from './router';
 
 Vue.config.productionTip = false;
 
@@ -18,13 +19,11 @@ Vue.use(Cordova);
 window.archesvue = new Vue({
     el: '#app',
     store,
+    router,
     data: {
         deviceready: false
     },
-    template: '<App :deviceready="deviceready"/>',
-    components: {
-        App
-    },
+    template: '<router-view></router-view>',
     mounted: function() {
         this.$nextTick(() => {
             // Code that will run only after the
@@ -40,3 +39,5 @@ window.archesvue = new Vue({
         });
     }
 });
+ 
+router.push('splash');
