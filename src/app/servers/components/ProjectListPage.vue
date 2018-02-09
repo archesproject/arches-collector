@@ -2,13 +2,8 @@
     <transition name="slide">
         <v-ons-page>
             <div class="temp">
-                SERVER MANAGER SCREEN<br>
-                https://github.com/archesproject/arches-mobile/issues/3
-                <br>
-                https://github.com/archesproject/arches-mobile/issues/4
-                <h4 style="color:black;">
-                    <router-link :to="{ name: 'projectlist' }">Next</router-link>
-                </h4>
+                PROJECT LIST SCREEN<br>
+                https://github.com/archesproject/arches-mobile/issues/5
             </div>
         </v-ons-page>
     </transition>
@@ -16,7 +11,7 @@
 
 <script>
 export default {
-    name: 'ServerManager',
+    name: 'ProjectList',
     // props: ['deviceready'],
     // data: function(){
     //     return {
