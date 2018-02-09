@@ -2,10 +2,13 @@
     <transition name="slide">
         <v-ons-page>
             <div class="temp">
-                SERVER MANAGER SCREEN<br>
+                SERVER MANAGER SCREEN
+                <br>
                 https://github.com/archesproject/arches-mobile/issues/3
                 <br>
                 https://github.com/archesproject/arches-mobile/issues/4
+                <br>
+                maybe we can use `a v-ons-navigator` to achieve this?
                 <h4 style="color:black;">
                     <router-link :to="{ name: 'projectlist' }">Next</router-link>
                 </h4>
