@@ -26,20 +26,27 @@ window.archesvue = new Vue({
     template: '<router-view></router-view>',
     mounted: function() {
         this.$nextTick(() => {
+            var self = this;
             // Code that will run only after the
             // entire view has been rendered
 
+            // check the application servers db
+            // if there is no servers listed, then jump to the ServerManagerPage
+            // this.$store.state.dbs.app_servers.get('servers').then(function(doc) {
+            //     console.log(doc);
+            // }).catch(function (err) {
+            //     console.log(err);
+            //     if(err.status === 404){
+            //         self.$router.push('servermanger');
+            //     }
+            // });
+            // if there are servers, then get the last active server and set it in the app
+
+
             Vue.cordova.on('deviceready', function() {
                 this.deviceready = true;
-
-                // check the application servers db
-                // if there is no servers listed, then jump to the ServerManagerPage
-                // if there are servers, then get the last active server and set it in the app
-
-                // or you could do this if you want to use the store,
-                // then you wouldn't have to pass in the value into the template
-                // this.$store.state.cordova.commit('deviceready', this.deviceready);
             }, this);
+
         });
     }
 });

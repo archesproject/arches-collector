@@ -6,7 +6,9 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
-        app_servers: new PouchDB('servers'),
+        dbs: {
+            app_servers: new PouchDB('app_servers')
+        }   
     },
     modules: {
         cordova: {
