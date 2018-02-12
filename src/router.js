@@ -7,6 +7,6 @@ import projects from './app/projects/routes';
 Vue.use(Router);
 
 export default new Router({
-  mode: 'hash',
-  routes: [...server, ...splash, ...projects]
+    mode: 'hash',
+    routes: [...server, ...splash, ...projects]
 });

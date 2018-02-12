@@ -19,7 +19,7 @@
 
 <script>
 export default {
-    name: 'ServerManager',
+    name: 'ServerManager'
     // props: ['deviceready'],
     // data: function(){
     //     return {

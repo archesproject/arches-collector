@@ -14,7 +14,7 @@
 <script>
 export default {
     name: 'Project',
-    props: ['id'],
+    props: ['id']
     // data: function(){
     //     return {
 

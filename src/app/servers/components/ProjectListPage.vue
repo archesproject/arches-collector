@@ -11,7 +11,7 @@
 
 <script>
 export default {
-    name: 'ProjectList',
+    name: 'ProjectList'
     // props: ['deviceready'],
     // data: function(){
     //     return {
