@@ -8,7 +8,7 @@ export default new Vuex.Store({
     state: {
         dbs: {
             app_servers: new PouchDB('app_servers')
-        }   
+        }
     },
     modules: {
         cordova: {
