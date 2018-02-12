@@ -10,7 +10,7 @@ import Cordova from './assets/js/cordova';
 import store from './store';
 import router from './router';
 
-Vue.config.productionTip = false;
+//Vue.config.productionTip = false;
 
 Vue.use(VueOnsen);
 Vue.use(Cordova);
@@ -32,14 +32,14 @@ window.archesvue = new Vue({
 
             // check the application servers db
             // if there is no servers listed, then jump to the ServerManagerPage
-            // this.$store.state.dbs.app_servers.get('servers').then(function(doc) {
-            //     console.log(doc);
-            // }).catch(function (err) {
-            //     console.log(err);
-            //     if(err.status === 404){
-            //         self.$router.push('servermanger');
-            //     }
-            // });
+            this.$store.state.dbs.app_servers.get('servers').then(function(doc) {
+                console.log(doc);
+            }).catch(function (err) {
+                console.log(err);
+                if(err.status === 404){
+                    self.$router.push({'name': 'servermanager'});
+                }
+            });
             // if there are servers, then get the last active server and set it in the app
 
 
@@ -51,4 +51,4 @@ window.archesvue = new Vue({
     }
 });
  
-router.push('splash');
+router.push({'name': 'splash'});
