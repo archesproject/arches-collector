@@ -1,8 +1,11 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import PouchDB from 'pouchdb';
+import PouchDBupsert from 'pouchdb-upsert';
 
 Vue.use(Vuex);
+
+PouchDB.plugin(PouchDBupsert);
 
 export default new Vuex.Store({
     state: {
@@ -30,7 +33,7 @@ export default new Vuex.Store({
 
 {
     active: server_url,
-    servers: [{
+    servers: {
         server_url: {
             url: server_url,
             nickname: nickname,
@@ -46,7 +49,7 @@ export default new Vuex.Store({
                 }
             ]
         }
-    }]
+    }
 }
 
 */
