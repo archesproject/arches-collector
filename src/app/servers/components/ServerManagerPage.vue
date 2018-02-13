@@ -1,41 +1,96 @@
 <template>
     <transition name="slide">
-        <v-ons-page>
-            <div class="temp">
-                SERVER MANAGER SCREEN
-                <br>
-                https://github.com/archesproject/arches-mobile/issues/3
-                <br>
-                https://github.com/archesproject/arches-mobile/issues/4
-                <br>
-                maybe we can use `a v-ons-navigator` to achieve this?
-                <h4 style="color:black;">
-                    <router-link :to="{ name: 'projectlist' }">Next</router-link>
-                </h4>
-            </div>
+        <v-ons-page key="0">
+            <v-ons-carousel fullscreen auto-scroll overscrollable
+            :index.sync="carouselIndex" :on-swipe="onSwipe">
+                <v-ons-carousel-item>
+                    <div class="body">
+                        <div class="title">Sign In</div>
+
+                        <v-ons-input class="input" placeholder="My Arches Application URL" float v-model="server.url">
+                        </v-ons-input>
+                        <v-ons-input class="input" placeholder="Nickname" float v-model="server.nickname">
+                        </v-ons-input>
+                                        
+                        <v-ons-button modifier="large" :disabled="disableNext" class="btn-success" v-on:click="next">Next</v-ons-button>
+                    </div>
+                </v-ons-carousel-item>
+                <v-ons-carousel-item>
+                    <div class="body">
+                        <div class="title">{{server.url}}</div>
+                        <v-ons-input class="input" placeholder="Username" float v-model="server.username">
+                        </v-ons-input>
+                        <v-ons-input class="input" placeholder="Password" float v-model="server.password">
+                        </v-ons-input>
+                        <v-ons-button modifier="large" :disabled="disableSignIn" class="btn-success" v-on:click="next">Sign In</v-ons-button>
+                        <v-ons-button modifier="large quiet" class="btn-danger" style="margin-top: 10px;" v-on:click="cancel">Cancel</v-ons-button>
+                    </div>
+                </v-ons-carousel-item>
+            </v-ons-carousel>
+
         </v-ons-page>
     </transition>
 </template>
 
 <script>
-export default {
-    name: 'ServerManager'
-    // props: ['deviceready'],
-    // data: function(){
-    //     return {
 
-    //     }
-    // },
-    // computed: {
-    //   deviceready() {
-    //     return this.$store.state.cordova.deviceready;
-    //   }
-    // },
+export default {
+    name: 'ServerManager',
+    // props: ['index'],
+    data() {
+        return {
+            carouselIndex: 0,
+            server: {
+                url: '',
+                nickname: '',
+                username: '',
+                password: ''
+            }
+        };
+    },
+    computed: {
+        disableNext: function() {
+            return !this.server.url || !this.server.nickname;
+        },
+        disableSignIn: function() {
+            return !this.server.url || !this.server.nickname || !this.server.username || !this.server.password;
+        }
+    },
+    methods: {
+        next: function() {
+            this.carouselIndex = 1;
+        },
+        cancel: function() {
+            this.$router.back();
+        },
+        onSwipe: function(newIndex) {
+            console.log('swipping');
+            console.log(newIndex);
+            if (this.carouselIndex === 0) {
+                this.carouselIndex = 0;
+            }
+        }
+    }
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
+.body{
+    padding: 35px;
+    color: dimgrey;
+}
+
+.title{
+    font-size: 22px;
+    padding-bottom: 80px;
+}
+
+.input{
+    width: 80%;
+    padding: 4px 0;
+    margin: 20px 0;
+}
 
 </style>
