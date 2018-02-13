@@ -19,6 +19,7 @@
     "cordova-plugin-whitelist": "1",
     "onsenui": "~2.7.2",
     "pouchdb": "^6.4.3",
+    "pouchdb-upsert": "^2.2.0",
     "vue": "^2.5.0",
     "vue-onsenui": "~2.3.0",
     "vue-router": "^3.0.1",
