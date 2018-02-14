@@ -4,13 +4,25 @@ import PouchDB from 'pouchdb';
 import PouchDBupsert from 'pouchdb-upsert';
 
 Vue.use(Vuex);
-
 PouchDB.plugin(PouchDBupsert);
+
+var localDB = {
+    servers: new PouchDB('app_servers')
+};
 
 export default new Vuex.Store({
     state: {
         dbs: {
-            app_servers: new PouchDB('app_servers')
+            app_servers: {
+                _id: 'servers',
+                active: null,
+                servers: {}
+            }
+        }
+    },
+    mutations: {
+        hydrateAppServers(state, value) {
+            state.dbs.app_servers = value;
         }
     },
     modules: {
@@ -24,6 +36,36 @@ export default new Vuex.Store({
                     state.deviceready = ready;
                 }
             }
+        }
+    },
+    actions: {
+        initAppServers({ commit, state }) {
+            return localDB.servers.get('servers')
+            .then(function(doc) {
+                // go to the last active server and project
+                console.log(doc);
+                commit('hydrateAppServers', doc);
+
+                return doc;
+            })
+            .catch(function() {
+                var doc = state.dbs.app_servers;
+
+                return localDB.servers.put(doc)
+                .finally(function(response) {
+                    return state.dbs.app_servers;
+                });
+            });
+        },
+        upsertAppServer({commit, state}, doc) {
+            return localDB.servers.upsert('servers', function(serverDoc) {
+                serverDoc.active = doc.url;
+                serverDoc.servers[doc.url] = doc;
+                serverDoc.servers[doc.url].projects = []; // should we update this?
+
+                commit('hydrateAppServers', serverDoc);
+                return serverDoc;
+            });
         }
     }
 });

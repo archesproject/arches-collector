@@ -12,7 +12,7 @@ import router from './router';
 
 // globally registered components
 import PageHeader from './app/shared/components/PageHeader.vue';
-Vue.component('page-header', PageHeader)
+Vue.component('page-header', PageHeader);
 
 // Vue.config.productionTip = false;
 
@@ -36,17 +36,18 @@ window.archesvue = new Vue({
 
             // check the application servers db
             // if there is no servers listed, then jump to the ServerManagerPage
-            this.$store.state.dbs.app_servers.get('servers')
-            .then(function(doc) {
+
+            store.dispatch('initAppServers')
+            .finally(function(doc) {
                 // go to the last active server and project
                 console.log(doc);
-            }).catch(function(err) {
-                // jump to the page to add a server
-                console.log(err);
-                if (err.status === 404) {
+                if (self.$store.state.dbs.app_servers.active) {
+
+                } else {
                     self.$router.push({'name': 'servermanager'});
                 }
             });
+
             // if there are servers, then get the last active server and set it in the app
 
             Vue.cordova.on('deviceready', function() {

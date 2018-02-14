@@ -20,10 +20,10 @@ export default {
     //     }
     // },
     computed: {
-      active_server() {
-        return this.$store.state.cordova.deviceready;
-      }
-    },
+        active_server() {
+            return this.$store.state.cordova.deviceready;
+        }
+    }
 };
 </script>
 
