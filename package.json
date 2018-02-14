@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "cordova-browser": "^5.0.3",
+    "cordova-ios": "^4.5.4",
     "cordova-plugin-whitelist": "1",
     "onsenui": "~2.7.2",
     "pouchdb": "^6.4.3",
