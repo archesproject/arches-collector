@@ -113,6 +113,7 @@ export default {
             .then(function(res) {
                 console.log('success in upserting a new doc');
                 // maybe we need to go to the projects page and load/update the list of projects
+                self.$router.push({'name': 'projectlist'})
             })
             .catch(function(error) {
                 console.log('Error:', error);
