@@ -1,7 +1,7 @@
 <template>
     <transition name="slide">
         <v-ons-page>
-            <page-header active-server="test"></page-header>
+            <page-header :active-server="active_server_name"></page-header>
             <div class="temp">
                 PROJECT LIST SCREEN<br>
                 https://github.com/archesproject/arches-mobile/issues/5
@@ -13,15 +13,9 @@
 <script>
 export default {
     name: 'ProjectList',
-    // props: ['deviceready'],
-    // data: function(){
-    //     return {
-
-    //     }
-    // },
     computed: {
-        active_server() {
-            return this.$store.state.cordova.deviceready;
+        active_server_name() {
+            return this.$store.getters.activeServer ? this.$store.getters.activeServer.nickname : '';
         }
     }
 };

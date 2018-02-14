@@ -41,8 +41,8 @@ window.archesvue = new Vue({
             .finally(function(doc) {
                 // go to the last active server and project
                 console.log(doc);
-                if (self.$store.state.dbs.app_servers.active) {
-
+                if (!!store.getters.activeServer) {
+                    self.$router.push({'name': 'projectlist'});
                 } else {
                     self.$router.push({'name': 'servermanager'});
                 }
