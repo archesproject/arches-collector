@@ -10,6 +10,12 @@ import Cordova from './assets/js/cordova';
 import store from './store';
 import router from './router';
 
+// globally registered components
+import PageHeader from './app/shared/components/PageHeader.vue';
+import PageHeaderLayout from './app/shared/components/PageHeaderLayout.vue';
+Vue.component('page-header', PageHeader);
+Vue.component('page-header-layout', PageHeaderLayout);
+
 // Vue.config.productionTip = false;
 
 Vue.use(VueOnsen);
@@ -32,14 +38,18 @@ window.archesvue = new Vue({
 
             // check the application servers db
             // if there is no servers listed, then jump to the ServerManagerPage
-            this.$store.state.dbs.app_servers.get('servers').then(function(doc) {
+
+            store.dispatch('initAppServers')
+            .finally(function(doc) {
+                // go to the last active server and project
                 console.log(doc);
-            }).catch(function(err) {
-                console.log(err);
-                if (err.status === 404) {
+                if (store.getters.activeServer) {
+                    self.$router.push({'name': 'projectlist'});
+                } else {
                     self.$router.push({'name': 'servermanager'});
                 }
             });
+
             // if there are servers, then get the last active server and set it in the app
 
             Vue.cordova.on('deviceready', function() {

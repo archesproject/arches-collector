@@ -53,7 +53,8 @@ export default {
                 url: 'http://localhost:8000',
                 nickname: 'test',
                 username: 'admin',
-                password: 'admin'
+                password: 'admin',
+                token: ''
             },
             error: false
         };
@@ -100,19 +101,13 @@ export default {
             .then(function(response) {
                 // set the server metadata and token
                 console.log('Success:', response);
-                return self.$store.state.dbs.app_servers.upsert('servers', function(serversDoc) {
-                    if (!serversDoc.active) {
-                        serversDoc.servers = {};
-                    }
-                    serversDoc.active = self.server.url;
-                    serversDoc.servers[self.server.url] = self.server;
-                    serversDoc.servers[self.server.url].token = response;
-                    serversDoc.servers[self.server.url].projects = [];
-                });
+                self.server.token = response;
+                return self.$store.dispatch('upsertAppServer', self.server);
             })
             .then(function(res) {
                 console.log('success in upserting a new doc');
                 // maybe we need to go to the projects page and load/update the list of projects
+                self.$router.push({'name': 'projectlist'});
             })
             .catch(function(error) {
                 console.log('Error:', error);
