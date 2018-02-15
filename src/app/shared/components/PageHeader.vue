@@ -1,11 +1,12 @@
 <template>
     <v-ons-toolbar>      
-        <div class="center">
-            <v-ons-toolbar-button class="left-button-offset">
+        <div class="left">
+            <v-ons-toolbar-button class="left-button-offset" @click="toggleOpen">
                 <img src="../../../assets/img/favicon.png" width="20"></img>
-                <span class="left-button-text">{{activeServer}}</span>
+                <span class="left-button-text">{{active_server_name}}</span>
             </v-ons-toolbar-button>
         </div>
+        <div class="center"></div>
         <div class="right">
             <v-ons-toolbar-button>
                 <v-ons-icon icon="search"></v-ons-icon>
@@ -20,7 +21,16 @@
 <script>
 export default {
     name: 'PageHeader',
-    props: ['active-server']
+    computed: {
+        active_server_name() {
+            return this.$store.getters.activeServer ? this.$store.getters.activeServer.nickname : '';
+        }
+    },
+    methods: {
+        toggleOpen: function () {
+            this.$emit('toggleOpenEvt')
+        }
+    },
 };
 </script>
 
