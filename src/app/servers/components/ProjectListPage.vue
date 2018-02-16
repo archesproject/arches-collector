@@ -10,15 +10,15 @@
                 <span v-show="state === 'action'"><v-ons-progress-circular indeterminate></v-ons-progress-circular></span>
             </v-ons-pull-hook>
             <v-ons-list>
-                <v-ons-list-item>
-                    <span class="left">Projects</span>
+                <v-ons-list-item modifier="longdivider">
+                    <span class="left"><span>Projects</span></span>
                     <span class="right">
                         <v-ons-icon icon="ion-ios-cloud-download-outline"></v-ons-icon>
                     </span>
                 </v-ons-list-item>
                 <v-ons-list-item tappable modifier="longdivider" v-for="(project, index) in projects" @click="selectProject(project);">
-                    <v-ons-icon icon="ion-android-checkbox-outline"></v-ons-icon>
-                    <span style="padding-left: 10px;">
+                    <span>
+                        <v-ons-icon icon="ion-android-checkbox-outline"></v-ons-icon>
                         {{project.name}}{{index+1}}<br>
                         <span style="font-size: 12px;">{{project.status}}</span>
                     </span>
@@ -42,6 +42,9 @@ export default {
         }
     },
     methods: {
+        selectProject() {
+            return;
+        },
         loadItem(done) {
             var self = this;
             setTimeout(() => {
