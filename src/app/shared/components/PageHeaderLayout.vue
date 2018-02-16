@@ -1,19 +1,35 @@
 <template>
     <v-ons-splitter>
         <v-ons-splitter-side
-            swipeable width="150px" collapse="" side="left"
-            :open.sync="openSide">
+            swipeable width="300px" collapse="" side="left"
+            :open.sync="openSide" class="toolbar-header">
             <v-ons-page>
+                <v-ons-toolbar class="toolbar-header">      
+                    <div class="left">
+                        <v-ons-toolbar-button class="left-button-text" @click="toggleOpen">
+                            <v-ons-icon icon="ion-android-upload"></v-ons-icon>
+                            <span class="left-button-text">Arches Applications</span>
+                        </v-ons-toolbar-button>
+                    </div>
+                </v-ons-toolbar>
                 <v-ons-list>
-                    <v-ons-list-item>
-                        <div class="center">Applications</div>
+                    <v-ons-list-item tappable modifier="longdivider" v-for="(server, key) in servers">
+                        <v-ons-icon icon="ion-android-checkbox-outline"></v-ons-icon>
+                        <span style="padding-left: 10px;">
+                            {{server.nickname}}<br>
+                            <span style="font-size: 12px;">{{server.url}}</span>
+                        </span>
+                    </v-ons-list-item>
+                    <v-ons-list-item tappable @click="goTo('servermanager');">
+                        <v-ons-icon icon="ion-plus-circled"></v-ons-icon>
+                        <span style="padding-left: 10px;">Add Application</span>
                     </v-ons-list-item>
                 </v-ons-list>
             </v-ons-page>
         </v-ons-splitter-side>
 
         <v-ons-splitter-content>
-            <page-header v-on:toggleOpenEvt="toggleOpen"></page-header> 
+            <page-header v-on:toggle-open-evt="toggleOpen"></page-header> 
             <slot></slot>
         </v-ons-splitter-content>
     </v-ons-splitter>
@@ -26,11 +42,19 @@ export default {
     data() {
         return {
             openSide: false
+        };
+    },
+    computed: {
+        servers() {
+            return this.$store.state.dbs.app_servers.servers;
         }
     },
     methods: {
         toggleOpen: function() {
             this.openSide = !this.openSide;
+        },
+        goTo: function(name){
+            this.$router.push({'name': name});
         }
     }
 };
@@ -39,14 +63,16 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
-.left-button-text{
-    color: black;
-    position: relative;
-    top: -1px;
+.list-item .ons-icon {
+    font-size: 30px;
 }
 
-.left-button-offset{
-    padding-top:2px;
+.left-button-text{
+    color: white;
+}
+
+.toolbar-header {
+    background-color: #503838 !important;
 }
 
 </style>
