@@ -29,8 +29,10 @@
         </v-ons-splitter-side>
 
         <v-ons-splitter-content>
-            <page-header v-on:toggle-open-evt="toggleOpen"></page-header> 
-            <slot></slot>
+            <v-ons-page>
+                <page-header v-on:toggle-open-evt="toggleOpen"></page-header> 
+                <slot></slot>
+            </v-ons-page>
         </v-ons-splitter-content>
     </v-ons-splitter>
 </template>
@@ -53,10 +55,10 @@ export default {
         toggleOpen: function() {
             this.openSide = !this.openSide;
         },
-        goTo: function(name){
+        goTo: function(name) {
             this.$router.push({'name': name});
         },
-        selectServer: function(serverurl){
+        selectServer: function(serverurl) {
             this.$store.commit('setActiveServer', serverurl);
             this.openSide = false;
         }

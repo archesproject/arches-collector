@@ -47,4 +47,8 @@ export default {
     padding-top:2px;
 }
 
+.toolbar-button--material{
+    color: dimgrey;
+}
+
 </style>
