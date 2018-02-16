@@ -29,6 +29,9 @@ export default new Vuex.Store({
     mutations: {
         hydrateAppServers(state, value) {
             state.dbs.app_servers = value;
+        },
+        setActiveServer(state, value) {
+            state.dbs.app_servers.active = value;
         }
     },
     modules: {

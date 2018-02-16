@@ -27,10 +27,10 @@ export default {
         }
     },
     methods: {
-        toggleOpen: function () {
-            this.$emit('toggleOpenEvt')
+        toggleOpen: function() {
+            this.$emit('toggle-open-evt');
         }
-    },
+    }
 };
 </script>
 
