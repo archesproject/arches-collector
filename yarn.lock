@@ -6,6 +6,10 @@
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@onsenui/custom-elements/-/custom-elements-1.0.0.tgz#8e2b5c8968b8d94da70c6e92ecc56b47f79a0ff3"
 
+"@onsenui/fastclick@^1.1.0":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@onsenui/fastclick/-/fastclick-1.1.1.tgz#0708ec6c7bdca8b87a028deb0dbb66b92001f737"
+
 abbrev@1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
@@ -1780,11 +1784,7 @@ cordova-serve@^2.0.0:
     open "0.0.5"
     shelljs "^0.5.3"
 
-core-js@2.4.1:
-  version "2.4.1"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.4.1.tgz#4de911e667b0eae9124e34254b53aea6fc618d3e"
-
-core-js@^2.2.0, core-js@^2.4.0, core-js@^2.5.0:
+core-js@^2.2.0, core-js@^2.4.0, core-js@^2.5.0, core-js@^2.5.1:
   version "2.5.3"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.5.3.tgz#8acc38345824f16d8365b7c9b4259168e8ed603e"
 
@@ -5417,12 +5417,13 @@ onetime@^2.0.0:
   dependencies:
     mimic-fn "^1.0.0"
 
-onsenui@~2.7.2:
-  version "2.7.2"
-  resolved "https://registry.yarnpkg.com/onsenui/-/onsenui-2.7.2.tgz#f4181f4815bc7d6375d7048dce4736fcc426d357"
+onsenui@~2.9.1:
+  version "2.9.1"
+  resolved "https://registry.yarnpkg.com/onsenui/-/onsenui-2.9.1.tgz#08db80f96eb773ca4544161a8bee9a289f8f1cac"
   dependencies:
     "@onsenui/custom-elements" "1.0.0"
-    core-js "2.4.1"
+    "@onsenui/fastclick" "^1.1.0"
+    core-js "^2.5.1"
 
 open@0.0.5:
   version "0.0.5"
@@ -7910,9 +7911,11 @@ vue-loader@^13.3.0:
     vue-style-loader "^3.0.0"
     vue-template-es2015-compiler "^1.6.0"
 
-vue-onsenui@~2.3.0:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/vue-onsenui/-/vue-onsenui-2.3.0.tgz#f6c1f2d340e2638d402d00a5c0560a8ce4f925fc"
+vue-onsenui@~2.5.0:
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/vue-onsenui/-/vue-onsenui-2.5.0.tgz#3a2f5456a1b7effbcb0fb48b8e6bb5e669037403"
+  dependencies:
+    babel-runtime "^6.26.0"
 
 vue-router@^3.0.1:
   version "3.0.1"
