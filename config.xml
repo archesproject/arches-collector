@@ -23,5 +23,9 @@
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
     </platform>
-    <engine name="browser" spec="^5.0.3" />
+    <plugin name="cordova-plugin-device" spec="^2.0.1" />
+    <plugin name="cordova-plugin-file" spec="^6.0.1" />
+    <plugin name="cordova-sqlite-ext" spec="^2.1.0" />
+    <engine name="browser" spec="5.0.3" />
+    <engine name="ios" spec="4.5.4" />
 </widget>

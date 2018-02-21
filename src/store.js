@@ -22,8 +22,8 @@ export default new Vuex.Store({
     },
     getters: {
         activeServer: function(state) {
-            var app_servers = state.dbs.app_servers;
-            return app_servers.servers[app_servers.active] || undefined;
+            var appServers = state.dbs.app_servers;
+            return appServers.servers[appServers.active] || undefined;
         }
     },
     mutations: {

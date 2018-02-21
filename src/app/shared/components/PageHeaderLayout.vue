@@ -4,7 +4,7 @@
             swipeable width="300px" collapse="" side="left"
             :open.sync="openSide" class="toolbar-header">
             <v-ons-page>
-                <v-ons-toolbar class="toolbar-header">      
+                <v-ons-toolbar class="toolbar-header">
                     <div class="left">
                         <v-ons-toolbar-button class="left-button-text" @click="toggleOpen">
                             <v-ons-icon icon="ion-android-upload"></v-ons-icon>
@@ -29,7 +29,7 @@
         </v-ons-splitter-side>
 
         <v-ons-splitter-content>
-            <page-header v-on:toggle-open-evt="toggleOpen"></page-header> 
+            <page-header v-on:toggle-open-evt="toggleOpen"></page-header>
             <slot></slot>
         </v-ons-splitter-content>
     </v-ons-splitter>
@@ -53,10 +53,10 @@ export default {
         toggleOpen: function() {
             this.openSide = !this.openSide;
         },
-        goTo: function(name){
+        goTo: function(name) {
             this.$router.push({'name': name});
         },
-        selectServer: function(serverurl){
+        selectServer: function(serverurl) {
             this.$store.commit('setActiveServer', serverurl);
             this.openSide = false;
         }
