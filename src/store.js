@@ -21,9 +21,15 @@ export default new Vuex.Store({
         }
     },
     getters: {
-        activeServer: function(state) {
+        activeServer: function(state, getters) {
             var appServers = state.dbs.app_servers;
             return appServers.servers[appServers.active] || undefined;
+        },
+        currentProjects: function(state, getters) {
+            if(!getters.activeServer){
+                return;
+            }
+            return getters.activeServer.projects;
         }
     },
     mutations: {
@@ -32,6 +38,15 @@ export default new Vuex.Store({
         },
         setActiveServer(state, value) {
             state.dbs.app_servers.active = value;
+        },
+        addMockProject(state, value) {
+            var appServers = state.dbs.app_servers;
+            var activeServer = appServers.servers[appServers.active];
+            var project = {
+                name: 'Project',
+                status: 'active'
+            };
+            activeServer.projects.push(project);
         }
     },
     modules: {

@@ -5,7 +5,10 @@
             :index.sync="carouselIndex" :on-swipe="onSwipe">
                 <v-ons-carousel-item>
                     <div class="body">
-                        <div class="title">Sign In</div>
+                   
+                        <v-ons-toolbar>      
+                            <div class="center left-button-text">Sign In</div>
+                        </v-ons-toolbar>
 
                         <v-ons-input class="input" placeholder="My Arches Application URL" float v-model="server.url">
                         </v-ons-input>
@@ -17,7 +20,14 @@
                 </v-ons-carousel-item>
                 <v-ons-carousel-item>
                     <div class="body">
-                        <div class="title">{{server.url}}</div>
+                        <v-ons-toolbar>
+                            <div class="left">
+                                <v-ons-toolbar-button class="left-button-text" @click="back">
+                                    <v-ons-icon icon="ion-android-arrow-back"></v-ons-icon>
+                                    <span>{{server.url}}</span>
+                                </v-ons-toolbar-button>
+                            </div>
+                        </v-ons-toolbar>
 
                         <v-ons-input class="input" placeholder="Username" float v-model="server.username">
                         </v-ons-input>
@@ -70,6 +80,9 @@ export default {
     methods: {
         next: function() {
             this.carouselIndex = 1;
+        },
+        back: function() {
+            this.carouselIndex = 0;
         },
         cancel: function() {
             this.$router.back();
@@ -130,13 +143,14 @@ export default {
 <style scoped>
 
 .body{
-    padding: 35px;
+    padding: 80px 35px;
+    font-size: 16px;
     color: dimgrey;
 }
 
-.title{
+.left-button-text {
     font-size: 22px;
-    padding-bottom: 80px;
+    color: dimgrey;
 }
 
 .input{

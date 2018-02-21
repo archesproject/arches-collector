@@ -29,8 +29,10 @@
         </v-ons-splitter-side>
 
         <v-ons-splitter-content>
-            <page-header v-on:toggle-open-evt="toggleOpen"></page-header>
-            <slot></slot>
+            <v-ons-page>
+                <page-header v-on:toggle-open-evt="toggleOpen"></page-header>
+                <slot></slot>
+            </v-ons-page>
         </v-ons-splitter-content>
     </v-ons-splitter>
 </template>
