@@ -16,7 +16,7 @@
                         <v-ons-icon icon="ion-ios-cloud-download-outline"></v-ons-icon>
                     </span>
                 </v-ons-list-item>
-                <v-ons-list-item tappable modifier="longdivider" v-for="(project, key) in projects" @click="selectProject(project);">
+                <v-ons-list-item tappable modifier="longdivider" v-for="(project, key) in projects" :key="project.id" @click="selectProject(project);">
                     <span>
                         <v-ons-icon icon="ion-android-checkbox-outline"></v-ons-icon>
                         {{project.name}}<br>
