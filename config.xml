@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="io.cordova.helloworld" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="io.cordova.archesmobile" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Arches</name>
     <description>
       A mobile app to manage Arches resources
@@ -23,9 +23,9 @@
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
     </platform>
-    <engine name="browser" spec="5.0.3" />
-    <engine name="ios" spec="4.5.4" />
     <plugin name="cordova-plugin-device" spec="~2.0.1" />
     <plugin name="cordova-plugin-file" spec="~6.0.1" />
     <plugin name="cordova-sqlite-ext" spec="~2.1.0" />
+    <engine name="browser" spec="^5.0.3" />
+    <engine name="ios" spec="4.5.4" />
 </widget>

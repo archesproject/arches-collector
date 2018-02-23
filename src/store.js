@@ -26,7 +26,7 @@ export default new Vuex.Store({
             return appServers.servers[appServers.active] || undefined;
         },
         currentProjects: function(state, getters) {
-            if(!getters.activeServer){
+            if (!getters.activeServer) {
                 return;
             }
             return getters.activeServer.projects;

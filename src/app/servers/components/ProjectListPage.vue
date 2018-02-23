@@ -43,7 +43,7 @@ export default {
     },
     methods: {
         selectProject() {
-            return;
+            return null;
         },
         loadItem(done) {
             var self = this;
