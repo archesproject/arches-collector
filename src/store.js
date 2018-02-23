@@ -2,12 +2,22 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import PouchDB from 'pouchdb';
 import PouchDBupsert from 'pouchdb-upsert';
+import SqlLiteAdapter from 'pouchdb-adapter-cordova-sqlite';
 
 Vue.use(Vuex);
 PouchDB.plugin(PouchDBupsert);
+PouchDB.plugin(SqlLiteAdapter);
+
+var adapter = 'cordova-sqlite';
+
+// we should be able to comment this out for production
+// but this shouldn't hurt anything by being in here
+if (!window.cordova || window.cordova.platformId === 'browser') {
+    adapter = 'idb';
+}
 
 var localDB = {
-    servers: new PouchDB('app_servers')
+    servers: new PouchDB('app_servers', {adapter: adapter})
 };
 
 var getActiveServer = function(state) {
