@@ -14,7 +14,7 @@ yarn install
 # with hot reload but without cordova enabled
 yarn run dev
 
-or 
+or
 
 # without hot reload but with cordova enabled
 cordova run browser
@@ -25,7 +25,7 @@ cordova run browser
 ```
 cordova run ios|browser
 
-# to run in android, I had to run from directly from android studio 
+# to run in android, I had to run from directly from android studio
 
 ```
 
@@ -44,7 +44,7 @@ cordova platform add browser --save
 # run app in device simulator
 cordova run ios|browser
 
-# to run in android, I had to run from directly from android studio 
+# to run in android, I had to run from directly from android studio
 
 # serve with hot reload at localhost:8080
 yarn run dev
