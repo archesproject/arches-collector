@@ -19,6 +19,7 @@
             </span>
             <h4 style="color:black;">
                 <router-link :to="{ name: 'servermanager' }">Skip</router-link>
+                <router-link :to="{ name: 'projectmap' }">Map</router-link>
             </h4>
         </div>
     </v-ons-page>
@@ -27,7 +28,7 @@
 <script>
 
 export default {
-    name: 'SpalshPage',
+    name: 'SplashPage',
     props: ['deviceready'],
     data() {
         return {
@@ -121,13 +122,13 @@ export default {
         50% { opacity: 0.4; }
         to { opacity: 1.0; }
 }
- 
+
 @-webkit-keyframes fade {
         from { opacity: 1.0; }
         50% { opacity: 0.4; }
         to { opacity: 1.0; }
 }
- 
+
 .blink {
         animation:fade 3000ms infinite;
         -webkit-animation:fade 3000ms infinite;

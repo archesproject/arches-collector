@@ -4,7 +4,7 @@
             swipeable width="300px" collapse="" side="left"
             :open.sync="openSide" class="toolbar-header">
             <v-ons-page>
-                <v-ons-toolbar class="toolbar-header">      
+                <v-ons-toolbar class="toolbar-header">
                     <div class="left">
                         <v-ons-toolbar-button class="left-button-text" @click="toggleOpen">
                             <v-ons-icon icon="ion-android-upload"></v-ons-icon>
@@ -30,7 +30,7 @@
 
         <v-ons-splitter-content>
             <v-ons-page>
-                <page-header v-on:toggle-open-evt="toggleOpen"></page-header> 
+                <page-header v-on:toggle-open-evt="toggleOpen"></page-header>
                 <slot></slot>
             </v-ons-page>
         </v-ons-splitter-content>
