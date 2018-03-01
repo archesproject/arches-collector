@@ -12,7 +12,9 @@
         "unit": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js --single-run",
         "e2e": "node test/e2e/runner.js",
         "test": "npm run unit && npm run e2e",
-        "lint": "eslint --ext .js,.vue src test/unit/specs test/e2e/specs"
+        "lint": "eslint --ext .js,.vue src test/unit/specs test/e2e/specs",
+        "restore-ios": "yarn remove mapbox-gl-cordova-mbtiles && cordova platform remove ios && cordova platform add ios && yarn add archesproject/mapbox-gl-cordova-mbtiles",
+        "icons": "cordova-icon && cordova-splash"
     },
     "dependencies": {
         "cordova-browser": "^5.0.3",
@@ -47,6 +49,8 @@
         "chalk": "^2.0.1",
         "chromedriver": "^2.27.2",
         "copy-webpack-plugin": "^4.0.1",
+        "cordova-icon": "^1.0.0",
+        "cordova-splash": "^1.0.0",
         "cross-env": "^5.0.1",
         "cross-spawn": "^5.0.1",
         "css-loader": "^0.28.0",
