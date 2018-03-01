@@ -10,14 +10,14 @@ PouchDB.plugin(SqlLiteAdapter);
 
 var adapter = 'cordova-sqlite';
 
-// we should be able to comment this out for production
-// but this shouldn't hurt anything by being in here
+// this is mostly just for testing but this shouldn't hurt anything by being in here
+// as of this writing the cordova-plugin-sqlite-2 doesn't support the browser platform
 if (!window.cordova || window.cordova.platformId === 'browser') {
     adapter = 'idb';
 }
 
 var localDB = {
-    servers: new PouchDB('app_servers', {adapter: adapter})
+    servers: 'undefined'
 };
 
 var getActiveServer = function(state) {
@@ -67,6 +67,12 @@ export default new Vuex.Store({
         setActiveProject: function(state, value) {
             var activeServer = getActiveServer(state);
             activeServer.active_project = value.project_id;
+        },
+        setupPouchDB: function() {
+            localDB.servers = new PouchDB('app_servers', {
+                adapter: adapter,
+                iosDatabaseLocation: 'Library'
+            });
         }
     },
     modules: {

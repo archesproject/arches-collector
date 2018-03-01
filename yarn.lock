@@ -1838,7 +1838,7 @@ cordova-ios@4.5.3:
     xcode "^0.9.0"
     xml-escape "^1.1.0"
 
-cordova-ios@4.5.4:
+cordova-ios@^4.5.4:
   version "4.5.4"
   resolved "https://registry.yarnpkg.com/cordova-ios/-/cordova-ios-4.5.4.tgz#c80648058972968570dc15da97314ff92d07dfe7"
   dependencies:
@@ -6294,11 +6294,11 @@ postcss@^6.0.0, postcss@^6.0.1, postcss@^6.0.16, postcss@^6.0.8:
     source-map "^0.6.1"
     supports-color "^5.1.0"
 
-pouchdb-adapter-cordova-sqlite@^2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/pouchdb-adapter-cordova-sqlite/-/pouchdb-adapter-cordova-sqlite-2.0.2.tgz#5ee3e4c160ac1503122e56c15ea607c5f88d55b6"
+pouchdb-adapter-cordova-sqlite@pouchdb-community/pouchdb-adapter-cordova-sqlite#master:
+  version "2.0.3"
+  resolved "https://codeload.github.com/pouchdb-community/pouchdb-adapter-cordova-sqlite/tar.gz/5f636d2d97f9a97ecfa4973f6d66fdb59b7296b9"
   dependencies:
-    pouchdb-adapter-websql-core "^6.1.1"
+    pouchdb-adapter-websql-core "^6.4.3"
 
 pouchdb-adapter-utils@6.4.3:
   version "6.4.3"
@@ -6312,7 +6312,7 @@ pouchdb-adapter-utils@6.4.3:
     pouchdb-promise "6.4.3"
     pouchdb-utils "6.4.3"
 
-pouchdb-adapter-websql-core@^6.1.1:
+pouchdb-adapter-websql-core@^6.4.3:
   version "6.4.3"
   resolved "https://registry.yarnpkg.com/pouchdb-adapter-websql-core/-/pouchdb-adapter-websql-core-6.4.3.tgz#8f992a46ca8a6870440d0c8699cfaa7ac1c382c4"
   dependencies:
