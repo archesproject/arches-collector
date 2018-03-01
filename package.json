@@ -46,7 +46,7 @@
         "chai": "^4.1.2",
         "chalk": "^2.0.1",
         "chromedriver": "^2.27.2",
-        "copy-webpack-plugin": "^4.0.1",
+        "copy-webpack-plugin": "^4.4.3",
         "cordova-icon": "^1.0.0",
         "cordova-splash": "^1.0.0",
         "cross-env": "^5.0.1",
