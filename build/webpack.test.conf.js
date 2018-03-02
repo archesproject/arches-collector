@@ -29,4 +29,7 @@ const webpackConfig = merge(baseWebpackConfig, {
 // no need for app entry during tests
 delete webpackConfig.entry
 
-module.exports = webpackConfig
+module.exports = new Promise((resolve, reject) => {
+  resolve(webpackConfig)
+})
+

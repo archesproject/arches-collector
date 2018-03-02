@@ -21,11 +21,13 @@
         "cordova-ios": "4.5.4",
         "cordova-plugin-device": "^2.0.1",
         "cordova-plugin-file": "^6.0.1",
+        "cordova-plugin-sqlite-2": "^1.0.4",
         "cordova-plugin-whitelist": "1",
         "cordova-sqlite-ext": "^2.1.0",
         "mapbox-gl-cordova-mbtiles": "archesproject/mapbox-gl-cordova-mbtiles",
         "onsenui": "~2.9.1",
         "pouchdb": "^6.4.3",
+        "pouchdb-adapter-cordova-sqlite": "pouchdb-community/pouchdb-adapter-cordova-sqlite#master",
         "pouchdb-upsert": "^2.2.0",
         "uuid": "^3.2.1",
         "vue": "^2.5.0",
@@ -118,7 +120,8 @@
             "cordova-plugin-whitelist": {},
             "cordova-plugin-device": {},
             "cordova-plugin-file": {},
-            "cordova-sqlite-ext": {}
+            "cordova-sqlite-ext": {},
+            "cordova-plugin-sqlite-2": {}
         },
         "platforms": [
             "browser",

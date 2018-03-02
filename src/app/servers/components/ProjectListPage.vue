@@ -2,7 +2,7 @@
     <transition name="slide">
         <page-header-layout>
             <v-ons-pull-hook
-              :action="loadItem"
+              :action="refreshProjectList"
               @changestate="state = $event.state"
             >
                 <span v-show="state === 'initial'"> Pull to refresh </span>
@@ -16,10 +16,10 @@
                         <v-ons-icon icon="ion-ios-cloud-download-outline"></v-ons-icon>
                     </span>
                 </v-ons-list-item>
-                <v-ons-list-item tappable modifier="longdivider" v-for="(project, index) in projects" @click="selectProject(project);">
+                <v-ons-list-item tappable modifier="longdivider" v-for="(project, key) in projects" :key="project.id" @click="selectProject(project);">
                     <span>
                         <v-ons-icon icon="ion-android-checkbox-outline"></v-ons-icon>
-                        {{project.name}}{{index+1}}<br>
+                        {{project.name}}<br>
                         <span style="font-size: 12px;">{{project.status}}</span>
                     </span>
                 </v-ons-list-item>
@@ -42,15 +42,18 @@ export default {
         }
     },
     methods: {
-        selectProject() {
-            return null;
+        selectProject(project) {
+            var payload = {
+                project_id: project.id
+            };
+            this.$store.commit('setActiveProject', payload);
+            this.$router.push({'name': 'project', params: { id: project.id }});
         },
-        loadItem(done) {
-            var self = this;
-            setTimeout(() => {
-                self.$store.commit('addMockProject');
-                done();
-            }, 1000);
+        refreshProjectList(done) {
+            this.$store.dispatch('getRemoteProjects', this.$store.getters.activeServer.url)
+                .finally(function() {
+                    done();
+                });
         }
     }
 };

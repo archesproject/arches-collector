@@ -13,7 +13,7 @@
                     </div>
                 </v-ons-toolbar>
                 <v-ons-list>
-                    <v-ons-list-item tappable modifier="longdivider" v-for="(server, key) in servers" @click="selectServer(server.url);">
+                    <v-ons-list-item tappable modifier="longdivider" v-for="(server, key) in servers" :key="server.url" @click="selectServer(server.url);">
                         <v-ons-icon icon="ion-android-checkbox-outline"></v-ons-icon>
                         <span style="padding-left: 10px;">
                             {{server.nickname}}<br>

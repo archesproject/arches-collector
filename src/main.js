@@ -27,33 +27,39 @@ window.archesvue = new Vue({
     store,
     router,
     data: {
-        deviceready: false
+        deviceready: false,
+        init: function() {
+            var self = this;
+            this.deviceready = true;
+
+            store.commit('setupPouchDB');
+            store.dispatch('initAppServers')
+                .finally(function(doc) {
+                    console.log(doc);
+                    if (store.getters.activeServer) {
+                    // go to the last active server and project
+                        self.$router.push({'name': 'projectlist'});
+                    } else {
+                    // if there is no servers listed, then jump to the ServerManagerPage
+                        self.$router.push({'name': 'servermanager'});
+                    }
+                });
+        }
     },
     template: '<router-view></router-view>',
     mounted: function() {
         this.$nextTick(() => {
-            var self = this;
             // Code that will run only after the
             // entire view has been rendered
 
-            // check the application servers db
-            // if there is no servers listed, then jump to the ServerManagerPage
+            // if running in the browser
+            if (!window.cordova) {
+                this.init();
+            }
 
-            store.dispatch('initAppServers')
-            .finally(function(doc) {
-                // go to the last active server and project
-                console.log(doc);
-                if (store.getters.activeServer) {
-                    self.$router.push({'name': 'projectlist'});
-                } else {
-                    self.$router.push({'name': 'servermanager'});
-                }
-            });
-
-            // if there are servers, then get the last active server and set it in the app
-
+            // if runing in the device
             Vue.cordova.on('deviceready', function() {
-                this.deviceready = true;
+                this.init();
             }, this);
         });
     }
