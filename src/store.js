@@ -91,21 +91,21 @@ export default new Vuex.Store({
     actions: {
         initAppServers: function({ commit, state }) {
             return localDB.servers.get('servers')
-            .then(function(doc) {
+                .then(function(doc) {
                 // go to the last active server and project
-                console.log(doc);
-                commit('hydrateAppServers', doc);
+                    console.log(doc);
+                    commit('hydrateAppServers', doc);
 
-                return doc;
-            })
-            .catch(function() {
-                var doc = state.dbs.app_servers;
+                    return doc;
+                })
+                .catch(function() {
+                    var doc = state.dbs.app_servers;
 
-                return localDB.servers.put(doc)
-                .finally(function(response) {
-                    return state.dbs.app_servers;
+                    return localDB.servers.put(doc)
+                        .finally(function(response) {
+                            return state.dbs.app_servers;
+                        });
                 });
-            });
         },
         upsertAppServer: function({commit, state}, doc) {
             return localDB.servers.upsert('servers', function(serverDoc) {

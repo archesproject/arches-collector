@@ -103,29 +103,29 @@ export default {
                     // 'Content-Type': 'application/x-www-form-urlencoded'
                 })
             })
-            .then(function(response) {
+                .then(function(response) {
                 // return the response object or throw an error
-                console.log(response);
-                if (response.ok) {
-                    return response.text();
-                }
-                throw new Error('Network response was not ok.');
-            })
-            .then(function(response) {
+                    console.log(response);
+                    if (response.ok) {
+                        return response.text();
+                    }
+                    throw new Error('Network response was not ok.');
+                })
+                .then(function(response) {
                 // set the server metadata and token
-                console.log('Success:', response);
-                self.server.token = response;
-                return self.$store.dispatch('upsertAppServer', self.server);
-            })
-            .then(function(res) {
-                console.log('success in upserting a new doc');
-                // maybe we need to go to the projects page and load/update the list of projects
-                self.$router.push({'name': 'projectlist'});
-            })
-            .catch(function(error) {
-                console.log('Error:', error);
-                self.error = true;
-            });
+                    console.log('Success:', response);
+                    self.server.token = response;
+                    return self.$store.dispatch('upsertAppServer', self.server);
+                })
+                .then(function(res) {
+                    console.log('success in upserting a new doc');
+                    // maybe we need to go to the projects page and load/update the list of projects
+                    self.$router.push({'name': 'projectlist'});
+                })
+                .catch(function(error) {
+                    console.log('Error:', error);
+                    self.error = true;
+                });
         },
 
         onSwipe: function(newIndex) {

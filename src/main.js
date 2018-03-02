@@ -34,16 +34,16 @@ window.archesvue = new Vue({
 
             store.commit('setupPouchDB');
             store.dispatch('initAppServers')
-            .finally(function(doc) {
-                console.log(doc);
-                if (store.getters.activeServer) {
+                .finally(function(doc) {
+                    console.log(doc);
+                    if (store.getters.activeServer) {
                     // go to the last active server and project
-                    self.$router.push({'name': 'projectlist'});
-                } else {
+                        self.$router.push({'name': 'projectlist'});
+                    } else {
                     // if there is no servers listed, then jump to the ServerManagerPage
-                    self.$router.push({'name': 'servermanager'});
-                }
-            });
+                        self.$router.push({'name': 'servermanager'});
+                    }
+                });
         }
     },
     template: '<router-view></router-view>',

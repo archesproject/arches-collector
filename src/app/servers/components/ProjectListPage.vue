@@ -51,9 +51,9 @@ export default {
         },
         refreshProjectList(done) {
             this.$store.dispatch('getRemoteProjects', this.$store.getters.activeServer.url)
-            .finally(function() {
-                done();
-            });
+                .finally(function() {
+                    done();
+                });
         }
     }
 };
