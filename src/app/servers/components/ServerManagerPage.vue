@@ -94,6 +94,7 @@ export default {
             var formData = new FormData();
             formData.append('username', this.server.username);
             formData.append('password', this.server.password);
+            this.server.url = this.server.url.replace(/\/$/, '');
 
             fetch(this.server.url.replace(/\/$/, '') + '/auth/get_token', {
                 method: 'POST',
@@ -104,7 +105,7 @@ export default {
                 })
             })
                 .then(function(response) {
-                // return the response object or throw an error
+                    // return the response object or throw an error
                     console.log(response);
                     if (response.ok) {
                         return response.text();
@@ -112,14 +113,10 @@ export default {
                     throw new Error('Network response was not ok.');
                 })
                 .then(function(response) {
-                // set the server metadata and token
+                    // set the server metadata and token
                     console.log('Success:', response);
                     self.server.token = response;
-                    return self.$store.dispatch('upsertAppServer', self.server);
-                })
-                .then(function(res) {
-                    console.log('success in upserting a new doc');
-                    // maybe we need to go to the projects page and load/update the list of projects
+                    self.$store.commit('addNewServer', self.server);
                     self.$router.push({'name': 'projectlist'});
                 })
                 .catch(function(error) {

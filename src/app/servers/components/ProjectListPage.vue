@@ -16,11 +16,13 @@
                         <v-ons-icon icon="ion-ios-cloud-download-outline"></v-ons-icon>
                     </span>
                 </v-ons-list-item>
-                <v-ons-list-item tappable modifier="longdivider" v-for="(project, key) in projects" :key="project.id" @click="selectProject(project);">
+                <v-ons-list-item tappable modifier="longdivider" v-for="project in projects" :key="project.id" @click="selectProject(project);" v-bind:class="{ inactive_project: !project.active }">
                     <span>
                         <v-ons-icon icon="ion-android-checkbox-outline"></v-ons-icon>
                         {{project.name}}<br>
-                        <span style="font-size: 12px;">{{project.status}}</span>
+                        <span style="font-size: 12px;" v-if="project.active">Active</span>
+                        <span style="font-size: 12px;" v-else>Inactive</span>
+                        <span style="font-size: 12px;">{{project.startdate}}-{{project.enddate}}</span>
                     </span>
                 </v-ons-list-item>
             </v-ons-list>
@@ -37,8 +39,26 @@ export default {
         };
     },
     computed: {
-        projects() {
-            return this.$store.getters.currentProjects;
+        projects: {
+            cache: false,
+            get: function() {
+                var self = this;
+                // evidently computed properties only observe changes in the local data store
+                // so we need to set 'cache: false'
+                // see https://github.com/vuejs/vue/issues/1189#issuecomment-133211194
+                var filterObj = function(objProp, value) {
+                    return Object.keys(self.$store.getters.currentProjects)
+                        .map(function(key) {
+                            return self.$store.getters.currentProjects[key];
+                        })
+                        .filter(function(item) {
+                            return item[objProp] === value;
+                        });
+                };
+                var activeProjects = filterObj('active', true);
+                var inActiveProjects = filterObj('active', false);
+                return [...activeProjects, ...inActiveProjects];
+            }
         }
     },
     methods: {
@@ -62,5 +82,8 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
+    .inactive_project{
+        background-color: #f3f3f3;
+    }
 
 </style>

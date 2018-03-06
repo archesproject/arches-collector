@@ -32,8 +32,7 @@ window.archesvue = new Vue({
             var self = this;
             this.deviceready = true;
 
-            store.commit('setupPouchDB');
-            store.dispatch('initAppServers')
+            store.dispatch('initServerStore')
                 .finally(function(doc) {
                     console.log(doc);
                     if (store.getters.activeServer) {
