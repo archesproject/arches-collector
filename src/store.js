@@ -210,7 +210,7 @@ var store = new Vuex.Store({
                 });
         },
         getRemoteProjects: function({commit, state}, url) {
-            return fetch(url + '/myProjects', {
+            return fetch(url + '/surveys', {
                 method: 'GET'
             })
                 .then(function(response) {
