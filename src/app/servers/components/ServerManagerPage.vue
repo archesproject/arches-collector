@@ -1,54 +1,51 @@
 <template>
-    <transition name="slide">
-        <v-ons-page key="0">
-            <v-ons-carousel fullscreen auto-scroll overscrollable
-            :index.sync="carouselIndex" :on-swipe="onSwipe">
-                <v-ons-carousel-item>
-                    <div class="body">
-                   
-                        <v-ons-toolbar>      
-                            <div class="center left-button-text">Sign In</div>
-                        </v-ons-toolbar>
+    <v-ons-page>
+        <v-ons-carousel fullscreen auto-scroll overscrollable
+        :index.sync="carouselIndex" :on-swipe="onSwipe">
+            <v-ons-carousel-item>
+                <div class="body">
+               
+                    <v-ons-toolbar>      
+                        <div class="center left-button-text">Sign In</div>
+                    </v-ons-toolbar>
 
-                        <v-ons-input class="input" placeholder="My Arches Application URL" float v-model="server.url">
-                        </v-ons-input>
-                        <v-ons-input class="input" placeholder="Nickname" float v-model="server.nickname">
-                        </v-ons-input>
-                                        
-                        <v-ons-button modifier="large" :disabled="disableNext" class="btn-success" v-on:click="next">Next</v-ons-button>
-                    </div>
-                </v-ons-carousel-item>
-                <v-ons-carousel-item>
-                    <div class="body">
-                        <v-ons-toolbar>
-                            <div class="left">
-                                <v-ons-toolbar-button class="left-button-text" @click="back">
-                                    <v-ons-icon icon="ion-android-arrow-back"></v-ons-icon>
-                                    <span>{{server.url}}</span>
-                                </v-ons-toolbar-button>
-                            </div>
-                        </v-ons-toolbar>
+                    <v-ons-input class="input" placeholder="My Arches Application URL" float v-model="server.url">
+                    </v-ons-input>
+                    <v-ons-input class="input" placeholder="Nickname" float v-model="server.nickname">
+                    </v-ons-input>
+                                    
+                    <v-ons-button modifier="large" :disabled="disableNext" class="btn-success" v-on:click="next">Next</v-ons-button>
+                </div>
+            </v-ons-carousel-item>
+            <v-ons-carousel-item>
+                <div class="body">
+                    <v-ons-toolbar>
+                        <div class="left">
+                            <v-ons-toolbar-button class="left-button-text" @click="back">
+                                <v-ons-icon icon="ion-android-arrow-back"></v-ons-icon>
+                                <span>{{server.url}}</span>
+                            </v-ons-toolbar-button>
+                        </div>
+                    </v-ons-toolbar>
 
-                        <v-ons-input class="input" placeholder="Username" float v-model="server.username">
-                        </v-ons-input>
-                        <v-ons-input class="input" placeholder="Password" float v-model="server.password">
-                        </v-ons-input>
+                    <v-ons-input class="input" placeholder="Username" float v-model="server.username">
+                    </v-ons-input>
+                    <v-ons-input class="input" placeholder="Password" float v-model="server.password">
+                    </v-ons-input>
 
-                        <v-ons-list-item v-if="error">
-                            <div class="left">
-                                <v-ons-icon icon="exclamation-triangle" class="list-item__icon" style="color:#ea8a0b;"></v-ons-icon>
-                            </div>
-                            <div class="center">Oops, something happened, maybe you're offline?</div>
-                        </v-ons-list-item>
+                    <v-ons-list-item v-if="error">
+                        <div class="left">
+                            <v-ons-icon icon="exclamation-triangle" class="list-item__icon" style="color:#ea8a0b;"></v-ons-icon>
+                        </div>
+                        <div class="center">Oops, something happened, maybe you're offline?</div>
+                    </v-ons-list-item>
 
-                        <v-ons-button modifier="large" :disabled="disableSignIn" class="btn-success" v-on:click="getToken">Sign In</v-ons-button>
-                        <v-ons-button modifier="large quiet" class="btn-danger" style="margin-top: 10px;" v-on:click="cancel">Cancel</v-ons-button>
-                    </div>
-                </v-ons-carousel-item>
-            </v-ons-carousel>
-
-        </v-ons-page>
-    </transition>
+                    <v-ons-button modifier="large" :disabled="disableSignIn" class="btn-success" v-on:click="getToken">Sign In</v-ons-button>
+                    <v-ons-button modifier="large quiet" class="btn-danger" style="margin-top: 10px;" v-on:click="cancel">Cancel</v-ons-button>
+                </div>
+            </v-ons-carousel-item>
+        </v-ons-carousel>
+    </v-ons-page>
 </template>
 
 <script>

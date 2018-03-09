@@ -61,6 +61,7 @@ export default {
         selectServer: function(serverurl) {
             this.$store.commit('setActiveServer', serverurl);
             this.openSide = false;
+            this.goTo('projectlist');
         }
     }
 };

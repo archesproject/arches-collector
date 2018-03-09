@@ -1,33 +1,31 @@
 <template>
-    <transition name="slide">
-        <page-header-layout>
-            <v-ons-pull-hook
-              :action="refreshProjectList"
-              @changestate="state = $event.state"
-            >
-                <span v-show="state === 'initial'"> Pull to refresh </span>
-                <span v-show="state === 'preaction'"> Release </span>
-                <span v-show="state === 'action'"><v-ons-progress-circular indeterminate></v-ons-progress-circular></span>
-            </v-ons-pull-hook>
-            <v-ons-list>
-                <v-ons-list-item modifier="longdivider">
-                    <span class="left"><span>Projects</span></span>
-                    <span class="right">
-                        <v-ons-icon icon="ion-ios-cloud-download-outline"></v-ons-icon>
-                    </span>
-                </v-ons-list-item>
-                <v-ons-list-item tappable modifier="longdivider" v-for="project in projects" :key="project.id" @click="selectProject(project);" v-bind:class="{ inactive_project: !project.active }">
-                    <span>
-                        <v-ons-icon icon="ion-android-checkbox-outline"></v-ons-icon>
-                        {{project.name}}<br>
-                        <span style="font-size: 12px;" v-if="project.active">Active</span>
-                        <span style="font-size: 12px;" v-else>Inactive</span>
-                        <span style="font-size: 12px;">{{project.startdate}}-{{project.enddate}}</span>
-                    </span>
-                </v-ons-list-item>
-            </v-ons-list>
-        </page-header-layout>
-    </transition>
+    <page-header-layout>
+        <v-ons-pull-hook
+          :action="refreshProjectList"
+          @changestate="state = $event.state"
+        >
+            <span v-show="state === 'initial'"> Pull to refresh </span>
+            <span v-show="state === 'preaction'"> Release </span>
+            <span v-show="state === 'action'"><v-ons-progress-circular indeterminate></v-ons-progress-circular></span>
+        </v-ons-pull-hook>
+        <v-ons-list>
+            <v-ons-list-item modifier="longdivider">
+                <span class="left"><span>Projects</span></span>
+                <span class="right">
+                    <v-ons-icon icon="ion-ios-cloud-download-outline"></v-ons-icon>
+                </span>
+            </v-ons-list-item>
+            <v-ons-list-item tappable modifier="longdivider" v-for="project in projects" :key="project.id" @click="selectProject(project);" v-bind:class="{ inactive_project: !project.active }">
+                <span>
+                    <v-ons-icon icon="ion-android-checkbox-outline"></v-ons-icon>
+                    {{project.name}}<br>
+                    <span style="font-size: 12px;" v-if="project.active">Active</span>
+                    <span style="font-size: 12px;" v-else>Inactive</span>
+                    <span style="font-size: 12px;">{{project.startdate}}-{{project.enddate}}</span>
+                </span>
+            </v-ons-list-item>
+        </v-ons-list>
+    </page-header-layout>
 </template>
 
 <script>

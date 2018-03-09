@@ -13,9 +13,16 @@ import router from './router';
 // globally registered components
 import PageHeader from './app/shared/components/PageHeader.vue';
 import PageHeaderLayout from './app/shared/components/PageHeaderLayout.vue';
+import ProjectMetadataPage from './app/projects/components/ProjectMetadataPage.vue';
+import ProjectMapPage from './app/projects/components/ProjectMapPage.vue';
+import SelectResourceInstancePage from './app/projects/components/SelectResourceInstancePage.vue';
+import SelectResourceTypePage from './app/projects/components/SelectResourceTypePage.vue';
 Vue.component('page-header', PageHeader);
 Vue.component('page-header-layout', PageHeaderLayout);
-
+Vue.component('project-metadata-page', ProjectMetadataPage);
+Vue.component('project-map-page', ProjectMapPage);
+Vue.component('select-resouce-instance-page', SelectResourceInstancePage);
+Vue.component('select-resouce-type-page', SelectResourceTypePage);
 // Vue.config.productionTip = false;
 
 Vue.use(VueOnsen);
