@@ -37,3 +37,11 @@
     background-color: #d9534f;
     border-color: #d9534f;
 }
+
+.text-color-dark{
+    color: dimgrey;
+}
+
+.ons-icon[icon*="ion-"] {
+    font-size: 24px !important;
+}

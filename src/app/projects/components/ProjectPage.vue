@@ -1,5 +1,21 @@
 <template>
     <page-header-layout>
+        <div>
+            <v-ons-toolbar style="background-color: whitesmoke;">      
+                <div class="left">
+                    <v-ons-toolbar-button>
+                        <router-link :to="{ name: 'projectlist' }"><v-ons-icon class="text-color-dark project-header" icon="ion-android-arrow-dropleft-circle"></v-ons-icon></router-link>
+                        <span class="text-color-dark project-name">{{project.name}}</span>
+                    </v-ons-toolbar-button>
+                </div>
+                <div class="center"></div>
+                <div class="right">
+                    <v-ons-toolbar-button>
+                        <v-ons-icon class="text-color-dark project-name" icon="ion-ios-cloud-download-outline"></v-ons-icon>
+                    </v-ons-toolbar-button>
+                </div>
+            </v-ons-toolbar>
+        </div>
         <v-ons-carousel fullscreen swipeable auto-scroll overscrollable
             :index.sync="carouselIndex"
         >
@@ -45,7 +61,7 @@
 <script>
 export default {
     name: 'Project',
-    props: ['id'],
+    props: ['project'],
     data() {
         return {
             carouselIndex: 0,
@@ -66,6 +82,14 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+    
+    .project-header{
+        font-size: 22px !important;
+        vertical-align: -5% !important;
+    }
 
+    .project-name{
+        font-size: 20px;
+    }
 
 </style>
