@@ -70,7 +70,7 @@ export default {
             this.$router.push({'name': 'project', params: { id: project.id }});
         },
         refreshProjectList(done) {
-            this.$store.dispatch('getRemoteProjects', this.$store.getters.activeServer.url)
+            this.$store.dispatch('getRemoteProjects', this.$store.getters.activeServer)
                 .finally(function() {
                     done();
                 });

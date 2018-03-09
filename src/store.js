@@ -209,9 +209,12 @@ var store = new Vuex.Store({
                         });
                 });
         },
-        getRemoteProjects: function({commit, state}, url) {
-            return fetch(url + '/surveys', {
-                method: 'GET'
+        getRemoteProjects: function({commit, state}, server) {
+            return fetch(server.url + '/surveys', {
+                method: 'GET',
+                headers: new Headers({
+                    'Authorization': 'Bearer ' + server.token
+                })
             })
                 .then(function(response) {
                     // return the response object or throw an error
@@ -224,11 +227,11 @@ var store = new Vuex.Store({
                 .then(function(json) {
                     // return the response object or throw an error
                     json.forEach(function(project) {
-                        pouchDBs.setupProject(url, project.id);
+                        pouchDBs.setupProject(server.url, project.id);
                         // pouchDBs.syncProject(project.id);
                     });
                     commit('updateProjects', {
-                        url: url,
+                        url: server.url,
                         projects: json
                     });
                     return json;
