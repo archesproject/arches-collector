@@ -49,7 +49,7 @@ const webpackConfig = merge(baseWebpackConfig, {
       filename: utils.assetsPath('css/[name].[contenthash].css'),
       // Setting the following option to `false` will not extract CSS from codesplit chunks.
       // Their CSS will instead be inserted dynamically with style-loader when the codesplit chunk has been loaded by webpack.
-      // It's currently set to `true` because we are seeing that sourcemaps are included in the codesplit bundle as well when it's `false`, 
+      // It's currently set to `true` because we are seeing that sourcemaps are included in the codesplit bundle as well when it's `false`,
       // increasing file size: https://github.com/vuejs-templates/webpack/issues/1110
       allChunks: true,
     }),
@@ -119,6 +119,24 @@ const webpackConfig = merge(baseWebpackConfig, {
       {
         from: path.resolve(__dirname, '../static'),
         to: config.build.assetsSubDirectory,
+        ignore: ['.*']
+      }
+    ]),
+
+    // copy map fonts
+    new CopyWebpackPlugin([
+      {
+        from: path.resolve(__dirname, '../node_modules/mapbox-gl-cordova-mbtiles/www/fonts'),
+        to: config.build.assetsSubDirectory + '/map/fonts',
+        ignore: ['.*']
+      }
+    ]),
+
+    // copy map styles
+    new CopyWebpackPlugin([
+      {
+        from: path.resolve(__dirname, '../node_modules/mapbox-gl-cordova-mbtiles/www/styles'),
+        to: config.build.assetsSubDirectory + '/map/styles',
         ignore: ['.*']
       }
     ])
