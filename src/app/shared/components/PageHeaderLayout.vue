@@ -48,7 +48,7 @@ export default {
     },
     computed: {
         servers() {
-            return this.$store.state.dbs.app_servers.servers;
+            return this.$store.getters.servers;
         }
     },
     methods: {
