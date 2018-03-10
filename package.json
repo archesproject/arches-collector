@@ -21,7 +21,6 @@
         "cordova-ios": "^4.5.4",
         "cordova-plugin-device": "^2.0.1",
         "cordova-plugin-file": "^6.0.1",
-        "cordova-plugin-sqlite-2": "^1.0.4",
         "cordova-plugin-whitelist": "1",
         "cordova-sqlite-ext": "^2.1.1",
         "mapbox-gl-cordova-mbtiles": "oscarfonts/mapbox-gl-cordova-mbtiles",
@@ -120,8 +119,7 @@
             "cordova-plugin-whitelist": {},
             "cordova-plugin-device": {},
             "cordova-plugin-file": {},
-            "cordova-sqlite-ext": {},
-            "cordova-plugin-sqlite-2": {}
+            "cordova-sqlite-ext": {}
         },
         "platforms": [
             "browser",
