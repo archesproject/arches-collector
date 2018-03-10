@@ -166,4 +166,6 @@ if (config.build.bundleAnalyzerReport) {
   webpackConfig.plugins.push(new BundleAnalyzerPlugin())
 }
 
-module.exports = webpackConfig
+module.exports = new Promise((resolve, reject) => {
+  resolve(webpackConfig)
+})

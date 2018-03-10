@@ -13,7 +13,7 @@
                     </div>
                 </v-ons-toolbar>
                 <v-ons-list>
-                    <v-ons-list-item tappable modifier="longdivider" v-for="(server, key) in servers" @click="selectServer(server.url);">
+                    <v-ons-list-item tappable modifier="longdivider" v-for="(server, key) in servers" :key="server.url" @click="selectServer(server.url);">
                         <v-ons-icon icon="ion-android-checkbox-outline"></v-ons-icon>
                         <span style="padding-left: 10px;">
                             {{server.nickname}}<br>
@@ -48,7 +48,7 @@ export default {
     },
     computed: {
         servers() {
-            return this.$store.state.dbs.app_servers.servers;
+            return this.$store.getters.servers;
         }
     },
     methods: {
@@ -61,6 +61,7 @@ export default {
         selectServer: function(serverurl) {
             this.$store.commit('setActiveServer', serverurl);
             this.openSide = false;
+            this.goTo('projectlist');
         }
     }
 };

@@ -1,11 +1,5 @@
 <template>
-    <transition name="slide">
-        <page-header-layout>
-            <v-ons-page>
-                <div :id="mapId"></div>
-            </v-ons-page>
-        </page-header-layout>
-    </transition>
+    <div :id="mapId"></div>
 </template>
 
 <script>

@@ -4,7 +4,7 @@
             <v-ons-carousel fullscreen swipeable auto-scroll overscrollable
                 :index.sync="carouselIndex"
             >
-                <v-ons-carousel-item v-for="item in items">
+                <v-ons-carousel-item v-for="item in items" :key="item.title">
                     <div class="splash-text">
                         <div class="title">{{item.title}}</div>
                         <div class="text">{{item.text}}</div>

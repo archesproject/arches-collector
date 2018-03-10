@@ -9,7 +9,7 @@
         <div class="center"></div>
         <div class="right">
             <v-ons-toolbar-button>
-                <v-ons-icon icon="search"></v-ons-icon>
+                <v-ons-icon icon="ion-ios-search-strong"></v-ons-icon>
             </v-ons-toolbar-button>
             <v-ons-toolbar-button>
                 <v-ons-icon icon="ion-navicon, material:md-more-vert"></v-ons-icon>
