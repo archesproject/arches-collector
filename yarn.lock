@@ -5188,9 +5188,9 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
-mapbox-gl-cordova-mbtiles@oscarfonts/mapbox-gl-cordova-mbtiles:
+mapbox-gl-cordova-offline@oscarfonts/mapbox-gl-cordova-offline:
   version "0.1.1"
-  resolved "https://codeload.github.com/oscarfonts/mapbox-gl-cordova-mbtiles/tar.gz/ec2f2d27fdc7e12d0f3cd06567f0de40f6d3196c"
+  resolved "https://codeload.github.com/oscarfonts/mapbox-gl-cordova-offline/tar.gz/ec2f2d27fdc7e12d0f3cd06567f0de40f6d3196c"
   dependencies:
     "@mapbox/gl-matrix" "^0.0.1"
     "@mapbox/mapbox-gl-supported" "^1.3.0"

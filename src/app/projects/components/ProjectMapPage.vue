@@ -3,8 +3,8 @@
 </template>
 
 <script>
-import mapboxgl from 'mapbox-gl-cordova-mbtiles/www/mapbox-gl-cordova-offline';
-import 'mapbox-gl-cordova-mbtiles/www/mapbox-gl.css';
+import mapboxgl from 'mapbox-gl-cordova-offline/www/mapbox-gl-cordova-offline';
+import 'mapbox-gl-cordova-offline/www/mapbox-gl.css';
 import uuidv4 from 'uuid/v4';
 
 export default {

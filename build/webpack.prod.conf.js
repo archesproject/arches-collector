@@ -126,7 +126,7 @@ const webpackConfig = merge(baseWebpackConfig, {
     // copy map fonts
     new CopyWebpackPlugin([
       {
-        from: path.resolve(__dirname, '../node_modules/mapbox-gl-cordova-mbtiles/www/fonts'),
+        from: path.resolve(__dirname, '../node_modules/mapbox-gl-cordova-offline/www/fonts'),
         to: config.build.assetsSubDirectory + '/map/fonts',
         ignore: ['.*']
       }
@@ -135,7 +135,7 @@ const webpackConfig = merge(baseWebpackConfig, {
     // copy map styles
     new CopyWebpackPlugin([
       {
-        from: path.resolve(__dirname, '../node_modules/mapbox-gl-cordova-mbtiles/www/styles'),
+        from: path.resolve(__dirname, '../node_modules/mapbox-gl-cordova-offline/www/styles'),
         to: config.build.assetsSubDirectory + '/map/styles',
         ignore: ['.*']
       }
