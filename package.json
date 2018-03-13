@@ -13,18 +13,17 @@
         "e2e": "node test/e2e/runner.js",
         "test": "npm run unit && npm run e2e",
         "lint": "eslint --ext .js,.vue src test/unit/specs test/e2e/specs",
-        "restore-ios": "yarn remove mapbox-gl-cordova-mbtiles && cordova platform remove ios && cordova platform add ios && yarn add archesproject/mapbox-gl-cordova-mbtiles",
+        "restore-ios": "yarn remove mapbox-gl-cordova-offline && cordova platform remove ios && cordova platform add ios && yarn add archesproject/mapbox-gl-cordova-offline",
         "icons": "cordova-icon && cordova-splash"
     },
     "dependencies": {
         "cordova-browser": "^5.0.3",
-        "cordova-ios": "4.5.4",
+        "cordova-ios": "^4.5.4",
         "cordova-plugin-device": "^2.0.1",
         "cordova-plugin-file": "^6.0.1",
-        "cordova-plugin-sqlite-2": "^1.0.4",
         "cordova-plugin-whitelist": "1",
-        "cordova-sqlite-ext": "^2.1.0",
-        "mapbox-gl-cordova-mbtiles": "archesproject/mapbox-gl-cordova-mbtiles",
+        "cordova-sqlite-ext": "^2.1.1",
+        "mapbox-gl-cordova-offline": "oscarfonts/mapbox-gl-cordova-offline",
         "onsenui": "~2.9.1",
         "pouchdb": "^6.4.3",
         "pouchdb-adapter-cordova-sqlite": "pouchdb-community/pouchdb-adapter-cordova-sqlite#master",
@@ -120,8 +119,7 @@
             "cordova-plugin-whitelist": {},
             "cordova-plugin-device": {},
             "cordova-plugin-file": {},
-            "cordova-sqlite-ext": {},
-            "cordova-plugin-sqlite-2": {}
+            "cordova-sqlite-ext": {}
         },
         "platforms": [
             "browser",
