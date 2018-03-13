@@ -49,12 +49,27 @@ var pouchDBs = (function() {
         servers: 'undefined',
         // _serverConfigs: {},
         setupServer: function(config) {
+            var self = this;
             this.servers = new PouchDB('app_servers', {
                 adapter: adapter,
                 iosDatabaseLocation: 'Library'
             });
+
+            this.servers.get('servers')
+                .then(function(doc) {
+                    Object.keys(doc.servers).forEach(function(serverUrl) {
+                        var server = doc.servers[serverUrl];
+                        Object.keys(server.projects).forEach(function(projectId) {
+                            self.setupProject(server, projectId);
+                        });
+                    });
+                })
+                .catch(function() {
+                // no need to do anything
+                    console.log('error');
+                });
         },
-        setupProject: function(serverURL, projectId) {
+        setupProject: function(server, projectId) {
             if (!this._projectDBs[projectId]) {
                 this._projectDBs[projectId] = {};
             }
@@ -62,16 +77,23 @@ var pouchDBs = (function() {
                 adapter: adapter,
                 iosDatabaseLocation: 'Library'
             });
-            this._projectDBs[projectId]['remote'] = new PouchDB(serverURL + '/couchdb/project_' + projectId);
+            this._projectDBs[projectId]['remote'] = new PouchDB(server.url + '/couchdb/project_' + projectId, {
+                ajax: {
+                    headers: {
+                        authorization: 'Bearer ' + server.token
+                        // 'X-Some-Special-Header': 'foo'
+                    },
+                    withCredentials: false
+                }
+            });
         },
         syncProject: function(projectId) {
-            console.log(projectId);
             // setupDBs(projectId);
 
             return this._projectDBs[projectId]['local']
                 .sync(this._projectDBs[projectId]['remote'], {
-                // live: true,
-                // retry: true
+                    // live: true,
+                    // retry: true
                 })
                 .on('complete', function() {
                 // yay, we're in sync!
@@ -101,6 +123,18 @@ var pouchDBs = (function() {
                 });
 
             // sync.cancel(); // whenever you want to cancel only if live = true
+        },
+        getChanges: function(projectId) {
+            this._projectDBs[projectId]['local'].changes({
+                // limit: 10,
+                // since: 0
+            }).then(function(result) {
+                // handle result
+                console.log(result);
+                return result;
+            }).catch(function(err) {
+                console.log(err);
+            });
         }
     };
 }());
@@ -190,6 +224,9 @@ var store = new Vuex.Store({
                 return serverDoc;
             });
         },
+        syncProjectWPouch: function({commit, state}, projectId) {
+            return pouchDBs.syncProject(projectId);
+        },
         initServerStore: function({ commit, state }) {
             pouchDBs.setupServer();
             return pouchDBs.servers.get('servers')
@@ -227,7 +264,7 @@ var store = new Vuex.Store({
                 .then(function(json) {
                     // return the response object or throw an error
                     json.forEach(function(project) {
-                        pouchDBs.setupProject(server.url, project.id);
+                        pouchDBs.setupProject(server, project.id);
                         // pouchDBs.syncProject(project.id);
                     });
                     commit('updateProjects', {
@@ -259,6 +296,9 @@ var store = new Vuex.Store({
             //         resolve();
             //     }, 1000);
             // });
+        },
+        getProjectChanges: function({commit, state}, projectId) {
+            return pouchDBs.getChanges(projectId);
         }
     }
 });
