@@ -21,26 +21,16 @@
                 id="projectCarousel"
             >
 
-                <v-ons-carousel-item>
-                    <div class="project-page">
-                        <project-metadata-page :project="project" :pageActive="carouselIndex === 0" />
-                    </div>
+                <v-ons-carousel-item class="padded-page">
+                    <project-metadata-page :project="project" :pageActive="carouselIndex === 0"/>
                 </v-ons-carousel-item>
 
-                <v-ons-carousel-item>
-                    <div class="project-page">
-                        Screen to list resource types that can be created<br>
-                        https://github.com/archesproject/arches-mobile/issues/6
-                        <select-resouce-type-page />
-                    </div>
+                <v-ons-carousel-item class="padded-page">
+                    <select-resouce-type-page />
                 </v-ons-carousel-item>
 
-                <v-ons-carousel-item>
-                    <div class="project-page">
-                        Screen showing list of resource instances in a project<br>
-                        https://github.com/archesproject/arches-mobile/issues/7
-                        <select-resouce-instance-page />
-                    </div>
+                <v-ons-carousel-item class="padded-page">
+                    <select-resouce-instance-page />
                 </v-ons-carousel-item>
 
                 <v-ons-carousel-item>
@@ -92,7 +82,7 @@ export default {
         font-size: 20px;
     }
 
-    .project-page{
+    .padded-page > ons-page {
         margin: 20px;
     }
 

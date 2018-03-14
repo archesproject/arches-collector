@@ -1,22 +1,37 @@
 <template>
-    <div>
-        <v-ons-button modifier="large" class="btn-success" v-on:click="sync">Sync</v-ons-button>
-        <v-ons-button modifier="large quiet" class="btn-danger" style="margin-top: 10px;" v-on:click="deleteProject">Delete Project</v-ons-button>
-        <div>
+    <v-ons-page>
+        <v-ons-row>
+            <v-ons-col>
+                <div class="large-text">30</div>
+                <span class="sub-text">Records Edited</span>
+            </v-ons-col>
+            <v-ons-col>
+                <div class="large-text">12</div>
+                <span class="sub-text">Records to Sync</span>
+            </v-ons-col>
+            <v-ons-col>
+                <div class="large-text">10/24/2018<span class="sub-text" style="vertical-align: 14px;">12:34:54</span></div>
+                <span class="sub-text">Date/Time of Last Sync</span>
+            </v-ons-col>
+        </v-ons-row>
+
+        <v-ons-row style="margin-top: 35px;">
+            <v-ons-col>
+                <v-ons-button modifier="medium" class="btn-success" style="width: 100px;" v-on:click="sync">Sync</v-ons-button>
+            </v-ons-col>
+            <v-ons-col>
+                <v-ons-button modifier="large outline" class="btn-danger" v-on:click="deleteProject">Forget Project</v-ons-button>
+            </v-ons-col>
+        </v-ons-row>
+
+        
+        <div style="padding-top: 24px; padding-bottom: 8px;">
             Project Description:
         </div>
         <div>
             {{project.description}}
         </div>
-        <div>
-            Project Changes:
-        </div>
-        <div>
-            {{pageActive}}
-            {{changes}}
-        </div>
-
-    </div>
+    </v-ons-page>
 </template>
 
 <script>
@@ -50,5 +65,12 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
+    .sub-text {
+        font-size: x-small;
+        color: grey;
+    }
+    .large-text {
+        font-size: 26px;
+        color: #4d4b65
+    }
 </style>
