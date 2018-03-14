@@ -9,17 +9,14 @@
         "openmaptiles:mapbox:owner": "openmaptiles",
         "openmaptiles:mapbox:source:url": "mapbox://openmaptiles.4qljc88t"
     },
-    "center": [
-        2.15,
-        41.38
-    ],
+    "center": [-122.4194, 37.7749],
     "zoom": 12,
-    "bearing": -45,
+    "bearing": 0,
     "pitch": 0,
     "sources": {
         "openmaptiles": {
             "type": "mbtiles",
-            "path": "static/map/data/arches_test.mbtiles",
+            "path": "static/map/data/arches_test_sf.mbtiles",
             "attribution": "<a href=\"http://www.openmaptiles.org/\" target=\"_blank\">&copy; OpenMapTiles</a> <a href=\"http://www.openstreetmap.org/about/\" target=\"_blank\">&copy; OpenStreetMap contributors</a>"
         }
     },

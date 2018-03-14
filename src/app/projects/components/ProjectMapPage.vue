@@ -3,31 +3,31 @@
 </template>
 
 <script>
-import mapboxgl from 'mapbox-gl-cordova-offline/www/mapbox-gl-cordova-offline';
-import 'mapbox-gl-cordova-offline/www/mapbox-gl.css';
 import uuidv4 from 'uuid/v4';
+import 'mapbox-gl-cordova-offline/www/mapbox-gl.css';
+const mapboxgl = window.mapboxgl;
 
 export default {
     name: 'ProjectMap',
     data() {
         return {
-            mapId: `mapboxgl-map-${uuidv4()}`,
-            mapInstance: null
+            mapId: `mapboxgl-map-${uuidv4()}`
         };
     },
+    props: {},
     mounted() {
-        new mapboxgl.OfflineMap({
-            container: this.mapId,
-            style: 'static/map/style-offline.json'
-        }).then((map) => {
-            map.addControl(new mapboxgl.NavigationControl());
-            this.mapInstance = map;
-            this.$emit('map-init', map);
-        });
+        this.mapInit();
     },
-    beforeDestroy() {
-        if (this.mapInstance) {
-            this.mapInstance.remove();
+    methods: {
+        mapInit() {
+            new mapboxgl.OfflineMap({
+                container: this.mapId,
+                style: 'static/map/style-offline.json',
+                hash: true
+            }).then((map) => {
+                map.addControl(new mapboxgl.NavigationControl());
+                this.$emit('map-init', map);
+            });
         }
     }
 };
