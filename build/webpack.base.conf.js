@@ -1,5 +1,6 @@
 'use strict'
 const path = require('path')
+const webpack = require('webpack')
 const utils = require('./utils')
 const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
@@ -31,6 +32,11 @@ module.exports = {
       ? config.build.assetsPublicPath
       : config.dev.assetsPublicPath
   },
+  plugins: [
+    new webpack.ProvidePlugin({
+        'window.mapboxgl': 'mapbox-gl-cordova-offline/www/mapbox-gl-cordova-offline'
+    })
+  ],
   resolve: {
     extensions: ['.js', '.vue', '.json'],
     alias: {
