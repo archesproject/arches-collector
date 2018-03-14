@@ -52,7 +52,8 @@ var pouchDBs = (function() {
             var self = this;
             this.servers = new PouchDB('app_servers', {
                 adapter: adapter,
-                iosDatabaseLocation: 'Library'
+                iosDatabaseLocation: 'Library',
+                auto_compaction: true
             });
 
             this.servers.get('servers')
@@ -125,7 +126,7 @@ var pouchDBs = (function() {
             // sync.cancel(); // whenever you want to cancel only if live = true
         },
         getChanges: function(projectId) {
-            this._projectDBs[projectId]['local'].changes({
+            return this._projectDBs[projectId]['local'].changes({
                 // limit: 10,
                 // since: 0
             }).then(function(result) {
