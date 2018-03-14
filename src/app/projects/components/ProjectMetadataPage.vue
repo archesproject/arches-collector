@@ -10,7 +10,7 @@
                 <span class="sub-text">Records to Sync</span>
             </v-ons-col>
             <v-ons-col>
-                <div class="large-text">10/24/2018<span class="sub-text" style="vertical-align: 14px;">12:34:54</span></div>
+                <div class="large-text">{{project.lastsync.date}}<span class="sub-text" style="vertical-align: 14px;">{{project.lastsync.time}}</span></div>
                 <span class="sub-text">Date/Time of Last Sync</span>
             </v-ons-col>
         </v-ons-row>
@@ -45,7 +45,7 @@ export default {
     },
     methods: {
         sync: function() {
-            this.$store.dispatch('syncProjectWPouch', this.project.id);
+            this.$store.dispatch('syncRemote', this.project.id);
             // .finally(function(doc){
 
             // });
