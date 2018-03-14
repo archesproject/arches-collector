@@ -140,7 +140,6 @@ var pouchDBs = (function() {
     };
 }());
 
-
 var store = new Vuex.Store({
     state: {
         dbs: {
@@ -158,10 +157,10 @@ var store = new Vuex.Store({
             return getters.server(appServers.active);
         },
         server: function(state, getters) {
-            return function(url){
+            return function(url) {
                 var appServers = state.dbs.app_servers;
                 return appServers.servers[url] || undefined;
-            }
+            };
         },
         servers: function(state, getters) {
             return state.dbs.app_servers.servers;
@@ -199,7 +198,7 @@ var store = new Vuex.Store({
             store.dispatch('saveServerInfo');
         },
         setActiveProject: function(state, value) {
-            //var activeServer = getActiveServer(state);
+            // var activeServer = getActiveServer(state);
             store.getters.activeServer.active_project = value.project_id;
         }
     },
@@ -226,13 +225,13 @@ var store = new Vuex.Store({
         },
         syncRemote: function({commit, state}, projectId) {
             return pouchDBs.syncProject(projectId)
-                .then(function(){
+                .then(function() {
                     var now = new Date();
                     store.getters.currentProjects[projectId].lastsync = {
-                        date: now.toISOString().split('T')[0].replace(/-/g,'/'),
+                        date: now.toISOString().split('T')[0].replace(/-/g, '/'),
                         time: now.getHours() + ':' + now.getMinutes()
                     };
-                    return store.dispatch('saveServerInfo');;
+                    return store.dispatch('saveServerInfo');
                 });
         },
         initServerStore: function({ commit, state }) {
@@ -275,7 +274,7 @@ var store = new Vuex.Store({
                         pouchDBs.setupProject(server, project.id);
                         // pouchDBs.syncProject(project.id);
                         project.lastsync = {
-                            date:'',
+                            date: '',
                             time: ''
                         };
                     });
