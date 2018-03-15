@@ -190,15 +190,11 @@ var store = new Vuex.Store({
         updateProjects: function(state, serverDoc) {
             var server = store.getters.server(serverDoc.url);
             serverDoc.projects.forEach(function(project) {
-                // Vue.set(server.projects, project.id, project);
-                server.projects[project.id] = project;
-                // Vue.set(state.dbs.app_servers.servers[serverDoc.url].projects, project.id, project);
-                // state.dbs.app_servers.servers[serverDoc.url].projects[project.id] = project;
+                Vue.set(server.projects, project.id, project);
             });
             store.dispatch('saveServerInfo');
         },
         setActiveProject: function(state, value) {
-            // var activeServer = getActiveServer(state);
             store.getters.activeServer.active_project = value.project_id;
         }
     },
@@ -227,10 +223,13 @@ var store = new Vuex.Store({
             return pouchDBs.syncProject(projectId)
                 .then(function() {
                     var now = new Date();
-                    store.getters.currentProjects[projectId].lastsync = {
-                        date: now.toISOString().split('T')[0].replace(/-/g, '/'),
-                        time: now.getHours() + ':' + now.getMinutes()
-                    };
+                    function pad(n, width, z) {
+                        z = z || '0';
+                        n = n + '';
+                        return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+                    }
+                    Vue.set(store.getters.currentProjects[projectId].lastsync, 'date', now.toISOString().split('T')[0].replace(/-/g, '/'));
+                    Vue.set(store.getters.currentProjects[projectId].lastsync, 'time', pad(now.getHours(), 2) + ':' + pad(now.getMinutes(), 2));
                     return store.dispatch('saveServerInfo');
                 });
         },
