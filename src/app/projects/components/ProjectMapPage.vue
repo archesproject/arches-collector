@@ -8,7 +8,7 @@ import 'mapbox-gl-cordova-offline/www/mapbox-gl.css';
 import basemapLayers from '../../../assets/map/basemap_layers.json';
 const mapboxgl = window.mapboxgl;
 const staticPath = 'static/map/';
-const osmAttr = '<a href="http://www.openmaptiles.org/" target="_blank">' +
+const attribution = '<a href="http://www.openmaptiles.org/" target="_blank">' +
     '&copy; OpenMapTiles</a> <a href="http://www.openstreetmap.org/about/" ' +
     'target="_blank">&copy; OpenStreetMap contributors</a>';
 
@@ -37,7 +37,7 @@ export default {
                         openmaptiles: {
                             type: 'mbtiles',
                             path: `${staticPath + this.mbtilesFile}`,
-                            attribution: osmAttr
+                            attribution: attribution
                         }
                     },
                     sprite: `${staticPath}styles/klokantech-basic/sprite`,
