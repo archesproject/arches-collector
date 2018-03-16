@@ -141,6 +141,7 @@ var pouchDBs = (function() {
 }());
 
 var store = new Vuex.Store({
+    // strict: true,
     state: {
         dbs: {
             app_servers: {
@@ -170,6 +171,13 @@ var store = new Vuex.Store({
                 return {};
             }
             return getters.activeServer.projects;
+        },
+        activeProject: function(state, getters) {
+            if (!getters.activeServer) {
+                return {};
+            }
+            var projectId = getters.activeServer.active_project;
+            return getters.activeServer.projects[projectId];
         }
     },
     mutations: {
@@ -178,8 +186,7 @@ var store = new Vuex.Store({
         },
         addNewServer: function(state, newServer) {
             if (typeof store.getters.server(newServer.url) === 'undefined') {
-                state.dbs.app_servers.servers[newServer.url] = newServer;
-                state.dbs.app_servers.servers[newServer.url].projects = {}; // should we update this?
+                Vue.set(state.dbs.app_servers.servers, newServer.url, newServer);
             }
             store.commit('setActiveServer', newServer.url);
             store.dispatch('saveServerInfo');
@@ -196,6 +203,17 @@ var store = new Vuex.Store({
         },
         setActiveProject: function(state, value) {
             store.getters.activeServer.active_project = value.project_id;
+        },
+        setLastProjectSync: function(state, projectId) {
+            var now = new Date();
+            function pad(n, width, z) {
+                z = z || '0';
+                n = n + '';
+                return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+            }
+            Vue.set(store.getters.currentProjects[projectId].lastsync, 'date', now.toISOString().split('T')[0].replace(/-/g, '/'));
+            Vue.set(store.getters.currentProjects[projectId].lastsync, 'time', pad(now.getHours(), 2) + ':' + pad(now.getMinutes(), 2));
+            store.dispatch('saveServerInfo');
         }
     },
     modules: {
@@ -221,16 +239,11 @@ var store = new Vuex.Store({
         },
         syncRemote: function({commit, state}, projectId) {
             return pouchDBs.syncProject(projectId)
-                .then(function() {
-                    var now = new Date();
-                    function pad(n, width, z) {
-                        z = z || '0';
-                        n = n + '';
-                        return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
-                    }
-                    Vue.set(store.getters.currentProjects[projectId].lastsync, 'date', now.toISOString().split('T')[0].replace(/-/g, '/'));
-                    Vue.set(store.getters.currentProjects[projectId].lastsync, 'time', pad(now.getHours(), 2) + ':' + pad(now.getMinutes(), 2));
-                    return store.dispatch('saveServerInfo');
+                .then(function(a, b, c) {
+                    return store.commit('setLastProjectSync', projectId);
+                })
+                .catch(function() {
+                    console.log('syncing failed');
                 });
         },
         initServerStore: function({ commit, state }) {
@@ -238,9 +251,7 @@ var store = new Vuex.Store({
             return pouchDBs.servers.get('servers')
                 .then(function(doc) {
                     // go to the last active server and project
-                    console.log(doc);
                     commit('updateAppServers', doc);
-
                     return doc;
                 })
                 .catch(function() {
@@ -260,8 +271,7 @@ var store = new Vuex.Store({
                 })
             })
                 .then(function(response) {
-                    // return the response object or throw an error
-                    console.log(response);
+                    // return the response object or throw an error;
                     if (response.ok) {
                         return response.json();
                     }

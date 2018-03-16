@@ -14,7 +14,6 @@
                 <span class="sub-text">Date/Time of Last Sync</span>
             </v-ons-col>
         </v-ons-row>
-
         <v-ons-row style="margin-top: 35px;">
             <v-ons-col>
                 <v-ons-button modifier="medium" class="btn-success" style="width: 100px;" v-on:click="sync">Sync</v-ons-button>
@@ -23,8 +22,6 @@
                 <v-ons-button modifier="large outline" class="btn-danger" v-on:click="deleteProject">Forget Project</v-ons-button>
             </v-ons-col>
         </v-ons-row>
-
-        
         <div style="padding-top: 24px; padding-bottom: 8px;">
             Project Description:
         </div>
@@ -45,16 +42,16 @@ export default {
     },
     methods: {
         sync: function() {
-            this.$store.dispatch('syncRemote', this.project.id);
-            // .finally(function(doc){
+            this.$store.dispatch('syncRemote', this.project.id)
+                .finally(function(doc) {
 
-            // });
+                });
         },
         deleteProject: function() {}
     },
     mounted() {
         var self = this;
-        console.log('mounted'); // I'm text inside the component.
+        console.log('mounted');
         this.$store.dispatch('getProjectChanges', this.project.id)
             .finally(function(doc) {
                 self.changes = doc;
