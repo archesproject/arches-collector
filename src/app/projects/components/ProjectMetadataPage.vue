@@ -16,7 +16,13 @@
         </v-ons-row>
         <v-ons-row style="margin-top: 35px;">
             <v-ons-col>
-                <v-ons-button modifier="medium" class="btn-success" style="width: 100px;" v-on:click="sync">Sync</v-ons-button>
+                <v-ons-button modifier="medium" :disabled="syncing" class="btn-success" style="width: 150px;" v-on:click="sync">
+                    <v-ons-icon v-if="!syncing && !sync_failed" icon="ion-android-sync" class="sync-spinner"></v-ons-icon>
+                    <v-ons-icon v-if="sync_failed" icon="ion-android-alert" class="sync-spinner"></v-ons-icon>
+                    <v-ons-progress-circular v-if="syncing" indeterminate class="sync-spinner-offset">
+                    </v-ons-progress-circular>
+                    {{sync_btn_text}}
+                </v-ons-button>
             </v-ons-col>
             <v-ons-col>
                 <v-ons-button modifier="large outline" class="btn-danger" v-on:click="deleteProject">Forget Project</v-ons-button>
@@ -37,15 +43,30 @@ export default {
     props: ['project', 'pageActive'],
     data() {
         return {
-            changes: null
+            syncing: false,
+            sync_failed: false
         };
+    },
+    computed: {
+        sync_btn_text() {
+            return (this.syncing ? 'Syncing...' : (this.sync_failed ? 'Sync Failed' : 'Sync Now'));
+        }
     },
     methods: {
         sync: function() {
-            this.$store.dispatch('syncRemote', this.project.id)
-                .finally(function(doc) {
-
-                });
+            var self = this;
+            this.syncing = true;
+            this.sync_failed = false;
+            //return setTimeout(function(){
+                self.$store.dispatch('syncRemote', self.project.id)
+                    .catch(function() {
+                        self.sync_failed = true;
+                    })
+                    .finally(function(doc) {
+                        console.log('syncing done');
+                        self.syncing = false;
+                    });
+            //}, 2000);
         },
         deleteProject: function() {}
     },
@@ -69,5 +90,17 @@ export default {
     .large-text {
         font-size: 26px;
         color: #4d4b65
+    }
+    .sync-spinner {
+        width: 20px;
+        height: 20px;
+
+    }
+    .sync-spinner-offset {
+        width: 20px;
+        height: 20px;
+        position: relative;
+        left: -5px;
+        top: 6px;
     }
 </style>
