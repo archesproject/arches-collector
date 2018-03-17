@@ -241,8 +241,8 @@ var store = new Vuex.Store({
             return pouchDBs.syncProject(projectId)
                 .then(function() {
                     return store.commit('setLastProjectSync', projectId);
-                })
-                // don't catch here, let the calling function catch and handle any error
+                });
+            // don't catch here, let the calling function catch and handle any error
         },
         initServerStore: function({ commit, state }) {
             pouchDBs.setupServer();

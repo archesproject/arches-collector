@@ -57,16 +57,14 @@ export default {
             var self = this;
             this.syncing = true;
             this.sync_failed = false;
-            //return setTimeout(function(){
-                self.$store.dispatch('syncRemote', self.project.id)
-                    .catch(function() {
-                        self.sync_failed = true;
-                    })
-                    .finally(function(doc) {
-                        console.log('syncing done');
-                        self.syncing = false;
-                    });
-            //}, 2000);
+            this.$store.dispatch('syncRemote', this.project.id)
+                .catch(function() {
+                    self.sync_failed = true;
+                })
+                .finally(function(doc) {
+                    console.log('syncing done');
+                    self.syncing = false;
+                });
         },
         deleteProject: function() {}
     },
