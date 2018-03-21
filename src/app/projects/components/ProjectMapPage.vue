@@ -6,20 +6,35 @@
 import uuidv4 from 'uuid/v4';
 import 'mapbox-gl-cordova-offline/www/mapbox-gl.css';
 import basemapLayers from '../../../assets/map/basemap_layers.json';
+
 const mapboxgl = window.mapboxgl;
-const staticPath = 'static/map/';
 const attribution = '<a href="http://www.openmaptiles.org/" target="_blank">' +
     '&copy; OpenMapTiles</a> <a href="http://www.openstreetmap.org/about/" ' +
     'target="_blank">&copy; OpenStreetMap contributors</a>';
+
+const staticPath = 'static/map/';
+const mbtilesFile = 'offline_basemap_test.mbtiles';
+const style = {
+    version: 8,
+    center: [-122.4194, 37.7749],
+    zoom: 12,
+    sources: {
+        openmaptiles: {
+            type: 'mbtiles',
+            path: `${staticPath + mbtilesFile}`,
+            attribution: attribution
+        }
+    },
+    sprite: `${staticPath}styles/klokantech-basic/sprite`,
+    glyphs: `${staticPath}fonts/{fontstack}/{range}.pbf`,
+    layers: basemapLayers
+};
 
 export default {
     name: 'ProjectMap',
     data() {
         return {
-            mapId: `mapboxgl-map-${uuidv4()}`,
-            mbtilesFile: 'offline_basemap_test.mbtiles',
-            center: [-122.4194, 37.7749],
-            zoom: 12
+            mapId: `project-map-${uuidv4()}`
         };
     },
     mounted() {
@@ -29,21 +44,7 @@ export default {
         mapInit() {
             new mapboxgl.OfflineMap({
                 container: this.mapId,
-                style: {
-                    version: 8,
-                    center: this.center,
-                    zoom: this.zoom,
-                    sources: {
-                        openmaptiles: {
-                            type: 'mbtiles',
-                            path: `${staticPath + this.mbtilesFile}`,
-                            attribution: attribution
-                        }
-                    },
-                    sprite: `${staticPath}styles/klokantech-basic/sprite`,
-                    glyphs: `${staticPath}fonts/{fontstack}/{range}.pbf`,
-                    layers: basemapLayers
-                },
+                style: style,
                 hash: true
             }).then((map) => {
                 map.addControl(new mapboxgl.NavigationControl());
@@ -59,3 +60,4 @@ export default {
     height: 100%;
 }
 </style>
+
