@@ -10,13 +10,13 @@
                 <span class="sub-text">Records to Sync</span>
             </v-ons-col>
             <v-ons-col>
-                <div class="large-text">{{project.lastsync.date}}<span class="sub-text" style="vertical-align: 14px;">{{project.lastsync.time}}</span></div>
+                <div class="large-text">{{project.lastsync.date}}&nbsp;<span class="sub-text" style="vertical-align: 14px;">{{project.lastsync.time}}</span></div>
                 <span class="sub-text">Date/Time of Last Sync</span>
             </v-ons-col>
         </v-ons-row>
         <v-ons-row style="margin-top: 35px;">
             <v-ons-col>
-                <v-ons-button modifier="medium" :disabled="syncing" class="btn-success" style="width: 150px;" v-on:click="sync">
+                <v-ons-button modifier="medium" :disabled="syncing" class="btn-success" style="width: 160px;" v-on:click="sync">
                     <v-ons-icon v-if="!syncing && !sync_failed" icon="ion-android-sync" class="sync-spinner"></v-ons-icon>
                     <v-ons-icon v-if="sync_failed" icon="ion-android-alert" class="sync-spinner"></v-ons-icon>
                     <v-ons-progress-circular v-if="syncing" indeterminate class="sync-spinner-offset">
@@ -49,7 +49,7 @@ export default {
     },
     computed: {
         sync_btn_text() {
-            return (this.syncing ? 'Syncing...' : (this.sync_failed ? 'Sync Failed' : 'Sync Now'));
+            return (this.syncing ? 'Syncing...' : (this.sync_failed ? 'Sync Failed' : (this.project.lastsync.date === '' ? 'Join Project' : 'Sync Now')));
         }
     },
     methods: {
