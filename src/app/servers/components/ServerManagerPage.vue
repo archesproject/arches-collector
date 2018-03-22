@@ -61,7 +61,9 @@ export default {
                 nickname: 'test',
                 username: 'admin',
                 password: 'admin',
-                token: ''
+                token: '',
+                active_project: '',
+                projects: {}
             },
             error: false
         };

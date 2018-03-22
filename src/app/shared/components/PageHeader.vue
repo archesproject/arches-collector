@@ -38,7 +38,6 @@ export default {
 <style scoped>
 
 .left-button-text{
-    color: black;
     position: relative;
     top: -1px;
 }

@@ -49,12 +49,28 @@ var pouchDBs = (function() {
         servers: 'undefined',
         // _serverConfigs: {},
         setupServer: function(config) {
+            var self = this;
             this.servers = new PouchDB('app_servers', {
                 adapter: adapter,
-                iosDatabaseLocation: 'Library'
+                iosDatabaseLocation: 'Library',
+                auto_compaction: true
             });
+
+            this.servers.get('servers')
+                .then(function(doc) {
+                    Object.keys(doc.servers).forEach(function(serverUrl) {
+                        var server = doc.servers[serverUrl];
+                        Object.keys(server.projects).forEach(function(projectId) {
+                            self.setupProject(server, projectId);
+                        });
+                    });
+                })
+                .catch(function() {
+                // no need to do anything
+                    console.log('error');
+                });
         },
-        setupProject: function(serverURL, projectId) {
+        setupProject: function(server, projectId) {
             if (!this._projectDBs[projectId]) {
                 this._projectDBs[projectId] = {};
             }
@@ -62,16 +78,23 @@ var pouchDBs = (function() {
                 adapter: adapter,
                 iosDatabaseLocation: 'Library'
             });
-            this._projectDBs[projectId]['remote'] = new PouchDB(serverURL + '/couchdb/project_' + projectId);
+            this._projectDBs[projectId]['remote'] = new PouchDB(server.url + '/couchdb/project_' + projectId, {
+                ajax: {
+                    headers: {
+                        authorization: 'Bearer ' + server.token
+                        // 'X-Some-Special-Header': 'foo'
+                    },
+                    withCredentials: false
+                }
+            });
         },
         syncProject: function(projectId) {
-            console.log(projectId);
             // setupDBs(projectId);
 
             return this._projectDBs[projectId]['local']
                 .sync(this._projectDBs[projectId]['remote'], {
-                // live: true,
-                // retry: true
+                    // live: true,
+                    // retry: true
                 })
                 .on('complete', function() {
                 // yay, we're in sync!
@@ -101,20 +124,24 @@ var pouchDBs = (function() {
                 });
 
             // sync.cancel(); // whenever you want to cancel only if live = true
+        },
+        getChanges: function(projectId) {
+            return this._projectDBs[projectId]['local'].changes({
+                // limit: 10,
+                // since: 0
+            }).then(function(result) {
+                // handle result
+                console.log(result);
+                return result;
+            }).catch(function(err) {
+                console.log(err);
+            });
         }
     };
 }());
 
-var getActiveServer = function(state) {
-    var appServers = state.dbs.app_servers;
-    return getServer(state, appServers.active);
-};
-var getServer = function(state, url) {
-    var appServers = state.dbs.app_servers;
-    return appServers.servers[url] || undefined;
-};
-
 var store = new Vuex.Store({
+    // strict: true,
     state: {
         dbs: {
             app_servers: {
@@ -127,7 +154,17 @@ var store = new Vuex.Store({
     },
     getters: {
         activeServer: function(state, getters) {
-            return getActiveServer(state);
+            var appServers = state.dbs.app_servers;
+            return getters.server(appServers.active);
+        },
+        server: function(state, getters) {
+            return function(url) {
+                var appServers = state.dbs.app_servers;
+                return appServers.servers[url] || undefined;
+            };
+        },
+        servers: function(state, getters) {
+            return state.dbs.app_servers.servers;
         },
         currentProjects: function(state, getters) {
             if (!getters.activeServer) {
@@ -135,8 +172,12 @@ var store = new Vuex.Store({
             }
             return getters.activeServer.projects;
         },
-        servers: function(state, getters) {
-            return state.dbs.app_servers.servers;
+        activeProject: function(state, getters) {
+            if (!getters.activeServer) {
+                return {};
+            }
+            var projectId = getters.activeServer.active_project;
+            return getters.activeServer.projects[projectId];
         }
     },
     mutations: {
@@ -144,29 +185,35 @@ var store = new Vuex.Store({
             state.dbs.app_servers = value;
         },
         addNewServer: function(state, newServer) {
-            if (typeof getServer(state, newServer.url) === 'undefined') {
-                state.dbs.app_servers.servers[newServer.url] = newServer;
-                state.dbs.app_servers.servers[newServer.url].projects = {}; // should we update this?
+            if (typeof store.getters.server(newServer.url) === 'undefined') {
+                Vue.set(state.dbs.app_servers.servers, newServer.url, newServer);
             }
             store.commit('setActiveServer', newServer.url);
-            store.dispatch('syncServersWPouch');
+            store.dispatch('saveServerInfo');
         },
         setActiveServer: function(state, value) {
             state.dbs.app_servers.active = value;
         },
         updateProjects: function(state, serverDoc) {
-            var server = getServer(state, serverDoc.url);
+            var server = store.getters.server(serverDoc.url);
             serverDoc.projects.forEach(function(project) {
-                // Vue.set(server.projects, project.id, project);
-                server.projects[project.id] = project;
-                // Vue.set(state.dbs.app_servers.servers[serverDoc.url].projects, project.id, project);
-                // state.dbs.app_servers.servers[serverDoc.url].projects[project.id] = project;
+                Vue.set(server.projects, project.id, project);
             });
-            store.dispatch('syncServersWPouch');
+            store.dispatch('saveServerInfo');
         },
         setActiveProject: function(state, value) {
-            var activeServer = getActiveServer(state);
-            activeServer.active_project = value.project_id;
+            store.getters.activeServer.active_project = value.project_id;
+        },
+        setLastProjectSync: function(state, projectId) {
+            var now = new Date();
+            function pad(n, width, z) {
+                z = z || '0';
+                n = n + '';
+                return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+            }
+            Vue.set(store.getters.currentProjects[projectId].lastsync, 'date', now.toISOString().split('T')[0].replace(/-/g, '/'));
+            Vue.set(store.getters.currentProjects[projectId].lastsync, 'time', pad(now.getHours(), 2) + ':' + pad(now.getMinutes(), 2));
+            store.dispatch('saveServerInfo');
         }
     },
     modules: {
@@ -183,21 +230,26 @@ var store = new Vuex.Store({
         }
     },
     actions: {
-        syncServersWPouch: function({commit, state}) {
+        saveServerInfo: function({commit, state}) {
             var appServers = state.dbs.app_servers;
             return pouchDBs.servers.upsert('servers', function(serverDoc) {
                 serverDoc = appServers;
                 return serverDoc;
             });
         },
+        syncRemote: function({commit, state}, projectId) {
+            return pouchDBs.syncProject(projectId)
+                .then(function() {
+                    return store.commit('setLastProjectSync', projectId);
+                });
+            // don't catch here, let the calling function catch and handle any error
+        },
         initServerStore: function({ commit, state }) {
             pouchDBs.setupServer();
             return pouchDBs.servers.get('servers')
                 .then(function(doc) {
                     // go to the last active server and project
-                    console.log(doc);
                     commit('updateAppServers', doc);
-
                     return doc;
                 })
                 .catch(function() {
@@ -217,8 +269,7 @@ var store = new Vuex.Store({
                 })
             })
                 .then(function(response) {
-                    // return the response object or throw an error
-                    console.log(response);
+                    // return the response object or throw an error;
                     if (response.ok) {
                         return response.json();
                     }
@@ -227,8 +278,12 @@ var store = new Vuex.Store({
                 .then(function(json) {
                     // return the response object or throw an error
                     json.forEach(function(project) {
-                        pouchDBs.setupProject(server.url, project.id);
+                        pouchDBs.setupProject(server, project.id);
                         // pouchDBs.syncProject(project.id);
+                        project.lastsync = {
+                            date: '',
+                            time: ''
+                        };
                     });
                     commit('updateProjects', {
                         url: server.url,
@@ -259,6 +314,9 @@ var store = new Vuex.Store({
             //         resolve();
             //     }, 1000);
             // });
+        },
+        getProjectChanges: function({commit, state}, projectId) {
+            return pouchDBs.getChanges(projectId);
         }
     }
 });

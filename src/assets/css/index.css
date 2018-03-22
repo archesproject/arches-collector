@@ -19,6 +19,9 @@
 
 
 /* Put global styles here */
+body {
+    color: #393944;
+}
 
 .temp {
     padding-top: 200px;
@@ -44,4 +47,16 @@
 
 .ons-icon[icon*="ion-"] {
     font-size: 24px !important;
+}
+
+.padded-page {
+    background-color: white;
+}
+
+.padded-page > ons-page {
+    margin: 20px;
+}
+
+.padded-page .page--material__background{
+    background-color: inherit;
 }

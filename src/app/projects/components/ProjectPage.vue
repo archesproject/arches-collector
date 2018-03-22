@@ -1,6 +1,6 @@
 <template>
     <page-header-layout>
-        <div>
+        <v-ons-page>
             <v-ons-toolbar style="background-color: whitesmoke;">      
                 <div class="left">
                     <v-ons-toolbar-button>
@@ -15,46 +15,36 @@
                     </v-ons-toolbar-button>
                 </div>
             </v-ons-toolbar>
-        </div>
-        <v-ons-carousel fullscreen swipeable auto-scroll overscrollable
-            :index.sync="carouselIndex"
-        >
+            
+            <v-ons-carousel fullscreen swipeable auto-scroll overscrollable
+                :index.sync="carouselIndex"
+                id="projectCarousel"
+            >
 
-            <v-ons-carousel-item>
-                <div class="temp">
-                    Screen to list resource types that can be created<br>
-                    https://github.com/archesproject/arches-mobile/issues/6
-                </div>
-                <project-metadata-page />
-            </v-ons-carousel-item>
+                <v-ons-carousel-item class="padded-page">
+                    <project-metadata-page :project="project" :pageActive="carouselIndex === 0"/>
+                </v-ons-carousel-item>
 
-            <v-ons-carousel-item>
-                <div class="temp">
-                    Screen to list resource types that can be created<br>
-                    https://github.com/archesproject/arches-mobile/issues/6
-                </div>
-                <select-resouce-type-page />
-            </v-ons-carousel-item>
+                <v-ons-carousel-item class="padded-page">
+                    <select-resouce-type-page />
+                </v-ons-carousel-item>
 
-            <v-ons-carousel-item>
-                <div class="temp">
-                    Screen showing list of resource instances in a project<br>
-                    https://github.com/archesproject/arches-mobile/issues/7
-                </div>
-                <select-resouce-instance-page />
-            </v-ons-carousel-item>
+                <v-ons-carousel-item class="padded-page">
+                    <select-resouce-instance-page />
+                </v-ons-carousel-item>
 
-            <v-ons-carousel-item>
-                <project-map-page />
-            </v-ons-carousel-item>
+                <v-ons-carousel-item>
+                    <project-map-page />
+                </v-ons-carousel-item>
 
-        </v-ons-carousel>
+            </v-ons-carousel>
 
-        <div :style="dots">
-            <span :index="dotIndex - 1" v-for="dotIndex in dots.count" :key="dotIndex" style="cursor: pointer" @click="carouselIndex = dotIndex - 1">
-                {{ carouselIndex === dotIndex - 1 ? '\u25CF' : '\u25CB' }}
-            </span>
-        </div>
+            <div :style="dots">
+                <span :index="dotIndex - 1" v-for="dotIndex in dots.count" :key="dotIndex" style="cursor: pointer" @click="carouselIndex = dotIndex - 1">
+                    {{ carouselIndex === dotIndex - 1 ? '\u25CF' : '\u25CB' }}
+                </span>
+            </div>
+        </v-ons-page>
     </page-header-layout>
 </template>
 
@@ -90,6 +80,10 @@ export default {
 
     .project-name{
         font-size: 20px;
+    }
+
+    .padded-page > ons-page {
+        margin: 20px;
     }
 
 </style>
