@@ -11,9 +11,10 @@ const mapboxgl = window.mapboxgl;
 const attribution = '<a href="http://www.openmaptiles.org/" target="_blank">' +
     '&copy; OpenMapTiles</a> <a href="http://www.openstreetmap.org/about/" ' +
     'target="_blank">&copy; OpenStreetMap contributors</a>';
+const mbTilesURL = 'https://github.com/archesproject/arches-mobile/raw/master/static/map/offline_basemap_test.mbtiles';
 
 const staticPath = 'static/map/';
-const mbtilesFile = 'test_mb_tiles_download_1.mbtiles';
+const mbtilesFile = 'mbtiles_download.mbtiles';
 const style = {
     version: 8,
     center: [-122.4194, 37.7749],
@@ -41,58 +42,49 @@ export default {
         this.mapInit();
     },
     methods: {
+        mapInit() {
+            this.getDBTargetDir()
+                .then(this.downloadBasemaps)
+                .then(() => {
+                    new mapboxgl.OfflineMap({
+                        container: this.mapId,
+                        style: style,
+                        hash: true
+                    }).then((map) => {
+                        map.addControl(new mapboxgl.NavigationControl());
+                        this.$emit('map-init', map);
+                    });
+                });
+        },
         getDBTargetDir() {
-            return new Promise(function(resolve, reject) {
-                if (window.device.platform === 'Android') {
-                    return window.resolveLocalFileSystemURL(window.cordova.file.applicationStorageDirectory, function(dir) {
-                        dir.getDirectory('databases', {create: true}, function(subdir) {
+            const platform = window.device.platform;
+            const file = window.cordova.file;
+            const resolveLocalFileSystemURL = window.resolveLocalFileSystemURL;
+            return new Promise((resolve, reject) => {
+                if (platform === 'Android') {
+                    return resolveLocalFileSystemURL(file.applicationStorageDirectory, (dir) => {
+                        dir.getDirectory('databases', {create: true}, (subdir) => {
                             resolve(subdir);
                         });
                     }, reject);
-                } else if (window.device.platform === 'iOS') {
-                    return window.resolveLocalFileSystemURL(window.cordova.file.documentsDirectory, resolve, reject);
+                } else if (platform === 'iOS') {
+                    return resolveLocalFileSystemURL(file.documentsDirectory, resolve, reject);
                 } else {
                     reject(new Error('Platform not supported'));
                 };
             });
         },
-        downloadBasemaps() {
-            var self = this;
-            this.getDBTargetDir().then(function(targetDir) {
-                console.log(targetDir);
-                var fileTransfer = new window.FileTransfer();
-                var uri = window.encodeURI('http://localhost:8000/media/data/mobile_basemap_test.mbtiles');
-
-                fileTransfer.download(
-                    uri, targetDir.toURL() + mbtilesFile, function(entry) {
-                        new mapboxgl.OfflineMap({
-                            container: self.mapId,
-                            style: style,
-                            hash: true
-                        }).then((map) => {
-                            map.addControl(new mapboxgl.NavigationControl());
-                            self.$emit('map-init', map);
-                        });
-                    },
-                    function(error) {
-                        console.log('download error source ' + error.source);
-                        console.log('download error target ' + error.target);
-                        console.log('download error code' + error.code);
-                    },
-                    true
+        downloadBasemaps(targetDir) {
+            return new Promise((resolve, reject) => {
+                var uri = encodeURI(mbTilesURL);
+                new window.FileTransfer().download(
+                    uri, targetDir.toURL() + mbtilesFile, (entry) => {
+                        resolve(entry);
+                    }, (error) => {
+                        reject(error);
+                    }, true
                 );
             });
-        },
-        mapInit() {
-            this.downloadBasemaps();
-            // new mapboxgl.OfflineMap({
-            //     container: this.mapId,
-            //     style: style,
-            //     hash: true
-            // }).then((map) => {
-            //     map.addControl(new mapboxgl.NavigationControl());
-            //     this.$emit('map-init', map);
-            // });
         }
     }
 };
