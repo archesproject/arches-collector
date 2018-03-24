@@ -13,7 +13,7 @@ const attribution = '<a href="http://www.openmaptiles.org/" target="_blank">' +
     'target="_blank">&copy; OpenStreetMap contributors</a>';
 
 const staticPath = 'static/map/';
-const mbtilesFile = 'offline_basemap_test.mbtiles';
+const mbtilesFile = 'test_mb_tiles_download_1.mbtiles';
 const style = {
     version: 8,
     center: [-122.4194, 37.7749],
@@ -21,7 +21,7 @@ const style = {
     sources: {
         openmaptiles: {
             type: 'mbtiles',
-            path: `${staticPath + mbtilesFile}`,
+            path: mbtilesFile,
             attribution: attribution
         }
     },
@@ -41,15 +41,58 @@ export default {
         this.mapInit();
     },
     methods: {
-        mapInit() {
-            new mapboxgl.OfflineMap({
-                container: this.mapId,
-                style: style,
-                hash: true
-            }).then((map) => {
-                map.addControl(new mapboxgl.NavigationControl());
-                this.$emit('map-init', map);
+        getDBTargetDir() {
+            return new Promise(function(resolve, reject) {
+                if (window.device.platform === 'Android') {
+                    return window.resolveLocalFileSystemURL(window.cordova.file.applicationStorageDirectory, function(dir) {
+                        dir.getDirectory('databases', {create: true}, function(subdir) {
+                            resolve(subdir);
+                        });
+                    }, reject);
+                } else if (window.device.platform === 'iOS') {
+                    return window.resolveLocalFileSystemURL(window.cordova.file.documentsDirectory, resolve, reject);
+                } else {
+                    reject(new Error('Platform not supported'));
+                };
             });
+        },
+        downloadBasemaps() {
+            var self = this;
+            this.getDBTargetDir().then(function(targetDir) {
+                console.log(targetDir);
+                var fileTransfer = new window.FileTransfer();
+                var uri = window.encodeURI('http://localhost:8000/media/data/mobile_basemap_test.mbtiles');
+
+                fileTransfer.download(
+                    uri, targetDir.toURL() + mbtilesFile, function(entry) {
+                        new mapboxgl.OfflineMap({
+                            container: self.mapId,
+                            style: style,
+                            hash: true
+                        }).then((map) => {
+                            map.addControl(new mapboxgl.NavigationControl());
+                            self.$emit('map-init', map);
+                        });
+                    },
+                    function(error) {
+                        console.log('download error source ' + error.source);
+                        console.log('download error target ' + error.target);
+                        console.log('download error code' + error.code);
+                    },
+                    true
+                );
+            });
+        },
+        mapInit() {
+            this.downloadBasemaps();
+            // new mapboxgl.OfflineMap({
+            //     container: this.mapId,
+            //     style: style,
+            //     hash: true
+            // }).then((map) => {
+            //     map.addControl(new mapboxgl.NavigationControl());
+            //     this.$emit('map-init', map);
+            // });
         }
     }
 };
