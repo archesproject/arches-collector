@@ -11,30 +11,16 @@ const mapboxgl = window.mapboxgl;
 const attribution = '<a href="http://www.openmaptiles.org/" target="_blank">' +
     '&copy; OpenMapTiles</a> <a href="http://www.openstreetmap.org/about/" ' +
     'target="_blank">&copy; OpenStreetMap contributors</a>';
-
 const staticPath = 'static/map/';
-const mbtilesFile = 'offline_basemap_test.mbtiles';
-const style = {
-    version: 8,
-    center: [-122.4194, 37.7749],
-    zoom: 12,
-    sources: {
-        openmaptiles: {
-            type: 'mbtiles',
-            path: `${staticPath + mbtilesFile}`,
-            attribution: attribution
-        }
-    },
-    sprite: `${staticPath}styles/klokantech-basic/sprite`,
-    glyphs: `${staticPath}fonts/{fontstack}/{range}.pbf`,
-    layers: basemapLayers
-};
 
 export default {
     name: 'ProjectMap',
+    props: ['project'],
     data() {
         return {
-            mapId: `project-map-${uuidv4()}`
+            mapId: `project-map-${uuidv4()}`,
+            mbtilesFile: `${this.project.id}.mbtiles`,
+            tileCacheURI: encodeURI(this.project.tilecache)
         };
     },
     mounted() {
@@ -42,13 +28,73 @@ export default {
     },
     methods: {
         mapInit() {
-            new mapboxgl.OfflineMap({
-                container: this.mapId,
-                style: style,
-                hash: true
-            }).then((map) => {
-                map.addControl(new mapboxgl.NavigationControl());
-                this.$emit('map-init', map);
+            // TODO: add loading indicator during map init...
+            this.getDBTargetDir()
+                .then(this.checkForDatabase)
+                .then(() => {
+                    return new mapboxgl.OfflineMap({
+                        container: this.mapId,
+                        style: {
+                            version: 8,
+                            center: [-122.4194, 37.7749],
+                            zoom: 12,
+                            sources: {
+                                openmaptiles: {
+                                    type: 'mbtiles',
+                                    path: this.mbtilesFile,
+                                    attribution: attribution
+                                }
+                            },
+                            sprite: `${staticPath}styles/klokantech-basic/sprite`,
+                            glyphs: `${staticPath}fonts/{fontstack}/{range}.pbf`,
+                            layers: basemapLayers
+                        },
+                        hash: true
+                    });
+                })
+                .then((map) => {
+                    map.addControl(new mapboxgl.NavigationControl());
+                    this.$emit('map-init', map);
+                });
+        },
+        getDBTargetDir() {
+            const platform = window.device.platform;
+            const file = window.cordova.file;
+            const resolveLocalFileSystemURL = window.resolveLocalFileSystemURL;
+            return new Promise((resolve, reject) => {
+                if (platform === 'Android') {
+                    return resolveLocalFileSystemURL(file.applicationStorageDirectory, (dir) => {
+                        dir.getDirectory('databases', {create: true}, (subdir) => {
+                            resolve(subdir);
+                        });
+                    }, reject);
+                } else if (platform === 'iOS') {
+                    return resolveLocalFileSystemURL(file.documentsDirectory, resolve, reject);
+                } else {
+                    reject(new Error('Platform not supported'));
+                };
+            });
+        },
+        checkForDatabase(targetDir) {
+            return new Promise((resolve, reject) => {
+                targetDir.getFile(this.mbtilesFile, {}, resolve, reject);
+            }).catch(() => {
+                return this.downloadBasemaps(targetDir);
+            });
+        },
+        downloadBasemaps(targetDir) {
+            return new Promise((resolve, reject) => {
+                new window.FileTransfer().download(
+                    this.tileCacheURI,
+                    targetDir.toURL() + this.mbtilesFile,
+                    (entry) => {
+                        resolve(entry);
+                    },
+                    (error) => {
+                        reject(error);
+                    },
+                    true
+                );
             });
         }
     }
