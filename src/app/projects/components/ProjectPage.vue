@@ -34,7 +34,7 @@
                 </v-ons-carousel-item>
 
                 <v-ons-carousel-item>
-                    <project-map-page />
+                    <project-map-page :project="project"/>
                 </v-ons-carousel-item>
 
             </v-ons-carousel>
