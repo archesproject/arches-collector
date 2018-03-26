@@ -101,7 +101,6 @@ export default {
             });
         },
         mapInit() {
-            console.log(this.project);
             return new mapboxgl.OfflineMap({
                 container: this.mapId,
                 style: {
