@@ -1,8 +1,14 @@
 <template>
-    <div :id="mapId"></div>
+    <v-ons-page>
+        <ons-progress-circular indeterminate v-if="loading">
+        </ons-progress-circular>
+        <div :id="mapId"></div>
+    </v-ons-page>
 </template>
 
 <script>
+import geojsonExtent from '@mapbox/geojson-extent';
+import parseWKT from 'wellknown';
 import uuidv4 from 'uuid/v4';
 import 'mapbox-gl-cordova-offline/www/mapbox-gl.css';
 import basemapLayers from '../../../assets/map/basemap_layers.json';
@@ -20,73 +26,70 @@ export default {
         return {
             mapId: `project-map-${uuidv4()}`,
             mbtilesFile: `${this.project.id}.mbtiles`,
-            tileCacheURI: encodeURI(this.project.tilecache)
+            tileCacheURI: encodeURI(this.project.tilecache),
+            bounds: new mapboxgl.LngLatBounds(
+                geojsonExtent(
+                    parseWKT(this.project.bounds)
+                )
+            ),
+            loading: true
         };
     },
     mounted() {
-        this.mapInit();
+        this.setupDB()
+            .then(this.mapInit)
+            .then(() => {
+                this.loading = false;
+            });
     },
     methods: {
-        mapInit() {
-            // TODO: add loading indicator during map init...
-            this.getDBTargetDir()
-                .then(this.checkForDatabase)
-                .then(() => {
-                    return new mapboxgl.OfflineMap({
-                        container: this.mapId,
-                        style: {
-                            version: 8,
-                            center: [-122.4194, 37.7749],
-                            zoom: 12,
-                            sources: {
-                                openmaptiles: {
-                                    type: 'mbtiles',
-                                    path: this.mbtilesFile,
-                                    attribution: attribution
-                                }
-                            },
-                            sprite: `${staticPath}styles/klokantech-basic/sprite`,
-                            glyphs: `${staticPath}fonts/{fontstack}/{range}.pbf`,
-                            layers: basemapLayers
-                        },
-                        hash: true
-                    });
-                })
-                .then((map) => {
-                    map.addControl(new mapboxgl.NavigationControl());
-                    this.$emit('map-init', map);
+        setupDB() {
+            return this.getDBTarget().then((target) => {
+                return this.checkDB(target).catch(() => {
+                    return this.downloadDB(target);
                 });
+            });
         },
-        getDBTargetDir() {
+        getDBTarget() {
             const platform = window.device.platform;
             const file = window.cordova.file;
             const resolveLocalFileSystemURL = window.resolveLocalFileSystemURL;
             return new Promise((resolve, reject) => {
                 if (platform === 'Android') {
-                    return resolveLocalFileSystemURL(file.applicationStorageDirectory, (dir) => {
-                        dir.getDirectory('databases', {create: true}, (subdir) => {
-                            resolve(subdir);
-                        });
-                    }, reject);
+                    return resolveLocalFileSystemURL(
+                        file.applicationStorageDirectory,
+                        (dir) => {
+                            dir.getDirectory(
+                                'databases',
+                                {create: true},
+                                (subdir) => {
+                                    resolve(subdir);
+                                }
+                            );
+                        },
+                        reject
+                    );
                 } else if (platform === 'iOS') {
-                    return resolveLocalFileSystemURL(file.documentsDirectory, resolve, reject);
+                    return resolveLocalFileSystemURL(
+                        file.documentsDirectory,
+                        resolve,
+                        reject
+                    );
                 } else {
                     reject(new Error('Platform not supported'));
                 };
             });
         },
-        checkForDatabase(targetDir) {
+        checkDB(target) {
             return new Promise((resolve, reject) => {
-                targetDir.getFile(this.mbtilesFile, {}, resolve, reject);
-            }).catch(() => {
-                return this.downloadBasemaps(targetDir);
+                target.getFile(this.mbtilesFile, {}, resolve, reject);
             });
         },
-        downloadBasemaps(targetDir) {
+        downloadDB(target) {
             return new Promise((resolve, reject) => {
                 new window.FileTransfer().download(
                     this.tileCacheURI,
-                    targetDir.toURL() + this.mbtilesFile,
+                    target.toURL() + this.mbtilesFile,
                     (entry) => {
                         resolve(entry);
                     },
@@ -95,6 +98,40 @@ export default {
                     },
                     true
                 );
+            });
+        },
+        mapInit() {
+            console.log(this.project);
+            return new mapboxgl.OfflineMap({
+                container: this.mapId,
+                style: {
+                    version: 8,
+                    sources: {
+                        openmaptiles: {
+                            type: 'mbtiles',
+                            path: this.mbtilesFile,
+                            attribution: attribution
+                        }
+                    },
+                    sprite: `${staticPath}styles/klokantech-basic/sprite`,
+                    glyphs: `${staticPath}fonts/{fontstack}/{range}.pbf`,
+                    // TODO: pull basemap layer styles from project?
+                    layers: basemapLayers
+                },
+                hash: true
+            }).then((map) => {
+                var tr = map.transform;
+                var nw = tr.project(this.bounds.getNorthWest());
+                var se = tr.project(this.bounds.getSouthEast());
+                var size = se.sub(nw);
+                var scaleX = (tr.width - 80) / size.x;
+                var scaleY = (tr.height - 80) / size.y;
+                map.jumpTo({
+                    center: tr.unproject(nw.add(se).div(2)),
+                    zoom: tr.scaleZoom(tr.scale * Math.min(scaleX, scaleY))
+                });
+                map.addControl(new mapboxgl.NavigationControl());
+                this.$emit('map-init', map);
             });
         }
     }
@@ -105,5 +142,8 @@ export default {
 .mapboxgl-map {
     height: 100%;
 }
+ons-progress-circular {
+    display: block;
+    margin: 50% auto;
+}
 </style>
-
