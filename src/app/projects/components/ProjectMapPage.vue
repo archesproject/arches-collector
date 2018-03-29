@@ -2,7 +2,7 @@
     <v-ons-page>
         <ons-progress-circular indeterminate v-if="loading">
         </ons-progress-circular>
-        <div :id="mapId"></div>
+        <div :id="mapId" v-on:touchstart="stopPropagation"></div>
     </v-ons-page>
 </template>
 
@@ -101,6 +101,8 @@ export default {
             });
         },
         mapInit() {
+            // TODO: add project resource instance data to map as markers
+            // TODO: pull basemap layer styles from project?
             return new mapboxgl.OfflineMap({
                 container: this.mapId,
                 style: {
@@ -114,17 +116,16 @@ export default {
                     },
                     sprite: `${staticPath}styles/klokantech-basic/sprite`,
                     glyphs: `${staticPath}fonts/{fontstack}/{range}.pbf`,
-                    // TODO: pull basemap layer styles from project?
                     layers: basemapLayers
                 },
                 hash: true
             }).then((map) => {
-                var tr = map.transform;
-                var nw = tr.project(this.bounds.getNorthWest());
-                var se = tr.project(this.bounds.getSouthEast());
-                var size = se.sub(nw);
-                var scaleX = (tr.width - 80) / size.x;
-                var scaleY = (tr.height - 80) / size.y;
+                const tr = map.transform;
+                const nw = tr.project(this.bounds.getNorthWest());
+                const se = tr.project(this.bounds.getSouthEast());
+                const size = se.sub(nw);
+                const scaleX = (tr.width - 80) / size.x;
+                const scaleY = (tr.height - 80) / size.y;
                 map.jumpTo({
                     center: tr.unproject(nw.add(se).div(2)),
                     zoom: tr.scaleZoom(tr.scale * Math.min(scaleX, scaleY))
@@ -132,6 +133,9 @@ export default {
                 map.addControl(new mapboxgl.NavigationControl());
                 this.$emit('map-init', map);
             });
+        },
+        stopPropagation(e) {
+            e.stopPropagation();
         }
     }
 };
