@@ -11,13 +11,10 @@ import geojsonExtent from '@mapbox/geojson-extent';
 import parseWKT from 'wellknown';
 import uuidv4 from 'uuid/v4';
 import 'mapbox-gl-cordova-offline/www/mapbox-gl.css';
+// TODO: pull basemap layer styles from project?
 import basemapLayers from '../../../assets/map/basemap_layers.json';
 
 const mapboxgl = window.mapboxgl;
-const attribution = '<a href="http://www.openmaptiles.org/" target="_blank">' +
-    '&copy; OpenMapTiles</a> <a href="http://www.openstreetmap.org/about/" ' +
-    'target="_blank">&copy; OpenStreetMap contributors</a>';
-const staticPath = 'static/map/';
 
 export default {
     name: 'ProjectMap',
@@ -32,6 +29,21 @@ export default {
                     parseWKT(this.project.bounds)
                 )
             ),
+            // TODO: pull resource data from project
+            resourceGeoJSON: {
+                type: 'FeatureCollection',
+                features: [{
+                    type: 'Feature',
+                    geometry: {
+                        type: 'Point',
+                        coordinates: [-122.414, 37.776]
+                    },
+                    properties: {
+                        id: 'blahid',
+                        display_name: 'Blah'
+                    }
+                }]
+            },
             loading: true
         };
     },
@@ -51,13 +63,10 @@ export default {
             });
         },
         getDBTarget() {
-            const platform = window.device.platform;
-            const file = window.cordova.file;
-            const resolveLocalFileSystemURL = window.resolveLocalFileSystemURL;
             return new Promise((resolve, reject) => {
-                if (platform === 'Android') {
-                    return resolveLocalFileSystemURL(
-                        file.applicationStorageDirectory,
+                if (window.device.platform === 'Android') {
+                    return window.resolveLocalFileSystemURL(
+                        window.cordova.file.applicationStorageDirectory,
                         (dir) => {
                             dir.getDirectory(
                                 'databases',
@@ -69,9 +78,9 @@ export default {
                         },
                         reject
                     );
-                } else if (platform === 'iOS') {
-                    return resolveLocalFileSystemURL(
-                        file.documentsDirectory,
+                } else if (window.device.platform === 'iOS') {
+                    return window.resolveLocalFileSystemURL(
+                        window.cordova.file.documentsDirectory,
                         resolve,
                         reject
                     );
@@ -101,9 +110,18 @@ export default {
             });
         },
         mapInit() {
-            // TODO: add project resource instance data to map as markers
-            // TODO: pull basemap layer styles from project?
-            return new mapboxgl.OfflineMap({
+            return new mapboxgl.OfflineMap(this.getMapConfig())
+                .then((map) => {
+                    this.setupMap(map);
+                    this.$emit('map-init', map);
+                });
+        },
+        getMapConfig() {
+            const attribution = '<a href="http://www.openmaptiles.org/" ' +
+                'target="_blank">&copy; OpenMapTiles</a> ' +
+                '<a href="http://www.openstreetmap.org/about/" ' +
+                'target="_blank">&copy; OpenStreetMap contributors</a>';
+            return {
                 container: this.mapId,
                 style: {
                     version: 8,
@@ -112,26 +130,48 @@ export default {
                             type: 'mbtiles',
                             path: this.mbtilesFile,
                             attribution: attribution
+                        },
+                        resources: {
+                            type: 'geojson',
+                            data: this.resourceGeoJSON
                         }
                     },
-                    sprite: `${staticPath}styles/klokantech-basic/sprite`,
-                    glyphs: `${staticPath}fonts/{fontstack}/{range}.pbf`,
+                    sprite: 'static/map/styles/klokantech-basic/sprite',
+                    glyphs: 'static/map/fonts/{fontstack}/{range}.pbf',
                     layers: basemapLayers
                 },
                 hash: true
-            }).then((map) => {
-                const tr = map.transform;
-                const nw = tr.project(this.bounds.getNorthWest());
-                const se = tr.project(this.bounds.getSouthEast());
-                const size = se.sub(nw);
-                const scaleX = (tr.width - 80) / size.x;
-                const scaleY = (tr.height - 80) / size.y;
-                map.jumpTo({
-                    center: tr.unproject(nw.add(se).div(2)),
-                    zoom: tr.scaleZoom(tr.scale * Math.min(scaleX, scaleY))
+            };
+        },
+        setupMap(map) {
+            const tr = map.transform;
+            const nw = tr.project(this.bounds.getNorthWest());
+            const se = tr.project(this.bounds.getSouthEast());
+            const size = se.sub(nw);
+            const scaleX = (tr.width - 80) / size.x;
+            const scaleY = (tr.height - 80) / size.y;
+            map.jumpTo({
+                center: tr.unproject(nw.add(se).div(2)),
+                zoom: tr.scaleZoom(tr.scale * Math.min(scaleX, scaleY))
+            });
+            map.addControl(new mapboxgl.NavigationControl());
+            map.loadImage('static/map/marker.png', function(error, image) {
+                if (error) throw error;
+                map.addImage('marker-pin', image);
+                map.addLayer({
+                    id: 'points',
+                    type: 'symbol',
+                    source: 'resources',
+                    layout: {
+                        'icon-image': 'marker-pin',
+                        'icon-allow-overlap': true,
+                        'icon-offset': [
+                            1,
+                            -86
+                        ],
+                        'icon-size': 0.15
+                    }
                 });
-                map.addControl(new mapboxgl.NavigationControl());
-                this.$emit('map-init', map);
             });
         },
         stopPropagation(e) {
