@@ -2,10 +2,12 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import PouchDB from 'pouchdb';
 import PouchDBupsert from 'pouchdb-upsert';
+import PouchDBFind from 'pouchdb-find';
 import SqlLiteAdapter from 'pouchdb-adapter-cordova-sqlite';
 
 Vue.use(Vuex);
 PouchDB.plugin(PouchDBupsert);
+PouchDB.plugin(PouchDBFind);
 PouchDB.plugin(SqlLiteAdapter);
 
 var adapter = 'cordova-sqlite';
@@ -133,6 +135,31 @@ var pouchDBs = (function() {
                 // handle result
                 console.log(result);
                 return result;
+            }).catch(function(err) {
+                console.log(err);
+            });
+        },
+        getResourcesGeoJSON: function(projectId) {
+            return this._projectDBs[projectId]['local'].find({
+                selector: {
+                    type: 'resource'
+                }
+            }).then(function(docs) {
+                let features = [];
+                for (const doc of docs.docs) {
+                    for (const geom of doc.geometries) {
+                        for (let feature of geom.geom.features) {
+                            feature.properties.id = doc._id;
+                            feature.properties.displayname = doc.displayname;
+                            feature.properties.displaydescription = doc.displaydescription;
+                            features.push(feature);
+                        }
+                    }
+                }
+                return {
+                    type: 'FeatureCollection',
+                    features: features
+                };
             }).catch(function(err) {
                 console.log(err);
             });
@@ -317,6 +344,9 @@ var store = new Vuex.Store({
         },
         getProjectChanges: function({commit, state}, projectId) {
             return pouchDBs.getChanges(projectId);
+        },
+        getProjectResourcesGeoJSON: function({commit, state}, projectId) {
+            return pouchDBs.getResourcesGeoJSON(projectId);
         }
     }
 });

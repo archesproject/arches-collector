@@ -3,6 +3,21 @@
         <ons-progress-circular indeterminate v-if="loading">
         </ons-progress-circular>
         <div :id="mapId" v-on:touchstart="stopPropagation"></div>
+        <div class="map-control-templates">
+            <div ref="attribution">
+                <a href="http://www.openmaptiles.org/" target="_blank">
+                    &copy; OpenMapTiles
+                </a>
+                <a href="http://www.openstreetmap.org/about/" target="_blank">
+                    &copy; OpenStreetMap contributors
+                </a>
+            </div>
+            <div ref="popup">
+                <div class="popup-content">
+                    Name: {{ selectedResource.displayname }}
+                </div>
+            </div>
+        </div>
     </v-ons-page>
 </template>
 
@@ -29,26 +44,20 @@ export default {
                     parseWKT(this.project.bounds)
                 )
             ),
-            // TODO: pull resource data from project
             resourceGeoJSON: {
                 type: 'FeatureCollection',
-                features: [{
-                    type: 'Feature',
-                    geometry: {
-                        type: 'Point',
-                        coordinates: [-122.414, 37.776]
-                    },
-                    properties: {
-                        id: 'blahid',
-                        display_name: 'Blah'
-                    }
-                }]
+                features: []
+            },
+            selectedResource: {
+                id: null,
+                displayname: ''
             },
             loading: true
         };
     },
     mounted() {
         this.setupDB()
+            .then(this.getResourceData)
             .then(this.mapInit)
             .then(() => {
                 this.loading = false;
@@ -109,18 +118,22 @@ export default {
                 );
             });
         },
+        getResourceData() {
+            return this.$store.dispatch('getProjectResourcesGeoJSON', this.project.id)
+                .then((resourceGeoJSON) => {
+                    this.resourceGeoJSON = resourceGeoJSON;
+                });
+        },
         mapInit() {
             return new mapboxgl.OfflineMap(this.getMapConfig())
                 .then((map) => {
-                    this.setupMap(map);
+                    this.setMapExtent(map);
+                    map.addControl(new mapboxgl.NavigationControl());
+                    this.addResourceMarkers(map);
                     this.$emit('map-init', map);
                 });
         },
         getMapConfig() {
-            const attribution = '<a href="http://www.openmaptiles.org/" ' +
-                'target="_blank">&copy; OpenMapTiles</a> ' +
-                '<a href="http://www.openstreetmap.org/about/" ' +
-                'target="_blank">&copy; OpenStreetMap contributors</a>';
             return {
                 container: this.mapId,
                 style: {
@@ -129,7 +142,7 @@ export default {
                         openmaptiles: {
                             type: 'mbtiles',
                             path: this.mbtilesFile,
-                            attribution: attribution
+                            attribution: this.$refs.attribution.innerHTML
                         },
                         resources: {
                             type: 'geojson',
@@ -143,34 +156,77 @@ export default {
                 hash: true
             };
         },
-        setupMap(map) {
+        setMapExtent(map) {
             const tr = map.transform;
             const nw = tr.project(this.bounds.getNorthWest());
             const se = tr.project(this.bounds.getSouthEast());
             const size = se.sub(nw);
             const scaleX = (tr.width - 80) / size.x;
             const scaleY = (tr.height - 80) / size.y;
-            map.jumpTo({
+            const jumpInfo = {
                 center: tr.unproject(nw.add(se).div(2)),
                 zoom: tr.scaleZoom(tr.scale * Math.min(scaleX, scaleY))
-            });
-            map.addControl(new mapboxgl.NavigationControl());
-            map.loadImage('static/map/marker.png', function(error, image) {
-                if (error) throw error;
-                map.addImage('marker-pin', image);
+            };
+            console.log(jumpInfo);
+            map.jumpTo(jumpInfo);
+        },
+        addResourceMarkers(map) {
+            map.loadImage('static/map/marker.png', (err, img) => {
+                if (err) throw err;
+                const markerName = 'marker-pin';
+                map.addImage(markerName, img);
                 map.addLayer({
-                    id: 'points',
+                    id: 'resource-markers',
                     type: 'symbol',
                     source: 'resources',
                     layout: {
-                        'icon-image': 'marker-pin',
+                        'icon-image': markerName,
                         'icon-allow-overlap': true,
                         'icon-offset': [
-                            1,
+                            0,
                             -86
                         ],
                         'icon-size': 0.15
                     }
+                });
+                map.on('click', 'resource-markers', (e) => {
+                    const markerHeight = 23;
+                    const markerRadius = 10;
+                    const linearOffset = 5;
+                    const offset = {
+                        'top': [0, 0],
+                        'top-left': [0, 0],
+                        'top-right': [0, 0],
+                        'bottom': [0, -markerHeight],
+                        'bottom-left': [
+                            linearOffset,
+                            (markerHeight - markerRadius + linearOffset) * -1
+                        ],
+                        'bottom-right': [
+                            -linearOffset,
+                            (markerHeight - markerRadius + linearOffset) * -1
+                        ],
+                        'left': [
+                            markerRadius,
+                            (markerHeight - markerRadius) * -1
+                        ],
+                        'right': [
+                            -markerRadius,
+                            (markerHeight - markerRadius) * -1
+                        ]
+                    };
+                    const feature = e.features[0];
+                    const coords = feature.geometry.coordinates.slice();
+                    this.selectedResource = feature.properties;
+
+                    while (Math.abs(e.lngLat.lng - coords[0]) > 180) {
+                        coords[0] += e.lngLat.lng > coords[0] ? 360 : -360;
+                    }
+
+                    new mapboxgl.Popup({offset: offset})
+                        .setLngLat(coords)
+                        .setDOMContent(this.$refs.popup)
+                        .addTo(map);
                 });
             });
         },
@@ -188,5 +244,13 @@ export default {
 ons-progress-circular {
     display: block;
     margin: 50% auto;
+}
+.map-control-templates {
+    visibility: hidden;
+}
+popup-content {
+    margin: 12px 6px 4px;
+    font-size: 1.2em;
+    color: dimgrey;
 }
 </style>
