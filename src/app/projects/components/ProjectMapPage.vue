@@ -246,7 +246,7 @@ ons-progress-circular {
     margin: 50% auto;
 }
 .map-control-templates {
-    visibility: hidden;
+    display: none;
 }
 popup-content {
     margin: 12px 6px 4px;
