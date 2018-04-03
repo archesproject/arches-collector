@@ -248,7 +248,7 @@ ons-progress-circular {
 .map-control-templates {
     display: none;
 }
-popup-content {
+.popup-content {
     margin: 12px 6px 4px;
     font-size: 1.2em;
     color: dimgrey;
