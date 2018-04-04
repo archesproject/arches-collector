@@ -30,6 +30,7 @@
         "onsenui": "~2.9.1",
         "pouchdb": "^6.4.3",
         "pouchdb-adapter-cordova-sqlite": "pouchdb-community/pouchdb-adapter-cordova-sqlite#master",
+        "pouchdb-find": "^6.4.3",
         "pouchdb-upsert": "^2.2.0",
         "uuid": "^3.2.1",
         "vue": "^2.5.0",

@@ -3597,8 +3597,8 @@ geojson-rewind@^0.3.0:
     sharkdown "^0.1.0"
 
 geojson-vt@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/geojson-vt/-/geojson-vt-3.0.0.tgz#a24cae5488ab4897e86ca0e4bf0d9760d628ae0a"
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/geojson-vt/-/geojson-vt-3.1.0.tgz#37b63d9ab7fafc9861dacc9aef20022df135074a"
 
 get-caller-file@^1.0.1:
   version "1.0.2"
@@ -6624,6 +6624,18 @@ postcss@^6.0.0, postcss@^6.0.1, postcss@^6.0.17, postcss@^6.0.8:
     source-map "^0.6.1"
     supports-color "^5.2.0"
 
+pouchdb-abstract-mapreduce@6.4.3:
+  version "6.4.3"
+  resolved "https://registry.yarnpkg.com/pouchdb-abstract-mapreduce/-/pouchdb-abstract-mapreduce-6.4.3.tgz#0310053812d16ff9545a3db43f5e38a67a0133d7"
+  dependencies:
+    pouchdb-binary-utils "6.4.3"
+    pouchdb-collate "6.4.3"
+    pouchdb-collections "6.4.3"
+    pouchdb-mapreduce-utils "6.4.3"
+    pouchdb-md5 "6.4.3"
+    pouchdb-promise "6.4.3"
+    pouchdb-utils "6.4.3"
+
 pouchdb-adapter-cordova-sqlite@pouchdb-community/pouchdb-adapter-cordova-sqlite#master:
   version "2.0.3"
   resolved "https://codeload.github.com/pouchdb-community/pouchdb-adapter-cordova-sqlite/tar.gz/5f636d2d97f9a97ecfa4973f6d66fdb59b7296b9"
@@ -6660,6 +6672,10 @@ pouchdb-binary-utils@6.4.3:
   dependencies:
     buffer-from "0.1.1"
 
+pouchdb-collate@6.4.3:
+  version "6.4.3"
+  resolved "https://registry.yarnpkg.com/pouchdb-collate/-/pouchdb-collate-6.4.3.tgz#55a77a1a3e1c2cf86fe4d02aea171e10c2a3f944"
+
 pouchdb-collections@6.4.3:
   version "6.4.3"
   resolved "https://registry.yarnpkg.com/pouchdb-collections/-/pouchdb-collections-6.4.3.tgz#2b70ca3143134c361dba6e466518b4f4d8e92ff4"
@@ -6670,11 +6686,31 @@ pouchdb-errors@6.4.3:
   dependencies:
     inherits "2.0.3"
 
+pouchdb-find@^6.4.3:
+  version "6.4.3"
+  resolved "https://registry.yarnpkg.com/pouchdb-find/-/pouchdb-find-6.4.3.tgz#1d0128306071434a5e397bb14ce69c831356c95e"
+  dependencies:
+    pouchdb-abstract-mapreduce "6.4.3"
+    pouchdb-collate "6.4.3"
+    pouchdb-md5 "6.4.3"
+    pouchdb-promise "6.4.3"
+    pouchdb-selector-core "6.4.3"
+    pouchdb-utils "6.4.3"
+
 pouchdb-json@6.4.3:
   version "6.4.3"
   resolved "https://registry.yarnpkg.com/pouchdb-json/-/pouchdb-json-6.4.3.tgz#a1702c8eb9d656f6566920aaec9fb3e7e1265132"
   dependencies:
     vuvuzela "1.0.3"
+
+pouchdb-mapreduce-utils@6.4.3:
+  version "6.4.3"
+  resolved "https://registry.yarnpkg.com/pouchdb-mapreduce-utils/-/pouchdb-mapreduce-utils-6.4.3.tgz#1245e1ca4d3f216d336030c669dd97d6597442e4"
+  dependencies:
+    argsarray "0.0.1"
+    inherits "2.0.3"
+    pouchdb-collections "6.4.3"
+    pouchdb-utils "6.4.3"
 
 pouchdb-md5@6.4.3:
   version "6.4.3"
@@ -6692,6 +6728,13 @@ pouchdb-promise@6.4.3, pouchdb-promise@^6.1.2:
   resolved "https://registry.yarnpkg.com/pouchdb-promise/-/pouchdb-promise-6.4.3.tgz#74516f4acf74957b54debd0fb2c0e5b5a68ca7b3"
   dependencies:
     lie "3.1.1"
+
+pouchdb-selector-core@6.4.3:
+  version "6.4.3"
+  resolved "https://registry.yarnpkg.com/pouchdb-selector-core/-/pouchdb-selector-core-6.4.3.tgz#03a9cfd9284589baf836f3005ff15cf5e0eaf705"
+  dependencies:
+    pouchdb-collate "6.4.3"
+    pouchdb-utils "6.4.3"
 
 pouchdb-upsert@^2.2.0:
   version "2.2.0"
