@@ -178,6 +178,16 @@ var store = new Vuex.Store({
             }
             var projectId = getters.activeServer.active_project;
             return getters.activeServer.projects[projectId];
+        },
+        currentGraphs: function(state, getters) {
+            if (!getters.activeServer) {
+                return {};
+            }
+            var graphs = {};
+            getters.activeProject.graphs.forEach(function(graph) {
+                graphs[graph.graphid] = graph;
+            });
+            return graphs;
         }
     },
     mutations: {
