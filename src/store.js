@@ -347,6 +347,48 @@ var store = new Vuex.Store({
         },
         getProjectResourcesGeoJSON: function({commit, state}, projectId) {
             return pouchDBs.getResourcesGeoJSON(projectId);
+        },
+        setupProjectBasemaps: function({commit, state}, project) {
+            const mbtilesFile = `${project.id}.mbtiles`;
+            return new Promise((resolve, reject) => {
+                if (window.device.platform === 'Android') {
+                    return window.resolveLocalFileSystemURL(
+                        window.cordova.file.applicationStorageDirectory,
+                        (dir) => {
+                            dir.getDirectory(
+                                'databases',
+                                {create: true},
+                                (subdir) => {
+                                    resolve(subdir);
+                                }
+                            );
+                        },
+                        reject
+                    );
+                } else if (window.device.platform === 'iOS') {
+                    return window.resolveLocalFileSystemURL(
+                        window.cordova.file.documentsDirectory,
+                        resolve,
+                        reject
+                    );
+                } else {
+                    reject(new Error('Platform not supported'));
+                };
+            }).then((target) => {
+                return new Promise((resolve, reject) => {
+                    target.getFile(mbtilesFile, {}, resolve, reject);
+                }).catch(() => {
+                    return new Promise((resolve, reject) => {
+                        new window.FileTransfer().download(
+                            encodeURI(project.tilecache),
+                            target.toURL() + mbtilesFile,
+                            resolve,
+                            reject,
+                            true
+                        );
+                    });
+                });
+            });
         }
     }
 });

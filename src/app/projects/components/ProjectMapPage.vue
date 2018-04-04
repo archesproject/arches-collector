@@ -14,7 +14,11 @@
             </div>
             <div ref="popup">
                 <div class="popup-content">
-                    Name: {{ selectedResource.displayname }}
+                    <h4>{{ selectedResource.displayname }}</h4>
+                    <hr>
+                    <div class="description">
+                        {{ selectedResource.displaydescription }}
+                    </div>
                 </div>
             </div>
         </div>
@@ -37,8 +41,6 @@ export default {
     data() {
         return {
             mapId: `project-map-${uuidv4()}`,
-            mbtilesFile: `${this.project.id}.mbtiles`,
-            tileCacheURI: encodeURI(this.project.tilecache),
             bounds: new mapboxgl.LngLatBounds(
                 geojsonExtent(
                     parseWKT(this.project.bounds)
@@ -50,13 +52,14 @@ export default {
             },
             selectedResource: {
                 id: null,
-                displayname: ''
+                displayname: '',
+                displaydescription: ''
             },
             loading: true
         };
     },
     mounted() {
-        this.setupDB()
+        this.setupBasemaps()
             .then(this.getResourceData)
             .then(this.mapInit)
             .then(() => {
@@ -64,65 +67,19 @@ export default {
             });
     },
     methods: {
-        setupDB() {
-            return this.getDBTarget().then((target) => {
-                return this.checkDB(target).catch(() => {
-                    return this.downloadDB(target);
-                });
-            });
-        },
-        getDBTarget() {
-            return new Promise((resolve, reject) => {
-                if (window.device.platform === 'Android') {
-                    return window.resolveLocalFileSystemURL(
-                        window.cordova.file.applicationStorageDirectory,
-                        (dir) => {
-                            dir.getDirectory(
-                                'databases',
-                                {create: true},
-                                (subdir) => {
-                                    resolve(subdir);
-                                }
-                            );
-                        },
-                        reject
-                    );
-                } else if (window.device.platform === 'iOS') {
-                    return window.resolveLocalFileSystemURL(
-                        window.cordova.file.documentsDirectory,
-                        resolve,
-                        reject
-                    );
-                } else {
-                    reject(new Error('Platform not supported'));
-                };
-            });
-        },
-        checkDB(target) {
-            return new Promise((resolve, reject) => {
-                target.getFile(this.mbtilesFile, {}, resolve, reject);
-            });
-        },
-        downloadDB(target) {
-            return new Promise((resolve, reject) => {
-                new window.FileTransfer().download(
-                    this.tileCacheURI,
-                    target.toURL() + this.mbtilesFile,
-                    (entry) => {
-                        resolve(entry);
-                    },
-                    (error) => {
-                        reject(error);
-                    },
-                    true
-                );
-            });
+        setupBasemaps() {
+            return this.$store.dispatch(
+                'setupProjectBasemaps',
+                this.project
+            );
         },
         getResourceData() {
-            return this.$store.dispatch('getProjectResourcesGeoJSON', this.project.id)
-                .then((resourceGeoJSON) => {
-                    this.resourceGeoJSON = resourceGeoJSON;
-                });
+            return this.$store.dispatch(
+                'getProjectResourcesGeoJSON',
+                this.project.id
+            ).then((resourceGeoJSON) => {
+                this.resourceGeoJSON = resourceGeoJSON;
+            });
         },
         mapInit() {
             return new mapboxgl.OfflineMap(this.getMapConfig())
@@ -141,7 +98,7 @@ export default {
                     sources: {
                         openmaptiles: {
                             type: 'mbtiles',
-                            path: this.mbtilesFile,
+                            path: `${this.project.id}.mbtiles`,
                             attribution: this.$refs.attribution.innerHTML
                         },
                         resources: {
@@ -163,12 +120,10 @@ export default {
             const size = se.sub(nw);
             const scaleX = (tr.width - 80) / size.x;
             const scaleY = (tr.height - 80) / size.y;
-            const jumpInfo = {
+            map.jumpTo({
                 center: tr.unproject(nw.add(se).div(2)),
                 zoom: tr.scaleZoom(tr.scale * Math.min(scaleX, scaleY))
-            };
-            console.log(jumpInfo);
-            map.jumpTo(jumpInfo);
+            });
         },
         addResourceMarkers(map) {
             map.loadImage('static/map/marker.png', (err, img) => {
@@ -190,8 +145,8 @@ export default {
                     }
                 });
                 map.on('click', 'resource-markers', (e) => {
-                    const markerHeight = 23;
-                    const markerRadius = 10;
+                    const markerHeight = 28;
+                    const markerRadius = 12;
                     const linearOffset = 5;
                     const offset = {
                         'top': [0, 0],
@@ -240,6 +195,8 @@ export default {
 <style scoped>
 .mapboxgl-map {
     height: 100%;
+    border: 1px solid rgb(200, 200, 200);
+    box-sizing: border-box;
 }
 ons-progress-circular {
     display: block;
@@ -250,7 +207,12 @@ ons-progress-circular {
 }
 .popup-content {
     margin: 12px 6px 4px;
-    font-size: 1.2em;
     color: dimgrey;
+    max-width: 170px;
+}
+.popup-content .description {
+    font-size: 0.8em;
+    line-height: 1.2em;
+    margin: 2px;
 }
 </style>
