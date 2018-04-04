@@ -4,8 +4,8 @@
             <v-ons-list>
                 <v-ons-list-item tappable modifier="longdivider" v-for="resource_type in resource_types" :key="resource_type.graphid" @click="selectResourceType(resource_type);">
                     <span>
-                        <v-ons-icon v-bind:class="resource_type.iconclass"></v-ons-icon>New
-                        {{resource_type.name}}{{resource_type.iconclass}}<br>
+                        <v-ons-icon v-bind:icon="resource_type.iconclass.replace('fa ', '')"></v-ons-icon>
+                        <span style="padding-left: 3px"> New {{resource_type.name}}</span><br>
                         <span style="font-size: 12px;">Currently x records; x edited</span>
                     </span>
                 </v-ons-list-item>
