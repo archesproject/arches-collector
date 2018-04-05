@@ -1,7 +1,7 @@
 <template>
     <page-header-layout>
         <v-ons-page>
-            <v-ons-toolbar style="background-color: whitesmoke;">      
+            <v-ons-toolbar style="background-color: whitesmoke;">
                 <div class="left">
                     <v-ons-toolbar-button>
                         <router-link :to="{ name: 'projectlist' }"><v-ons-icon class="text-color-dark project-header" icon="ion-android-arrow-dropleft-circle"></v-ons-icon></router-link>
@@ -15,7 +15,7 @@
                     </v-ons-toolbar-button>
                 </div>
             </v-ons-toolbar>
-            
+
             <v-ons-carousel fullscreen swipeable auto-scroll overscrollable
                 :index.sync="carouselIndex"
                 id="projectCarousel"
@@ -33,8 +33,8 @@
                     <select-resouce-instance-page />
                 </v-ons-carousel-item>
 
-                <v-ons-carousel-item>
-                    <project-map-page />
+                <v-ons-carousel-item class="padded-page map-page">
+                    <project-map-page :project="project"/>
                 </v-ons-carousel-item>
 
             </v-ons-carousel>
@@ -72,7 +72,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-    
+
     .project-header{
         font-size: 22px !important;
         vertical-align: -5% !important;
@@ -84,6 +84,10 @@ export default {
 
     .padded-page > ons-page {
         margin: 20px;
+    }
+
+    .padded-page.map-page > ons-page {
+        margin-bottom: 60px;
     }
 
 </style>

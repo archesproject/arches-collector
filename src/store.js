@@ -2,10 +2,12 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import PouchDB from 'pouchdb';
 import PouchDBupsert from 'pouchdb-upsert';
+import PouchDBFind from 'pouchdb-find';
 import SqlLiteAdapter from 'pouchdb-adapter-cordova-sqlite';
 
 Vue.use(Vuex);
 PouchDB.plugin(PouchDBupsert);
+PouchDB.plugin(PouchDBFind);
 PouchDB.plugin(SqlLiteAdapter);
 
 var adapter = 'cordova-sqlite';
@@ -168,6 +170,31 @@ var pouchDBs = (function() {
                 // CATCH 409 ERROR HERE
                     console.log(err);
                 });
+        },
+        getResourcesGeoJSON: function(projectId) {
+            return this._projectDBs[projectId]['local'].find({
+                selector: {
+                    type: 'resource'
+                }
+            }).then(function(docs) {
+                let features = [];
+                for (const doc of docs.docs) {
+                    for (const geom of doc.geometries) {
+                        for (let feature of geom.geom.features) {
+                            feature.properties.id = doc._id;
+                            feature.properties.displayname = doc.displayname;
+                            feature.properties.displaydescription = doc.displaydescription;
+                            features.push(feature);
+                        }
+                    }
+                }
+                return {
+                    type: 'FeatureCollection',
+                    features: features
+                };
+            }).catch(function(err) {
+                console.log(err);
+            });
         }
     };
 }());
@@ -220,6 +247,16 @@ var store = new Vuex.Store({
                 return Object.keys(project.resources_to_sync).length;
             }
             return 0;
+        },
+        currentGraphs: function(state, getters) {
+            if (!getters.activeServer) {
+                return {};
+            }
+            var graphs = {};
+            getters.activeProject.graphs.forEach(function(graph) {
+                graphs[graph.graphid] = graph;
+            });
+            return graphs;
         }
     },
     mutations: {
@@ -365,6 +402,51 @@ var store = new Vuex.Store({
             .then(function(doc) {
                 commit('setResourceAsEdited', {'projectId': project.id, 'resourceInstanceId': tile.resourceinstance_id});
                 return doc;
+            });
+        },
+        getProjectResourcesGeoJSON: function({commit, state}, projectId) {
+            return pouchDBs.getResourcesGeoJSON(projectId);
+        },
+        setupProjectBasemaps: function({commit, state}, project) {
+            const mbtilesFile = `${project.id}.mbtiles`;
+            return new Promise((resolve, reject) => {
+                if (window.device.platform === 'Android') {
+                    return window.resolveLocalFileSystemURL(
+                        window.cordova.file.applicationStorageDirectory,
+                        (dir) => {
+                            dir.getDirectory(
+                                'databases',
+                                {create: true},
+                                (subdir) => {
+                                    resolve(subdir);
+                                }
+                            );
+                        },
+                        reject
+                    );
+                } else if (window.device.platform === 'iOS') {
+                    return window.resolveLocalFileSystemURL(
+                        window.cordova.file.documentsDirectory,
+                        resolve,
+                        reject
+                    );
+                } else {
+                    reject(new Error('Platform not supported'));
+                };
+            }).then((target) => {
+                return new Promise((resolve, reject) => {
+                    target.getFile(mbtilesFile, {}, resolve, reject);
+                }).catch(() => {
+                    return new Promise((resolve, reject) => {
+                        new window.FileTransfer().download(
+                            encodeURI(project.tilecache),
+                            target.toURL() + mbtilesFile,
+                            resolve,
+                            reject,
+                            true
+                        );
+                    });
+                });
             });
         }
     }

@@ -26,6 +26,8 @@
     <plugin name="cordova-plugin-device" spec="^2.0.1" />
     <plugin name="cordova-plugin-file" spec="^6.0.1" />
     <plugin name="cordova-sqlite-ext" spec="^2.1.1" />
+    <plugin name="cordova-plugin-file-transfer" spec="^1.7.1" />
+    <preference name="DisallowOverscroll" value="true" />
     <engine name="browser" spec="^5.0.3" />
     <engine name="ios" spec="^4.5.4" />
     <engine name="android" spec="^7.1.0" />
