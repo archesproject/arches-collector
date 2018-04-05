@@ -207,7 +207,7 @@ var store = new Vuex.Store({
                 _id: 'servers',
                 active: null,
                 servers: {}
-            },
+            }
         },
         tiles: []
     },
@@ -243,7 +243,7 @@ var store = new Vuex.Store({
         },
         resourcesToSync: function(state, getters) {
             var project = getters.activeProject;
-            if('resources_to_sync' in project){
+            if ('resources_to_sync' in project) {
                 return Object.keys(project.resources_to_sync).length;
             }
             return 0;
@@ -375,7 +375,7 @@ var store = new Vuex.Store({
                             time: ''
                         };
                         project.resources_to_sync = {};
-                        project.resources_with_conflicts ={};
+                        project.resources_with_conflicts = {};
                     });
                     commit('updateProjects', {
                         url: server.url,
@@ -399,10 +399,10 @@ var store = new Vuex.Store({
         persistTile: function({commit, state}, tile) {
             var project = store.getters.activeProject;
             return pouchDBs.putTile(project.id, tile)
-            .then(function(doc) {
-                commit('setResourceAsEdited', {'projectId': project.id, 'resourceInstanceId': tile.resourceinstance_id});
-                return doc;
-            });
+                .then(function(doc) {
+                    commit('setResourceAsEdited', {'projectId': project.id, 'resourceInstanceId': tile.resourceinstance_id});
+                    return doc;
+                });
         },
         getProjectResourcesGeoJSON: function({commit, state}, projectId) {
             return pouchDBs.getResourcesGeoJSON(projectId);
