@@ -136,6 +136,38 @@ var pouchDBs = (function() {
             }).catch(function(err) {
                 console.log(err);
             });
+        },
+        getTiles: function(projectId) {
+            return this._projectDBs[projectId]['local']
+                .allDocs({include_docs: true, descending: true})
+                .then(function(doc) {
+                    var docs = doc.rows.map(function(x) {
+                        return x.doc;
+                    });
+                    return docs;
+                })
+                .catch(function(err) {
+                    console.log(err);
+                });
+        },
+        putTile: function(projectId, tile) {
+            this._projectDBs[projectId]['local']
+                .changes({
+                    include_docs: true
+                })
+                .then(function(docs) {
+                    console.log(docs);
+                });
+            return this._projectDBs[projectId]['local']
+                .put(tile)
+                .then(function(response) {
+                    tile._rev = response.rev;
+                    return response;
+                })
+                .catch(function(err) {
+                // CATCH 409 ERROR HERE
+                    console.log(err);
+                });
         }
     };
 }());
@@ -148,9 +180,9 @@ var store = new Vuex.Store({
                 _id: 'servers',
                 active: null,
                 servers: {}
-            }
-
-        }
+            },
+        },
+        tiles: []
     },
     getters: {
         activeServer: function(state, getters) {
@@ -178,6 +210,16 @@ var store = new Vuex.Store({
             }
             var projectId = getters.activeServer.active_project;
             return getters.activeServer.projects[projectId];
+        },
+        getTiles: function(state, getters) {
+            return state.tiles;
+        },
+        resourcesToSync: function(state, getters) {
+            var project = getters.activeProject;
+            if('resources_to_sync' in project){
+                return Object.keys(project.resources_to_sync).length;
+            }
+            return 0;
         }
     },
     mutations: {
@@ -203,6 +245,11 @@ var store = new Vuex.Store({
         },
         setActiveProject: function(state, value) {
             store.getters.activeServer.active_project = value.project_id;
+            store.dispatch('getTiles', value.project_id)
+                .then(function(doc) {
+                    console.log(doc);
+                    return doc;
+                });
         },
         setLastProjectSync: function(state, projectId) {
             var now = new Date();
@@ -214,6 +261,9 @@ var store = new Vuex.Store({
             Vue.set(store.getters.currentProjects[projectId].lastsync, 'date', now.toISOString().split('T')[0].replace(/-/g, '/'));
             Vue.set(store.getters.currentProjects[projectId].lastsync, 'time', pad(now.getHours(), 2) + ':' + pad(now.getMinutes(), 2));
             store.dispatch('saveServerInfo');
+        },
+        setResourceAsEdited: function(state, value) {
+            Vue.set(store.getters.currentProjects[value.projectId].resources_to_sync, value.resourceInstanceId, false);
         }
     },
     modules: {
@@ -239,6 +289,9 @@ var store = new Vuex.Store({
         },
         syncRemote: function({commit, state}, projectId) {
             return pouchDBs.syncProject(projectId)
+                .then(function() {
+                    return store.dispatch('getTiles', projectId);
+                })
                 .then(function() {
                     return store.commit('setLastProjectSync', projectId);
                 });
@@ -284,6 +337,8 @@ var store = new Vuex.Store({
                             date: '',
                             time: ''
                         };
+                        project.resources_to_sync = {};
+                        project.resources_with_conflicts ={};
                     });
                     commit('updateProjects', {
                         url: server.url,
@@ -295,28 +350,22 @@ var store = new Vuex.Store({
                     console.log('Error:', error);
                     self.error = true;
                 });
-            // return new Promise(function(resolve, reject) {
-            //     setTimeout(function() {
-            //         var projects = [{
-            //             name: 'SF Field Collection',
-            //             id: '23902938-2342302-234-2323',
-            //             status: 'active'
-            //         }, {
-            //             name: 'Portland Tree Survey',
-            //             id: '9094309034-2342302-234-1211',
-            //             status: 'active'
-            //         }];
-            //         var payload = {
-            //             url: url,
-            //             projects: projects
-            //         };
-            //         commit('updateProjects', payload);
-            //         resolve();
-            //     }, 1000);
-            // });
         },
         getProjectChanges: function({commit, state}, projectId) {
             return pouchDBs.getChanges(projectId);
+        },
+        getTiles: function({commit, state}, projectId) {
+            pouchDBs.getTiles(projectId).then(function(tiles) {
+                state.tiles = tiles;
+            });
+        },
+        persistTile: function({commit, state}, tile) {
+            var project = store.getters.activeProject;
+            return pouchDBs.putTile(project.id, tile)
+            .then(function(doc) {
+                commit('setResourceAsEdited', {'projectId': project.id, 'resourceInstanceId': tile.resourceinstance_id});
+                return doc;
+            });
         }
     }
 });

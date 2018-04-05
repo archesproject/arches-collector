@@ -6,7 +6,7 @@
                 <span class="sub-text">Records Edited</span>
             </v-ons-col>
             <v-ons-col>
-                <div class="large-text">12</div>
+                <div class="large-text">{{records_to_sync}}</div>
                 <span class="sub-text">Records to Sync</span>
             </v-ons-col>
             <v-ons-col>
@@ -50,6 +50,9 @@ export default {
     computed: {
         sync_btn_text() {
             return (this.syncing ? 'Syncing...' : (this.sync_failed ? 'Sync Failed' : (this.project.lastsync.date === '' ? 'Join Project' : 'Sync Now')));
+        },
+        records_to_sync() {
+            return this.$store.getters.resourcesToSync;
         }
     },
     methods: {
