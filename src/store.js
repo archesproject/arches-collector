@@ -171,6 +171,17 @@ var pouchDBs = (function() {
                     console.log(err);
                 });
         },
+        getResources: function(projectId) {
+            return this._projectDBs[projectId]['local'].find({
+                selector: {
+                    type: 'resource'
+                }
+            }).then(function(docs) {
+                return docs;
+            }).catch(function(err) {
+                console.log(err);
+            });
+        },
         getResourcesGeoJSON: function(projectId) {
             return this._projectDBs[projectId]['local'].find({
                 selector: {
@@ -406,6 +417,9 @@ var store = new Vuex.Store({
         },
         getProjectResourcesGeoJSON: function({commit, state}, projectId) {
             return pouchDBs.getResourcesGeoJSON(projectId);
+        },
+        getProjectResources: function({commit, state}, projectId) {
+            return pouchDBs.getResources(projectId);
         },
         setupProjectBasemaps: function({commit, state}, project) {
             const mbtilesFile = `${project.id}.mbtiles`;
