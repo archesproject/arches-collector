@@ -171,11 +171,22 @@ var pouchDBs = (function() {
                     console.log(err);
                 });
         },
-        getResources: function(projectId) {
-            return this._projectDBs[projectId]['local'].find({
-                selector: {
+        getResources: function(projectId, instances) {
+            var query;
+            if (!instances) {
+                query = {
                     type: 'resource'
-                }
+                };
+            } else {
+                query = {
+                    type: 'resource',
+                    resourceinstanceid: {
+                        $in: instances
+                    }
+                };
+            };
+            return this._projectDBs[projectId]['local'].find({
+                selector: query
             }).then(function(docs) {
                 return docs;
             }).catch(function(err) {
@@ -295,9 +306,11 @@ var store = new Vuex.Store({
             store.getters.activeServer.active_project = value.project_id;
             store.dispatch('getTiles', value.project_id)
                 .then(function(doc) {
-                    console.log(doc);
                     return doc;
                 });
+        },
+        setActiveResourceInstance: function(state, value) {
+            store.getters.activeServer.active_resource = value.resourceinstanceid;
         },
         setLastProjectSync: function(state, projectId) {
             var now = new Date();
@@ -412,6 +425,16 @@ var store = new Vuex.Store({
             return pouchDBs.putTile(project.id, tile)
                 .then(function(doc) {
                     commit('setResourceAsEdited', {'projectId': project.id, 'resourceInstanceId': tile.resourceinstance_id});
+                    pouchDBs.getResources(project.id, [tile.resourceinstance_id]).then(function(resources) {
+                        var resource = resources['docs'][0];
+                        resource['edited'] = new Date();
+                        Vue.set(resource);
+                        console.log(resource);
+                    });
+                    pouchDBs.getResources(project.id, [tile.resourceinstance_id]).then(function(resources) {
+                        var resource = resources['docs'][0];
+                        console.log('the edited resource:', resource);
+                    });
                     return doc;
                 });
         },

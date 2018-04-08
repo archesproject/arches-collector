@@ -12,7 +12,8 @@
                             </span>
                         <span class='resource-model-title'>
                             <span style="padding-left: 0"> New {{resource_instance.displayname}}</span>
-                            <span class='resource-model-subtitle'>Currently x records; x edited</span>
+                            <span v-if="resource_instance.edited" class='resource-model-subtitle'>Last edit: {{resource_instance.edited.toDateString()}} @ {{resource_instance.edited.toTimeString()}}</span>
+                            <span v-else class='resource-model-subtitle'>Unedited</span>
                         </span>
                         </div>
                     </span>
@@ -38,25 +39,26 @@ export default {
     },
     mounted() {
         this.getResourceData();
-        console.log('getting resource types');
         var self = this;
         var resourceTypes = {};
         self.$store.getters.activeProject.graphs.forEach(function(graph) {
             resourceTypes[graph.graphid] = graph;
         });
-        console.log(resourceTypes);
         this.resource_types = resourceTypes;
     },
     methods: {
-        selectResourceInstance: function(e) {
-            console.log("You've selected:", e);
+        selectResourceInstance: function(resource) {
+            var payload = {
+                resourceinstanceid: resource.resourceinstanceid
+            };
+            this.$store.commit('setActiveResourceInstance', payload);
+            this.$router.push({'name': 'resource', params: { id: resource }});
         },
         getResourceData: function() {
             return this.$store.dispatch(
                 'getProjectResources',
                 this.$store.getters.activeProject.id
             ).then((res) => {
-                console.log('results', res);
                 this.instances = res['docs'];
             });
         }
