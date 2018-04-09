@@ -12,7 +12,7 @@
                             </span>
                         <span class='resource-model-title'>
                             <span style="padding-left: 0"> New {{resource_instance.displayname}}</span>
-                            <span v-if="resource_instance.edited" class='resource-model-subtitle'>Last edit: {{resource_instance.edited.toDateString()}} @ {{resource_instance.edited.toTimeString()}}</span>
+                            <span v-if="resource_instance.edited" class='resource-model-subtitle'>Last edit: {{resource_instance.edited.day}} @ {{resource_instance.edited.time}}</span>
                             <span v-else class='resource-model-subtitle'>Unedited</span>
                         </span>
                         </div>

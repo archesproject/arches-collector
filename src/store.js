@@ -139,7 +139,7 @@ var pouchDBs = (function() {
                 console.log(err);
             });
         },
-        getTiles: function(projectId) {
+        getTiles: function(projectId, resourceId) {
             return this._projectDBs[projectId]['local']
                 .allDocs({include_docs: true, descending: true})
                 .then(function(doc) {
@@ -164,6 +164,25 @@ var pouchDBs = (function() {
                 .put(tile)
                 .then(function(response) {
                     tile._rev = response.rev;
+                    return response;
+                })
+                .catch(function(err) {
+                // CATCH 409 ERROR HERE
+                    console.log(err);
+                });
+        },
+        putResource: function(projectId, resource) {
+            this._projectDBs[projectId]['local']
+                .changes({
+                    include_docs: true
+                })
+                .then(function(docs) {
+                    console.log(docs);
+                });
+            return this._projectDBs[projectId]['local']
+                .put(resource)
+                .then(function(response) {
+                    resource._rev = response.rev;
                     return response;
                 })
                 .catch(function(err) {
@@ -325,6 +344,12 @@ var store = new Vuex.Store({
         },
         setResourceAsEdited: function(state, value) {
             Vue.set(store.getters.currentProjects[value.projectId].resources_to_sync, value.resourceInstanceId, false);
+        },
+        setResourceDocAsEdited: function(state, value) {
+            var res;
+            var date = new Date();
+            res = Vue.set(value, value['docs'][0]['edited'], date);
+            console.log(res);
         }
     },
     modules: {
@@ -425,16 +450,14 @@ var store = new Vuex.Store({
             return pouchDBs.putTile(project.id, tile)
                 .then(function(doc) {
                     commit('setResourceAsEdited', {'projectId': project.id, 'resourceInstanceId': tile.resourceinstance_id});
-                    pouchDBs.getResources(project.id, [tile.resourceinstance_id]).then(function(resources) {
-                        var resource = resources['docs'][0];
-                        resource['edited'] = new Date();
-                        Vue.set(resource);
-                        console.log(resource);
-                    });
-                    pouchDBs.getResources(project.id, [tile.resourceinstance_id]).then(function(resources) {
-                        var resource = resources['docs'][0];
-                        console.log('the edited resource:', resource);
-                    });
+                    return doc;
+                });
+        },
+        persistResource: function({commit, state}, resource) {
+            var project = store.getters.activeProject;
+            return pouchDBs.putResource(project.id, resource)
+                .then(function(doc) {
+                    commit('setResourceDocAsEdited', resource);
                     return doc;
                 });
         },
@@ -443,6 +466,10 @@ var store = new Vuex.Store({
         },
         getProjectResources: function({commit, state}, projectId) {
             return pouchDBs.getResources(projectId);
+        },
+        getResource: function({commit, state}, ids) {
+            var resources = pouchDBs.getResources(ids.projectid, [ids.resourceid]);
+            return resources;
         },
         setupProjectBasemaps: function({commit, state}, project) {
             const mbtilesFile = `${project.id}.mbtiles`;
