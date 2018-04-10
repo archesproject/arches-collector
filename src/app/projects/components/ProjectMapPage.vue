@@ -27,7 +27,6 @@
 
 <script>
 import geojsonExtent from '@mapbox/geojson-extent';
-import parseWKT from 'wellknown';
 import uuidv4 from 'uuid/v4';
 import 'mapbox-gl-cordova-offline/www/mapbox-gl.css';
 // TODO: pull basemap layer styles from project?
@@ -43,7 +42,7 @@ export default {
             mapId: `project-map-${uuidv4()}`,
             bounds: new mapboxgl.LngLatBounds(
                 geojsonExtent(
-                    parseWKT(this.project.bounds)
+                    this.project.bounds
                 )
             ),
             resourceGeoJSON: {
