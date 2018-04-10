@@ -26,11 +26,11 @@
                 </v-ons-carousel-item>
 
                 <v-ons-carousel-item class="padded-page">
-                    <select-resouce-type-page />
+                    <select-resource-type-page />
                 </v-ons-carousel-item>
 
                 <v-ons-carousel-item class="padded-page">
-                    <select-resouce-instance-page />
+                    <select-resource-instance-page />
                 </v-ons-carousel-item>
 
                 <v-ons-carousel-item class="padded-page map-page">

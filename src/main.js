@@ -22,8 +22,8 @@ Vue.component('page-header', PageHeader);
 Vue.component('page-header-layout', PageHeaderLayout);
 Vue.component('project-metadata-page', ProjectMetadataPage);
 Vue.component('project-map-page', ProjectMapPage);
-Vue.component('select-resouce-instance-page', SelectResourceInstancePage);
-Vue.component('select-resouce-type-page', SelectResourceTypePage);
+Vue.component('select-resource-instance-page', SelectResourceInstancePage);
+Vue.component('select-resource-type-page', SelectResourceTypePage);
 Vue.component('resource-edit-page', ResourceEditPage);
 // Vue.config.productionTip = false;
 

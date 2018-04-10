@@ -344,12 +344,6 @@ var store = new Vuex.Store({
         },
         setResourceAsEdited: function(state, value) {
             Vue.set(store.getters.currentProjects[value.projectId].resources_to_sync, value.resourceInstanceId, false);
-        },
-        setResourceDocAsEdited: function(state, value) {
-            var res;
-            var date = new Date();
-            res = Vue.set(value, value['docs'][0]['edited'], date);
-            console.log(res);
         }
     },
     modules: {
@@ -457,7 +451,6 @@ var store = new Vuex.Store({
             var project = store.getters.activeProject;
             return pouchDBs.putResource(project.id, resource)
                 .then(function(doc) {
-                    commit('setResourceDocAsEdited', resource);
                     return doc;
                 });
         },
