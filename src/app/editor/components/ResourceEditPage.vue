@@ -3,7 +3,7 @@
        <v-ons-toolbar style="background-color: whitesmoke;">
            <div class="left">
                <v-ons-toolbar-button>
-                   <router-link :to="{ name: 'select-resource-instance-page', params: { id: this.projectid } }"><v-ons-icon class="text-color-dark project-header" icon="ion-android-arrow-dropleft-circle"></v-ons-icon></router-link>
+                   <router-link :to="{ name: 'project', params: { project: this.project, carouselIndex: 2 } }"><v-ons-icon class="text-color-dark project-header" icon="ion-android-arrow-dropleft-circle"></v-ons-icon></router-link>
                </v-ons-toolbar-button>
            </div>
            <div class="center"></div>
@@ -36,7 +36,7 @@ export default {
     props: ['id'],
     data() {
         return {
-            projectid: this.$store.getters.activeProject.id,
+            project: this.$store.getters.activeProject,
             resourceid: this.$store.getters.activeServer.active_resource
         };
     },
@@ -59,7 +59,7 @@ export default {
                 });
             this.$store.dispatch(
                 'getResource', {
-                    projectid: this.$store.getters.activeProject.id,
+                    projectid: this.project.id,
                     resourceid: this.$store.getters.activeServer.active_resource
                 }
             ).then((res) => {
