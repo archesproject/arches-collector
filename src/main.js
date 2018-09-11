@@ -3,6 +3,7 @@
 import 'onsenui/css/onsenui.css';
 import 'onsenui/css/onsen-css-components.css';
 import './assets/css/index.css';
+import './assets/css/fontawesome.min.css';
 
 import Vue from 'vue';
 import VueOnsen from 'vue-onsenui';
