@@ -56,7 +56,7 @@
 <script>
 export default {
     name: 'Project',
-    props: ['project'],
+    props: ['project', 'carouselIndex'],
     data() {
         return {
             carouselIndex: 0,

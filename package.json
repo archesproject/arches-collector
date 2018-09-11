@@ -26,7 +26,7 @@
         "cordova-plugin-file-transfer": "^1.7.1",
         "cordova-plugin-whitelist": "^1.3.3",
         "cordova-sqlite-ext": "^2.1.1",
-        "mapbox-gl-cordova-offline": "archesproject/mapbox-gl-cordova-offline#f4f7e4d371f21b57e867f73ba3e1ce30adfa400a",
+        "mapbox-gl-cordova-offline": "archesproject/mapbox-gl-cordova-offline#master",
         "onsenui": "~2.9.1",
         "pouchdb": "^6.4.3",
         "pouchdb-adapter-cordova-sqlite": "pouchdb-community/pouchdb-adapter-cordova-sqlite#master",

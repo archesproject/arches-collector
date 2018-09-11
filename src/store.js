@@ -139,7 +139,7 @@ var pouchDBs = (function() {
                 console.log(err);
             });
         },
-        getTiles: function(projectId) {
+        getTiles: function(projectId, resourceId) {
             return this._projectDBs[projectId]['local']
                 .allDocs({include_docs: true, descending: true})
                 .then(function(doc) {
@@ -170,6 +170,47 @@ var pouchDBs = (function() {
                 // CATCH 409 ERROR HERE
                     console.log(err);
                 });
+        },
+        putResource: function(projectId, resource) {
+            this._projectDBs[projectId]['local']
+                .changes({
+                    include_docs: true
+                })
+                .then(function(docs) {
+                    console.log(docs);
+                });
+            return this._projectDBs[projectId]['local']
+                .put(resource)
+                .then(function(response) {
+                    resource._rev = response.rev;
+                    return response;
+                })
+                .catch(function(err) {
+                // CATCH 409 ERROR HERE
+                    console.log(err);
+                });
+        },
+        getResources: function(projectId, instances) {
+            var query;
+            if (!instances) {
+                query = {
+                    type: 'resource'
+                };
+            } else {
+                query = {
+                    type: 'resource',
+                    resourceinstanceid: {
+                        $in: instances
+                    }
+                };
+            };
+            return this._projectDBs[projectId]['local'].find({
+                selector: query
+            }).then(function(docs) {
+                return docs;
+            }).catch(function(err) {
+                console.log(err);
+            });
         },
         getResourcesGeoJSON: function(projectId) {
             return this._projectDBs[projectId]['local'].find({
@@ -284,9 +325,11 @@ var store = new Vuex.Store({
             store.getters.activeServer.active_project = value.project_id;
             store.dispatch('getTiles', value.project_id)
                 .then(function(doc) {
-                    console.log(doc);
                     return doc;
                 });
+        },
+        setActiveResourceInstance: function(state, value) {
+            store.getters.activeServer.active_resource = value.resourceinstanceid;
         },
         setLastProjectSync: function(state, projectId) {
             var now = new Date();
@@ -404,8 +447,22 @@ var store = new Vuex.Store({
                     return doc;
                 });
         },
+        persistResource: function({commit, state}, resource) {
+            var project = store.getters.activeProject;
+            return pouchDBs.putResource(project.id, resource)
+                .then(function(doc) {
+                    return doc;
+                });
+        },
         getProjectResourcesGeoJSON: function({commit, state}, projectId) {
             return pouchDBs.getResourcesGeoJSON(projectId);
+        },
+        getProjectResources: function({commit, state}, projectId) {
+            return pouchDBs.getResources(projectId);
+        },
+        getResource: function({commit, state}, ids) {
+            var resources = pouchDBs.getResources(ids.projectid, [ids.resourceid]);
+            return resources;
         },
         setupProjectBasemaps: function({commit, state}, project) {
             const mbtilesFile = `${project.id}.mbtiles`;
