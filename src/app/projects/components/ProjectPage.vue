@@ -22,11 +22,11 @@
             >
 
                 <v-ons-carousel-item class="padded-page">
-                    <select-resouce-type-page :pageActive="carouselIndex === 0"/>
+                    <select-resource-type-page :pageActive="carouselIndex === 0"/>
                 </v-ons-carousel-item>
 
                 <v-ons-carousel-item class="padded-page">
-                    <select-resouce-instance-page />
+                    <select-resource-instance-page :project="project"/>
                 </v-ons-carousel-item>
 
                 <v-ons-carousel-item class="padded-page map-page">
@@ -56,7 +56,7 @@
 <script>
 export default {
     name: 'Project',
-    props: ['project', 'carouselIndex'],
+    props: ['project'],
     data() {
         return {
             carouselIndex: 0,
