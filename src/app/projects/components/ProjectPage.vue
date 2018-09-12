@@ -59,17 +59,7 @@ export default {
     props: ['project'],
     data() {
         return {
-            carouselIndex: 0,
-            dots: {
-                textAlign: 'center',
-                fontSize: '30px',
-                color: '#3e3e3e',
-                position: 'absolute',
-                bottom: '2%',
-                left: 0,
-                right: 0,
-                count: 4
-            }
+            carouselIndex: 0
         };
     }
 };
