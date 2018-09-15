@@ -4,37 +4,56 @@
             <v-ons-toolbar style="background-color: whitesmoke;">
                 <div class="left">
                     <v-ons-toolbar-button>
-                        <router-link :to="{ name: 'projectlist' }"><v-ons-icon class="text-color-dark project-header" icon="ion-android-arrow-dropleft-circle"></v-ons-icon></router-link>
+                        <router-link :to="{ name: 'projectlist' }">
+                            <v-ons-icon class="text-color-dark project-header" icon="ion-android-arrow-dropleft-circle"></v-ons-icon>
+                        </router-link>
                         <span class="text-color-dark project-name">{{project.name}}</span>
                     </v-ons-toolbar-button>
                 </div>
                 <div class="center"></div>
                 <div class="right">
-                    <v-ons-toolbar-button>
-                        <v-ons-icon class="text-color-dark project-name" icon="ion-ios-cloud-download-outline"></v-ons-icon>
+                    <v-ons-toolbar-button @click="toggleSideNav">
+                        <v-ons-icon class="text-color-dark project-name" icon="fa-lightbulb"></v-ons-icon>
                     </v-ons-toolbar-button>
                 </div>
             </v-ons-toolbar>
-
-            <v-ons-carousel fullscreen swipeable auto-scroll overscrollable
-                :index.sync="carouselIndex"
-                id="projectCarousel"
-            >
-
+            <div id="sidenav" class="sidenav">
+                <a @click="">
+                    <v-ons-icon class="text-color-dark icon" icon="fa-cloud-download-alt"></v-ons-icon>
+                    <span class="text-color-dark label">Sync records</span>
+                </a>
+                <a @click="">
+                    <v-ons-icon class="text-color-dark icon" icon="fa-filter"></v-ons-icon>
+                    <span class="text-color-dark label">Filter records</span>
+                </a>
+                <a @click="">
+                    <v-ons-icon class="text-color-dark icon" icon="fa-sort-alpha-down"></v-ons-icon>
+                    <span class="text-color-dark label">Sort records</span>
+                </a>
+                <a @click="">
+                    <v-ons-icon class="text-color-dark icon" icon="fa-trash-alt"></v-ons-icon>
+                    <span class="text-color-dark label">Delete project</span>
+                </a>
+                <a @click="">
+                    <v-ons-icon class="text-color-dark icon" icon="fa-map"></v-ons-icon>
+                    <span class="text-color-dark label">Project map</span>
+                </a>
+                <a @click="">
+                    <v-ons-icon class="text-color-dark icon" icon="fa-arrow-alt-circle-left"></v-ons-icon>
+                    <span class="text-color-dark label">Return to project list</span>
+                </a>
+            </div>
+            <v-ons-carousel fullscreen swipeable auto-scroll overscrollable :index.sync="carouselIndex" id="projectCarousel">
                 <v-ons-carousel-item class="padded-page">
-                    <select-resource-type-page :pageActive="carouselIndex === 0"/>
+                    <select-resource-type-page :pageActive="carouselIndex === 0" />
                 </v-ons-carousel-item>
-
                 <v-ons-carousel-item class="padded-page">
-                    <select-resource-instance-page :project="project"/>
+                    <select-resource-instance-page :project="project" />
                 </v-ons-carousel-item>
-
                 <v-ons-carousel-item class="padded-page map-page">
-                    <project-map-page :project="project"/>
+                    <project-map-page :project="project" />
                 </v-ons-carousel-item>
-
             </v-ons-carousel>
-
             <div class="navbar">
                 <a v-bind:class="carouselIndex === 0 ? 'active' : ''" @click="carouselIndex = 0">
                     <v-ons-icon class="text-color-dark icon" icon="fa-plus-circle"></v-ons-icon>
@@ -49,96 +68,155 @@
                     <div class="text-color-dark label">Summary</div>
                 </a>
             </div>
+            <div id="cover" class="cover"></div>
         </v-ons-page>
     </page-header-layout>
 </template>
-
 <script>
 export default {
     name: 'Project',
     props: ['project'],
     data() {
         return {
-            carouselIndex: 0
+            carouselIndex: 0,
+            showSideNav: true
         };
+    },
+    methods: {
+        toggleSideNav: function(event) {
+            if (this.showSideNav) {
+                document.getElementById('sidenav').style.right = '0%';
+                document.getElementById('cover').style.display = 'block';
+            } else {
+                document.getElementById('sidenav').style.right = '-80%';
+                document.getElementById('cover').style.display = 'none';
+            }
+            this.showSideNav = !this.showSideNav;
+        }
     }
 };
 </script>
-
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.page-backgound-color {
+    background-color: 'grey'
+}
 
-    .project-header{
-        font-size: 22px !important;
-        vertical-align: -5% !important;
-    }
+.project-header {
+    font-size: 22px !important;
+    vertical-align: -5% !important;
+}
 
-    .project-name{
-        font-size: 20px;
-    }
+.project-name {
+    font-size: 20px;
+}
 
-    .padded-page > ons-page {
-        margin: 20px;
-    }
+.padded-page > ons-page {
+    margin: 20px;
+}
 
-    .padded-page.map-page > ons-page {
-        margin-bottom: 60px;
-    }
+.padded-page.map-page > ons-page {
+    margin-bottom: 60px;
+}
 
-    /* Place the navbar at the bottom of the page, and make it stick */
-    .navbar {
-        background-color: #f5f5f5;
-        overflow: hidden;
-        position: fixed;
-        bottom: 0;
-        width: 100%;
+.cover {
+    width: 100%;
+    background-color: gray;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: .2;
+    display: none;
+}
 
-        padding: 0;
-        margin: 0;
-        list-style: none;
 
-        display: -webkit-box;
-        display: -moz-box;
-        display: -ms-flexbox;
-        display: -webkit-flex;
-        display: flex;
+/* Place the navbar at the bottom of the page, and make it stick */
 
-        -webkit-flex-flow: row wrap;
-        justify-content: space-around;
-    }
+.navbar {
+    background-color: #f5f5f5;
+    overflow: hidden;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-flow: row wrap;
+    justify-content: space-around;
+}
 
-    /* Style the links inside the navigation bar */
-    .navbar a {
-        float: left;
-        display: block;
-        color: #f2f2f2;
-        text-align: center;
-        padding: 14px 0px;
-        text-decoration: none;
-        font-size: 17px;
-        width: 33%;
-        flex-grow: 1;
-    }
 
-    .navbar .icon {
-        font-size: 14px !important;
-        font-family: FontAwesome5;
-    } 
+/* Style the links inside the navigation bar */
 
-    .navbar .label {
-        font-size: 12px !important;
-    } 
+.navbar a {
+    float: left;
+    display: block;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 0px;
+    text-decoration: none;
+    font-size: 17px;
+    width: 33%;
+    flex-grow: 1;
+}
 
-    /* Change the color of links on hover */
-    /*.navbar a:hover {
-        background-color: #ddd;
-        color: black;
-    }*/
+.navbar .icon {
+    font-size: 14px !important;
+    font-family: FontAwesome5;
+}
 
-    /* Add a color to the active/current link */
-    .navbar a.active {
-        background-color: white;
-        color: white;
-    }
+.navbar .label {
+    font-size: 12px !important;
+}
 
+
+/* Change the color of links on hover */
+
+
+/*.navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }*/
+
+
+/* Add a color to the active/current link */
+
+.navbar a.active {
+    background-color: white;
+    color: white;
+}
+
+.sidenav {
+    height: 100%;
+    width: 80%;
+    position: fixed;
+    z-index: 1;
+    right: -80%;
+    background-color: white;
+    overflow-x: hidden;
+    transition: 0.5s;
+    font-size: 16px;
+}
+
+.sidenav .icon {
+    font-family: FontAwesome5;
+}
+
+.sidenav a {
+    padding: 22px;
+    text-decoration: none;
+    display: block;
+    transition: 0.3s;
+    border-bottom: solid 2px #e8e8e8;
+}
+
+.sidenav a:hover {
+    color: #f1f1f1;
+}
 </style>
