@@ -38,7 +38,7 @@
                     <v-ons-icon class="text-color-dark icon" icon="fa-map"></v-ons-icon>
                     <span class="text-color-dark label">Project map</span>
                 </a>
-                <a @click="">
+                <a @click="toggleSideNav">
                     <v-ons-icon class="text-color-dark icon" icon="fa-arrow-alt-circle-left"></v-ons-icon>
                     <span class="text-color-dark label">Return to project list</span>
                 </a>
