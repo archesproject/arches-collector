@@ -18,9 +18,13 @@
                 </div>
             </v-ons-toolbar>
             <div id="sidenav" class="sidenav">
-                <a @click="">
-                    <v-ons-icon class="text-color-dark icon" icon="fa-cloud-download-alt"></v-ons-icon>
-                    <span class="text-color-dark label">Sync records</span>
+                <a @click="sync">
+                   <!--  <v-ons-icon class="text-color-dark icon" icon="fa-cloud-download-alt"></v-ons-icon> -->
+                    <v-ons-icon class="text-color-dark icon sync-spinner" v-if="!syncing && !sync_failed" icon="fa-cloud-download-alt"></v-ons-icon>
+                    <v-ons-icon v-if="sync_failed" icon="ion-android-alert" class="sync-spinner"></v-ons-icon>
+                    <v-ons-progress-circular v-if="syncing" indeterminate class="sync-spinner-offset">
+                    </v-ons-progress-circular>
+                    <span class="text-color-dark label">{{sync_btn_text}}</span>
                 </a>
                 <a @click="">
                     <v-ons-icon class="text-color-dark icon" icon="fa-filter"></v-ons-icon>
@@ -79,8 +83,15 @@ export default {
     data() {
         return {
             carouselIndex: 0,
-            showSideNav: true
+            showSideNav: true,
+            syncing: false,
+            sync_failed: false,
         };
+    },
+    computed: {
+        sync_btn_text() {
+            return (this.syncing ? 'Syncing...' : (this.sync_failed ? 'Sync Failed' : (this.project.lastsync.date === '' ? 'Join Project' : 'Sync Now')));
+        }
     },
     methods: {
         toggleSideNav: function(event) {
@@ -92,7 +103,20 @@ export default {
                 document.getElementById('cover').style.display = 'none';
             }
             this.showSideNav = !this.showSideNav;
-        }
+        },
+        sync: function() {
+            var self = this;
+            this.syncing = true;
+            this.sync_failed = false;
+            this.$store.dispatch('syncRemote', this.project.id)
+                .catch(function() {
+                    self.sync_failed = true;
+                })
+                .finally(function(doc) {
+                    console.log('syncing done');
+                    self.syncing = false;
+                });
+        },
     }
 };
 </script>
@@ -130,6 +154,18 @@ export default {
     display: none;
 }
 
+.sync-spinner {
+    width: 20px;
+    height: 20px;
+
+}
+.sync-spinner-offset {
+    width: 20px;
+    height: 20px;
+    position: relative;
+    left: -5px;
+    top: 6px;
+}
 
 /* Place the navbar at the bottom of the page, and make it stick */
 
