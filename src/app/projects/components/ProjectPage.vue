@@ -44,14 +44,14 @@
                 </a>
             </div>
             <v-ons-carousel fullscreen swipeable auto-scroll overscrollable :index.sync="carouselIndex" id="projectCarousel">
-                <v-ons-carousel-item class="padded-page">
+                <v-ons-carousel-item class="page-background">
                     <select-resource-type-page :pageActive="carouselIndex === 0" />
                 </v-ons-carousel-item>
-                <v-ons-carousel-item class="padded-page">
+                <v-ons-carousel-item class="page-background">
                     <select-resource-instance-page :project="project" />
                 </v-ons-carousel-item>
-                <v-ons-carousel-item class="padded-page map-page">
-                    <project-map-page :project="project" />
+                <v-ons-carousel-item class="page-background">
+                    <project-summary-page :project="project" />
                 </v-ons-carousel-item>
             </v-ons-carousel>
             <div class="navbar">
@@ -111,8 +111,8 @@ export default {
     font-size: 20px;
 }
 
-.padded-page > ons-page {
-    margin: 20px;
+.page-background {
+    background-color: white;
 }
 
 .padded-page.map-page > ons-page {

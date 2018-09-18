@@ -1,21 +1,21 @@
 <template>
-        <div class="body">
-            <v-ons-list>
-                <v-ons-list-item tappable modifier="longdivider" v-for="resource_type in resource_types" :key="resource_type.graphid" @click="selectResourceType(resource_type);">
-                    <span>
-                        <div class='resource-model-name'>
-                            <span class="icon-circle" v-bind:style="{ border: ['solid', '1px', resource_type.color], background: [resource_type.color], color: '#fff'}">
-                                <v-ons-icon v-bind:icon="resource_type.iconclass.replace('fa ', '')" v-bind:style="{height:'18px', width:'18px'}"></v-ons-icon>
-                            </span>
-                        <span class='resource-model-title'>
-                            <span style="padding-left: 0"> New {{resource_type.name}}</span>
-                            <span class='resource-model-subtitle'>Currently x records; x edited</span>
+    <div>
+        <v-ons-list>
+            <v-ons-list-item tappable modifier="longdivider" v-for="resource_type in resource_types" :key="resource_type.graphid" @click="selectResourceType(resource_type);">
+                <span>
+                    <div class='resource-model-name'>
+                        <span class="icon-circle" v-bind:style="{ border: ['solid', '1px', resource_type.color], background: [resource_type.color], color: '#fff'}">
+                            <v-ons-icon v-bind:icon="resource_type.iconclass.replace('fa ', '')" v-bind:style="{height:'18px', width:'18px'}"></v-ons-icon>
                         </span>
-                        </div>
+                    <span class='resource-model-title'>
+                        <span style="padding-left: 0"> New {{resource_type.name}}</span>
+                        <span class='resource-model-subtitle'>Currently x records; x edited</span>
                     </span>
-                </v-ons-list-item>
-            </v-ons-list>
-        </div>
+                    </div>
+                </span>
+            </v-ons-list-item>
+        </v-ons-list>
+    </div>
 </template>
 
 <script>
