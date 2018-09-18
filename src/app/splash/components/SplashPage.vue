@@ -19,7 +19,6 @@
             </span>
             <h4 style="color:black;">
                 <router-link :to="{ name: 'servermanager' }">Skip</router-link>
-                <router-link :to="{ name: 'projectmap' }">Map</router-link>
             </h4>
         </div>
     </v-ons-page>
