@@ -1,8 +1,7 @@
 <template>
-    <v-ons-page>
-    <div class="content">
-  <!-- Scrollable content here -->
-     <ons-scroll infinit-scroll-enable="true" on-scrolled="pagination.nextPage()" can-load="true" threshold='100'>
+    <div>
+        <!-- Scrollable content here -->
+        <ons-scroll infinit-scroll-enable="true" on-scrolled="pagination.nextPage()" can-load="true" threshold='100'>
             <v-ons-list>
                 <v-ons-list-item tappable modifier="longdivider" v-for="resource_instance in instances" :key="resource_instance.resourceinstanceid" @click="selectResourceInstance(resource_instance);">
                     <span>
@@ -21,7 +20,6 @@
             </v-ons-list>
         </ons-scroll>
     </div>
-</v-ons-page>
 </template>
 
 <script>

@@ -12,10 +12,5 @@ export default [
         component: components.SelectResourceInstancePage,
         name: 'select-resource-instance-page',
         props: true
-    },
-    {
-        path: '/projectmap',
-        component: components.ProjectMapPage,
-        name: 'projectmap'
     }
 ];

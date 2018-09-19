@@ -14,15 +14,13 @@ import router from './router';
 // globally registered components
 import PageHeader from './app/shared/components/PageHeader.vue';
 import PageHeaderLayout from './app/shared/components/PageHeaderLayout.vue';
-import ProjectMetadataPage from './app/projects/components/ProjectMetadataPage.vue';
-import ProjectMapPage from './app/projects/components/ProjectMapPage.vue';
+import ProjectSummaryPage from './app/projects/components/ProjectSummaryPage.vue';
 import SelectResourceInstancePage from './app/projects/components/SelectResourceInstancePage.vue';
 import SelectResourceTypePage from './app/projects/components/SelectResourceTypePage.vue';
 import ResourceEditPage from './app/editor/components/ResourceEditPage.vue';
 Vue.component('page-header', PageHeader);
 Vue.component('page-header-layout', PageHeaderLayout);
-Vue.component('project-metadata-page', ProjectMetadataPage);
-Vue.component('project-map-page', ProjectMapPage);
+Vue.component('project-summary-page', ProjectSummaryPage);
 Vue.component('select-resource-instance-page', SelectResourceInstancePage);
 Vue.component('select-resource-type-page', SelectResourceTypePage);
 Vue.component('resource-edit-page', ResourceEditPage);
