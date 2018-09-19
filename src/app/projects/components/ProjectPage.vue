@@ -19,7 +19,7 @@
             </v-ons-toolbar>
             <div id="sidenav" class="sidenav">
                 <a @click="sync">
-                   <!--  <v-ons-icon class="text-color-dark icon" icon="fa-cloud-download-alt"></v-ons-icon> -->
+                    <!--  <v-ons-icon class="text-color-dark icon" icon="fa-cloud-download-alt"></v-ons-icon> -->
                     <v-ons-icon class="text-color-dark icon sync-spinner" v-if="!syncing && !sync_failed" icon="fa-cloud-download-alt"></v-ons-icon>
                     <v-ons-icon v-if="sync_failed" icon="ion-android-alert" class="sync-spinner"></v-ons-icon>
                     <v-ons-progress-circular v-if="syncing" indeterminate class="sync-spinner-offset">
@@ -85,7 +85,7 @@ export default {
             carouselIndex: 0,
             showSideNav: true,
             syncing: false,
-            sync_failed: false,
+            sync_failed: false
         };
     },
     computed: {
@@ -116,7 +116,7 @@ export default {
                     console.log('syncing done');
                     self.syncing = false;
                 });
-        },
+        }
     }
 };
 </script>
@@ -157,8 +157,8 @@ export default {
 .sync-spinner {
     width: 20px;
     height: 20px;
-
 }
+
 .sync-spinner-offset {
     width: 20px;
     height: 20px;
@@ -166,6 +166,7 @@ export default {
     left: -5px;
     top: 6px;
 }
+
 
 /* Place the navbar at the bottom of the page, and make it stick */
 

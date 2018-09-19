@@ -29,21 +29,6 @@
                 </v-ons-col>
             </v-ons-row>
         </div>
-        <v-ons-row style="margin-top: 35px;">
-            <v-ons-col>
-                <v-ons-button modifier="medium" :disabled="syncing" class="btn-success" style="width: 160px;" v-on:click="sync">
-                    <v-ons-icon v-if="!syncing && !sync_failed" icon="ion-android-sync" class="sync-spinner"></v-ons-icon>
-                    <v-ons-icon v-if="sync_failed" icon="ion-android-alert" class="sync-spinner"></v-ons-icon>
-                    <v-ons-progress-circular v-if="syncing" indeterminate class="sync-spinner-offset">
-                    </v-ons-progress-circular>
-                    {{sync_btn_text}}
-                </v-ons-button>
-            </v-ons-col>
-            <v-ons-col>
-                <v-ons-button modifier="large outline" class="btn-danger" v-on:click="deleteProject">Forget Project</v-ons-button>
-            </v-ons-col>
-        </v-ons-row>
-
         <div>
             <ons-progress-circular indeterminate v-if="loading">
             </ons-progress-circular>
@@ -85,8 +70,6 @@ export default {
     props: ['project', 'pageActive'],
     data() {
         return {
-            syncing: false,
-            sync_failed: false,
             mapId: `project-map-${uuidv4()}`,
             bounds: new mapboxgl.LngLatBounds(
                 geojsonExtent(
@@ -106,28 +89,11 @@ export default {
         };
     },
     computed: {
-        sync_btn_text() {
-            return (this.syncing ? 'Syncing...' : (this.sync_failed ? 'Sync Failed' : (this.project.lastsync.date === '' ? 'Join Project' : 'Sync Now')));
-        },
         records_to_sync() {
             return this.$store.getters.resourcesToSync;
         }
     },
     methods: {
-        sync: function() {
-            var self = this;
-            this.syncing = true;
-            this.sync_failed = false;
-            this.$store.dispatch('syncRemote', this.project.id)
-                .catch(function() {
-                    self.sync_failed = true;
-                })
-                .finally(function(doc) {
-                    console.log('syncing done');
-                    self.syncing = false;
-                });
-        },
-        deleteProject: function() {},
         setupBasemaps: function() {
             return this.$store.dispatch(
                 'setupProjectBasemaps',
@@ -281,18 +247,6 @@ export default {
     .section {
         border-bottom: solid 1px #c5c5c5; 
         padding: 20px;
-    }
-    .sync-spinner {
-        width: 20px;
-        height: 20px;
-
-    }
-    .sync-spinner-offset {
-        width: 20px;
-        height: 20px;
-        position: relative;
-        left: -5px;
-        top: 6px;
     }
     .mapboxgl-map {
         height: 100%;
