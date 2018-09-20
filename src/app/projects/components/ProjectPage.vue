@@ -24,10 +24,8 @@
                     <v-ons-page>
                         <v-ons-list>
                             <v-ons-list-item tappable @click="sync">
-                                <v-ons-icon class="text-color-dark icon sync-spinner" v-if="!syncing && !sync_failed" icon="fa-cloud-download-alt"></v-ons-icon>
-                                <v-ons-icon v-if="sync_failed" icon="ion-android-alert" class="sync-spinner"></v-ons-icon>
-                                <v-ons-progress-circular v-if="syncing" indeterminate class="sync-spinner-offset">
-                                </v-ons-progress-circular>
+                                <v-ons-icon class="text-color-dark icon" v-if="syncing === false" icon="fa-cloud-download-alt"></v-ons-icon>
+                                <v-ons-icon class="text-color-dark icon" v-if="sync_failed === true" icon="ion-android-alert"></v-ons-icon>
                                 <span class="text-color-dark label">{{sync_btn_text}}</span>
                             </v-ons-list-item @click="">
                             <v-ons-list-item tappable>
