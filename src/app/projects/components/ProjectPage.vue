@@ -30,7 +30,7 @@
                     <v-ons-icon class="text-color-dark icon" icon="fa-filter"></v-ons-icon>
                     <span class="text-color-dark label">Filter records</span>
                 </a>
-                <a @click="">
+                <a @click="sort">
                     <v-ons-icon class="text-color-dark icon" icon="fa-sort-alpha-down"></v-ons-icon>
                     <span class="text-color-dark label">Sort records</span>
                 </a>
@@ -52,7 +52,7 @@
                     <select-resource-type-page :pageActive="carouselIndex === 0" />
                 </v-ons-carousel-item>
                 <v-ons-carousel-item class="page-background">
-                    <select-resource-instance-page :project="project" />
+                    <select-resource-instance-page :project="project" ref="sripage"/>
                 </v-ons-carousel-item>
                 <v-ons-carousel-item class="page-background">
                     <project-summary-page :project="project" />
@@ -116,6 +116,9 @@ export default {
                     console.log('syncing done');
                     self.syncing = false;
                 });
+        },
+        sort: function() {
+            this.$refs.sripage.sorted = !this.$refs.sripage.sorted;
         }
     }
 };
