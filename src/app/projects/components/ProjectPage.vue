@@ -17,62 +17,75 @@
                     </v-ons-toolbar-button>
                 </div>
             </v-ons-toolbar>
-            <div id="sidenav" class="sidenav">
-                <a @click="sync">
-                    <!--  <v-ons-icon class="text-color-dark icon" icon="fa-cloud-download-alt"></v-ons-icon> -->
-                    <v-ons-icon class="text-color-dark icon sync-spinner" v-if="!syncing && !sync_failed" icon="fa-cloud-download-alt"></v-ons-icon>
-                    <v-ons-icon v-if="sync_failed" icon="ion-android-alert" class="sync-spinner"></v-ons-icon>
-                    <v-ons-progress-circular v-if="syncing" indeterminate class="sync-spinner-offset">
-                    </v-ons-progress-circular>
-                    <span class="text-color-dark label">{{sync_btn_text}}</span>
-                </a>
-                <a @click="">
-                    <v-ons-icon class="text-color-dark icon" icon="fa-filter"></v-ons-icon>
-                    <span class="text-color-dark label">Filter records</span>
-                </a>
-                <a @click="sort">
-                    <v-ons-icon class="text-color-dark icon" icon="fa-sort-alpha-down"></v-ons-icon>
-                    <span class="text-color-dark label">Sort records</span>
-                </a>
-                <a @click="">
-                    <v-ons-icon class="text-color-dark icon" icon="fa-trash-alt"></v-ons-icon>
-                    <span class="text-color-dark label">Delete project</span>
-                </a>
-                <a @click="">
-                    <v-ons-icon class="text-color-dark icon" icon="fa-map"></v-ons-icon>
-                    <span class="text-color-dark label">Project map</span>
-                </a>
-                <a @click="toggleSideNav">
-                    <v-ons-icon class="text-color-dark icon" icon="fa-arrow-alt-circle-left"></v-ons-icon>
-                    <span class="text-color-dark label">Return to project list</span>
-                </a>
-            </div>
-            <v-ons-carousel fullscreen swipeable auto-scroll overscrollable :index.sync="carouselIndex" id="projectCarousel">
-                <v-ons-carousel-item class="page-background">
-                    <select-resource-type-page :pageActive="carouselIndex === 0" />
-                </v-ons-carousel-item>
-                <v-ons-carousel-item class="page-background">
-                    <select-resource-instance-page :project="project" ref="sripage"/>
-                </v-ons-carousel-item>
-                <v-ons-carousel-item class="page-background">
-                    <project-summary-page :project="project" />
-                </v-ons-carousel-item>
-            </v-ons-carousel>
-            <div class="navbar">
-                <a v-bind:class="carouselIndex === 0 ? 'active' : ''" @click="carouselIndex = 0">
-                    <v-ons-icon class="text-color-dark icon" icon="fa-plus-circle"></v-ons-icon>
-                    <div class="text-color-dark label">New</div>
-                </a>
-                <a v-bind:class="carouselIndex === 1 ? 'active' : ''" @click="carouselIndex = 1">
-                    <v-ons-icon class="text-color-dark icon" icon="fa-check-circle"></v-ons-icon>
-                    <div class="text-color-dark label">Review</div>
-                </a>
-                <a v-bind:class="carouselIndex === 2 ? 'active' : ''" @click="carouselIndex = 2">
-                    <v-ons-icon class="text-color-dark icon" icon="fa-clipboard"></v-ons-icon>
-                    <div class="text-color-dark label">Summary</div>
-                </a>
-            </div>
-            <div id="cover" class="cover"></div>
+            <v-ons-splitter>
+                <v-ons-splitter-side width="60%"
+                    swipeable collapse="" side="right"
+                    :open.sync="showSideNav" class="sidenav toolbar-header">
+                    <v-ons-page>
+                        <v-ons-list>
+                            <v-ons-list-item tappable @click="sync">
+                                <v-ons-icon class="text-color-dark icon sync-spinner" v-if="!syncing && !sync_failed" icon="fa-cloud-download-alt"></v-ons-icon>
+                                <v-ons-icon v-if="sync_failed" icon="ion-android-alert" class="sync-spinner"></v-ons-icon>
+                                <v-ons-progress-circular v-if="syncing" indeterminate class="sync-spinner-offset">
+                                </v-ons-progress-circular>
+                                <span class="text-color-dark label">{{sync_btn_text}}</span>
+                            </v-ons-list-item @click="">
+                            <v-ons-list-item tappable>
+                                <v-ons-icon class="text-color-dark icon" icon="fa-filter"></v-ons-icon>
+                                <span class="text-color-dark label">Filter records</span>
+                            </v-ons-list-item @click="">
+                            <v-ons-list-item tappable @click="sort">
+                                <v-ons-icon class="text-color-dark icon" icon="fa-sort-alpha-down"></v-ons-icon>
+                                <span class="text-color-dark label">Sort records</span>
+                            </v-ons-list-item @click="">
+                            <v-ons-list-item tappable>
+                                <v-ons-icon class="text-color-dark icon" icon="fa-trash-alt"></v-ons-icon>
+                                <span class="text-color-dark label">Delete project</span>
+                            </v-ons-list-item @click="">
+                            <v-ons-list-item tappable>
+                                <v-ons-icon class="text-color-dark icon" icon="fa-map"></v-ons-icon>
+                                <span class="text-color-dark label">Project map</span>
+                            </v-ons-list-item @click="">
+                            <v-ons-list-item tappable @click="toggleSideNav">
+                                <v-ons-icon class="text-color-dark icon" icon="fa-arrow-alt-circle-left"></v-ons-icon>
+                                <span class="text-color-dark label">Return to project list</span>
+                            </v-ons-list-item >
+                        </v-ons-list>
+                    </v-ons-page>
+                </v-ons-splitter-side>
+
+                <v-ons-splitter-content>
+                    <v-ons-page>
+                        <div>
+                            <v-ons-carousel fullscreen swipeable auto-scroll overscrollable :index.sync="carouselIndex" id="projectCarousel">
+                                <v-ons-carousel-item class="page-background">
+                                    <select-resource-type-page :pageActive="carouselIndex === 0" />
+                                </v-ons-carousel-item>
+                                <v-ons-carousel-item class="page-background">
+                                    <select-resource-instance-page :project="project" ref="sripage"/>
+                                </v-ons-carousel-item>
+                                <v-ons-carousel-item class="page-background">
+                                    <project-summary-page :project="project" />
+                                </v-ons-carousel-item>
+                            </v-ons-carousel>
+                            <div class="navbar">
+                                <a v-bind:class="carouselIndex === 0 ? 'active' : ''" @click="carouselIndex = 0">
+                                    <v-ons-icon class="text-color-dark icon" icon="fa-plus-circle"></v-ons-icon>
+                                    <div class="text-color-dark label">New</div>
+                                </a>
+                                <a v-bind:class="carouselIndex === 1 ? 'active' : ''" @click="carouselIndex = 1">
+                                    <v-ons-icon class="text-color-dark icon" icon="fa-check-circle"></v-ons-icon>
+                                    <div class="text-color-dark label">Review</div>
+                                </a>
+                                <a v-bind:class="carouselIndex === 2 ? 'active' : ''" @click="carouselIndex = 2">
+                                    <v-ons-icon class="text-color-dark icon" icon="fa-clipboard"></v-ons-icon>
+                                    <div class="text-color-dark label">Summary</div>
+                                </a>
+                            </div>
+                        </div>
+                    </v-ons-page>
+                </v-ons-splitter-content>
+            </v-ons-splitter>
         </v-ons-page>
     </page-header-layout>
 </template>
@@ -83,7 +96,7 @@ export default {
     data() {
         return {
             carouselIndex: 0,
-            showSideNav: true,
+            showSideNav: false,
             syncing: false,
             sync_failed: false
         };
@@ -94,14 +107,7 @@ export default {
         }
     },
     methods: {
-        toggleSideNav: function(event) {
-            if (this.showSideNav) {
-                document.getElementById('sidenav').style.right = '0%';
-                document.getElementById('cover').style.display = 'block';
-            } else {
-                document.getElementById('sidenav').style.right = '-80%';
-                document.getElementById('cover').style.display = 'none';
-            }
+        toggleSideNav: function() {
             this.showSideNav = !this.showSideNav;
         },
         sync: function() {
@@ -234,18 +240,15 @@ export default {
 
 .sidenav {
     height: 100%;
-    width: 80%;
-    position: fixed;
-    z-index: 1;
-    right: -80%;
+    width: 60%;
     background-color: white;
     overflow-x: hidden;
-    transition: 0.5s;
     font-size: 16px;
 }
 
 .sidenav .icon {
     font-family: FontAwesome5;
+    width: 25px;
 }
 
 .sidenav a {
