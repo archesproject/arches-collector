@@ -11,6 +11,8 @@ import Cordova from './assets/js/cordova';
 import store from './store';
 import router from './router';
 
+import underscore from 'underscore';
+
 // globally registered components
 import PageHeader from './app/shared/components/PageHeader.vue';
 import PageHeaderLayout from './app/shared/components/PageHeaderLayout.vue';
@@ -25,6 +27,8 @@ Vue.component('select-resource-instance-page', SelectResourceInstancePage);
 Vue.component('select-resource-type-page', SelectResourceTypePage);
 Vue.component('resource-edit-page', ResourceEditPage);
 // Vue.config.productionTip = false;
+
+Object.defineProperty(Vue.prototype, '$underscore', { value: underscore });
 
 Vue.use(VueOnsen);
 Vue.use(Cordova);
