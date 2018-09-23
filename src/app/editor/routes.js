@@ -3,7 +3,7 @@ import * as components from './components';
 export default [
     {
         path: '/resource/:id',
-        component: components.ResourceEditPage,
+        component: components.ResourcePage,
         name: 'resource',
         props: true
     }
