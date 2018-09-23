@@ -1,14 +1,7 @@
 <template>
-   <v-ons-page>
-       <v-ons-toolbar style="background-color: whitesmoke;">
-           <div class="left">
-               <v-ons-toolbar-button>
-                   <router-link :to="{ name: 'project', params: { project: this.project, carouselIndex: 2 } }"><v-ons-icon class="text-color-dark project-header" icon="ion-android-arrow-dropleft-circle"></v-ons-icon></router-link>
-               </v-ons-toolbar-button>
-           </div>
-           <div class="center"></div>
-       </v-ons-toolbar>
-
+    <div>
+        <!-- Scrollable content here -->
+        <ons-scroll infinit-scroll-enable="true" on-scrolled="pagination.nextPage()" can-load="true" threshold='100'>
        <v-ons-list>
            <v-ons-list-item v-if="resourceid === tile.resourceinstance_id" v-for="tile in tiles" :key="tile.tileid">
                <li><span>tileid: </span><span>{{tile.tileid}}</span></li>
@@ -27,7 +20,8 @@
                </table>
            </v-ons-list-item>
        </v-ons-list>
-   </v-ons-page>
+   </ons-scroll>
+   </div>
 </template>
 
 <script>
@@ -35,6 +29,7 @@ export default {
     name: 'ResourceEditPage',
     props: ['id'],
     data() {
+        console.log(this)
         return {
             project: this.$store.getters.activeProject,
             resourceid: this.$store.getters.activeServer.active_resource
@@ -43,6 +38,7 @@ export default {
     computed: {
         tiles: {
             get: function() {
+                console.log("IM GETTING THE TILES")
                 return this.$store.getters.getTiles;
             }
         }
