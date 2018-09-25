@@ -1,8 +1,9 @@
 <template>
     <div>
         <!-- Scrollable content here -->
+        <card-list :cards="cards" :tiles="tiles"></card-list>
         <ons-scroll infinit-scroll-enable="true" on-scrolled="pagination.nextPage()" can-load="true" threshold='100'>
-       <v-ons-list>
+        <v-ons-list>
            <v-ons-list-item v-if="resourceid === tile.resourceinstance_id" v-for="tile in tiles" :key="tile.tileid">
                <li><span>tileid: </span><span>{{tile.tileid}}</span></li>
                <table style="width: 100%;">
@@ -27,15 +28,21 @@
 <script>
 export default {
     name: 'ResourceEditPage',
-    props: ['id'],
+    props: [],
     data() {
         console.log(this)
         return {
             project: this.$store.getters.activeProject,
-            resourceid: this.$store.getters.activeServer.active_resource
+            resourceid: this.$store.getters.activeServer.active_resource,
+            cards: this.$store.getters.activeGraph.cards
         };
     },
     computed: {
+        // cards: {
+        //     get: function() {
+        //         return this.$store.getters.getTiles;
+        //     }
+        // },
         tiles: {
             get: function() {
                 console.log("IM GETTING THE TILES")

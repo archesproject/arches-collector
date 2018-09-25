@@ -15,7 +15,7 @@
                         <div>
                             <v-ons-carousel fullscreen swipeable auto-scroll overscrollable :index.sync="carouselIndex" id="resourceCarousel">
                                 <v-ons-carousel-item class="page-background">
-                                    <resource-edit-page :project="project" ref="sripage"/>
+                                    <resource-edit-page ref="sripage"/>
                                 </v-ons-carousel-item>
                             </v-ons-carousel>
                             <div class="navbar">
@@ -36,7 +36,7 @@
 <script>
 export default {
     name: 'ResourcePage',
-    props: ['id'],
+    //props: [],
     data() {
         return {
             carouselIndex: 0,
