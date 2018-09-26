@@ -1,10 +1,10 @@
 <template>
     <div>
         <!-- Scrollable content here -->
-        <card-list :cards="cards" :tiles="tiles"></card-list>
+        <card-list :allcards="cards" :tiles="tiles" :cards="topCards"></card-list>
         <ons-scroll infinit-scroll-enable="true" on-scrolled="pagination.nextPage()" can-load="true" threshold='100'>
         <v-ons-list>
-           <v-ons-list-item v-if="resourceid === tile.resourceinstance_id" v-for="tile in tiles" :key="tile.tileid">
+           <v-ons-list-item v-for="tile in tiles" :key="tile.tileid">
                <li><span>tileid: </span><span>{{tile.tileid}}</span></li>
                <table style="width: 100%;">
                <thead>
@@ -34,19 +34,36 @@ export default {
         return {
             project: this.$store.getters.activeProject,
             resourceid: this.$store.getters.activeServer.active_resource,
-            cards: this.$store.getters.activeGraph.cards
+            cards: this.$store.getters.activeGraph.cards,
+            nodegroups: this.$store.getters.activeGraph.nodegroups,
         };
     },
     computed: {
         // cards: {
         //     get: function() {
-        //         return this.$store.getters.getTiles;
+        //         return this.$store.getters.activeGraph.cards;
         //     }
         // },
+        topCards: {
+            get: function() {
+                return this.$underscore.filter(this.cards, function(card) {
+                    var nodegroups = this.$underscore.chain(this.nodegroups)
+                    .filter(function(group) {
+                        return group.parentnodegroup_id === null;
+                    }, this)
+                    .pluck('nodegroupid')
+                    .value();
+                    console.log(nodegroups)
+                    return nodegroups.indexOf(card.nodegroup_id) !== -1;
+                }, this)
+            }
+        },
         tiles: {
             get: function() {
                 console.log("IM GETTING THE TILES")
-                return this.$store.getters.getTiles;
+                return this.$underscore.filter(this.$store.getters.getTiles,function(tile){
+                    return tile.resourceinstance_id === this.resourceid;
+                }, this);
             }
         }
     },

@@ -38,7 +38,7 @@ export default {
     methods: {
         selectResourceType: function(e) {
             this.$store.commit('clearActiveResourceInstance');
-            this.$store.commit('setActiveGraphId', e.graph_id);
+            this.$store.commit('setActiveGraphId', e.graphid);
             this.$router.push({
                 'name': 'resource',
                 params: {}
