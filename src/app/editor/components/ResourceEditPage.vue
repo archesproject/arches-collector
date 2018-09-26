@@ -31,12 +31,11 @@ export default {
     name: 'ResourceEditPage',
     props: [],
     data() {
-        console.log(this)
         return {
             project: this.$store.getters.activeProject,
             resourceid: this.$store.getters.activeServer.active_resource,
             cards: this.$store.getters.activeGraph.cards,
-            nodegroups: this.$store.getters.activeGraph.nodegroups,
+            nodegroups: this.$store.getters.activeGraph.nodegroups
         };
     },
     computed: {
@@ -54,14 +53,13 @@ export default {
                         }, this)
                         .pluck('nodegroupid')
                         .value();
-                    console.log(nodegroups)
                     return nodegroups.indexOf(card.nodegroup_id) !== -1;
-                }, this)
+                }, this);
             }
         },
         tiles: {
             get: function() {
-                console.log("IM GETTING THE TILES")
+                console.log('IM GETTING THE TILES');
                 return this.$underscore.filter(this.$store.getters.getTiles, function(tile) {
                     return tile.resourceinstance_id === this.resourceid;
                 }, this);

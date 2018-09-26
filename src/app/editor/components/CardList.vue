@@ -18,7 +18,7 @@ export default {
     props: ['nodegroup', 'cards'],
     data() {
         return {
-            //cards: this.$store.getters.activeGraph.cards
+            // cards: this.$store.getters.activeGraph.cards
         };
     },
     computed: {
