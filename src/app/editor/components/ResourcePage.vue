@@ -17,11 +17,18 @@
                                 <v-ons-carousel-item class="page-background">
                                     <resource-edit-page :project="project" ref="sripage"/>
                                 </v-ons-carousel-item>
+                                <v-ons-carousel-item class="page-background">
+                                    <resource-tree-page :project="project" ref="sripage"/>
+                                </v-ons-carousel-item>
                             </v-ons-carousel>
                             <div class="navbar">
                                 <a v-bind:class="carouselIndex === 0 ? 'active' : ''" @click="carouselIndex = 0">
                                     <v-ons-icon class="text-color-dark icon" icon="fa-check-circle"></v-ons-icon>
                                     <div class="text-color-dark label">Resource</div>
+                                </a>
+                                <a v-bind:class="carouselIndex === 1 ? 'active' : ''" @click="carouselIndex = 1">
+                                    <v-ons-icon class="text-color-dark icon" icon="fa-sitemap"></v-ons-icon>
+                                    <div class="text-color-dark label">Overview</div>
                                 </a>
                             </div>
                         </div>
@@ -112,6 +119,11 @@ export default {
 
 .navbar .label {
     font-size: 12px !important;
+}
+
+.navbar a.active {
+    background-color: white;
+    color: white;
 }
 
 </style>

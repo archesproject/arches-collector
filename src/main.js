@@ -20,12 +20,14 @@ import ProjectSummaryPage from './app/projects/components/ProjectSummaryPage.vue
 import SelectResourceInstancePage from './app/projects/components/SelectResourceInstancePage.vue';
 import SelectResourceTypePage from './app/projects/components/SelectResourceTypePage.vue';
 import ResourceEditPage from './app/editor/components/ResourceEditPage.vue';
+import ResourceTreePage from './app/editor/components/ResourceTreePage.vue';
 Vue.component('page-header', PageHeader);
 Vue.component('page-header-layout', PageHeaderLayout);
 Vue.component('project-summary-page', ProjectSummaryPage);
 Vue.component('select-resource-instance-page', SelectResourceInstancePage);
 Vue.component('select-resource-type-page', SelectResourceTypePage);
 Vue.component('resource-edit-page', ResourceEditPage);
+Vue.component('resource-tree-page', ResourceTreePage);
 // Vue.config.productionTip = false;
 
 Object.defineProperty(Vue.prototype, '$underscore', { value: underscore });
