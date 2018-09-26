@@ -45,33 +45,6 @@ export default {
         };
     },
     methods: {
-        save: function(tile) {
-            console.log('saving...');
-            this.$store.dispatch('persistTile', tile)
-                .then(function(doc) {
-                    return doc;
-                })
-                .finally(function() {
-                    console.log('tile save finished...');
-                });
-            this.$store.dispatch(
-                'getResource', {
-                    projectid: this.project.id,
-                    resourceid: this.$store.getters.activeServer.active_resource
-                }
-            ).then((res) => {
-                var resource = res['docs'][0];
-                var date = new Date();
-                resource['edited'] = {'day': date.toDateString(), 'time': date.toTimeString()};
-                this.$store.dispatch('persistResource', resource)
-                    .then(function(doc) {
-                        return doc;
-                    })
-                    .finally(function() {
-                        console.log('resource save finished...');
-                    });
-            });
-        }
     }
 };
 </script>

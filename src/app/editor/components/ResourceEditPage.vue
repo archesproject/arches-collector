@@ -29,7 +29,6 @@ export default {
     name: 'ResourceEditPage',
     props: ['id'],
     data() {
-        console.log(this)
         return {
             project: this.$store.getters.activeProject,
             resourceid: this.$store.getters.activeServer.active_resource
@@ -38,7 +37,6 @@ export default {
     computed: {
         tiles: {
             get: function() {
-                console.log("IM GETTING THE TILES")
                 return this.$store.getters.getTiles;
             }
         }
