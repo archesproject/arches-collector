@@ -252,7 +252,8 @@ var store = new Vuex.Store({
                 servers: {}
             }
         },
-        tiles: []
+        tiles: [],
+        active_graph_id: ''
     },
     getters: {
         activeServer: function(state, getters) {
@@ -287,7 +288,7 @@ var store = new Vuex.Store({
         activeGraph: function(state, getters) {
             var activeGraph = null;
             getters.activeProject.graphs.forEach(function(graph) {
-                if (graph.graph_id === getters.activeServer.active_graph_id) {
+                if (graph.graphid === state.active_graph_id) {
                     activeGraph = graph;
                 }
             });
@@ -347,7 +348,7 @@ var store = new Vuex.Store({
             store.getters.activeServer.active_resource = null;
         },
         setActiveGraphId: function(state, value) {
-            store.getters.activeServer.active_graph_id = value;
+            state.active_graph_id = value;
         },
         setLastProjectSync: function(state, projectId) {
             var now = new Date();
