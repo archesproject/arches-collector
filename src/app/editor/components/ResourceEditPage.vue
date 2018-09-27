@@ -4,20 +4,12 @@
         <ons-scroll infinit-scroll-enable="true" on-scrolled="pagination.nextPage()" can-load="true" threshold='100'>
        <v-ons-list>
            <v-ons-list-item v-if="resourceid === tile.resourceinstance_id" v-for="tile in tiles" :key="tile.tileid">
-               <li><span>tileid: </span><span>{{tile.tileid}}</span></li>
-               <table style="width: 100%;">
-               <thead>
-                   <tr>
-                       <!-- <th>nodeid</th> -->
-                       <th>value</th>
-                   </tr>
-               </thead>
-               <tbody>
-                   <tr v-for="value, key in tile.data" :key="key">
-                       <td><textarea style="width: 100%; border: 1px solid gainsboro;" type="text" v-on:blur="save(tile)" v-model="tile.data[key]"></textarea></td>
-                   </tr>
-               </tbody>
-               </table>
+               <li><div class="label"><span>{{tile.tileid}}:</span></div></li>
+                   <ul v-for="value, key in tile.data" :key="key" v-if="typeof value === 'string' || value instanceof String">
+                   <li class="widget">
+                       <string-widget :value="tile.data[key]"></string-widget>
+                   </li>
+                </ul>
            </v-ons-list-item>
        </v-ons-list>
    </ons-scroll>
@@ -75,6 +67,14 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
-
+li.widget {
+    list-style-type: none;
+}
+.label {
+    padding: 5px;
+    width: 325px;
+}
+ul {
+    padding-left: 12px;
+}
 </style>
