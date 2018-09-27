@@ -9,19 +9,18 @@
             <span v-show="state === 'action'"><v-ons-progress-circular indeterminate></v-ons-progress-circular></span>
         </v-ons-pull-hook>
         <v-ons-list>
-            <v-ons-list-item modifier="longdivider">
-                <span class="left"><span>Projects</span></span>
+            <v-ons-list-item class="projects-header" modifier="longdivider">
+                <span class="left projects-title"><span>Projects</span></span>
                 <span class="right">
-                    <v-ons-icon icon="ion-ios-cloud-download-outline"></v-ons-icon>
+                    <v-ons-icon icon="ion-ios-cloud-download"></v-ons-icon>
                 </span>
             </v-ons-list-item>
             <v-ons-list-item tappable modifier="longdivider" v-for="project in projects" :key="project.id" @click="selectProject(project);" v-bind:class="{ inactive_project: !project.active }">
                 <span>
-                    <v-ons-icon icon="ion-android-checkbox-outline"></v-ons-icon>
-                    {{project.name}}<br>
-                    <span style="font-size: 12px;" v-if="project.active">Active</span>
-                    <span style="font-size: 12px;" v-else>Inactive</span>
-                    <span style="font-size: 12px;">{{project.startdate}}-{{project.enddate}}</span>
+                    <span class="project-name">{{project.name}}</span><br>
+                    <span class="project-active" v-if="project.active">Active from:</span>
+                    <span class="project-inactive" v-else>Inactive</span>
+                    <span class="project-dates">{{project.startdate}}-{{project.enddate}}</span>
                 </span>
             </v-ons-list-item>
         </v-ons-list>
@@ -82,6 +81,37 @@ export default {
 
     .inactive_project{
         background-color: #f3f3f3;
+    }
+
+    .projects-header {
+        color: #645F87;
+        background: #f4f4f4;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .projects-title {
+        font-size: 17px;
+        font-weight: 500;
+    }
+
+    .project-name {
+        color: #454545;
+        font-size: 15px;
+    }
+
+    .project-active {
+        color: #777;
+        font-size: 13px;
+    }
+
+    .project-inactive {
+        color: #777;
+        font-size: 13px;
+    }
+
+    .project-dates {
+        color: #555;
+        font-size: 13px;
     }
 
 </style>
