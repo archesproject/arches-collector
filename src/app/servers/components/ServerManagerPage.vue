@@ -40,7 +40,7 @@
                         <div class="center">Oops, something happened, maybe you're offline?</div>
                     </v-ons-list-item>
 
-                    <v-ons-button modifier="large" :disabled="disableSignIn" class="btn-success" v-on:click="getToken">Sign In</v-ons-button>
+                    <v-ons-button modifier="large" :disabled="disableSignIn" class="btn-success" v-on:click="getClientId">Sign In</v-ons-button>
                     <v-ons-button modifier="large quiet" class="btn-danger" style="margin-top: 10px;" v-on:click="cancel">Cancel</v-ons-button>
                 </div>
             </v-ons-carousel-item>
@@ -62,6 +62,8 @@ export default {
                 username: 'admin',
                 password: 'admin',
                 token: '',
+                refresh_token: '',
+                client_id: '',
                 active_project: '',
                 projects: {}
             },
@@ -86,7 +88,7 @@ export default {
         cancel: function() {
             this.$router.back();
         },
-        getToken: function() {
+        getClientId: function() {
             var self = this;
             self.error = false;
 
@@ -95,7 +97,7 @@ export default {
             formData.append('password', this.server.password);
             this.server.url = this.server.url.replace(/\/$/, '');
 
-            fetch(this.server.url.replace(/\/$/, '') + '/auth/get_token', {
+            fetch(this.server.url.replace(/\/$/, '') + '/auth/get_client_id', {
                 method: 'POST',
                 body: formData,
                 headers: new Headers({
@@ -105,7 +107,7 @@ export default {
             })
                 .then(function(response) {
                     // return the response object or throw an error
-                    console.log(response);
+                    // console.log(response);
                     if (response.ok) {
                         return response.text();
                     }
@@ -113,13 +115,52 @@ export default {
                 })
                 .then(function(response) {
                     // set the server metadata and token
-                    console.log('Success:', response);
-                    self.server.token = response;
+                    // console.log('Success:', response);
+                    self.server.client_id = response;
+                    self.getToken();
+                })
+                .catch(function(error) {
+                    // console.log('Error:', error);
+                    self.error = true;
+                });
+        },
+        getToken: function() {
+            var self = this;
+            self.error = false;
+
+            var formData = new FormData();
+            formData.append('username', this.server.username);
+            formData.append('password', this.server.password);
+            formData.append('grant_type', 'password');
+            formData.append('client_id', this.server.client_id);
+            this.server.url = this.server.url.replace(/\/$/, '');
+
+            fetch(this.server.url.replace(/\/$/, '') + '/o/token/', {
+                method: 'POST',
+                body: formData,
+                headers: new Headers({
+                    // 'Content-Type': 'text/plain'
+                    // 'Content-Type': 'application/x-www-form-urlencoded'
+                })
+            })
+                .then(function(response) {
+                    // return the response object or throw an error
+                    // console.log(response);
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    throw new Error('Network response was not ok.');
+                })
+                .then(function(response) {
+                    // set the server metadata and token
+                    // console.log('Success:', response);
+                    self.server.token = response.access_token;
+                    self.server.refresh_token = response.refresh_token;
                     self.$store.commit('addNewServer', self.server);
                     self.$router.push({'name': 'projectlist'});
                 })
                 .catch(function(error) {
-                    console.log('Error:', error);
+                    // console.log('Error:', error);
                     self.error = true;
                 });
         },
