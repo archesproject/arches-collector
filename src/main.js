@@ -21,6 +21,8 @@ import SelectResourceInstancePage from './app/projects/components/SelectResource
 import SelectResourceTypePage from './app/projects/components/SelectResourceTypePage.vue';
 import ResourceEditPage from './app/editor/components/ResourceEditPage.vue';
 import CardList from './app/editor/components/CardList.vue';
+import ResourceTreePage from './app/editor/components/ResourceTreePage.vue';
+import StringWidget from './app/widgets/StringWidget.vue';
 Vue.component('page-header', PageHeader);
 Vue.component('page-header-layout', PageHeaderLayout);
 Vue.component('project-summary-page', ProjectSummaryPage);
@@ -28,6 +30,8 @@ Vue.component('select-resource-instance-page', SelectResourceInstancePage);
 Vue.component('select-resource-type-page', SelectResourceTypePage);
 Vue.component('resource-edit-page', ResourceEditPage);
 Vue.component('card-list', CardList);
+Vue.component('resource-tree-page', ResourceTreePage);
+Vue.component('string-widget', StringWidget);
 // Vue.config.productionTip = false;
 
 Object.defineProperty(Vue.prototype, '$underscore', { value: underscore });
@@ -48,7 +52,6 @@ window.archesvue = new Vue({
 
             store.dispatch('initServerStore')
                 .finally(function(doc) {
-                    console.log(doc);
                     if (store.getters.activeServer) {
                     // go to the last active server and project
                         self.$router.push({'name': 'projectlist'});

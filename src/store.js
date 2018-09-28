@@ -319,6 +319,8 @@ var store = new Vuex.Store({
         addNewServer: function(state, newServer) {
             if (typeof store.getters.server(newServer.url) === 'undefined') {
                 Vue.set(state.dbs.app_servers.servers, newServer.url, newServer);
+            } else {
+                state.dbs.app_servers.servers[newServer.url] = newServer;
             }
             store.commit('setActiveServer', newServer.url);
             store.dispatch('saveServerInfo');
