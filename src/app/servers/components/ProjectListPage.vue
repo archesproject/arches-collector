@@ -20,7 +20,7 @@
                     <span class="project-name">{{project.name}}</span><br>
                     <span class="project-active" v-if="project.active">Active from:</span>
                     <span class="project-inactive" v-else>Inactive</span>
-                    <span class="project-dates">{{project.startdate}}-{{project.enddate}}</span>
+                    <span class="project-dates">{{project.startdate}} - {{project.enddate}}</span>
                 </span>
             </v-ons-list-item>
         </v-ons-list>

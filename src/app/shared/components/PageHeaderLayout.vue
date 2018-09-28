@@ -1,23 +1,25 @@
 <template>
     <v-ons-splitter>
-        <v-ons-splitter-side
+        <v-ons-splitter-side style=""
             swipeable width="300px" collapse="" side="left"
             :open.sync="openSide" class="toolbar-header">
             <v-ons-page>
-                <v-ons-toolbar class="toolbar-header">
+                <v-ons-toolbar class="toolbar-header" style="height: 50px;">
                     <div class="left">
                         <v-ons-toolbar-button class="left-button-text" @click="toggleOpen">
-                            <v-ons-icon icon="ion-android-upload"></v-ons-icon>
-                            <span class="left-button-text">Arches Applications</span>
+                            <v-ons-icon class="toolbar-header-icon" icon="ion-android-upload"></v-ons-icon>
+                            <span class="left-button-text toolbar-header-title">Arches Applications</span>
                         </v-ons-toolbar-button>
                     </div>
                 </v-ons-toolbar>
-                <v-ons-list>
+                <v-ons-list class="application-list" style="margin-top: 5px;">
                     <v-ons-list-item tappable modifier="longdivider" v-for="(server, key) in servers" :key="server.url" @click="selectServer(server.url);">
-                        <v-ons-icon icon="ion-android-checkbox-outline"></v-ons-icon>
-                        <span style="padding-left: 10px;">
+                        <span class="application-list-item-prepanel">
+                            <v-ons-icon class="application-list-item-icon" icon="ion-checkmark-round"></v-ons-icon>
+                        </span>
+                        <span class="application-list-item">
                             {{server.nickname}}<br>
-                            <span style="font-size: 12px;">{{server.url}}</span>
+                            <span class="application-list-item-url" style="font-size: 12px;">{{server.url}}</span>
                         </span>
                     </v-ons-list-item>
                     <v-ons-list-item tappable @click="goTo('servermanager');">
@@ -79,7 +81,45 @@ export default {
 }
 
 .toolbar-header {
-    background-color: #503838 !important;
+    background-color: #413040;
 }
+
+.toolbar-header-title {
+    vertical-align: middle;
+}
+
+.toolbar-header-icon {
+    vertical-align: middle;
+}
+
+.application-list {
+    height: 100vh; 
+    background: #4E394C; 
+    color: #fff;
+}
+
+.application-list-item {
+    color: #fff;
+    font-size: 15px;
+    padding-left: 10px;
+}
+
+.application-list-item-prepanel {
+    background: #392B39; 
+    height: 40px; 
+    width: 40px;
+}
+
+.application-list-item-icon {
+    padding-top: 8px;
+    padding-left: 10px;
+    color: #A0B193;
+}
+
+.application-list-item-url {
+    font-size: 12px;
+    color: #aaa;
+}
+
 
 </style>
