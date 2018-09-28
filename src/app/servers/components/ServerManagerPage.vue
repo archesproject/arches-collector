@@ -37,7 +37,7 @@
                         <div class="left">
                             <v-ons-icon icon="exclamation-triangle" class="list-item__icon" style="color:#ea8a0b;"></v-ons-icon>
                         </div>
-                        <div class="center">Oops, something happened, maybe you're offline?</div>
+                        <div class="center">{{error_message}}</div>
                     </v-ons-list-item>
 
                     <v-ons-button modifier="large" :disabled="disableSignIn" class="btn-success" v-on:click="getClientId">Sign In</v-ons-button>
@@ -67,7 +67,9 @@ export default {
                 active_project: '',
                 projects: {}
             },
-            error: false
+            error: false,
+            error_message: '',
+            default_error_message: 'Oops, something happened, maybe you\re offline?'
         };
     },
     computed: {
@@ -110,11 +112,17 @@ export default {
                     // console.log(response);
                     if (response.ok) {
                         return response.text();
+                    }else{
+                        if (response.status === 401) {
+                            self.error_message = 'The supplied username or password was not valid.';
+                        } else {
+                            self.error_message = self.default_error_message;
+                        }
                     }
+
                     throw new Error('Network response was not ok.');
                 })
                 .then(function(response) {
-                    // set the server metadata and token
                     // console.log('Success:', response);
                     self.server.client_id = response;
                     self.getToken();
@@ -148,11 +156,17 @@ export default {
                     // console.log(response);
                     if (response.ok) {
                         return response.json();
+                    }else{
+                        if (response.status === 401) {
+                            self.error_message = 'The supplied username or password was not valid.';
+                        } else {
+                            self.error_message = self.default_error_message;
+                        }
                     }
+
                     throw new Error('Network response was not ok.');
                 })
                 .then(function(response) {
-                    // set the server metadata and token
                     // console.log('Success:', response);
                     self.server.token = response.access_token;
                     self.server.refresh_token = response.refresh_token;
