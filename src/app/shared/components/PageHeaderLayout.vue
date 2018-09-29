@@ -19,12 +19,14 @@
                         </span>
                         <span class="application-list-item">
                             {{server.nickname}}<br>
-                            <span class="application-list-item-url" style="font-size: 12px;">{{server.url}}</span>
+                            <span class="application-list-item-url">{{server.url}}</span>
                         </span>
                     </v-ons-list-item>
                     <v-ons-list-item tappable @click="goTo('servermanager');">
-                        <v-ons-icon icon="ion-plus-circled"></v-ons-icon>
-                        <span style="padding-left: 10px;">Add Application</span>
+                        <span class="application-list-item-prepanel">
+                            <v-ons-icon class="add-application-icon" icon="ion-plus-round"></v-ons-icon>
+                        </span>
+                        <span class="application-list-item">Add Application</span>
                     </v-ons-list-item>
                 </v-ons-list>
             </v-ons-page>
@@ -121,5 +123,10 @@ export default {
     color: #aaa;
 }
 
+.add-application-icon {
+    padding-top: 8px;
+    padding-left: 10px;
+    color: #fff;
+}
 
 </style>
