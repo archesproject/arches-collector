@@ -1,35 +1,46 @@
 <template>
     <div>
         <!-- Scrollable content here -->
+        <card-list v-on:update_nodegroupid="$emit('update_nodegroupid', $event)" :allcards="allcards" :tiles="tiles" :nodegroupid="nodegroupid" :allnodegroups="allnodegroups"></card-list>
         <ons-scroll infinit-scroll-enable="true" on-scrolled="pagination.nextPage()" can-load="true" threshold='100'>
-       <v-ons-list>
-           <v-ons-list-item v-if="resourceid === tile.resourceinstance_id" v-for="tile in tiles" :key="tile.tileid">
-               <li><div class="label"><span>{{tile.tileid}}:</span></div></li>
-                   <ul v-for="value, key in tile.data" :key="key" v-if="typeof value === 'string' || value instanceof String">
-                   <li class="widget">
-                       <string-widget :value="tile.data[key]"></string-widget>
-                   </li>
+        <v-ons-list>
+            <v-ons-list-item v-for="tile in tiles" :key="tile.tileid">
+                <li><div class="label"><span>{{tile.tileid}}:</span></div></li>
+                    <ul v-for="value, key in tile.data" :key="key" v-if="typeof value === 'string' || value instanceof String">
+                    <li class="widget">
+                        <string-widget :value="tile.data[key]"></string-widget>
+                    </li>
                 </ul>
-           </v-ons-list-item>
-       </v-ons-list>
+            </v-ons-list-item>
+        </v-ons-list>
    </ons-scroll>
    </div>
 </template>
-
 <script>
 export default {
     name: 'ResourceEditPage',
-    props: ['id'],
+    props: ['nodegroupid'],
     data() {
         return {
+            pageStack: [],
             project: this.$store.getters.activeProject,
-            resourceid: this.$store.getters.activeServer.active_resource
+            resourceid: this.$store.getters.activeServer.active_resource,
+            allcards: this.$store.getters.activeGraph.cards,
+            allnodegroups: this.$store.getters.activeGraph.nodegroups
         };
     },
     computed: {
+        // cards: {
+        //     get: function() {
+        //         return this.$store.getters.activeGraph.cards;
+        //     }
+        // },
         tiles: {
             get: function() {
-                return this.$store.getters.getTiles;
+                console.log('IM GETTING THE TILES');
+                return this.$underscore.filter(this.$store.getters.getTiles, function(tile) {
+                    return tile.resourceinstance_id === this.resourceid;
+                }, this);
             }
         }
     },
@@ -51,7 +62,10 @@ export default {
             ).then((res) => {
                 var resource = res['docs'][0];
                 var date = new Date();
-                resource['edited'] = {'day': date.toDateString(), 'time': date.toTimeString()};
+                resource['edited'] = {
+                    'day': date.toDateString(),
+                    'time': date.toTimeString()
+                };
                 this.$store.dispatch('persistResource', resource)
                     .then(function(doc) {
                         return doc;
@@ -64,7 +78,6 @@ export default {
     }
 };
 </script>
-
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 li.widget {
