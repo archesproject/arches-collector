@@ -15,7 +15,7 @@
                         <div>
                             <v-ons-carousel fullscreen swipeable auto-scroll overscrollable :index.sync="carouselIndex" id="resourceCarousel">
                                 <v-ons-carousel-item class="page-background">
-                                    <resource-edit-page/>
+                                    <resource-edit-page :nodegroupid="nodegroup_id" v-on:update_nodegroupid="update_nodegroup"/>
                                 </v-ons-carousel-item>
                                 <v-ons-carousel-item class="page-background">
                                     <resource-tree-page :project="project" ref="sripage"/>
@@ -43,14 +43,23 @@
 <script>
 export default {
     name: 'ResourcePage',
+    props: ['nodegroupid'],
     data() {
         return {
+            nodegroup_id: this.nodegroupid,
             carouselIndex: 0,
             project: this.$store.getters.activeProject,
             resourceid: this.$store.getters.activeServer.active_resource
         };
     },
     methods: {
+        update_nodegroup: function(event){
+            console.log('help');
+            this.nodegroup_id = event;
+        }
+    },
+    mounted: function() {
+        console.log('mounted');
     }
 };
 </script>

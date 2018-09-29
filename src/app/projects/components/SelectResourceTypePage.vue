@@ -41,7 +41,9 @@ export default {
             this.$store.commit('setActiveGraphId', e.graphid);
             this.$router.push({
                 'name': 'resource',
-                params: {}
+                params: {
+                    'nodegroupid': null
+                }
             });
             console.log("You've selected:", e);
         }

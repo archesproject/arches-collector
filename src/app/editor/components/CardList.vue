@@ -3,9 +3,12 @@
         <!-- Scrollable content here -->
         <ons-scroll>
             <v-ons-list>
-                <v-ons-list-item tappable modifier="longdivider" v-for="card in cards" :key="card.resourceinstanceid">
-                    <span>
+                <v-ons-list-item tappable modifier="longdivider" v-for="card in cards" :key="card.resourceinstanceid" @click="navigate_subcard(card)">
+                    <span style="width: 90%">
                        {{card.name}}
+                    </span>
+                    <span v-if="has_sub_card(card)">
+                        >
                     </span>
                 </v-ons-list-item>
             </v-ons-list>
@@ -15,13 +18,26 @@
 <script>
 export default {
     name: 'CardList',
-    props: ['nodegroup', 'cards'],
+    props: ['nodegroupid', 'allcards', 'allnodegroups'],
     data() {
         return {
             // cards: this.$store.getters.activeGraph.cards
         };
     },
     computed: {
+        cards: {
+            get: function() {
+                return this.$underscore.filter(this.allcards, function(card) {
+                    var nodegroups = this.$underscore.chain(this.allnodegroups)
+                        .filter(function(group) {
+                            return group.parentnodegroup_id === this.nodegroupid;
+                        }, this)
+                        .pluck('nodegroupid')
+                        .value();
+                    return nodegroups.indexOf(card.nodegroup_id) !== -1;
+                }, this);
+            }
+        },
         // cards: function(){
         //     var allcards = this.project.graph.cards;
         //     // ko.observableArray(_.filter(data.cards, function(card) {
@@ -36,6 +52,24 @@ export default {
     mounted() {
     },
     methods: {
+        navigate_subcard: function(card){
+            console.log(card)
+            this.$emit('update_nodegroupid', card.nodegroup_id);
+            //this.nodegroupid = card.nodegroup_id;
+            // this.$router.push({
+            //     'name': 'resource',
+            //     params: {
+            //         'nodegroupid': card.nodegroup_id
+            //     }
+            // });
+        },
+        has_sub_card: function(card){
+            var found = this.$underscore.find(this.allnodegroups, function(nodegroup) {
+                return nodegroup.parentnodegroup_id === card.nodegroup_id;
+            }, this);
+            console.log(found);
+            return !!found;
+        }
     }
 };
 </script>

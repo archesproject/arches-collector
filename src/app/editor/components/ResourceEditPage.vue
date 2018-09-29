@@ -1,31 +1,32 @@
 <template>
     <div>
         <!-- Scrollable content here -->
-        <card-list :allcards="cards" :tiles="tiles" :cards="topCards"></card-list>
+        <card-list v-on:update_nodegroupid="$emit('update_nodegroupid', $event)" :allcards="allcards" :tiles="tiles" :nodegroupid="nodegroupid" :allnodegroups="allnodegroups"></card-list>
         <ons-scroll infinit-scroll-enable="true" on-scrolled="pagination.nextPage()" can-load="true" threshold='100'>
-       <v-ons-list>
-           <v-ons-list-item v-for="tile in tiles" :key="tile.tileid">
-               <li><div class="label"><span>{{tile.tileid}}:</span></div></li>
-                   <ul v-for="value, key in tile.data" :key="key" v-if="typeof value === 'string' || value instanceof String">
-                   <li class="widget">
-                       <string-widget :value="tile.data[key]"></string-widget>
-                   </li>
+        <v-ons-list>
+            <v-ons-list-item v-for="tile in tiles" :key="tile.tileid">
+                <li><div class="label"><span>{{tile.tileid}}:</span></div></li>
+                    <ul v-for="value, key in tile.data" :key="key" v-if="typeof value === 'string' || value instanceof String">
+                    <li class="widget">
+                        <string-widget :value="tile.data[key]"></string-widget>
+                    </li>
                 </ul>
-           </v-ons-list-item>
-       </v-ons-list>
+            </v-ons-list-item>
+        </v-ons-list>
    </ons-scroll>
    </div>
 </template>
 <script>
 export default {
     name: 'ResourceEditPage',
-    props: [],
+    props: ['nodegroupid'],
     data() {
         return {
+            pageStack: [],
             project: this.$store.getters.activeProject,
             resourceid: this.$store.getters.activeServer.active_resource,
-            cards: this.$store.getters.activeGraph.cards,
-            nodegroups: this.$store.getters.activeGraph.nodegroups
+            allcards: this.$store.getters.activeGraph.cards,
+            allnodegroups: this.$store.getters.activeGraph.nodegroups
         };
     },
     computed: {
@@ -34,19 +35,6 @@ export default {
         //         return this.$store.getters.activeGraph.cards;
         //     }
         // },
-        topCards: {
-            get: function() {
-                return this.$underscore.filter(this.cards, function(card) {
-                    var nodegroups = this.$underscore.chain(this.nodegroups)
-                        .filter(function(group) {
-                            return group.parentnodegroup_id === null;
-                        }, this)
-                        .pluck('nodegroupid')
-                        .value();
-                    return nodegroups.indexOf(card.nodegroup_id) !== -1;
-                }, this);
-            }
-        },
         tiles: {
             get: function() {
                 console.log('IM GETTING THE TILES');

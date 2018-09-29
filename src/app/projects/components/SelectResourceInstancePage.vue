@@ -61,7 +61,9 @@ export default {
             this.$store.commit('setActiveResourceInstance', resource);
             this.$router.push({
                 'name': 'resource',
-                params: {}
+                params: {
+                    'nodegroupid': null
+                }
             });
         },
         getResourceData: function() {
