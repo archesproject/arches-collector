@@ -1,35 +1,32 @@
 <template>
     <div>
-        <div class="section">
+        <div class="section" style="height: 90px;">
             <div>
                 Description
             </div>
-            <div class="sub-text" style="padding-top: 5px;">
+            <div class="description-text" style="padding-top: 5px;">
                 {{project.description}}
             </div>  
         </div>   
         <div class="section">
-            <div>
-                Status
-            </div>
             <v-ons-row>
-                <v-ons-col style="text-align: right;">
-                    <div class="large-text">{{project.lastsync.date}}&nbsp;<span class="sub-text">{{project.lastsync.time}}</span></div>
-                    <span class="sub-text">Date/Time of Last Sync</span>
+                <v-ons-col style="">
+                    <div class="date-text">{{project.lastsync.date}}&nbsp;<span class="time-text">{{project.lastsync.time}}</span></div>
+                    <span class="status-type-text">Date/Time of Last Sync</span>
                 </v-ons-col>
             </v-ons-row>
             <v-ons-row>
-                <v-ons-col style="text-align: right;">
-                    <div class="large-text">30</div>
-                    <span class="sub-text">Records Edited</span>
+                <v-ons-col style="padding-top: 10px;">
+                    <div class="record-text">30</div>
+                    <span class="status-type-text">Records Edited</span>
                 </v-ons-col>
                 <v-ons-col style="text-align: right;">
-                    <div class="large-text">{{records_to_sync}}</div>
-                    <span class="sub-text">Records to Sync</span>
+                    <div class="record-text">{{records_to_sync}}</div>
+                    <span class="status-type-text">Records to Sync</span>
                 </v-ons-col>
             </v-ons-row>
         </div>
-        <div>
+        <div style="height: 150px;">
             <ons-progress-circular indeterminate v-if="loading">
             </ons-progress-circular>
             <div :id="mapId" v-on:touchstart="stopPropagation"></div>
@@ -236,14 +233,34 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-    .sub-text {
-        font-size: small;
-        color: grey;
+    .description-text {
+        padding-top: 5px;
+        font-size: 15px;
+        color: #aaa;
     }
-    .large-text {
-        font-size: 26px;
-        color: #4d4b65
+
+    .time-text {
+        font-size: 24px;
+        color: #454545;
+        font-weight: 400;
     }
+    .date-text {
+        font-size: 32px;
+        font-weight: 300;
+        color: #454545;
+    }
+
+    .status-type-text {
+        font-size: 15px;
+        color: #aaa;
+    }
+
+    .record-text {
+        font-size: 32px;
+        font-weight: 300;
+        color: #454545;
+    }
+
     .section {
         border-bottom: solid 1px #c5c5c5; 
         padding: 20px;
