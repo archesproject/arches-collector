@@ -20,7 +20,7 @@
                     <div class="record-text">30</div>
                     <span class="status-type-text">Records Edited</span>
                 </v-ons-col>
-                <v-ons-col style="text-align: right;">
+                <v-ons-col style="padding-top: 10px; text-align: right;">
                     <div class="record-text">{{records_to_sync}}</div>
                     <span class="status-type-text">Records to Sync</span>
                 </v-ons-col>
