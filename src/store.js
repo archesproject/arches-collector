@@ -38,7 +38,9 @@ if (!window.cordova || window.cordova.platformId === 'browser') {
                 }
             },
             active_project: project_id,
-            project_sort: [project_id1, project_id2...]
+            project_sort: [project_id1, project_id2...],
+            active_resource: resource_instance_id
+            active_graph_id: graph id being edited
         }
     }
 }
@@ -250,7 +252,8 @@ var store = new Vuex.Store({
                 servers: {}
             }
         },
-        tiles: []
+        tiles: [],
+        active_graph_id: ''
     },
     getters: {
         activeServer: function(state, getters) {
@@ -281,6 +284,15 @@ var store = new Vuex.Store({
         },
         getTiles: function(state, getters) {
             return state.tiles;
+        },
+        activeGraph: function(state, getters) {
+            var activeGraph = null;
+            getters.activeProject.graphs.forEach(function(graph) {
+                if (graph.graphid === state.active_graph_id) {
+                    activeGraph = graph;
+                }
+            });
+            return activeGraph;
         },
         resourcesToSync: function(state, getters) {
             var project = getters.activeProject;
@@ -332,6 +344,13 @@ var store = new Vuex.Store({
         },
         setActiveResourceInstance: function(state, value) {
             store.getters.activeServer.active_resource = value.resourceinstanceid;
+            store.commit('setActiveGraphId', value.graph_id);
+        },
+        clearActiveResourceInstance: function(state) {
+            store.getters.activeServer.active_resource = null;
+        },
+        setActiveGraphId: function(state, value) {
+            state.active_graph_id = value;
         },
         setLastProjectSync: function(state, projectId) {
             var now = new Date();

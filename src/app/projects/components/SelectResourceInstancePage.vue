@@ -9,16 +9,16 @@
                             <span class="icon-circle" v-bind:style="{ border: ['solid', '1px', '#6611FF'], background: [resource_types[resource_instance.graph_id.color]], color: '#fff'}">
                                 <v-ons-icon v-bind:icon="resource_types[resource_instance.graph_id].iconclass.replace('fa ', '')" v-bind:style="{height:'18px', width:'18px'}"></v-ons-icon>
                             </span>
-                    <span class='resource-model-title'>
-                            <span style="padding-left: 0">{{resource_instance.displayname.replace(/['"]+/g,'')}}</span>
-                    <span v-if="resource_instance.edited" class='resource-model-subtitle'>Last edit: {{resource_instance.edited.day}} @ {{resource_instance.edited.time}}</span>
-                    <span v-else class='resource-model-subtitle'>Unedited</span>
+                            <span class='resource-model-title'>
+                                <span style="padding-left: 0">{{resource_instance.displayname.replace(/['"]+/g,'')}}</span>
+                                <span v-if="resource_instance.edited" class='resource-model-subtitle'>Last edit: {{resource_instance.edited.day}} @ {{resource_instance.edited.time}}</span>
+                                <span v-else class='resource-model-subtitle'>Unedited</span>
+                            </span>
+                        </div>
                     </span>
-    </div>
-    </span>
-    </v-ons-list-item>
-    </v-ons-list>
-    </ons-scroll>
+                </v-ons-list-item>
+            </v-ons-list>
+        </ons-scroll>
     </div>
 </template>
 <script>
@@ -58,14 +58,11 @@ export default {
     },
     methods: {
         selectResourceInstance: function(resource) {
-            var payload = {
-                resourceinstanceid: resource.resourceinstanceid
-            };
-            this.$store.commit('setActiveResourceInstance', payload);
+            this.$store.commit('setActiveResourceInstance', resource);
             this.$router.push({
                 'name': 'resource',
                 params: {
-                    id: resource
+                    'nodegroupid': null
                 }
             });
         },
