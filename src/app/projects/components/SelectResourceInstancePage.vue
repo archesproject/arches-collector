@@ -3,7 +3,7 @@
         <!-- Scrollable content here -->
         <ons-scroll infinit-scroll-enable="true" on-scrolled="pagination.nextPage()" can-load="true" threshold='100'>
             <v-ons-list>
-                <v-ons-list-item tappable modifier="longdivider" v-for="resource_instance in resource_instances" :key="resource_instance.resourceinstanceid" @click="selectResourceInstance(resource_instance);">
+                <v-ons-list-item class="resource-model-name-panel" tappable modifier="longdivider" v-for="resource_instance in resource_instances" :key="resource_instance.resourceinstanceid" @click="selectResourceInstance(resource_instance);">
                     <span>
                         <div class='resource-model-name'>
                             <span class="icon-circle" v-bind:style="{ background: [resource_types[resource_instance.graph_id.color]], color: '#fff'}">
@@ -82,6 +82,10 @@ export default {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.resource-model-name-panel {
+    border-bottom: 1px solid #eee;
+}
+
 .resource-model-name {
     display: flex;
     flex-direction: row;

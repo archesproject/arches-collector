@@ -5,7 +5,7 @@
                 <div class="left">
                     <v-ons-toolbar-button>
                         <router-link :to="{ name: 'projectlist' }">
-                            <v-ons-icon class="text-color-dark project-header" icon="ion-android-arrow-dropleft-circle"></v-ons-icon>
+                            <v-ons-icon class="text-color-dark project-header" style="vertical-align: -2px;" icon="ion-android-arrow-dropleft-circle"></v-ons-icon>
                         </router-link>
                         <span class="text-color-dark project-name">{{project.name}}</span>
                     </v-ons-toolbar-button>
@@ -22,31 +22,31 @@
                     swipeable collapse="" side="right"
                     :open.sync="showSideNav" class="sidenav toolbar-header">
                     <v-ons-page>
-                        <v-ons-list>
+                        <v-ons-list style="margin-top: 5px;">
                             <v-ons-list-item tappable @click="sync">
                                 <v-ons-icon class="text-color-dark icon" v-if="syncing === false" icon="fa-cloud-download-alt"></v-ons-icon>
                                 <v-ons-icon class="text-color-dark icon" v-if="sync_failed === true" icon="ion-android-alert"></v-ons-icon>
-                                <span class="text-color-dark label">{{sync_btn_text}}</span>
+                                <span class="text-color-dark label right-panel-label">{{sync_btn_text}}</span>
                             </v-ons-list-item @click="">
                             <v-ons-list-item tappable>
                                 <v-ons-icon class="text-color-dark icon" icon="fa-filter"></v-ons-icon>
-                                <span class="text-color-dark label">Filter records</span>
+                                <span class="text-color-dark label right-panel-label">Filter records</span>
                             </v-ons-list-item @click="">
                             <v-ons-list-item tappable @click="sort">
                                 <v-ons-icon class="text-color-dark icon" icon="fa-sort-alpha-down"></v-ons-icon>
-                                <span class="text-color-dark label">Sort by name</span>
+                                <span class="text-color-dark label right-panel-label">Sort by name</span>
                             </v-ons-list-item @click="">
                             <v-ons-list-item tappable>
                                 <v-ons-icon class="text-color-dark icon" icon="fa-sort-amount-desc"></v-ons-icon>
-                                <span class="text-color-dark label">Most recent edit</span>
+                                <span class="text-color-dark label right-panel-label">Most recent edit</span>
                             </v-ons-list-item @click="">
                             <v-ons-list-item tappable>
                                 <v-ons-icon class="text-color-dark icon" icon="fa-map"></v-ons-icon>
-                                <span class="text-color-dark label">Project map</span>
+                                <span class="text-color-dark label right-panel-label">Project map</span>
                             </v-ons-list-item @click="">
                             <v-ons-list-item tappable @click="toggleSideNav">
                                 <v-ons-icon class="text-color-dark icon" icon="fa-arrow-alt-circle-left"></v-ons-icon>
-                                <span class="text-color-dark label">Return to project list</span>
+                                <span class="text-color-dark label right-panel-label">Return to project list</span>
                             </v-ons-list-item >
                         </v-ons-list>
                     </v-ons-page>
@@ -145,6 +145,7 @@ export default {
 
 .project-name {
     font-size: 17px;
+    vertical-align: 1px;
 }
 
 .page-background {
@@ -153,6 +154,14 @@ export default {
 
 .project-list-panel {
     margin-top: 6px;
+}
+
+.right-panel-label {
+    font-size: 15px;
+}
+
+.list-item {
+    border-bottom: 1px solid #eee;
 }
 
 .padded-page.map-page > ons-page {

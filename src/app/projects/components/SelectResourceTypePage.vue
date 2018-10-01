@@ -1,7 +1,7 @@
 <template>
     <div>
         <v-ons-list>
-            <v-ons-list-item tappable modifier="longdivider" v-for="resource_type in resource_types" :key="resource_type.graphid" @click="selectResourceType(resource_type);">
+            <v-ons-list-item class="resource-model-name-panel" tappable modifier="longdivider" v-for="resource_type in resource_types" :key="resource_type.graphid" @click="selectResourceType(resource_type);">
                 <span>
                     <div class='resource-model-name'>
                         <span class="icon-circle" v-bind:style="{ border: ['solid', '1px', resource_type.color], background: [resource_type.color], color: '#fff'}">
@@ -53,6 +53,10 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+  .resource-model-name-panel {
+      border-bottom: 1px solid #eee;
+  }
+
     .resource-model-name {
         display: flex;
         flex-direction: row;

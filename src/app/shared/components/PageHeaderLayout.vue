@@ -13,7 +13,7 @@
                     </div>
                 </v-ons-toolbar>
                 <v-ons-list class="application-list" style="margin-top: 5px;">
-                    <v-ons-list-item tappable modifier="longdivider" v-for="(server, key) in servers" :key="server.url" @click="selectServer(server.url);">
+                    <v-ons-list-item class="application-item-panel" tappable modifier="longdivider" v-for="(server, key) in servers" :key="server.url" @click="selectServer(server.url);">
                         <span class="application-list-item-prepanel">
                             <v-ons-icon class="application-list-item-icon" icon="ion-checkmark-round"></v-ons-icon>
                         </span>
@@ -22,7 +22,7 @@
                             <span class="application-list-item-url">{{server.url}}</span>
                         </span>
                     </v-ons-list-item>
-                    <v-ons-list-item tappable @click="goTo('servermanager');">
+                    <v-ons-list-item class="application-item-panel" tappable @click="goTo('servermanager');">
                         <span class="application-list-item-prepanel">
                             <v-ons-icon class="add-application-icon" icon="ion-plus-round"></v-ons-icon>
                         </span>
@@ -95,9 +95,13 @@ export default {
 }
 
 .application-list {
-    height: 100vh; 
-    background: #4E394C; 
+    height: 100vh;
+    background: #4E394C;
     color: #fff;
+}
+
+.application-item-panel {
+    border-bottom: 1px solid #413040;
 }
 
 .application-list-item {
@@ -107,8 +111,8 @@ export default {
 }
 
 .application-list-item-prepanel {
-    background: #392B39; 
-    height: 40px; 
+    background: #392B39;
+    height: 40px;
     width: 40px;
 }
 
