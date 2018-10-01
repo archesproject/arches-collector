@@ -1,7 +1,7 @@
 <template>
     <page-header-layout>
         <v-ons-page>
-            <v-ons-toolbar style="background-color: whitesmoke;">
+            <v-ons-toolbar class="project-list-toolbar">
                 <div class="left">
                     <v-ons-toolbar-button>
                         <router-link :to="{ name: 'projectlist' }">
@@ -13,12 +13,12 @@
                 <div class="center"></div>
                 <div class="right">
                     <v-ons-toolbar-button @click="toggleSideNav">
-                        <v-ons-icon class="text-color-dark project-name" icon="fa-lightbulb"></v-ons-icon>
+                        <v-ons-icon class="text-color-dark project-name" icon="fa-sort"></v-ons-icon>
                     </v-ons-toolbar-button>
                 </div>
             </v-ons-toolbar>
             <v-ons-splitter>
-                <v-ons-splitter-side width="60%"
+                <v-ons-splitter-side width="80%"
                     swipeable collapse="" side="right"
                     :open.sync="showSideNav" class="sidenav toolbar-header">
                     <v-ons-page>
@@ -34,11 +34,11 @@
                             </v-ons-list-item @click="">
                             <v-ons-list-item tappable @click="sort">
                                 <v-ons-icon class="text-color-dark icon" icon="fa-sort-alpha-down"></v-ons-icon>
-                                <span class="text-color-dark label">Sort records</span>
+                                <span class="text-color-dark label">Sort by name</span>
                             </v-ons-list-item @click="">
                             <v-ons-list-item tappable>
-                                <v-ons-icon class="text-color-dark icon" icon="fa-trash-alt"></v-ons-icon>
-                                <span class="text-color-dark label">Delete project</span>
+                                <v-ons-icon class="text-color-dark icon" icon="fa-sort-amount-desc"></v-ons-icon>
+                                <span class="text-color-dark label">Most recent edit</span>
                             </v-ons-list-item @click="">
                             <v-ons-list-item tappable>
                                 <v-ons-icon class="text-color-dark icon" icon="fa-map"></v-ons-icon>
@@ -52,7 +52,7 @@
                     </v-ons-page>
                 </v-ons-splitter-side>
 
-                <v-ons-splitter-content>
+                <v-ons-splitter-content class="project-list-panel">
                     <v-ons-page>
                         <div>
                             <v-ons-carousel fullscreen swipeable auto-scroll overscrollable :index.sync="carouselIndex" id="projectCarousel">
@@ -73,7 +73,7 @@
                                 </a>
                                 <a v-bind:class="carouselIndex === 1 ? 'active' : ''" @click="carouselIndex = 1">
                                     <v-ons-icon class="text-color-dark icon" icon="fa-check-circle"></v-ons-icon>
-                                    <div class="text-color-dark label">Review</div>
+                                    <div class="text-color-dark label">Edit Resource</div>
                                 </a>
                                 <a v-bind:class="carouselIndex === 2 ? 'active' : ''" @click="carouselIndex = 2">
                                     <v-ons-icon class="text-color-dark icon" icon="fa-clipboard"></v-ons-icon>
@@ -133,17 +133,26 @@ export default {
     background-color: 'grey'
 }
 
+.project-list-toolbar {
+    height: 50px;
+    background: #f4f4f4;
+    padding-top: 2px;
+}
+
 .project-header {
     font-size: 22px !important;
-    vertical-align: -5% !important;
 }
 
 .project-name {
-    font-size: 20px;
+    font-size: 17px;
 }
 
 .page-background {
     background-color: white;
+}
+
+.project-list-panel {
+    margin-top: 6px;
 }
 
 .padded-page.map-page > ons-page {

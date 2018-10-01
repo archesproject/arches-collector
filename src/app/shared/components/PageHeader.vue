@@ -8,7 +8,7 @@
         </div>
         <div class="center"></div>
         <div class="right">
-            <v-ons-toolbar-button>
+            <v-ons-toolbar-button style="padding-right: 0px;">
                 <v-ons-icon icon="ion-ios-search-strong"></v-ons-icon>
             </v-ons-toolbar-button>
             <v-ons-toolbar-button>
@@ -39,7 +39,8 @@ export default {
 
 .left-button-text{
     position: relative;
-    top: -1px;
+    top: -3px;
+    font-size: 19px;
 }
 
 .left-button-offset{
