@@ -59,14 +59,11 @@ export default {
     },
     methods: {
         selectResourceInstance: function(resource) {
-            var payload = {
-                resourceinstanceid: resource.resourceinstanceid
-            };
-            this.$store.commit('setActiveResourceInstance', payload);
+            this.$store.commit('setActiveResourceInstance', resource);
             this.$router.push({
                 'name': 'resource',
                 params: {
-                    id: resource
+                    'nodegroupid': null
                 }
             });
         },

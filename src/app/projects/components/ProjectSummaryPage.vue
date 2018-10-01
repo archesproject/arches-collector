@@ -6,8 +6,8 @@
             </div>
             <div class="description-text" style="padding-top: 5px;">
                 {{project.description}}
-            </div>  
-        </div>   
+            </div>
+        </div>
         <div class="section">
             <v-ons-row>
                 <v-ons-col style="">
@@ -262,7 +262,7 @@ export default {
     }
 
     .section {
-        border-bottom: solid 1px #c5c5c5; 
+        border-bottom: solid 1px #c5c5c5;
         padding: 20px;
     }
     .mapboxgl-map {
