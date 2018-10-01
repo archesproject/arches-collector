@@ -8,7 +8,7 @@
                 <li><div class="label"><span>{{tile.tileid}}:</span></div></li>
                     <ul v-for="value, key in tile.data" :key="key" v-if="typeof value === 'string' || value instanceof String">
                     <li class="widget">
-                        <string-widget :value="tile.data[key]"></string-widget>
+                        <component :value="tile.data[key]" v-bind:is="'string-widget'"></component>
                     </li>
                 </ul>
             </v-ons-list-item>
