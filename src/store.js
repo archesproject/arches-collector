@@ -18,35 +18,6 @@ if (!window.cordova || window.cordova.platformId === 'browser') {
     adapter = 'idb';
 }
 
-/*
-'servers' object def:
-
-{
-    active: server_url,
-    servers: {
-        server_url: {
-            url: server_url,
-            nickname: nickname,
-            username: username, <-- maybe we don't store
-            password: password, <-- maybe we don't store
-            token:  token,
-            projects: {
-                project_id: {
-                    id,
-                    name,
-                    etc..
-                }
-            },
-            active_project: project_id,
-            project_sort: [project_id1, project_id2...],
-            active_resource: resource_instance_id
-            active_graph_id: graph id being edited
-        }
-    }
-}
-
-*/
-
 var pouchDBs = (function() {
     return {
         _projectDBs: {},
@@ -242,6 +213,35 @@ var pouchDBs = (function() {
     };
 }());
 
+/*
+'servers' object def:
+
+{
+    active: server_url,
+    servers: {
+        server_url: {
+            url: server_url,
+            nickname: nickname,
+            username: username, <-- maybe we don't store
+            password: password, <-- maybe we don't store
+            token:  token,
+            projects: {
+                project_id: {
+                    id,
+                    name,
+                    etc..
+                }
+            },
+            active_project: project_id,
+            project_sort: [project_id1, project_id2...],
+            active_resource: resource_instance_id
+            active_graph_id: graph id being edited
+        }
+    }
+}
+
+*/
+
 var store = new Vuex.Store({
     // strict: true,
     state: {
@@ -252,8 +252,7 @@ var store = new Vuex.Store({
                 servers: {}
             }
         },
-        tiles: [],
-        active_graph_id: ''
+        tiles: []
     },
     getters: {
         activeServer: function(state, getters) {
@@ -286,9 +285,13 @@ var store = new Vuex.Store({
             return state.tiles;
         },
         activeGraph: function(state, getters) {
+            if (!getters.activeServer) {
+                return {};
+            }
             var activeGraph = null;
+            var graphId = store.getters.activeServer.active_graph_id;
             getters.activeProject.graphs.forEach(function(graph) {
-                if (graph.graphid === state.active_graph_id) {
+                if (graph.graphid === graphId) {
                     activeGraph = graph;
                 }
             });
@@ -317,6 +320,9 @@ var store = new Vuex.Store({
             state.dbs.app_servers = value;
         },
         addNewServer: function(state, newServer) {
+            newServer.active_project = '';
+            newServer.active_graph_id = '';
+            newServer.active_resource = '';
             if (typeof store.getters.server(newServer.url) === 'undefined') {
                 Vue.set(state.dbs.app_servers.servers, newServer.url, newServer);
             } else {
@@ -350,7 +356,7 @@ var store = new Vuex.Store({
             store.getters.activeServer.active_resource = null;
         },
         setActiveGraphId: function(state, value) {
-            state.active_graph_id = value;
+            store.getters.activeServer.active_graph_id = value;
         },
         setLastProjectSync: function(state, projectId) {
             var now = new Date();

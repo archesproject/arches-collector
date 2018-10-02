@@ -4,7 +4,9 @@
             <v-ons-toolbar style="background-color: whitesmoke;">
                 <div class="left">
                     <v-ons-toolbar-button>
-                        <router-link :to="{ name: 'project', params: { project: this.project, carouselIndex: 0 } }"><v-ons-icon class="text-color-dark project-header" icon="ion-android-arrow-dropleft-circle"></v-ons-icon></router-link>
+                        <router-link :to="{ name: 'project', params: { project: this.project, carouselIndex: 0 } }">
+                            <v-ons-icon class="text-color-dark project-header" icon="ion-android-arrow-dropleft-circle"></v-ons-icon>
+                        </router-link>
                     </v-ons-toolbar-button>
                 </div>
                 <div class="center"></div>
@@ -48,8 +50,7 @@ export default {
         return {
             nodegroup_id: this.nodegroupid,
             carouselIndex: 0,
-            project: this.$store.getters.activeProject,
-            resourceid: this.$store.getters.activeServer.active_resource
+            project: this.$store.getters.activeProject
         };
     },
     methods: {
