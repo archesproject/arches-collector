@@ -10,6 +10,9 @@
                     <span v-if="has_sub_card(card)">
                         >
                     </span>
+                    <span v-if="has_tiles(card)">
+                        +
+                    </span>
                 </v-ons-list-item>
             </v-ons-list>
         </ons-scroll>
@@ -18,26 +21,13 @@
 <script>
 export default {
     name: 'CardList',
-    props: ['nodegroupid', 'allcards', 'allnodegroups'],
+    props: ['nodegroupid', 'cards', 'allnodegroups', 'tiles', 'resourceid'],
     data() {
         return {
             // cards: this.$store.getters.activeGraph.cards
         };
     },
     computed: {
-        cards: {
-            get: function() {
-                return this.$underscore.filter(this.allcards, function(card) {
-                    var nodegroups = this.$underscore.chain(this.allnodegroups)
-                        .filter(function(group) {
-                            return group.parentnodegroup_id === this.nodegroupid;
-                        }, this)
-                        .pluck('nodegroupid')
-                        .value();
-                    return nodegroups.indexOf(card.nodegroup_id) !== -1;
-                }, this);
-            }
-        },
         // cards: function(){
         //     var allcards = this.project.graph.cards;
         //     // ko.observableArray(_.filter(data.cards, function(card) {
@@ -69,7 +59,13 @@ export default {
             }, this);
             console.log(found);
             return !!found;
-        }
+        },
+        has_tiles: function(card) {
+            var tiles = this.$underscore.filter(this.$store.getters.getTiles, function(tile) {
+                return tile.resourceinstance_id === this.resourceid && tile.nodegroup_id === card.nodegroup_id;
+            }, this);
+            return tiles.length > 0;
+        },
     }
 };
 </script>

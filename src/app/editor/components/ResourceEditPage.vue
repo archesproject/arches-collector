@@ -1,7 +1,7 @@
 <template>
     <div>
         <!-- Scrollable content here -->
-        <card-list v-on:update_nodegroupid="$emit('update_nodegroupid', $event)" :allcards="allcards" :tiles="tiles" :nodegroupid="nodegroupid" :allnodegroups="allnodegroups"></card-list>
+        <card-list v-on:update_nodegroupid="$emit('update_nodegroupid', $event)" :cards="cards" :tiles="tiles" :nodegroupid="nodegroupid" :allnodegroups="allnodegroups" :resourceid="resourceid"></card-list>
         <ons-scroll infinit-scroll-enable="true" on-scrolled="pagination.nextPage()" can-load="true" threshold='100'>
         <v-ons-list>
             <v-ons-list-item v-for="tile in tiles" :key="tile.tileid">
@@ -35,11 +35,24 @@ export default {
         //         return this.$store.getters.activeGraph.cards;
         //     }
         // },
+        cards: {
+            get: function() {
+                return this.$underscore.filter(this.allcards, function(card) {
+                    var nodegroups = this.$underscore.chain(this.allnodegroups)
+                        .filter(function(group) {
+                            return group.parentnodegroup_id === this.nodegroupid;
+                        }, this)
+                        .pluck('nodegroupid')
+                        .value();
+                    return nodegroups.indexOf(card.nodegroup_id) !== -1;
+                }, this);
+            }
+        },
         tiles: {
             get: function() {
                 console.log('IM GETTING THE TILES');
                 return this.$underscore.filter(this.$store.getters.getTiles, function(tile) {
-                    return tile.resourceinstance_id === this.resourceid;
+                    return tile.resourceinstance_id === this.resourceid && tile.nodegroup_id === this.nodegroupid;
                 }, this);
             }
         }
