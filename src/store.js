@@ -281,7 +281,7 @@ var store = new Vuex.Store({
             var projectId = getters.activeServer.active_project;
             return getters.activeServer.projects[projectId];
         },
-        getTiles: function(state, getters) {
+        tiles: function(state, getters) {
             return state.tiles;
         },
         activeGraph: function(state, getters) {

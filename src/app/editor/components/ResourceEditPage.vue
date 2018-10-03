@@ -51,7 +51,7 @@ export default {
         tiles: {
             get: function() {
                 console.log('IM GETTING THE TILES');
-                return this.$underscore.filter(this.$store.getters.getTiles, function(tile) {
+                return this.$underscore.filter(this.$store.getters.tiles, function(tile) {
                     return tile.resourceinstance_id === this.resourceid && tile.nodegroup_id === this.nodegroupid;
                 }, this);
             }

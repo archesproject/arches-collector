@@ -61,7 +61,7 @@ export default {
             return !!found;
         },
         has_tiles: function(card) {
-            var tiles = this.$underscore.filter(this.$store.getters.getTiles, function(tile) {
+            var tiles = this.$underscore.filter(this.$store.getters.tiles, function(tile) {
                 return tile.resourceinstance_id === this.resourceid && tile.nodegroup_id === card.nodegroup_id;
             }, this);
             return tiles.length > 0;
