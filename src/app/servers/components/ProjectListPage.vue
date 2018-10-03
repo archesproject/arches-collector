@@ -15,7 +15,7 @@
                     <v-ons-icon icon="ion-ios-cloud-download"></v-ons-icon>
                 </span>
             </v-ons-list-item>
-            <v-ons-list-item tappable modifier="longdivider" v-for="project in projects" :key="project.id" @click="selectProject(project);" v-bind:class="{ inactive_project: !project.active }">
+            <v-ons-list-item class="list-item" tappable modifier="longdivider" v-for="project in projects" :key="project.id" @click="selectProject(project);" v-bind:class="{ inactive_project: !project.active }">
                 <span>
                     <span class="project-name">{{project.name}}</span><br>
                     <span class="project-active" v-if="project.active">Active from:</span>
@@ -112,6 +112,10 @@ export default {
     .project-dates {
         color: #555;
         font-size: 13px;
+    }
+
+    .list-item {
+        border-bottom: 1px solid #eee;
     }
 
 </style>

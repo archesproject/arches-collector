@@ -28,10 +28,6 @@
                                 <v-ons-icon class="text-color-dark icon" v-if="sync_failed === true" icon="ion-android-alert"></v-ons-icon>
                                 <span class="text-color-dark label right-panel-label">{{sync_btn_text}}</span>
                             </v-ons-list-item @click="">
-                            <v-ons-list-item tappable>
-                                <v-ons-icon class="text-color-dark icon" icon="fa-filter"></v-ons-icon>
-                                <span class="text-color-dark label right-panel-label">Filter records</span>
-                            </v-ons-list-item @click="">
                             <v-ons-list-item tappable @click="sort">
                                 <v-ons-icon class="text-color-dark icon" icon="fa-sort-alpha-down"></v-ons-icon>
                                 <span class="text-color-dark label right-panel-label">Sort by name</span>
@@ -44,10 +40,6 @@
                                 <v-ons-icon class="text-color-dark icon" icon="fa-map"></v-ons-icon>
                                 <span class="text-color-dark label right-panel-label">Project map</span>
                             </v-ons-list-item @click="">
-                            <v-ons-list-item tappable @click="toggleSideNav">
-                                <v-ons-icon class="text-color-dark icon" icon="fa-arrow-alt-circle-left"></v-ons-icon>
-                                <span class="text-color-dark label right-panel-label">Return to project list</span>
-                            </v-ons-list-item >
                         </v-ons-list>
                     </v-ons-page>
                 </v-ons-splitter-side>
@@ -72,7 +64,7 @@
                                     <div class="text-color-dark label">New</div>
                                 </a>
                                 <a v-bind:class="carouselIndex === 1 ? 'active' : ''" @click="carouselIndex = 1">
-                                    <v-ons-icon class="text-color-dark icon" icon="fa-check-circle"></v-ons-icon>
+                                    <v-ons-icon class="text-color-dark icon" icon="fa-edit"></v-ons-icon>
                                     <div class="text-color-dark label">Edit Resource</div>
                                 </a>
                                 <a v-bind:class="carouselIndex === 2 ? 'active' : ''" @click="carouselIndex = 2">
