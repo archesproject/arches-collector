@@ -3,17 +3,19 @@
         <!-- Scrollable content here -->
         <card-list v-on:update_nodegroupid="$emit('update_nodegroupid', $event)" :allcards="allcards" :tiles="tiles" :nodegroupid="nodegroupid" :allnodegroups="allnodegroups"></card-list>
         <ons-scroll infinit-scroll-enable="true" on-scrolled="pagination.nextPage()" can-load="true" threshold='100'>
-        <v-ons-list>
-            <v-ons-list-item v-for="tile in tiles" :key="tile.tileid">
-                <li><div class="label"><span>{{tile.tileid}}:</span></div></li>
-                    <ul v-for="value, key in tile.data" :key="key" v-if="typeof value === 'string' || value instanceof String">
-                    <li class="widget">
-                        <component :value="tile.data[key]" v-bind:is="'string-widget'"></component>
-                    </li>
-                </ul>
-            </v-ons-list-item>
-        </v-ons-list>
-   </ons-scroll>
+              <v-ons-list>
+                  <v-ons-list-item v-for="tile in tiles" :key="tile.tileid">
+                      <li>
+                          <div class="label"><span>{{tile.tileid}}:</span></div>
+                      </li>
+                      <ul v-for="value, key in tile.data" :key="key" v-if="typeof value === 'string' || value instanceof String">
+                          <li class="widget">
+                              <component :value="tile.data[key]" v-bind:is="'string-widget'"></component>
+                          </li>
+                      </ul>
+                </v-ons-list-item>
+            </v-ons-list>
+        </ons-scroll>
    </div>
 </template>
 <script>
