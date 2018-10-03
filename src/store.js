@@ -323,6 +323,7 @@ var store = new Vuex.Store({
             newServer.active_project = '';
             newServer.active_graph_id = '';
             newServer.active_resource = '';
+            newServer.card_nav_stack = [];
             if (typeof store.getters.server(newServer.url) === 'undefined') {
                 Vue.set(state.dbs.app_servers.servers, newServer.url, newServer);
             } else {
