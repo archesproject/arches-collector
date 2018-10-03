@@ -16,13 +16,17 @@
                 </v-ons-col>
             </v-ons-row>
             <v-ons-row>
-                <v-ons-col style="padding-top: 10px;">
+                <v-ons-col style="padding-top: 10px; text-align: right;">
+                    <div class="record-text">125</div>
+                    <span class="status-type-text">Records download</span>
+                </v-ons-col>
+                <v-ons-col style="padding-top: 10px; text-align: right;">
                     <div class="record-text">30</div>
                     <span class="status-type-text">Records Edited</span>
                 </v-ons-col>
                 <v-ons-col style="padding-top: 10px; text-align: right;">
                     <div class="record-text">{{records_to_sync}}</div>
-                    <span class="status-type-text">Records to Sync</span>
+                    <span class="status-type-text">To Sync</span>
                 </v-ons-col>
             </v-ons-row>
         </div>
