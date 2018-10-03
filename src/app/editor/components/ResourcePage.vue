@@ -16,10 +16,10 @@
                         <div>
                             <v-ons-carousel fullscreen swipeable auto-scroll overscrollable :index.sync="carouselIndex" id="resourceCarousel">
                                 <v-ons-carousel-item class="page-background">
-                                    <resource-edit-page :nodegroupid="current_nodegroup_id" v-on:update_nodegroupid="update_nodegroup"/>
+                                    <resource-edit-page :nodegroupid="current_nodegroup_id" v-on:update_nodegroupid="update_nodegroup" />
                                 </v-ons-carousel-item>
                                 <v-ons-carousel-item class="page-background">
-                                    <resource-tree-page :project="project" ref="sripage"/>
+                                    <resource-tree-page :project="project" ref="sripage" />
                                 </v-ons-carousel-item>
                             </v-ons-carousel>
                             <div class="navbar">
@@ -39,26 +39,22 @@
         </v-ons-page>
     </page-header-layout>
 </template>
-
-
 <script>
 export default {
     name: 'ResourcePage',
     props: ['nodegroupid'],
     data() {
         return {
-            //nodegroup_id: this.nodegroupid,
             carouselIndex: 0,
             project: this.$store.getters.activeProject
         };
     },
     computed: {
-        current_nodegroup_id: function(){
+        current_nodegroup_id: function() {
             return this.$store.getters.activeServer.card_nav_stack[0];
         },
-        current_card: function(){
+        current_card: function() {
             var allcards = this.$store.getters.activeGraph.cards;
-            var allnodegroups = this.$store.getters.activeGraph.nodegroups;
             var card = this.$underscore.find(allcards, function(card) {
                 return card.nodegroup_id === this.current_nodegroup_id;
             }, this);
@@ -70,16 +66,19 @@ export default {
         }
     },
     methods: {
-        update_nodegroup: function(event){
+        update_nodegroup: function(event) {
             console.log('help');
             this.$store.getters.activeServer.card_nav_stack.unshift(event);
             this.nodegroup_id = event;
         },
-        back: function(){
-            if (this.$store.getters.activeServer.card_nav_stack.length === 1){
+        back: function() {
+            if (this.$store.getters.activeServer.card_nav_stack.length === 1) {
                 this.$router.push({
                     'name': 'project',
-                    params: { 'project': this.project, 'carouselIndex': 0 }
+                    params: {
+                        'project': this.project,
+                        'carouselIndex': 0
+                    }
                 });
             }
             this.$store.getters.activeServer.card_nav_stack.shift();
@@ -92,11 +91,8 @@ export default {
     }
 };
 </script>
-
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
-
 .page-background {
     background-color: white;
 }
@@ -119,6 +115,7 @@ export default {
     opacity: .2;
     display: none;
 }
+
 
 /* Place the navbar at the bottom of the page, and make it stick */
 
@@ -168,5 +165,4 @@ export default {
     background-color: white;
     color: white;
 }
-
 </style>

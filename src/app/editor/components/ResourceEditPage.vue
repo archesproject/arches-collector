@@ -75,15 +75,13 @@ export default {
         }
     },
     methods: {
-        navigate_subcard: function(card){
-            console.log(card)
+        navigate_subcard: function(card) {
             this.$emit('update_nodegroupid', card.nodegroup_id);
         },
-        has_sub_card: function(card){
+        has_sub_card: function(card) {
             var found = this.$underscore.find(this.allnodegroups, function(nodegroup) {
                 return nodegroup.parentnodegroup_id === card.nodegroup_id;
             }, this);
-            console.log(found);
             return !!found;
         },
         has_tiles: function(card) {

@@ -112,7 +112,7 @@ export default {
                     // console.log(response);
                     if (response.ok) {
                         return response.text();
-                    }else{
+                    } else {
                         if (response.status === 401) {
                             self.error_message = 'The supplied username or password was not valid.';
                         } else {
@@ -156,7 +156,7 @@ export default {
                     // console.log(response);
                     if (response.ok) {
                         return response.json();
-                    }else{
+                    } else {
                         if (response.status === 401) {
                             self.error_message = 'The supplied username or password was not valid.';
                         } else {
