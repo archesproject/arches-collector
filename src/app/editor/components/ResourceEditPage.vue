@@ -1,19 +1,30 @@
 <template>
     <div>
         <!-- Scrollable content here -->
-        <card-list v-on:update_nodegroupid="$emit('update_nodegroupid', $event)" :cards="cards" :allnodegroups="allnodegroups" :allTiles="allTiles"></card-list>
-        <ons-scroll infinit-scroll-enable="true" on-scrolled="pagination.nextPage()" can-load="true" threshold='100'>
-        <v-ons-list>
-            <v-ons-list-item v-for="tile in cardTiles" :key="tile.tileid">
-                <li><div class="label"><span>{{tile.tileid}}:</span></div></li>
-                    <ul v-for="value, key in tile.data" :key="key" v-if="typeof value === 'string' || value instanceof String">
-                    <li class="widget">
-                        <string-widget :value="tile.data[key]"></string-widget>
-                    </li>
-                </ul>
-            </v-ons-list-item>
-        </v-ons-list>
-   </ons-scroll>
+        <ons-scroll>
+            <v-ons-list>
+                <v-ons-list-item tappable modifier="longdivider" v-for="card in cards" :key="card.resourceinstanceid" @click="navigate_subcard(card)">
+                    <span style="width: 90%">
+                       {{card.name}}
+                    </span>
+                    <span v-if="has_sub_card(card)">
+                        >
+                    </span>
+                    <span v-if="has_tiles(card)">
+                        +
+                    </span>
+                </v-ons-list-item>
+
+                <v-ons-list-item v-for="tile in cardTiles" :key="tile.tileid">
+                    <li><div class="label"><span>{{tile.tileid}}:</span></div></li>
+                        <ul v-for="value, key in tile.data" :key="key" v-if="typeof value === 'string' || value instanceof String">
+                        <li class="widget">
+                            <string-widget :value="tile.data[key]"></string-widget>
+                        </li>
+                    </ul>
+                </v-ons-list-item>
+            </v-ons-list>
+       </ons-scroll>
    </div>
 </template>
 <script>
@@ -30,11 +41,6 @@ export default {
         };
     },
     computed: {
-        // cards: {
-        //     get: function() {
-        //         return this.$store.getters.activeGraph.cards;
-        //     }
-        // },
         cards: {
             get: function() {
                 return this.$underscore.filter(this.allcards, function(card) {
@@ -69,6 +75,23 @@ export default {
         }
     },
     methods: {
+        navigate_subcard: function(card){
+            console.log(card)
+            this.$emit('update_nodegroupid', card.nodegroup_id);
+        },
+        has_sub_card: function(card){
+            var found = this.$underscore.find(this.allnodegroups, function(nodegroup) {
+                return nodegroup.parentnodegroup_id === card.nodegroup_id;
+            }, this);
+            console.log(found);
+            return !!found;
+        },
+        has_tiles: function(card) {
+            var tiles = this.$underscore.filter(this.allTiles, function(tile) {
+                return tile.nodegroup_id === card.nodegroup_id;
+            }, this);
+            return tiles.length > 0;
+        },
         save: function(tile) {
             console.log('saving...');
             this.$store.dispatch('persistTile', tile)
