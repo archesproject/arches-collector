@@ -488,7 +488,7 @@ var store = new Vuex.Store({
         setupProjectBasemaps: function({commit, state}, project) {
             const mbtilesFile = `${project.id}.mbtiles`;
             return new Promise((resolve, reject) => {
-                if (window.device.platform === 'Android') {
+                if (window.device && window.device.platform === 'Android') {
                     return window.resolveLocalFileSystemURL(
                         window.cordova.file.applicationStorageDirectory,
                         (dir) => {
@@ -502,15 +502,15 @@ var store = new Vuex.Store({
                         },
                         reject
                     );
-                } else if (window.device.platform === 'iOS') {
+                } else if (window.device && window.device.platform === 'iOS') {
                     return window.resolveLocalFileSystemURL(
                         window.cordova.file.documentsDirectory,
                         resolve,
                         reject
                     );
                 } else {
-                    reject(new Error('Platform not supported'));
-                };
+                    reject(new Error('Platform not supported. Map tiles only available on iOS or Android'));
+                }
             }).then((target) => {
                 return new Promise((resolve, reject) => {
                     target.getFile(mbtilesFile, {}, resolve, reject);
@@ -523,7 +523,7 @@ var store = new Vuex.Store({
                             reject,
                             true
                         );
-                    });
+                    }).catch(error => { console.log('caught', error.message); });
                 });
             });
         }
