@@ -10,7 +10,7 @@
                                 <v-ons-icon class="resource-model-icon" v-bind:icon="resource_types[resource_instance.graph_id].iconclass.replace('fa ', '')" v-bind:style="{height:'14px', width:'14px'}"></v-ons-icon>
                             </span>
                             <span class='resource-model-title'>
-                                <span style="padding-left: 0">{{resource_instance.displayname.replace(/['"]+/g,'')}}</span>
+                                <span style="padding-left: 0; padding-right: 10px;">{{resource_instance.displayname.replace(/['"]+/g,'')}}</span>
                                 <span v-if="resource_instance.edited" class='resource-model-subtitle'>
                                     Last edit: {{resource_instance.edited.day}} @ {{resource_instance.edited.time}}</span>
                                 <span v-else class='resource-model-subtitle'>Unedited</span>

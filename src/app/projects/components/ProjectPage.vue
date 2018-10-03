@@ -149,7 +149,11 @@ export default {
 }
 
 .right-panel-label {
-    font-size: 15px;
+    font-size: 14px;
+}
+
+.sidenav .icon {
+    font-size: 14px;
 }
 
 .list-item {
