@@ -4,7 +4,8 @@
             <v-ons-toolbar style="background-color: whitesmoke;">
                 <div class="left">
                     <v-ons-toolbar-button>
-                        <router-link :to="{ name: 'project', params: { project: this.project, carouselIndex: 0 } }"><v-ons-icon class="text-color-dark project-header" icon="ion-android-arrow-dropleft-circle"></v-ons-icon></router-link>
+                        <v-ons-icon class="text-color-dark resource-header" icon="ion-android-arrow-dropleft-circle" @click="back"></v-ons-icon>
+                        <span class="text-color-dark resource-header">{{current_card.name}}</span>
                     </v-ons-toolbar-button>
                 </div>
                 <div class="center"></div>
@@ -15,10 +16,10 @@
                         <div>
                             <v-ons-carousel fullscreen swipeable auto-scroll overscrollable :index.sync="carouselIndex" id="resourceCarousel">
                                 <v-ons-carousel-item class="page-background">
-                                    <resource-edit-page :nodegroupid="nodegroup_id" v-on:update_nodegroupid="update_nodegroup"/>
+                                    <resource-edit-page :nodegroupid="current_nodegroup_id" v-on:update_nodegroupid="update_nodegroup" />
                                 </v-ons-carousel-item>
                                 <v-ons-carousel-item class="page-background">
-                                    <resource-tree-page :project="project" ref="sripage"/>
+                                    <resource-tree-page :project="project" ref="sripage" />
                                 </v-ons-carousel-item>
                             </v-ons-carousel>
                             <div class="navbar">
@@ -38,32 +39,58 @@
         </v-ons-page>
     </page-header-layout>
 </template>
-
-
 <script>
 export default {
     name: 'ResourcePage',
     props: ['nodegroupid'],
     data() {
         return {
-            nodegroup_id: this.nodegroupid,
             carouselIndex: 0,
-            project: this.$store.getters.activeProject,
-            resourceid: this.$store.getters.activeServer.active_resource
+            project: this.$store.getters.activeProject
         };
     },
+    computed: {
+        current_nodegroup_id: function() {
+            return this.$store.getters.activeServer.card_nav_stack[0];
+        },
+        current_card: function() {
+            var allcards = this.$store.getters.activeGraph.cards;
+            var card = this.$underscore.find(allcards, function(card) {
+                return card.nodegroup_id === this.current_nodegroup_id;
+            }, this);
+            if (card) {
+                return card;
+            } else {
+                return this.$store.getters.activeGraph;
+            }
+        }
+    },
     methods: {
-        update_nodegroup: function(event){
+        update_nodegroup: function(event) {
             console.log('help');
+            this.$store.getters.activeServer.card_nav_stack.unshift(event);
             this.nodegroup_id = event;
+        },
+        back: function() {
+            if (this.$store.getters.activeServer.card_nav_stack.length === 1) {
+                this.$router.push({
+                    'name': 'project',
+                    params: {
+                        'project': this.project,
+                        'carouselIndex': 0
+                    }
+                });
+            }
+            this.$store.getters.activeServer.card_nav_stack.shift();
         }
     },
     mounted: function() {
         console.log('mounted');
+        this.$store.getters.activeServer.card_nav_stack = [];
+        this.$store.getters.activeServer.card_nav_stack.unshift(this.nodegroupid);
     }
 };
 </script>
-
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .page-background {
@@ -72,6 +99,10 @@ export default {
 
 .padded-page.map-page > ons-page {
     margin-bottom: 60px;
+}
+
+.resource-header {
+    font-size: 18px;
 }
 
 .cover {
@@ -84,6 +115,7 @@ export default {
     opacity: .2;
     display: none;
 }
+
 
 /* Place the navbar at the bottom of the page, and make it stick */
 
@@ -133,5 +165,4 @@ export default {
     background-color: white;
     color: white;
 }
-
 </style>
