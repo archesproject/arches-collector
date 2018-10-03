@@ -7,7 +7,7 @@
                     <span>
                         <div class='resource-model-name'>
                             <span class="icon-circle" v-bind:style="{ background: [resource_types[resource_instance.graph_id.color]], color: '#fff'}">
-                                <v-ons-icon class="resource-model-icon" v-bind:icon="resource_types[resource_instance.graph_id].iconclass.replace('fa ', '')" v-bind:style="{height:'18px', width:'18px'}"></v-ons-icon>
+                                <v-ons-icon class="resource-model-icon" v-bind:icon="resource_types[resource_instance.graph_id].iconclass.replace('fa ', '')" v-bind:style="{height:'14px', width:'14px'}"></v-ons-icon>
                             </span>
                             <span class='resource-model-title'>
                                 <span style="padding-left: 0">{{resource_instance.displayname.replace(/['"]+/g,'')}}</span>
@@ -96,25 +96,28 @@ export default {
     flex-direction: column;
     padding-left: 5px;
     color: #666;
-    font-size: 15px;
+    font-size: 14px;
 }
 
 .resource-model-subtitle {
     font-size: 12px;
     padding-top: 0px;
+    margin-top: -1px;
     color: #999;
 }
 
 .resource-model-icon {
     text-align: center;
+    vertical-align: 5px;
+    font-size: 14px;
 }
 
 .icon-circle {
     border: solid 1px #1B48DD;
     padding: 10px;
     border-radius: 50%;
-    height: 18px;
-    width: 18px;
+    height: 14px;
+    width: 14px;
     background: #d7e0f8;
 }
 </style>

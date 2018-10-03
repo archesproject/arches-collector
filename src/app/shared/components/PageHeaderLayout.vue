@@ -112,13 +112,13 @@ export default {
 
 .application-list-item-prepanel {
     background: #392B39;
-    height: 40px;
-    width: 40px;
+    height: 36px;
+    width: 36px;
 }
 
 .application-list-item-icon {
-    padding-top: 8px;
-    padding-left: 10px;
+    padding-top: 6px;
+    padding-left: 8px;
     color: #A0B193;
 }
 
@@ -128,8 +128,8 @@ export default {
 }
 
 .add-application-icon {
-    padding-top: 8px;
-    padding-left: 10px;
+    padding-top: 6px;
+    padding-left: 8px;
     color: #fff;
 }
 

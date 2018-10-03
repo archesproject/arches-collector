@@ -16,7 +16,7 @@
                 </span>
             </v-ons-list-item>
             <v-ons-list-item class="list-item" tappable modifier="longdivider" v-for="project in projects" :key="project.id" @click="selectProject(project);" v-bind:class="{ inactive_project: !project.active }">
-                <span>
+                <span style="line-height: 1.1em;">
                     <span class="project-name">{{project.name}}</span><br>
                     <span class="project-active" v-if="project.active">Active from:</span>
                     <span class="project-inactive" v-else>Inactive</span>
@@ -96,12 +96,12 @@ export default {
 
     .project-name {
         color: #454545;
-        font-size: 15px;
+        font-size: 14px;
     }
 
     .project-active {
         color: #777;
-        font-size: 13px;
+        font-size: 12px;
     }
 
     .project-inactive {
@@ -111,7 +111,7 @@ export default {
 
     .project-dates {
         color: #555;
-        font-size: 13px;
+        font-size: 12px;
     }
 
     .list-item {

@@ -4,12 +4,12 @@
             <v-ons-list-item class="resource-model-name-panel" tappable modifier="longdivider" v-for="resource_type in resource_types" :key="resource_type.graphid" @click="selectResourceType(resource_type);">
                 <span>
                     <div class='resource-model-name'>
-                        <span class="icon-circle" v-bind:style="{ border: ['solid', '1px', resource_type.color], background: [resource_type.color], color: '#fff'}">
-                            <v-ons-icon class="resource-model-icon" v-bind:icon="resource_type.iconclass.replace('fa ', '')" v-bind:style="{height:'18px', width:'18px'}"></v-ons-icon>
+                        <span class="icon-circle" v-bind:style="{ background: [resource_type.color], color: '#fff'}">
+                            <v-ons-icon class="resource-model-icon" v-bind:icon="resource_type.iconclass.replace('fa ', '')" v-bind:style="{height:'14px', width:'14px'}"></v-ons-icon>
                         </span>
                     <span class='resource-model-title'>
                         <span style="padding-left: 0"> New {{resource_type.name}}</span>
-                        <span class='resource-model-subtitle'>Currently x records; x edited</span>
+                        <span class='resource-model-subtitle'>Currently x records</span>
                     </span>
                     </div>
                 </span>
@@ -66,22 +66,25 @@ export default {
         flex-direction: column;
         padding-left: 5px;
         color: #666;
-        font-size: 15px;
+        font-size: 14px;
     }
     .resource-model-subtitle {
         font-size: 12px;
         padding-top: 0px;
         color: #999;
+        margin-top: -1px;
     }
     .resource-model-icon {
         text-align: center;
+        vertical-align: 5px;
+        font-size: 14px;
     }
     .icon-circle {
         border: solid 1px #1B48DD;
         padding: 10px;
         border-radius: 50%;
-        height: 18px;
-        width: 18px;
+        height: 14px;
+        width: 14px;
         background: #d7e0f8;
     }
 </style>
