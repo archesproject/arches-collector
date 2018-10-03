@@ -1,10 +1,10 @@
 <template>
     <div>
         <!-- Scrollable content here -->
-        <card-list v-on:update_nodegroupid="$emit('update_nodegroupid', $event)" :cards="cards" :tiles="tiles" :nodegroupid="nodegroupid" :allnodegroups="allnodegroups" :resourceid="resourceid"></card-list>
+        <card-list v-on:update_nodegroupid="$emit('update_nodegroupid', $event)" :cards="cards" :allnodegroups="allnodegroups" :allTiles="allTiles"></card-list>
         <ons-scroll infinit-scroll-enable="true" on-scrolled="pagination.nextPage()" can-load="true" threshold='100'>
         <v-ons-list>
-            <v-ons-list-item v-for="tile in tiles" :key="tile.tileid">
+            <v-ons-list-item v-for="tile in cardTiles" :key="tile.tileid">
                 <li><div class="label"><span>{{tile.tileid}}:</span></div></li>
                     <ul v-for="value, key in tile.data" :key="key" v-if="typeof value === 'string' || value instanceof String">
                     <li class="widget">
@@ -48,11 +48,22 @@ export default {
                 }, this);
             }
         },
-        tiles: {
+        allTiles: {
+            get: function() {
+                if (!!this.resourceid) {
+                    return this.$underscore.filter(this.$store.getters.tiles, function(tile) {
+                        return tile.resourceinstance_id === this.resourceid;
+                    }, this);
+                } else {
+                    return [];
+                }
+            }
+        },
+        cardTiles: {
             get: function() {
                 console.log('IM GETTING THE TILES');
-                return this.$underscore.filter(this.$store.getters.tiles, function(tile) {
-                    return tile.resourceinstance_id === this.resourceid && tile.nodegroup_id === this.nodegroupid;
+                return this.$underscore.filter(this.allTiles, function(tile) {
+                    return tile.nodegroup_id === this.nodegroupid;
                 }, this);
             }
         }

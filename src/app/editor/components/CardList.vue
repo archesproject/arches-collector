@@ -21,23 +21,11 @@
 <script>
 export default {
     name: 'CardList',
-    props: ['nodegroupid', 'cards', 'allnodegroups', 'tiles', 'resourceid'],
+    props: ['cards', 'allnodegroups', 'allTiles'],
     data() {
-        return {
-            // cards: this.$store.getters.activeGraph.cards
-        };
+        return {};
     },
     computed: {
-        // cards: function(){
-        //     var allcards = this.project.graph.cards;
-        //     // ko.observableArray(_.filter(data.cards, function(card) {
-        //     //     var nodegroup = _.find(ko.unwrap(params.graphModel.get('nodegroups')), function(group) {
-        //     //         return ko.unwrap(group.nodegroupid) === card.nodegroup_id;
-        //     //     });
-        //     //     return !nodegroup || !ko.unwrap(nodegroup.parentnodegroup_id);
-        //     // })
-        //     return allcards;
-        // }
     },
     mounted() {
     },
@@ -45,13 +33,6 @@ export default {
         navigate_subcard: function(card){
             console.log(card)
             this.$emit('update_nodegroupid', card.nodegroup_id);
-            //this.nodegroupid = card.nodegroup_id;
-            // this.$router.push({
-            //     'name': 'resource',
-            //     params: {
-            //         'nodegroupid': card.nodegroup_id
-            //     }
-            // });
         },
         has_sub_card: function(card){
             var found = this.$underscore.find(this.allnodegroups, function(nodegroup) {
@@ -61,8 +42,8 @@ export default {
             return !!found;
         },
         has_tiles: function(card) {
-            var tiles = this.$underscore.filter(this.$store.getters.tiles, function(tile) {
-                return tile.resourceinstance_id === this.resourceid && tile.nodegroup_id === card.nodegroup_id;
+            var tiles = this.$underscore.filter(this.allTiles, function(tile) {
+                return tile.nodegroup_id === card.nodegroup_id;
             }, this);
             return tiles.length > 0;
         },
