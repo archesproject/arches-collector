@@ -22,7 +22,7 @@
             </v-ons-list>
             <div v-if="cardinality === 'n'">
                 <v-ons-list>
-                    <v-ons-list-item tappable>
+                    <v-ons-list-item tappable @click="showForm()">
                         <div style="display:block; width: 100%">
                             <div>Add</div>
                            
@@ -33,7 +33,7 @@
                             </div>
                         </div>
                     </v-ons-list-item>
-                    <v-ons-list-item tappable modifier="longdivider" v-for="tile in cardTiles" :key="tile.tileid">
+                    <v-ons-list-item tappable modifier="longdivider" v-for="tile in cardTiles" :key="tile.tileid" @click="showForm()">
                         <div class="label"><span>{{tile.tileid}}:</span></div>
                         <ul v-for="value, key in tile.data" :key="key" v-if="typeof value === 'string' || value instanceof String">
                             <li class="widget">
@@ -44,13 +44,13 @@
                    
                 </v-ons-list>
             </div>
-            <div v-if="(cardinality === '1' && cardWidgets.length > 0) || showForm" style="text-align: center; padding: 100px;">
+            <!-- <div v-if="(cardinality === '1' && cardWidgets.length > 0)" style="text-align: center; padding: 100px;">
                 show form here ....
                 <v-ons-list-item tappable modifier="longdivider" v-for="widget in cardWidgets">
                     <div class="label"><span>{{widget.label}}:</span></div>
                 
                 </v-ons-list-item>
-            </div>
+            </div> -->
         </ons-scroll>
    </div>
 </template>
@@ -65,8 +65,7 @@ export default {
             resourceid: this.$store.getters.activeServer.active_resource,
             allCards: this.$store.getters.activeGraph.cards,
             allNodegroups: this.$store.getters.activeGraph.nodegroups,
-            allWidgets: this.$store.getters.activeGraph.widgets,
-            showForm: false
+            allWidgets: this.$store.getters.activeGraph.widgets
         };
     },
     computed: {
@@ -133,7 +132,10 @@ export default {
     },
     methods: {
         navigateToCard: function(card) {
-            this.$emit('update_nodegroupid', card.nodegroup_id);
+            this.$emit('navigate-to-card', card);
+        },
+        showForm: function(card) {
+            this.$emit('show-form', card);
         },
         hasSubCard: function(card) {
             var found = this.$underscore.find(this.allNodegroups, function(nodegroup) {

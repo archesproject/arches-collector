@@ -16,10 +16,13 @@
                         <div>
                             <v-ons-carousel fullscreen swipeable auto-scroll overscrollable :index.sync="carouselIndex" id="resourceCarousel">
                                 <v-ons-carousel-item class="page-background">
-                                    <resource-edit-page :nodegroupid="current_nodegroup_id" v-on:update_nodegroupid="update_nodegroup" />
+                                    <resource-edit-page :nodegroupid="current_nodegroup_id" v-on:navigate-to-card="navigateToCard" v-on:show-form="showForm" />
                                 </v-ons-carousel-item>
                                 <v-ons-carousel-item class="page-background">
-                                    <resource-tree-page :project="project" ref="sripage" />
+                                    <resource-tree-page :project="project"/>
+                                </v-ons-carousel-item>
+                                <v-ons-carousel-item class="page-background">
+                                    <resource-edit-form :nodegroupid="current_nodegroup_id"/>
                                 </v-ons-carousel-item>
                             </v-ons-carousel>
                             <div class="navbar">
@@ -66,10 +69,10 @@ export default {
         }
     },
     methods: {
-        update_nodegroup: function(event) {
-            console.log('help');
-            this.$store.getters.activeServer.card_nav_stack.unshift(event);
-            this.nodegroup_id = event;
+        navigateToCard: function(card) {
+            console.log(card);
+            this.$store.getters.activeServer.card_nav_stack.unshift(card.nodegroup_id);
+            this.nodegroup_id = card.nodegroup_id;
         },
         back: function() {
             if (this.$store.getters.activeServer.card_nav_stack.length === 1) {
@@ -81,7 +84,14 @@ export default {
                     }
                 });
             }
-            this.$store.getters.activeServer.card_nav_stack.shift();
+            if (this.carouselIndex === 2){
+                this.carouselIndex = 0;
+            }else{
+                this.$store.getters.activeServer.card_nav_stack.shift();  
+            }
+        },
+        showForm: function() {
+            this.carouselIndex = 2;
         }
     },
     mounted: function() {
