@@ -20,7 +20,7 @@ export default {
     computed: {
         tiles: {
             get: function() {
-                return this.$store.getters.getTiles;
+                return this.$store.getters.tiles;
             }
         }
     },

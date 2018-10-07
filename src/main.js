@@ -20,7 +20,6 @@ import ProjectSummaryPage from './app/projects/components/ProjectSummaryPage.vue
 import SelectResourceInstancePage from './app/projects/components/SelectResourceInstancePage.vue';
 import SelectResourceTypePage from './app/projects/components/SelectResourceTypePage.vue';
 import ResourceEditPage from './app/editor/components/ResourceEditPage.vue';
-import CardList from './app/editor/components/CardList.vue';
 import ResourceTreePage from './app/editor/components/ResourceTreePage.vue';
 import StringWidget from './app/widgets/StringWidget.vue';
 Vue.component('page-header', PageHeader);
@@ -29,7 +28,6 @@ Vue.component('project-summary-page', ProjectSummaryPage);
 Vue.component('select-resource-instance-page', SelectResourceInstancePage);
 Vue.component('select-resource-type-page', SelectResourceTypePage);
 Vue.component('resource-edit-page', ResourceEditPage);
-Vue.component('card-list', CardList);
 Vue.component('resource-tree-page', ResourceTreePage);
 Vue.component('string-widget', StringWidget);
 // Vue.config.productionTip = false;
