@@ -68,7 +68,6 @@ export default {
         },
         cardTiles: {
             get: function() {
-                console.log('IM GETTING THE TILES');
                 return this.$underscore.filter(this.allTiles, function(tile) {
                     return tile.nodegroup_id === this.nodegroupid;
                 }, this);

@@ -23,7 +23,7 @@ export default {
     computed: {
         dirty: {
             get: function() {
-                return this.nodeval != this.value;
+                return this.nodeval !== this.value;
             }
         }
     }

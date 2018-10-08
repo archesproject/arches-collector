@@ -14,7 +14,11 @@
         "test": "npm run unit && npm run e2e",
         "lint": "eslint --ext .js,.vue src test/unit/specs test/e2e/specs",
         "restore-ios": "yarn remove mapbox-gl-cordova-offline && cordova platform remove ios && cordova platform add ios && yarn add archesproject/mapbox-gl-cordova-offline",
-        "icons": "cordova-icon && cordova-splash"
+        "icons": "cordova-icon && cordova-splash",
+        "cordova-build": "yarn run build && cordova build",
+        "cordova-run": "yarn run build && cordova run browser",
+        "cordova-run-ios": "yarn run build && cordova run ios",
+        "cordova-run-android": "yarn run build && cordova run android"
     },
     "dependencies": {
         "@mapbox/geojson-extent": "^0.3.2",
