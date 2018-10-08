@@ -116,7 +116,9 @@ export default {
                     map.addControl(new mapboxgl.NavigationControl());
                     this.addResourceMarkers(map);
                     this.$emit('map-init', map);
-                }).catch(error => { console.log('map init error:', error.message); });;
+                }).catch(error => {
+                    console.log('map init error:', error.message);
+                });
         },
         getMapConfig: function() {
             return {

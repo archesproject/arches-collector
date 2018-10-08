@@ -4,8 +4,8 @@
         :index.sync="carouselIndex" :on-swipe="onSwipe">
             <v-ons-carousel-item>
                 <div class="body">
-               
-                    <v-ons-toolbar>      
+
+                    <v-ons-toolbar>
                         <div class="center left-button-text">Sign In</div>
                     </v-ons-toolbar>
 
@@ -13,7 +13,7 @@
                     </v-ons-input>
                     <v-ons-input class="input" placeholder="Nickname" float v-model="server.nickname">
                     </v-ons-input>
-                                    
+
                     <v-ons-button modifier="large" :disabled="disableNext" class="btn-success" v-on:click="next">Next</v-ons-button>
                 </div>
             </v-ons-carousel-item>
@@ -128,7 +128,7 @@ export default {
                     self.getToken();
                 })
                 .catch(function(error) {
-                    // console.log('Error:', error);
+                    console.log('Error:', error);
                     self.error = true;
                 });
         },
@@ -174,7 +174,7 @@ export default {
                     self.$router.push({'name': 'projectlist'});
                 })
                 .catch(function(error) {
-                    // console.log('Error:', error);
+                    console.log('Error:', error);
                     self.error = true;
                 });
         },
