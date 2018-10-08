@@ -69,4 +69,9 @@ yarn run e2e
 yarn test
 ```
 
+## Signing into an application on an Android emulator
+
+If you are signing into an application on an Android emulator, you will need to use `http://10.0.2.2:[port]` rather than `http://localhost:[port]`. Also, be sure to add '10.0.2.2' to your project's `ALLOWED_HOSTS` setting.  
+
+
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
