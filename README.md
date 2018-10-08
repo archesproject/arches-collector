@@ -44,6 +44,10 @@ cordova platform add browser --save
 # run app in device simulator
 cordova run ios|browser
 
+# to build and run
+cordova-run-ios
+cordova-run-android
+
 # to run in android, I had to run from directly from android studio
 
 # serve with hot reload at localhost:8080
