@@ -530,7 +530,7 @@ var store = new Vuex.Store({
                             reject,
                             true
                         );
-                    }).catch(error => { console.log('caught', error.message); });
+                    }).catch(error => { console.log(error.message, 'Be sure your project has an mbtiles file url'); });
                 });
             });
         }
