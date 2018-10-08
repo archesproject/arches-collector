@@ -33,7 +33,7 @@
                             </div>
                         </div>
                     </v-ons-list-item>
-                    <v-ons-list-item tappable modifier="longdivider" v-for="tile in cardTiles" :key="tile.tileid" @click="showForm()">
+                    <v-ons-list-item tappable modifier="longdivider" v-for="tile in cardTiles" :key="tile.tileid" @click="showForm(tile)">
                         <div class="label"><span>{{tile.tileid}}:</span></div>
                         <ul v-for="value, key in tile.data" :key="key" v-if="typeof value === 'string' || value instanceof String">
                             <li class="widget">
@@ -134,8 +134,11 @@ export default {
         navigateToCard: function(card) {
             this.$emit('navigate-to-card', card);
         },
-        showForm: function(card) {
-            this.$emit('show-form', card);
+        showForm: function(tile) {
+            if (!tile) {
+                tile = ''; // get a blank tile 
+            }
+            this.$emit('show-form', tile);
         },
         hasSubCard: function(card) {
             var found = this.$underscore.find(this.allNodegroups, function(nodegroup) {

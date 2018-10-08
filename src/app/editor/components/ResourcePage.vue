@@ -22,7 +22,7 @@
                                     <resource-tree-page :project="project"/>
                                 </v-ons-carousel-item>
                                 <v-ons-carousel-item class="page-background">
-                                    <resource-edit-form :nodegroupid="current_nodegroup_id"/>
+                                    <resource-edit-form :tile="activeTile"/>
                                 </v-ons-carousel-item>
                             </v-ons-carousel>
                             <div class="navbar">
@@ -49,8 +49,18 @@ export default {
     data() {
         return {
             carouselIndex: 0,
-            project: this.$store.getters.activeProject
-        };
+            project: this.$store.getters.activeProject,
+            activeTile: {
+                data: {},
+                nodegroup_id: '',
+                parenttile_id: '',
+                provisionaledits: '',
+                resourceinstance_id: '',
+                sortorder: '',
+                tileid: '',
+                type: ''
+            }
+        }
     },
     computed: {
         current_nodegroup_id: function() {
@@ -90,7 +100,9 @@ export default {
                 this.$store.getters.activeServer.card_nav_stack.shift();  
             }
         },
-        showForm: function() {
+        showForm: function(tile) {
+            console.log(tile);
+            this.activeTile = tile;
             this.carouselIndex = 2;
         }
     },

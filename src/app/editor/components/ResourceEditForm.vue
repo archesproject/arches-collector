@@ -4,8 +4,15 @@
         <ons-scroll>
             <div>
                 show form here ....
-                <v-ons-list-item tappable modifier="longdivider" v-for="widget in cardWidgets">
-                    <div class="label"><span>{{widget.label}}:</span></div>
+                <v-ons-list-item modifier="longdivider" v-for="widget in cardWidgets">
+                    <span class="label"><span>{{widget.label}}({{datatype(widget)}}): </span></span>
+                    
+                    <component :allNodes="allNodes" :tile="tile" :widget="widget" v-bind:is="'base-widget'"></component>
+                    <!-- <div v-show="widget === 'string'">
+                        string....
+                        <component :value="tileValue(widget)" v-bind:is="'string-widget'"></component>
+                    </div> -->
+                    
                 </v-ons-list-item>
             </div>
         </ons-scroll>
@@ -14,19 +21,40 @@
 <script>
 export default {
     name: 'ResourceEditForm',
-    props: ['nodegroupid'],
+    props: ['tile'],
     data() {
         return {
             allCards: this.$store.getters.activeGraph.cards,
-            allWidgets: this.$store.getters.activeGraph.widgets
+            allWidgets: this.$store.getters.activeGraph.widgets,
+            allNodes: this.$store.getters.activeGraph.nodes,
+            lookup: {
+                'string': 'string-widget',
+                'concept': 'concept-widget'
+            }
         };
     },
     computed: {
+        widgetLookup: {
+            get: function(){
+
+            }
+        },
+        nodegroupid: {
+            get: function() {
+                return this.tile.nodegroup_id;
+            }
+        },
         card: {
             get: function() {
                 return this.$underscore.find(this.allCards, function(card) {
                     return (card.nodegroup_id === this.nodegroupid);
                 }, this);
+            }
+        },
+        temp: {
+            get: function(){
+                console.log('tile changed');
+                return this.tile;
             }
         },
         // cards: {
@@ -67,7 +95,7 @@ export default {
                     var widgets = this.$underscore.filter(this.allWidgets, function(widget) {
                         return widget.card_id === this.card.cardid;
                     }, this);
-                    return widgets;
+                    return this.$underscore.sortBy(widgets, 'sortorder');
                 } else {
                     return [];
                 }
@@ -88,6 +116,7 @@ export default {
         // }
     },
     methods: {
+
         // navigateToCard: function(card) {
         //     this.$emit('update_nodegroupid', card.nodegroup_id);
         // },
@@ -106,9 +135,20 @@ export default {
         // hasTiles: function(card) {
         //     return this.tileCount(card) > 0;
         // },
-        // canAdd: function(card) {
-        //     return card.cardinality === 'n' || this.hasTiles(card) === false;
-        // },
+        tileValue: function(widget) {
+            if (!!this.tile) {
+                console.log(this.tile.data[widget.node_id]);
+                return this.tile.data[widget.node_id];
+            }
+        },
+        datatype: function(widget) {
+            var node = this.$underscore.find(this.allNodes, function(node) {
+                return node.nodeid === widget.node_id;
+            }, this);
+            console.log('in datatype function')
+            console.log(node.datatype)
+            return node.datatype;
+        },
         save: function(tile) {
             console.log('saving...');
             this.$store.dispatch('persistTile', tile)
