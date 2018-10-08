@@ -44,7 +44,7 @@ cordova platform add browser --save
 # run app in device simulator
 cordova run ios|browser
 
-# to build and run
+# to build and run in a simulator
 cordova-run-ios
 cordova-run-android
 
