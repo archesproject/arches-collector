@@ -55,6 +55,9 @@
                                     <select-resource-instance-page :project="project" ref="sripage"/>
                                 </v-ons-carousel-item>
                                 <v-ons-carousel-item class="page-background">
+                                    <project-map-page :project="project" />
+                                </v-ons-carousel-item>
+                                <v-ons-carousel-item class="page-background">
                                     <project-summary-page :project="project" />
                                 </v-ons-carousel-item>
                             </v-ons-carousel>
@@ -65,9 +68,13 @@
                                 </a>
                                 <a v-bind:class="carouselIndex === 1 ? 'active' : ''" @click="carouselIndex = 1">
                                     <v-ons-icon class="text-color-dark icon" icon="fa-edit"></v-ons-icon>
-                                    <div class="text-color-dark label">Edit Resource</div>
+                                    <div class="text-color-dark label">Review</div>
                                 </a>
                                 <a v-bind:class="carouselIndex === 2 ? 'active' : ''" @click="carouselIndex = 2">
+                                    <v-ons-icon class="text-color-dark icon" icon="fa-map-marker-alt"></v-ons-icon>
+                                    <div class="text-color-dark label">Map</div>
+                                </a>
+                                <a v-bind:class="carouselIndex === 3 ? 'active' : ''" @click="carouselIndex = 3">
                                     <v-ons-icon class="text-color-dark icon" icon="fa-clipboard"></v-ons-icon>
                                     <div class="text-color-dark label">Summary</div>
                                 </a>
@@ -220,7 +227,7 @@ export default {
     padding: 14px 0px;
     text-decoration: none;
     font-size: 17px;
-    width: 33%;
+    width: 25%;
     flex-grow: 1;
 }
 
