@@ -25,10 +25,21 @@ export default {
         },
         value: {
             get: function() {
-                if (!!this.tile) {
-                    //console.log(this.tile.data[this.widget.node_id]);
-                    return this.tile.data[this.widget.node_id];
+                try {
+                    if (!!this.tile.data[this.widget.node_id]) {
+                        return this.tile.data[this.widget.node_id];
+                    }
+                    throw('');
                 }
+                catch(err) {
+                    return '';
+                }
+                // if (!!this.tile && !!this.tile.data) {
+                //     //console.log(this.tile.data[this.widget.node_id]);
+                //     return this.tile.data[this.widget.node_id];
+                // }else{
+                //     return '';
+                // }
             }
         }
     }

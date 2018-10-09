@@ -22,7 +22,7 @@
                                     <resource-tree-page :project="project"/>
                                 </v-ons-carousel-item>
                                 <v-ons-carousel-item class="page-background">
-                                    <resource-edit-form :tile="activeTile"/>
+                                    <resource-edit-form :formContext="formContext" :tile="formContext.tile" :card="formContext.card"/>
                                 </v-ons-carousel-item>
                             </v-ons-carousel>
                             <div class="navbar">
@@ -50,15 +50,18 @@ export default {
         return {
             carouselIndex: 0,
             project: this.$store.getters.activeProject,
-            activeTile: {
-                data: {},
-                nodegroup_id: '',
-                parenttile_id: '',
-                provisionaledits: '',
-                resourceinstance_id: '',
-                sortorder: '',
-                tileid: '',
-                type: ''
+            formContext: {
+                tile: {
+                    data: {},
+                    nodegroup_id: '',
+                    parenttile_id: '',
+                    provisionaledits: '',
+                    resourceinstance_id: '',
+                    sortorder: '',
+                    tileid: '',
+                    type: ''
+                },
+                card: {}
             }
         }
     },
@@ -100,9 +103,15 @@ export default {
                 this.$store.getters.activeServer.card_nav_stack.shift();  
             }
         },
-        showForm: function(tile) {
+        showForm: function(card, tile) {
+            console.log('card')
+            console.log(card);
+            console.log('tile')
             console.log(tile);
-            this.activeTile = tile;
+            this.formContext = {
+                tile: tile,
+                card: card
+            };
             this.carouselIndex = 2;
         }
     },

@@ -15,12 +15,20 @@ export default {
     props: ['value'],
     data() {
         return {
-            nodeval: this.value
+            val: this.value
         };
     },
     methods: {
     },
     computed: {
+        nodeval: {
+            get: function() {
+                return this.value;
+            },
+            set: function(newVal) {
+                this.val = newVal;
+            }
+        },
         dirty: {
             get: function() {
                 return this.nodeval !== this.value;
