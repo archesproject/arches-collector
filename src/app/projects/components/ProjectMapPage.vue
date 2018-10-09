@@ -189,7 +189,6 @@ export default {
     },
     mounted() {
         var self = this;
-        console.log('mounted');
         this.$store.dispatch('getProjectChanges', this.project.id)
             .finally(function(doc) {
                 self.changes = doc;
@@ -207,38 +206,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-    .description-text {
-        padding-top: 5px;
-        font-size: 15px;
-        color: #aaa;
-    }
-
-    .time-text {
-        font-size: 24px;
-        color: #454545;
-        font-weight: 400;
-    }
-    .date-text {
-        font-size: 32px;
-        font-weight: 300;
-        color: #454545;
-    }
-
-    .status-type-text {
-        font-size: 15px;
-        color: #aaa;
-    }
-
-    .record-text {
-        font-size: 32px;
-        font-weight: 300;
-        color: #454545;
-    }
-
-    .section {
-        border-bottom: solid 1px #c5c5c5;
-        padding: 20px;
-    }
     .mapboxgl-map {
         height: 100%;
         border: 1px solid rgb(200, 200, 200);
@@ -246,7 +213,7 @@ export default {
     }
     ons-progress-circular {
         display: block;
-        margin: 20% auto;
+        /* margin: 20% auto; */
     }
     .map-control-templates {
         display: none;
