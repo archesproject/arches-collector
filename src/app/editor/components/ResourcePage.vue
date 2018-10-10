@@ -6,9 +6,11 @@
                     <v-ons-toolbar-button>
                         <v-ons-icon class="text-color-dark resource-header" icon="ion-android-arrow-dropleft-circle" @click="back"></v-ons-icon>
                         <span class="text-color-dark resource-header">{{current_card.name}}</span>
+
                     </v-ons-toolbar-button>
                 </div>
                 <div class="center"></div>
+                <div class="right"><transition name="fade"><span class="saving-popup" v-show="saving">saving...</span></transition></div>
             </v-ons-toolbar>
             <v-ons-splitter>
                 <v-ons-splitter-content>
@@ -22,7 +24,7 @@
                                     <resource-tree-page :project="project"/>
                                 </v-ons-carousel-item>
                                 <v-ons-carousel-item class="page-background">
-                                    <resource-edit-form :formContext="formContext" :tile="formContext.tile" :card="formContext.card"/>
+                                    <resource-edit-form :formContext="formContext" :tile="formContext.tile" :card="formContext.card" :saving.sync="saving"/>
                                 </v-ons-carousel-item>
                             </v-ons-carousel>
                             <div class="navbar">
@@ -49,6 +51,7 @@ export default {
     data() {
         return {
             carouselIndex: 0,
+            saving: false,
             project: this.$store.getters.activeProject,
             formContext: {
                 tile: {
@@ -134,6 +137,25 @@ export default {
 
 .resource-header {
     font-size: 18px;
+}
+
+.saving-popup {
+    padding-right: 20px;
+    font-size: 16px;
+    color: #359a35;
+}
+
+.fade-enter-active, .fade-leave-active {
+    -webkit-transition-timing-function: ease;
+    transition-timing-function: ease;
+    -webkit-transition: opacity .5s;
+    transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
+}
+.fade-enter-to, .fade-leave /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 1;
 }
 
 .cover {

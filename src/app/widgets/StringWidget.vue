@@ -2,9 +2,8 @@
     <div>
     <v-ons-input
       placeholder="derive from configs"
-      v-model="nodeval">
+      :value="value" @input="save()">
     </v-ons-input>
-    <v-ons-icon class="text-color-dark icon" icon="fa-pencil" v-if="dirty === true"></v-ons-icon>
     </div>
 </template>
 
@@ -12,28 +11,13 @@
 <script>
 export default {
     name: 'StringWidget',
-    props: ['value'],
+    props: ['value', 'save'],
     data() {
-        return {
-            val: this.value
-        };
+        return {};
     },
     methods: {
     },
     computed: {
-        nodeval: {
-            get: function() {
-                return this.value;
-            },
-            set: function(newVal) {
-                this.val = newVal;
-            }
-        },
-        dirty: {
-            get: function() {
-                return this.nodeval !== this.value;
-            }
-        }
     }
 };
 </script>
