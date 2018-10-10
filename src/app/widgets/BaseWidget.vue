@@ -1,5 +1,5 @@
 <template>
-    <component :value="value" v-bind:is="widgetComponent" :save="save"></component>
+    <component :value.sync="value" v-bind:is="widgetComponent"></component>
 </template>
 
 
@@ -48,6 +48,7 @@ export default {
                 // console.log('in set');
                 // console.log(newValue);
                 this.tile.data[this.widget.node_id] = newValue;
+                this.save();
             }
         }
     }
