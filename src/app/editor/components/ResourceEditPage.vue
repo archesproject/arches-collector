@@ -34,10 +34,10 @@
                         </div>
                     </v-ons-list-item>
                     <v-ons-list-item tappable modifier="longdivider" v-for="tile in cardTiles" :key="tile.tileid" @click="showForm(card, tile)">
-                        <div class="label"><span>{{tile.tileid}}:</span></div>
-                        <ul v-for="value, key in tile.data" :key="key" v-if="typeof value === 'string' || value instanceof String">
-                            <li class="widget">
-                                <component :value="tile.data[key]" v-bind:is="'string-widget'"></component>
+                        <div><span>Tile Id: {{tile.tileid}}</span></div>
+                        <ul>
+                            <li class="widget" v-for="value, key in tile.data" :key="key" v-if="typeof value === 'string' || value instanceof String">
+                                {{tile.data[key]}}
                             </li>
                         </ul>
                     </v-ons-list-item>

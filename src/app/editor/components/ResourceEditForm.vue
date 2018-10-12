@@ -1,22 +1,12 @@
 <template>
-    <div>
-        <!-- Scrollable content here -->
-        <ons-scroll>
-            <div>
-                <v-ons-list>
-                    <v-ons-list-item modifier="longdivider" v-for="widget in cardWidgets">
-                        <span class="label"><span>{{widget.label}}({{datatype(widget)}}): </span></span>
-                        <component :allNodes="allNodes" :formContext="formContext" :tile="tile" :widget="widget" :save="throttle(save, saveDelay)" v-bind:is="'base-widget'"></component>
-                    </v-ons-list-item>
-                </v-ons-list>
-            </div>
-        </ons-scroll>
-   </div>
+    <ons-scroll>
+        <component v-for="widget in cardWidgets" class="widget" :allNodes="allNodes" :formContext="formContext" :tile="tile" :widget="widget" :save="throttle(save, saveDelay)" v-bind:is="'base-widget'"></component>
+    </ons-scroll>
 </template>
 <script>
 export default {
     name: 'ResourceEditForm',
-    props: ['formContext', 'tile', 'card', 'saving'],
+    props: ['formContext', 'card', 'saving', 'tile'],
     data() {
         return {
             allWidgets: this.$store.getters.activeGraph.widgets,
@@ -138,5 +128,7 @@ export default {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
+.widget {
+    padding: 15px;
+}
 </style>

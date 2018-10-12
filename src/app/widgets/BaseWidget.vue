@@ -1,20 +1,19 @@
 <template>
-    <component :value.sync="value" v-bind:is="widgetComponent"></component>
+    <component :value.sync="value" v-bind:is="widgetComponent" :widget="widget"></component>
 </template>
 
 
 <script>
 export default {
     name: 'BaseWidget',
-    props: ['allNodes', 'widget', 'tile', 'save'],
+    props: ['allNodes', 'widget', 'save', 'tile'],
     data() {
         return {
             waiting: false,
             project: this.$store.getters.activeProject
         };
     },
-    methods: {
-    },
+    methods: {},
     computed: {
         widgetComponent: {
             get: function() {
@@ -35,6 +34,8 @@ export default {
                     throw('');
                 }
                 catch(err) {
+                    console.log('node id')
+                    console.log(this.widget.node_id)
                     return '';
                 }
                 // if (!!this.tile && !!this.tile.data) {
@@ -45,8 +46,8 @@ export default {
                 // }
             },
             set: function(newValue) {
-                // console.log('in set');
-                // console.log(newValue);
+                console.log('in set');
+                console.log(newValue);
                 this.tile.data[this.widget.node_id] = newValue;
                 this.save();
             }

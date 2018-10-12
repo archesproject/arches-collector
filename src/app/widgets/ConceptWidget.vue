@@ -1,9 +1,7 @@
 <template>
     <div>
-    <v-ons-input
-      placeholder="derive from configs"
-      :value="value"  @input="$emit('update:value', $event.target.value)">
-    </v-ons-input>
+        <div class="label">{{widget.label}}</div>
+        <input :value="value" placeholder="derive from configs" @input="$emit('update:value', $event.target.value);">
     </div>
 </template>
 
@@ -11,7 +9,7 @@
 <script>
 export default {
     name: 'ConceptWidget',
-    props: ['value'],
+    props: ['value', 'widget'],
     data() {
         return {};
     },
