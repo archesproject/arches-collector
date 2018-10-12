@@ -22,7 +22,7 @@
             </v-ons-list>
             <div v-if="cardinality === 'n'">
                 <v-ons-list>
-                    <v-ons-list-item tappable @click="showForm()">
+                    <v-ons-list-item tappable @click="showForm(card)">
                         <div style="display:block; width: 100%">
                             <div>Add</div>
                            
@@ -33,11 +33,11 @@
                             </div>
                         </div>
                     </v-ons-list-item>
-                    <v-ons-list-item tappable modifier="longdivider" v-for="tile in cardTiles" :key="tile.tileid" @click="showForm(tile)">
-                        <div class="label"><span>{{tile.tileid}}:</span></div>
-                        <ul v-for="value, key in tile.data" :key="key" v-if="typeof value === 'string' || value instanceof String">
-                            <li class="widget">
-                                <component :value="tile.data[key]" v-bind:is="'string-widget'"></component>
+                    <v-ons-list-item tappable modifier="longdivider" v-for="tile in cardTiles" :key="tile.tileid" @click="showForm(card, tile)">
+                        <div><span>Tile Id: {{tile.tileid}}</span></div>
+                        <ul>
+                            <li class="widget" v-for="value, key in tile.data" :key="key" v-if="typeof value === 'string' || value instanceof String">
+                                {{tile.data[key]}}
                             </li>
                         </ul>
                     </v-ons-list-item>
@@ -121,10 +121,8 @@ export default {
                     return nodegroup.nodegroupid === this.nodegroupid;
                 }, this);
                 if (!!found) {
-                    console.log(found.cardinality)
                     return found.cardinality;
                 }
-                console.log('here')
                 return 1; 
             }
         }
@@ -133,11 +131,20 @@ export default {
         navigateToCard: function(card) {
             this.$emit('navigate-to-card', card);
         },
-        showForm: function(tile) {
+        showForm: function(card, tile) {
             if (!tile) {
-                tile = ''; // get a blank tile 
+                tile =  {
+                    data: {},
+                    nodegroup_id: '',
+                    parenttile_id: '',
+                    provisionaledits: '',
+                    resourceinstance_id: '',
+                    sortorder: '',
+                    tileid: '',
+                    type: ''
+                }; // get a blank tile 
             }
-            this.$emit('show-form', tile);
+            this.$emit('show-form', card, tile);
         },
         hasSubCard: function(card) {
             var found = this.$underscore.find(this.allNodegroups, function(nodegroup) {

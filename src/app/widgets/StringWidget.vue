@@ -1,10 +1,7 @@
 <template>
     <div>
-    <v-ons-input
-      placeholder="derive from configs"
-      v-model="nodeval">
-    </v-ons-input>
-    <v-ons-icon class="text-color-dark icon" icon="fa-pencil" v-if="dirty === true"></v-ons-icon>
+        <div class="label">{{widget.label}}</div>
+        <input :value="value" placeholder="derive from configs" @input="$emit('update:value', $event.target.value);">
     </div>
 </template>
 
@@ -12,20 +9,13 @@
 <script>
 export default {
     name: 'StringWidget',
-    props: ['value'],
+    props: ['value', 'widget'],
     data() {
-        return {
-            nodeval: this.value
-        };
+        return {};
     },
     methods: {
     },
     computed: {
-        dirty: {
-            get: function() {
-                return this.nodeval !== this.value;
-            }
-        }
     }
 };
 </script>

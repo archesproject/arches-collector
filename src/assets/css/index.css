@@ -82,3 +82,14 @@ body {
 .fa5 {
     font-family: FontAwesome5;
 }
+
+input {
+    border: solid 1px lightgrey;
+    font-size: 13px;
+    width: 100%;
+    padding: 5px 0px 5px 5px;
+}
+
+.label {
+    padding-bottom: 2px;
+}
