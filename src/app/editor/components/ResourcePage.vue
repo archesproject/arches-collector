@@ -18,10 +18,10 @@
                         <div>
                             <v-ons-carousel fullscreen swipeable auto-scroll overscrollable :index.sync="carouselIndex" id="resourceCarousel">
                                 <v-ons-carousel-item class="page-background">
-                                    <resource-edit-page :nodegroupid="current_nodegroup_id" v-on:navigate-to-card="navigateToCard" v-on:show-form="showForm" />
+                                    <resource-report-page :project="project"/>
                                 </v-ons-carousel-item>
                                 <v-ons-carousel-item class="page-background">
-                                    <resource-tree-page :project="project"/>
+                                    <resource-edit-page :nodegroupid="current_nodegroup_id" v-on:navigate-to-card="navigateToCard" v-on:show-form="showForm" />
                                 </v-ons-carousel-item>
                                 <v-ons-carousel-item class="page-background">
                                     <resource-edit-form :formContext="formContext" :tile="formContext.tile" :card="formContext.card" :saving.sync="saving"/>
@@ -29,12 +29,12 @@
                             </v-ons-carousel>
                             <div class="navbar">
                                 <a v-bind:class="carouselIndex === 0 ? 'active' : ''" @click="carouselIndex = 0">
-                                    <v-ons-icon class="text-color-dark icon" icon="fa-check-circle"></v-ons-icon>
-                                    <div class="text-color-dark label">Resource</div>
+                                    <v-ons-icon class="text-color-dark icon" icon="fa-file-alt"></v-ons-icon>
+                                    <div class="text-color-dark label">Resource Report</div>
                                 </a>
                                 <a v-bind:class="carouselIndex === 1 ? 'active' : ''" @click="carouselIndex = 1">
-                                    <v-ons-icon class="text-color-dark icon" icon="fa-sitemap"></v-ons-icon>
-                                    <div class="text-color-dark label">Overview</div>
+                                    <v-ons-icon class="text-color-dark icon" icon="fa-check"></v-ons-icon>
+                                    <div class="text-color-dark label">Editor</div>
                                 </a>
                             </div>
                         </div>
@@ -50,7 +50,7 @@ export default {
     props: ['nodegroupid'],
     data() {
         return {
-            carouselIndex: 0,
+            carouselIndex: 1,
             saving: false,
             project: this.$store.getters.activeProject,
             formContext: {
@@ -96,14 +96,14 @@ export default {
                     'name': 'project',
                     params: {
                         'project': this.project,
-                        'carouselIndex': 0
+                        'carouselIndex': 1
                     }
                 });
             }
             if (this.carouselIndex === 2){
-                this.carouselIndex = 0;
+                this.carouselIndex = 1;
             }else{
-                this.$store.getters.activeServer.card_nav_stack.shift();  
+                this.$store.getters.activeServer.card_nav_stack.shift();
             }
         },
         showForm: function(card, tile) {

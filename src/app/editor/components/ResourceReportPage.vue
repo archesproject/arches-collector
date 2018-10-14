@@ -2,14 +2,14 @@
     <div>
         <!-- Scrollable content here -->
         <ons-scroll infinit-scroll-enable="true" on-scrolled="pagination.nextPage()" can-load="true" threshold='100'>
-            <div class="tree-content">A resource editor tree goes here</div>
+            <div class="report-content">A resource report goes here</div>
         </ons-scroll>
    </div>
 </template>
 
 <script>
 export default {
-    name: 'ResourceMapPage',
+    name: 'ResourceReportPage',
     props: ['id'],
     data() {
         return {
@@ -32,7 +32,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
-.tree-content {
+.report-content {
     padding: 15px;
 }
 

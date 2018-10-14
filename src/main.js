@@ -22,7 +22,7 @@ import SelectResourceInstancePage from './app/projects/components/SelectResource
 import SelectResourceTypePage from './app/projects/components/SelectResourceTypePage.vue';
 import ResourceEditPage from './app/editor/components/ResourceEditPage.vue';
 import ResourceEditForm from './app/editor/components/ResourceEditForm.vue';
-import ResourceTreePage from './app/editor/components/ResourceTreePage.vue';
+import ResourceReportPage from './app/editor/components/ResourceReportPage.vue';
 import StringWidget from './app/widgets/StringWidget.vue';
 import ConceptWidget from './app/widgets/ConceptWidget.vue';
 import BaseWidget from './app/widgets/BaseWidget.vue';
@@ -34,7 +34,7 @@ Vue.component('select-resource-instance-page', SelectResourceInstancePage);
 Vue.component('select-resource-type-page', SelectResourceTypePage);
 Vue.component('resource-edit-page', ResourceEditPage);
 Vue.component('resource-edit-form', ResourceEditForm);
-Vue.component('resource-tree-page', ResourceTreePage);
+Vue.component('resource-report-page', ResourceReportPage);
 Vue.component('string-widget', StringWidget);
 Vue.component('concept-widget', ConceptWidget);
 Vue.component('base-widget', BaseWidget);
