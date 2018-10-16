@@ -21,7 +21,7 @@
                                     <resource-report-page :project="project"/>
                                 </v-ons-carousel-item>
                                 <v-ons-carousel-item class="page-background">
-                                    <resource-edit-page :nodegroupid="current_nodegroup_id" v-on:navigate-to-card="navigateToCard" v-on:show-form="showForm" />
+                                    <resource-edit-page :nodegroupid="current_nodegroup_id" :tile="tile" v-on:navigate-to-card="navigateToCard" v-on:show-form="showForm" />
                                 </v-ons-carousel-item>
                                 <v-ons-carousel-item class="page-background">
                                     <resource-edit-form :formContext="formContext" :tile="formContext.tile" :card="formContext.card" :saving.sync="saving"/>
@@ -65,7 +65,8 @@ export default {
                     type: ''
                 },
                 card: {}
-            }
+            },
+            tile: null
         }
     },
     computed: {
@@ -111,11 +112,18 @@ export default {
             console.log(card);
             console.log('tile')
             console.log(tile);
-            this.formContext = {
-                tile: tile,
-                card: card
-            };
-            this.carouselIndex = 2;
+            //if (Object.keys(tile.data).length > 0){
+                this.formContext = {
+                    tile: tile,
+                    card: card
+                };
+                this.carouselIndex = 2;
+            // } else {
+            //     console.log('navigate tile');
+            //     this.$store.getters.activeServer.card_nav_stack.unshift(tile.nodegroup_id);
+            //     this.nodegroup_id = tile.nodegroup_id;
+            //     this.tile = tile;
+            // }
         }
     },
     mounted: function() {
