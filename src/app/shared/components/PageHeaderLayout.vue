@@ -35,20 +35,16 @@
                         </v-ons-list-item>
                     </v-ons-list>
                 </div>
-                <div class="application-list" style="margin-top: 5px;">
-                    <div class="right">
-                    </div>
-                      <div style="text-align: center; margin-top: 30px;">
-                        <p>
-                          <ons-input id="username" modifier="underbar" placeholder="Username" float></ons-input>
-                        </p>
-                        <p>
-                          <ons-input id="password" modifier="underbar" type="password" placeholder="Password" float></ons-input>
-                        </p>
-                        <p style="margin-top: 30px;">
-                          <ons-button onclick="login()">Sign in</ons-button>
-                        </p>
-                      </div>
+                <div class="application-list">
+
+                    <v-ons-row class="app-button-row">
+                        <v-ons-column>
+                            <v-ons-row>
+                                <v-ons-col class="app-button-col"><v-ons-button class="left success" @click="$ons.notification.confirm('Are you sure you want to logout?')">Logout</v-ons-button></v-ons-col>
+                                <v-ons-col class="app-button-col"><v-ons-button class="right danger" @click="$ons.notification.confirm('Are you sure you want to delete this App? All unsynched data will be lost.')">Delete App</v-ons-button></v-ons-col>
+                            </v-ons-row>
+                        </v-ons-column>
+                    </v-ons-row>
                 </div>
                 </v-ons-page>
         </v-ons-splitter-side>
@@ -161,6 +157,14 @@ export default {
     padding-top: 6px;
     padding-left: 8px;
     color: #fff;
+}
+
+.app-button-row {
+    justify-content: space-evenly;
+}
+
+.app-button-col {
+    padding: 10px;
 }
 
 </style>
