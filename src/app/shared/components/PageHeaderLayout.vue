@@ -7,29 +7,46 @@
                 <v-ons-toolbar class="toolbar-header" style="height: 50px;">
                     <div class="left">
                         <v-ons-toolbar-button class="left-button-text" @click="toggleOpen">
-                            <v-ons-icon class="toolbar-header-icon" icon="ion-android-upload"></v-ons-icon>
+                            <v-ons-icon class="toolbar-header-icon" v-if="!statusServer" icon="fa-question-circle" @click="setStatusServerUrl($event, false)"></v-ons-icon>
+                            <v-ons-icon class="toolbar-header-icon" v-if="statusServer" icon="ion-android-arrow-dropleft-circle" @click="setStatusServerUrl($event, false)"></v-ons-icon>
                             <span class="left-button-text toolbar-header-title">Arches Applications</span>
                         </v-ons-toolbar-button>
                     </div>
                 </v-ons-toolbar>
-                <v-ons-list class="application-list" style="margin-top: 5px;">
-                    <v-ons-list-item class="application-item-panel" tappable modifier="longdivider" v-for="(server, key) in servers" :key="server.url" @click="selectServer(server.url);">
-                        <span class="application-list-item-prepanel">
-                            <v-ons-icon class="application-list-item-icon" icon="ion-checkmark-round"></v-ons-icon>
-                        </span>
-                        <span class="application-list-item">
-                            {{server.nickname}}<br>
-                            <span class="application-list-item-url">{{server.url}}</span>
-                        </span>
-                    </v-ons-list-item>
-                    <v-ons-list-item class="application-item-panel" tappable @click="goTo('servermanager');">
-                        <span class="application-list-item-prepanel">
-                            <v-ons-icon class="add-application-icon" icon="ion-plus-round"></v-ons-icon>
-                        </span>
-                        <span class="application-list-item">Add Application</span>
-                    </v-ons-list-item>
-                </v-ons-list>
-            </v-ons-page>
+                <div v-show="statusServer === undefined || statusServer === false">
+                    <v-ons-list class="application-list" style="margin-top: 5px;">
+                        <v-ons-list-item class="application-item-panel" tappable modifier="longdivider" v-for="(server, key) in servers" :key="server.url" @click="selectServer(server.url);">
+                            <span class="application-list-item-prepanel">
+                                <v-ons-icon class="application-list-item-icon" icon="ion-checkmark-round"></v-ons-icon>
+                            </span>
+                            <span class="application-list-item">
+                                {{server.nickname}}<br>
+                                <span class="application-list-item-url">{{server.url}}</span>
+                            </span>
+                            <span class="right">
+                                <v-ons-icon class="add-application-icon" v-if="statusServer !== server.url" icon="fa-info-circle" @click="setStatusServerUrl($event, server.url);"></v-ons-icon>
+                            </span>
+                        </v-ons-list-item>
+                        <v-ons-list-item class="application-item-panel" tappable @click="goTo('servermanager');">
+                            <span class="application-list-item-prepanel">
+                                <v-ons-icon class="add-application-icon" icon="ion-plus-round"></v-ons-icon>
+                            </span>
+                            <span class="application-list-item">Add Application</span>
+                        </v-ons-list-item>
+                    </v-ons-list>
+                </div>
+                <div class="application-list">
+
+                    <v-ons-row class="app-button-row">
+                        <v-ons-column>
+                            <v-ons-row>
+                                <v-ons-col class="app-button-col"><v-ons-button class="left success" @click="$ons.notification.confirm('Are you sure you want to logout?')">Logout</v-ons-button></v-ons-col>
+                                <v-ons-col class="app-button-col"><v-ons-button class="right danger" @click="$ons.notification.confirm('Are you sure you want to delete this App? All unsynched data will be lost.')">Delete App</v-ons-button></v-ons-col>
+                            </v-ons-row>
+                        </v-ons-column>
+                    </v-ons-row>
+                </div>
+                </v-ons-page>
         </v-ons-splitter-side>
 
         <v-ons-splitter-content>
@@ -47,12 +64,17 @@ export default {
     props: ['active-server'],
     data() {
         return {
-            openSide: false
+            openSide: false,
+            statusServerUrl: undefined
         };
     },
     computed: {
         servers() {
             return this.$store.getters.servers;
+        },
+        statusServer: function() {
+            console.log('returning', this.statusServerUrl)
+            return this.statusServerUrl;
         }
     },
     methods: {
@@ -62,10 +84,14 @@ export default {
         goTo: function(name) {
             this.$router.push({'name': name});
         },
-        selectServer: function(serverurl) {
+        selectServer: function(serverurl, e) {
             this.$store.commit('setActiveServer', serverurl);
             this.openSide = false;
             this.goTo('projectlist');
+        },
+        setStatusServerUrl: function(e, serverurl) {
+            e.stopPropagation();
+            this.statusServerUrl = serverurl;
         }
     }
 };
@@ -131,6 +157,14 @@ export default {
     padding-top: 6px;
     padding-left: 8px;
     color: #fff;
+}
+
+.app-button-row {
+    justify-content: space-evenly;
+}
+
+.app-button-col {
+    padding: 10px;
 }
 
 </style>
