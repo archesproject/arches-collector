@@ -21,7 +21,7 @@ export default {
                     return node.nodeid === this.widget.node_id;
                 }, this);
                 // console.log('in datatype function')
-                // console.log(node.datatype)
+                console.log(node.datatype + '-widget');
                 return node.datatype + '-widget';
             }
         },
@@ -32,10 +32,9 @@ export default {
                         return this.tile.data[this.widget.node_id];
                     }
                     throw('');
-                }
-                catch(err) {
-                    console.log('node id')
-                    console.log(this.widget.node_id)
+                } catch (err) {
+                    console.log('node id');
+                    console.log(this.widget.node_id);
                     return '';
                 }
                 // if (!!this.tile && !!this.tile.data) {
