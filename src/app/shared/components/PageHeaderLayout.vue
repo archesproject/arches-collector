@@ -108,6 +108,7 @@ export default {
         deleteServer: function(answer) {
             if (answer === 1) {
                 this.$store.commit('deleteServer', this.statusServerUrl.url);
+                this.statusServerUrl = false;
             } else {
                 console.log('not deleting')
             }
