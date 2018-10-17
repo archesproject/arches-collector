@@ -24,7 +24,7 @@ export default {
         },
         cardWidgets: {
             get: function() {
-                if (!!this.card){
+                if (!!this.card) {
                     var widgets = this.$underscore.filter(this.allWidgets, function(widget) {
                         return widget.card_id === this.card.cardid;
                     }, this);
@@ -46,8 +46,9 @@ export default {
         },
         throttle: function(fn, delay) {
             var self = this;
-            return function () {
-                var context = this, args = arguments;
+            return function() {
+                var context = this;
+                var args = arguments;
                 clearTimeout(self.timer);
                 self.timer = setTimeout(function () {
                     fn.apply(context, args);
@@ -56,8 +57,8 @@ export default {
         },
         save: function() {
             console.log('saving...');
-            console.log(this.tile.data)
-            //this.saving = true;
+            console.log(this.tile.data);
+            // this.saving = true;
             this.$emit('update:saving', true);
             var self = this;
 
@@ -67,8 +68,8 @@ export default {
                 })
                 .finally(function() {
                     console.log('tile save finished...');
-                    //self.saving = false;
-                    window.setTimeout(function(){
+                    // self.saving = false;
+                    window.setTimeout(function() {
                         self.$emit('update:saving', false);
                     }, 2000);
                 });

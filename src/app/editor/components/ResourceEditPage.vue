@@ -227,13 +227,13 @@ export default {
         navigateToCard: function(card) {
             if ((this.getCardinality(card.nodegroup_id) === 'n' && !this.hasTiles(card) && !this.hasChildCard(card)) || (this.getCardinality(card.nodegroup_id) === '1' && !this.hasChildCard(card)) ) {
                 this.showForm(card);
-            }else{
+            } else {
                 this.$emit('navigate-to-card', card);
             }
         },
         showForm: function(card, tile) {
             if (!tile) {
-                tile =  {
+                tile = {
                     data: {},
                     nodegroup_id: card.nodegroup_id,
                     parenttile_id: '',
