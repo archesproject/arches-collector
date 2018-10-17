@@ -25,35 +25,37 @@
                         </ul>
                     </v-ons-list-item>
                 </div>
-                <div v-else-if="nodegroupid !== null">
-                    <v-ons-list-item tappable @click="showForm(card)">
-                        <div style="display:block; width: 100%">
-                            <div>Add</div>
-                           
-                            <div>Create new record 
-                                <span style="float:right; position:relative; top: -8px; left: -18px">
-                                    <div class="fa5 fa-plus-circle text-color-dark add-card"></div>
-                                </span>
+                <div v-else>
+                    <div v-if="nodegroupid !== null">
+                        <v-ons-list-item tappable @click="showForm(card)">
+                            <div style="display:block; width: 100%">
+                                <div>Add</div>
+                               
+                                <div>Create new record 
+                                    <span style="float:right; position:relative; top: -8px; left: -18px">
+                                        <div class="fa5 fa-plus-circle text-color-dark add-card"></div>
+                                    </span>
+                                </div>
                             </div>
-                        </div>
+                        </v-ons-list-item>
+                    </div>
+                    <v-ons-list-item tappable modifier="longdivider" v-for="card in childCards" :key="card.resourceinstanceid" @click="navigateToCard(card)">
+                        <span style="width: 90%">
+                           <div>{{card.name}}</div>
+                           <div v-if="(tileCount(card) > 0)">{{tileCount(card)}} record(s)</div>
+                           <div v-if="(tileCount(card) === 0)">No data entered</div>
+                        </span>
+                        <span v-if="hasChildCard(card)">
+                            >
+                        </span>
+                        <span v-if="hasTiles(card)">
+                            +
+                        </span>
+                        <span v-if="canAdd(card)">
+                            <div class="fa5 fa-plus-circle text-color-dark add-card"></div>
+                        </span>
                     </v-ons-list-item>
                 </div>
-                <v-ons-list-item tappable modifier="longdivider" v-for="card in childCards" :key="card.resourceinstanceid" @click="navigateToCard(card)">
-                    <span style="width: 90%">
-                       <div>{{card.name}}</div>
-                       <div v-if="(tileCount(card) > 0)">{{tileCount(card)}} record(s)</div>
-                       <div v-if="(tileCount(card) === 0)">No data entered</div>
-                    </span>
-                    <span v-if="hasChildCard(card)">
-                        >
-                    </span>
-                    <span v-if="hasTiles(card)">
-                        +
-                    </span>
-                    <span v-if="canAdd(card)">
-                        <div class="fa5 fa-plus-circle text-color-dark add-card"></div>
-                    </span>
-                </v-ons-list-item>
             </div>
             <div v-else>
                 <div v-if="hasTiles(card)">
@@ -217,19 +219,13 @@ export default {
         },
         cardinality: {
             get: function () {
-                var found = this.$underscore.find(this.allNodegroups, function(nodegroup) {
-                    return nodegroup.nodegroupid === this.nodegroupid;
-                }, this);
-                if (!!found) {
-                    return found.cardinality;
-                }
-                return 1; 
+                return this.getCardinality(this.nodegroupid); 
             }
         }
     },
     methods: {
         navigateToCard: function(card) {
-            if (this.canAdd(card) && !this.hasChildCard(card)) {
+            if ((this.getCardinality(card.nodegroup_id) === 'n' && !this.hasTiles(card) && !this.hasChildCard(card)) || (this.getCardinality(card.nodegroup_id) === '1' && !this.hasChildCard(card)) ) {
                 this.showForm(card);
             }else{
                 this.$emit('navigate-to-card', card);
@@ -270,7 +266,16 @@ export default {
             return this.tileCount(card) > 0;
         },
         canAdd: function(card) {
-            return card.cardinality === 'n' || this.hasTiles(card) === false;
+            return this.getCardinality(card.nodegroup_id) === 'n' || this.hasTiles(card) === false;
+        },
+        getCardinality: function(nodegroupid) {
+            var found = this.$underscore.find(this.allNodegroups, function(nodegroup) {
+                return nodegroup.nodegroupid === nodegroupid;
+            }, this);
+            if (!!found) {
+                return found.cardinality;
+            }
+            return '1'; 
         },
         save: function(tile) {
             console.log('saving...');
