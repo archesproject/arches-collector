@@ -332,6 +332,13 @@ var store = new Vuex.Store({
             store.commit('setActiveServer', newServer.url);
             store.dispatch('saveServerInfo');
         },
+        deleteServer: function(state, serverurl) {
+            Object.keys(state.dbs.app_servers.servers[serverurl].projects).forEach(function(projectid) {
+                store.dispatch('deleteProject', projectid);
+            });
+            delete state.dbs.app_servers.servers[serverurl];
+            store.dispatch('saveServerInfo', serverurl);
+        },
         setActiveServer: function(state, value) {
             state.dbs.app_servers.active = value;
         },
@@ -393,6 +400,15 @@ var store = new Vuex.Store({
             return pouchDBs.servers.upsert('servers', function(serverDoc) {
                 serverDoc = appServers;
                 return serverDoc;
+            });
+        },
+        deleteProject: function(state, projectId) {
+            pouchDBs._projectDBs[projectId]['local'].destroy(function(err, response) {
+                if (err) {
+                    return console.log(err);
+                } else {
+                    console.log('Database Deleted');
+                }
             });
         },
         syncRemote: function({commit, state}, projectId) {
