@@ -6,11 +6,12 @@
                     <v-ons-toolbar-button>
                         <v-ons-icon class="text-color-dark resource-header" icon="ion-android-arrow-dropleft-circle" @click="back"></v-ons-icon>
                         <span class="text-color-dark resource-header">{{current_card.name}}</span>
-
                     </v-ons-toolbar-button>
                 </div>
                 <div class="center"></div>
-                <div class="right"><transition name="fade"><span class="saving-popup" v-show="saving">saving...</span></transition></div>
+                <div class="right">
+                    <transition name="fade"><span class="saving-popup" v-show="saving">saving...</span></transition>
+                </div>
             </v-ons-toolbar>
             <v-ons-splitter>
                 <v-ons-splitter-content>
@@ -18,13 +19,13 @@
                         <div>
                             <v-ons-carousel fullscreen swipeable auto-scroll overscrollable :index.sync="carouselIndex" id="resourceCarousel">
                                 <v-ons-carousel-item class="page-background">
-                                    <resource-report-page :project="project"/>
+                                    <resource-report-page :project="project" />
                                 </v-ons-carousel-item>
                                 <v-ons-carousel-item class="page-background">
                                     <resource-edit-page :nodegroupid="current_nodegroup_id" :tile="tile" v-on:navigate-to-card="navigateToCard" v-on:show-form="showForm" />
                                 </v-ons-carousel-item>
                                 <v-ons-carousel-item class="page-background">
-                                    <resource-edit-form :formContext="formContext" :tile="formContext.tile" :card="formContext.card" :saving.sync="saving"/>
+                                    <resource-edit-form :formContext="formContext" :tile="formContext.tile" :card="formContext.card" :saving.sync="saving" />
                                 </v-ons-carousel-item>
                             </v-ons-carousel>
                             <div class="navbar">
@@ -71,7 +72,12 @@ export default {
     },
     computed: {
         current_nodegroup_id: function() {
-            return this.$store.getters.activeServer.card_nav_stack[0];
+            var navItem = this.$store.getters.activeServer.card_nav_stack[0];
+            if (!!navItem) {
+                return navItem.card.nodegroup_id;
+            } else {
+                return null;
+            }
         },
         current_card: function() {
             var allcards = this.$store.getters.activeGraph.cards;
@@ -88,7 +94,10 @@ export default {
     methods: {
         navigateToCard: function(card) {
             console.log(card);
-            this.$store.getters.activeServer.card_nav_stack.unshift(card.nodegroup_id);
+            this.$store.getters.activeServer.card_nav_stack.unshift({
+                'card': card,
+                'tile': null
+            });
             this.nodegroup_id = card.nodegroup_id;
         },
         back: function() {
@@ -101,9 +110,9 @@ export default {
                     }
                 });
             }
-            if (this.carouselIndex === 2){
+            if (this.carouselIndex === 2) {
                 this.carouselIndex = 1;
-            }else{
+            } else {
                 this.$store.getters.activeServer.card_nav_stack.shift();
             }
         },
@@ -113,11 +122,11 @@ export default {
             console.log('tile')
             console.log(tile);
             //if (Object.keys(tile.data).length > 0){
-                this.formContext = {
-                    tile: tile,
-                    card: card
-                };
-                this.carouselIndex = 2;
+            this.formContext = {
+                tile: tile,
+                card: card
+            };
+            this.carouselIndex = 2;
             // } else {
             //     console.log('navigate tile');
             //     this.$store.getters.activeServer.card_nav_stack.unshift(tile.nodegroup_id);
@@ -129,7 +138,7 @@ export default {
     mounted: function() {
         console.log('mounted');
         this.$store.getters.activeServer.card_nav_stack = [];
-        this.$store.getters.activeServer.card_nav_stack.unshift(this.nodegroupid);
+        this.$store.getters.activeServer.card_nav_stack.unshift(this.card);
     }
 };
 </script>
@@ -153,16 +162,27 @@ export default {
     color: #359a35;
 }
 
-.fade-enter-active, .fade-leave-active {
+.fade-enter-active,
+.fade-leave-active {
     -webkit-transition-timing-function: ease;
     transition-timing-function: ease;
     -webkit-transition: opacity .5s;
     transition: opacity .5s;
 }
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+
+.fade-enter,
+.fade-leave-to
+/* .fade-leave-active below version 2.1.8 */
+
+{
     opacity: 0;
 }
-.fade-enter-to, .fade-leave /* .fade-leave-active below version 2.1.8 */ {
+
+.fade-enter-to,
+.fade-leave
+/* .fade-leave-active below version 2.1.8 */
+
+{
     opacity: 1;
 }
 
