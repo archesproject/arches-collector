@@ -5,18 +5,16 @@
             :open.sync="openSide" class="toolbar-header">
             <v-ons-page>
                 <v-ons-toolbar class="toolbar-header">
-                    <div class="left">
-                        <v-ons-toolbar-button class="left-button-text" @click="toggleOpen">
-                            <div v-if="!statusServer">
-                                <v-ons-icon class="toolbar-header-icon" icon="fa-question-circle" @click="setStatusServerUrl($event, false)"></v-ons-icon>
-                                <span class="left-button-text toolbar-header-title">Arches Applications</span>
-                            </div>
-                            <div v-if="statusServer">
-                                <v-ons-icon class="toolbar-header-icon"icon="ion-android-arrow-dropleft-circle" @click="setStatusServerUrl($event, false)"></v-ons-icon>
-                                <span class="left-button-text toolbar-header-title">{{statusServer.nickname}}</span>
-                            </div>
-                        </v-ons-toolbar-button>
-                    </div>
+                    <v-ons-toolbar-button class="left left-button-text" @click="toggleOpen">
+                        <div v-if="!statusServer">
+                            <v-ons-icon class="toolbar-header-icon" icon="fa-question-circle" @click="setStatusServerUrl($event, false)"></v-ons-icon>
+                            <span class="left-button-text">Arches Applications</span>
+                        </div>
+                        <div v-if="statusServer">
+                            <v-ons-icon class="toolbar-header-icon"icon="ion-android-arrow-dropleft-circle" @click="setStatusServerUrl($event, false)"></v-ons-icon>
+                            <span class="left-button-text">{{statusServer.nickname}}</span>
+                        </div>
+                    </v-ons-toolbar-button>
                 </v-ons-toolbar>
                 <div v-show="statusServer === undefined || statusServer === false" class="app-page-color">
                     <v-ons-list class="application-list">
@@ -130,11 +128,9 @@ export default {
 
 .toolbar-header {
     background-color: #413040;
+    align-items: center;
 }
 
-.toolbar-header-title {
-    vertical-align: middle;
-}
 
 .toolbar-header-icon {
     vertical-align: middle;
