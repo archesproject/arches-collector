@@ -5,7 +5,7 @@
                 <div class="left">
                     <v-ons-toolbar-button>
                         <v-ons-icon class="text-color-dark resource-header" icon="ion-android-arrow-dropleft-circle" @click="back"></v-ons-icon>
-                        <span class="text-color-dark resource-header">{{current_card.name}}</span>
+                        <span class="text-color-dark resource-header">{{headerName}}</span>
                     </v-ons-toolbar-button>
                 </div>
                 <div class="center"></div>
@@ -22,10 +22,7 @@
                                     <resource-report-page :project="project" />
                                 </v-ons-carousel-item>
                                 <v-ons-carousel-item class="page-background">
-                                    <resource-edit-page :nodegroupid="current_nodegroup_id" :tile="tile" v-on:navigate-to-card="navigateToCard" v-on:show-form="showForm" />
-                                </v-ons-carousel-item>
-                                <v-ons-carousel-item class="page-background">
-                                    <resource-edit-form :formContext="formContext" :tile="formContext.tile" :card="formContext.card" :saving.sync="saving" />
+                                    <resource-edit-page :saving.sync="saving" :goBack="goBack"/>
                                 </v-ons-carousel-item>
                             </v-ons-carousel>
                             <div class="navbar">
@@ -51,89 +48,29 @@ export default {
     props: ['nodegroupid'],
     data() {
         return {
+            goBack: false,
             carouselIndex: 1,
             saving: false,
-            project: this.$store.getters.activeProject,
-            formContext: {
-                tile: {
-                    data: {},
-                    nodegroup_id: '',
-                    parenttile_id: '',
-                    provisionaledits: '',
-                    resourceinstance_id: '',
-                    sortorder: '',
-                    tileid: '',
-                    type: ''
-                },
-                card: {}
-            },
-            tile: null
+            project: this.$store.getters.activeProject
         }
     },
     computed: {
-        current_nodegroup_id: function() {
-            var navItem = this.$store.getters.activeServer.card_nav_stack[0];
-            if (!!navItem) {
-                return navItem.card.nodegroup_id;
-            } else {
-                return null;
-            }
+        currentNavItem: function() {
+            return this.$store.getters.activeServer.card_nav_stack[0];
         },
-        current_card: function() {
-            var allcards = this.$store.getters.activeGraph.cards;
-            var card = this.$underscore.find(allcards, function(card) {
-                return card.nodegroup_id === this.current_nodegroup_id;
-            }, this);
-            if (card) {
-                return card;
+        headerName: function() {
+            var navItem = this.currentNavItem;
+            if (!!navItem) {
+                return navItem.card.name;
             } else {
-                return this.$store.getters.activeGraph;
+                return this.$store.getters.activeGraph.name;
             }
         }
     },
     methods: {
-        navigateToCard: function(card) {
-            console.log(card);
-            this.$store.getters.activeServer.card_nav_stack.unshift({
-                'card': card,
-                'tile': null
-            });
-            this.nodegroup_id = card.nodegroup_id;
-        },
         back: function() {
-            if (this.$store.getters.activeServer.card_nav_stack.length === 1) {
-                this.$router.push({
-                    'name': 'project',
-                    params: {
-                        'project': this.project,
-                        'carouselIndex': 1
-                    }
-                });
-            }
-            if (this.carouselIndex === 2) {
-                this.carouselIndex = 1;
-            } else {
-                this.$store.getters.activeServer.card_nav_stack.shift();
-            }
+            this.goBack = !this.goBack;
         },
-        showForm: function(card, tile) {
-            console.log('card')
-            console.log(card);
-            console.log('tile')
-            console.log(tile);
-            //if (Object.keys(tile.data).length > 0){
-            this.formContext = {
-                tile: tile,
-                card: card
-            };
-            this.carouselIndex = 2;
-            // } else {
-            //     console.log('navigate tile');
-            //     this.$store.getters.activeServer.card_nav_stack.unshift(tile.nodegroup_id);
-            //     this.nodegroup_id = tile.nodegroup_id;
-            //     this.tile = tile;
-            // }
-        }
     },
     mounted: function() {
         console.log('mounted');
