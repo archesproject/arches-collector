@@ -108,7 +108,7 @@ export default {
                 this.$store.commit('deleteServer', this.statusServerUrl.url);
                 this.statusServerUrl = false;
             } else {
-                console.log('not deleting')
+                console.log('not deleting');
             }
         }
     }

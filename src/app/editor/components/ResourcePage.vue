@@ -107,9 +107,9 @@ export default {
             }
         },
         showForm: function(card, tile) {
-            console.log('card')
+            console.log('card');
             console.log(card);
-            console.log('tile')
+            console.log('tile');
             console.log(tile);
             this.formContext = {
                 tile: tile,

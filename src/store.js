@@ -408,6 +408,7 @@ var store = new Vuex.Store({
                     return console.log(err);
                 } else {
                     console.log('Database Deleted');
+                    store.dispatch('deleteProjectBasemaps', projectId);
                 }
             });
         },
@@ -508,8 +509,7 @@ var store = new Vuex.Store({
             var resources = pouchDBs.getResources(ids.projectid, [ids.resourceid]);
             return resources;
         },
-        setupProjectBasemaps: function({commit, state}, project) {
-            const mbtilesFile = `${project.id}.mbtiles`;
+        getBasemapTarget: function() {
             return new Promise((resolve, reject) => {
                 if (window.device && window.device.platform === 'Android') {
                     return window.resolveLocalFileSystemURL(
@@ -534,7 +534,24 @@ var store = new Vuex.Store({
                 } else {
                     reject(new Error('Platform not supported. Map tiles only available on iOS or Android'));
                 }
-            }).then((target) => {
+            });
+        },
+        deleteProjectBasemaps: function({commit, state}, projectid) {
+            const mbtilesFile = `${projectid}.mbtiles`;
+            store.dispatch('getBasemapTarget').then((target) => {
+                return new Promise((resolve, reject) => {
+                    target.getFile(mbtilesFile, {create: false}, function(filetoremove) {
+                        console.log(filetoremove.toURL())
+                        filetoremove.remove(function(file) {
+                            console.log('file deleted');
+                        });
+                    });
+                }).catch(error => { console.log(error.message, 'mbtiles file found'); });
+            });
+        },
+        setupProjectBasemaps: function({commit, state}, project) {
+            const mbtilesFile = `${project.id}.mbtiles`;
+            store.dispatch('getBasemapTarget').then((target) => {
                 return new Promise((resolve, reject) => {
                     target.getFile(mbtilesFile, {}, resolve, reject);
                 }).catch(() => {
