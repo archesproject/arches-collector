@@ -25,8 +25,8 @@
                     <v-ons-list-item tappable @click="showForm(card)">
                         <div style="display:block; width: 100%">
                             <div>Add</div>
-                           
-                            <div>Create new record 
+
+                            <div>Create new record
                                 <span style="float:right; position:relative; top: -8px; left: -18px">
                                     <div class="fa5 fa-plus-circle text-color-dark add-card"></div>
                                 </span>
@@ -41,14 +41,14 @@
                             </li>
                         </ul>
                     </v-ons-list-item>
-                   
+
                 </v-ons-list>
             </div>
             <!-- <div v-if="(cardinality === '1' && cardWidgets.length > 0)" style="text-align: center; padding: 100px;">
                 show form here ....
                 <v-ons-list-item tappable modifier="longdivider" v-for="widget in cardWidgets">
                     <div class="label"><span>{{widget.label}}:</span></div>
-                
+
                 </v-ons-list-item>
             </div> -->
         </ons-scroll>
@@ -116,14 +116,14 @@ export default {
             }
         },
         cardinality: {
-            get: function () {
+            get: function() {
                 var found = this.$underscore.find(this.allNodegroups, function(nodegroup) {
                     return nodegroup.nodegroupid === this.nodegroupid;
                 }, this);
                 if (!!found) {
                     return found.cardinality;
                 }
-                return 1; 
+                return 1;
             }
         }
     },
@@ -133,7 +133,7 @@ export default {
         },
         showForm: function(card, tile) {
             if (!tile) {
-                tile =  {
+                tile = {
                     data: {},
                     nodegroup_id: '',
                     parenttile_id: '',
@@ -142,7 +142,7 @@ export default {
                     sortorder: '',
                     tileid: '',
                     type: ''
-                }; // get a blank tile 
+                };// get a blank tile
             }
             this.$emit('show-form', card, tile);
         },
