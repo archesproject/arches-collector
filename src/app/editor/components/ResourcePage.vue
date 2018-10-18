@@ -22,7 +22,7 @@
                                     <resource-report-page :project="project" />
                                 </v-ons-carousel-item>
                                 <v-ons-carousel-item class="page-background">
-                                    <resource-edit-page :saving.sync="saving" :goBack="goBack"/>
+                                    <resource-edit-page v-on:saving="saving = $event" :goBack="goBack"/>
                                 </v-ons-carousel-item>
                             </v-ons-carousel>
                             <div class="navbar">
@@ -56,7 +56,9 @@ export default {
     },
     computed: {
         currentNavItem: function() {
-            return this.$store.getters.activeServer.card_nav_stack[0];
+            if (!!this.$store.getters.activeServer) {
+                return this.$store.getters.activeServer.card_nav_stack[0];
+            }
         },
         headerName: function() {
             var navItem = this.currentNavItem;
@@ -74,8 +76,10 @@ export default {
     },
     mounted: function() {
         console.log('mounted');
-        this.$store.getters.activeServer.card_nav_stack = [];
-        this.$store.getters.activeServer.card_nav_stack.unshift(this.card);
+        if (!!this.$store.getters.activeServer) {
+            this.$store.getters.activeServer.card_nav_stack = [];
+            this.$store.getters.activeServer.card_nav_stack.unshift(this.card);
+        }
     }
 };
 </script>
