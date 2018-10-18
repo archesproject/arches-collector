@@ -6,7 +6,7 @@
 <script>
 export default {
     name: 'ResourceEditForm',
-    props: ['formContext', 'card', 'saving', 'tile'],
+    props: ['formContext', 'card', 'tile'],
     data() {
         return {
             allWidgets: this.$store.getters.activeGraph.widgets,
@@ -59,7 +59,7 @@ export default {
             console.log('saving...');
             console.log(this.tile.data);
             // this.saving = true;
-            this.$emit('update:saving', true);
+            this.$emit('saving', true);
             var self = this;
 
             this.$store.dispatch('persistTile', this.tile)
@@ -70,7 +70,7 @@ export default {
                     console.log('tile save finished...');
                     // self.saving = false;
                     window.setTimeout(function() {
-                        self.$emit('update:saving', false);
+                        self.$emit('saving', false);
                     }, 2000);
                 });
             this.$store.dispatch(

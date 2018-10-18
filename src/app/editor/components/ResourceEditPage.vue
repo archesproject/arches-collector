@@ -105,67 +105,16 @@
             </div>
         </v-ons-list>
         <div v-show="showingForm">
-            <resource-edit-form :formContext="formContext" :tile="formContext.tile" :card="formContext.card" :saving.sync="save2" />
+            <resource-edit-form :formContext="formContext" :tile="formContext.tile" :card="formContext.card" v-on:saving="(val) => $emit('saving', val)" />
         </div>
     </ons-scroll>
-        <!-- <v-ons-list>
-            <v-ons-list-item tappable modifier="longdivider" v-for="card in childCards" :key="card.resourceinstanceid" @click="navigateEditorTree(card)">
-                <span style="width: 90%">
-                   <div>{{card.name}}</div>
-                   <div v-if="(tileCount(card) > 0)">{{tileCount(card)}} record(s)</div>
-                   <div v-if="(tileCount(card) === 0)">No data entered</div>
-                </span>
-                <span v-if="hasChildCard(card)">
-                    >
-                </span>
-                <span v-if="hasTiles(card)">
-                    +
-                </span>
-                <span v-if="canAdd(card)">
-                    <div class="fa5 fa-plus-circle text-color-dark add-card"></div>
-                </span>
-            </v-ons-list-item>
-        </v-ons-list>
-        <div v-if="cardinality === 'n'">
-            <v-ons-list>
-                <v-ons-list-item tappable @click="navigateEditorTree(card)">
-                    <div style="display:block; width: 100%">
-                        <div>Add</div>
-                       
-                        <div>Create new record 
-                            <span style="float:right; position:relative; top: -8px; left: -18px">
-                                <div class="fa5 fa-plus-circle text-color-dark add-card"></div>
-                            </span>
-                        </div>
-                    </div>
-                </v-ons-list-item>
-                <v-ons-list-item tappable modifier="longdivider" v-for="tile in cardTiles" :key="tile.tileid" @click="navigateEditorTree(card, tile)">
-                    <div><span>Tile Id: {{tile.tileid}}</span></div>
-                    <ul>
-                        <li class="widget" v-for="value, key in tile.data" :key="key" v-if="typeof value === 'string' || value instanceof String">
-                            {{tile.data[key]}}
-                        </li>
-                    </ul>
-                </v-ons-list-item>
-               
-            </v-ons-list>
-        </div> -->
-        <!-- <div v-if="(cardinality === '1' && cardWidgets.length > 0)" style="text-align: center; padding: 100px;">
-            show form here ....
-            <v-ons-list-item tappable modifier="longdivider" v-for="widget in cardWidgets">
-                <div class="label"><span>{{widget.label}}:</span></div>
-            
-            </v-ons-list-item>
-        </div> -->
-
 </template>
 <script>
 export default {
     name: 'ResourceEditPage',
-    props: ['saving', 'goBack'],
+    props: ['goBack'],
     data() {
         return {
-            save2: this.saving,
             showingForm: false,
             nodegroup_id: null,
             pageStack: [],
@@ -266,11 +215,7 @@ export default {
                     }
                 }
             }
-        },
-        save2: function(newVal, oldVal){
-            this.$emit('update:saving', newVal);
         }
-
     },
     methods: {
         navigateEditorTree: function(card, tile) {
