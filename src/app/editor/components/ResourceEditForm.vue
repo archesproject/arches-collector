@@ -1,6 +1,6 @@
 <template>
     <ons-scroll>
-        <component v-for="widget in cardWidgets" class="widget" :allNodes="allNodes" :formContext="formContext" :tile="tile" :widget="widget" :save="throttle(save, saveDelay)" v-bind:is="'base-widget'"></component>
+        <component v-for="widget in cardWidgets" class="widget" :allNodes="allNodes" :tile="tile" :widget="widget" :save="throttle(save, saveDelay)" v-bind:is="'base-widget'"></component>
     </ons-scroll>
 </template>
 <script>

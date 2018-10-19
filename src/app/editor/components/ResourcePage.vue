@@ -62,7 +62,7 @@ export default {
         },
         headerName: function() {
             var navItem = this.currentNavItem;
-            if (!!navItem) {
+            if (!!navItem && !!navItem.card) {
                 return navItem.card.name;
             } else {
                 return this.$store.getters.activeGraph.name;
@@ -74,11 +74,11 @@ export default {
             this.goBack = !this.goBack;
         },
     },
-    mounted: function() {
-        console.log('mounted');
+    beforeCreate: function() {
+        console.log('beforeCreate');
         if (!!this.$store.getters.activeServer) {
             this.$store.getters.activeServer.card_nav_stack = [];
-            this.$store.getters.activeServer.card_nav_stack.unshift(this.card);
+            this.$store.getters.activeServer.card_nav_stack.unshift({card: null, tile: null, showForm: false});
         }
     }
 };
