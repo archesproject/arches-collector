@@ -14,8 +14,6 @@
                     </div>
                 </v-ons-list-item>
             </div>
-            
-      
             <div v-show="hasTiles(card) || activeObject === 'card'">
                 <v-ons-list-item tappable modifier="longdivider" v-for="tile in cardTiles" :key="tile.tileid" @click="setTileContext(tile)">
                     <div><span>Tile Id: {{tile.tileid}}</span></div>
@@ -27,20 +25,6 @@
                 </v-ons-list-item>
             </div>
             <div v-if="(activeObject === 'tile')">
-                <!-- <div v-if="nodegroup_id !== null">
-                    <v-ons-list-item tappable @click="setTileContext('blank')">
-                        <div style="display:block; width: 100%">
-                            <div>Add</div>
-                           
-                            <div>Create new record 
-                                <span style="float:right; position:relative; top: -8px; left: -18px">
-                                    <div class="fa5 fa-plus-circle text-color-dark add-card"></div>
-                                </span>
-                            </div>
-                        </div>
-                    </v-ons-list-item>
-                </div> -->
-                <div> here </div>
                 <v-ons-list-item tappable modifier="longdivider" v-for="childCard in childCards" :key="childCard.resourceinstanceid" @click="navigateChildCard(childCard)">
                     <span style="width: 90%">
                        <div>{{childCard.name}}</div>
@@ -58,54 +42,8 @@
                     </span>
                 </v-ons-list-item>
             </div>
-            
-            <div>
-                <div v-if="hasTiles(card)">
-                    <div v-if="cardinality === '1'">
-                        <!-- we should be showing the form here
-                    </div>
-                    <div v-else>
-                        <!-- <v-ons-list-item tappable @click="setTileContext('blank')">
-                            <div style="display:block; width: 100%">
-                                <div>Add</div>
-                               
-                                <div>Create new record 
-                                    <span style="float:right; position:relative; top: -8px; left: -18px">
-                                        <div class="fa5 fa-plus-circle text-color-dark add-card"></div>
-                                    </span>
-                                </div>
-                            </div>
-                        </v-ons-list-item> -->
-                       <!--  <v-ons-list-item tappable modifier="longdivider" v-for="tile in cardTiles" :key="tile.tileid" @click="setTileContext(tile)">
-                            <div><span>Tile Id: {{tile.tileid}}</span></div>
-                            <ul>
-                                <li class="widget" v-for="value, key in tile.data" :key="key" v-if="typeof value === 'string' || value instanceof String">
-                                    {{tile.data[key]}}
-                                </li>
-                            </ul>
-                        </v-ons-list-item> -->
-                    </div>
-                </div>
-                <div v-else>
-                    <div v-if="cardinality === '1'">
-                        <!-- show blank form here -->
-                    </div>
-                    <!-- <div v-else>
-                        <v-ons-list-item tappable @click="setTileContext('blank')">
-                            <div style="display:block; width: 100%">
-                                <div>Add</div>
-                               
-                                <div>Create new record 
-                                    <span style="float:right; position:relative; top: -8px; left: -18px">
-                                        <div class="fa5 fa-plus-circle text-color-dark add-card"></div>
-                                    </span>
-                                </div>
-                            </div>
-                        </v-ons-list-item>
-                    </div> -->
-                </div>
-            </div>
         </v-ons-list>
+
         <div v-show="showForm">
             <resource-edit-form :tile="tile" :card="card" v-on:saving="(val) => $emit('saving', val)" />
         </div>
@@ -118,31 +56,11 @@ export default {
     props: ['goBack'],
     data() {
         return {
-            showingForm: false,
-            //nodegroup_id: null,
-            pageStack: [],
             project: this.$store.getters.activeProject,
             resourceid: this.$store.getters.activeServer.active_resource,
             allCards: this.$store.getters.activeGraph.cards,
             allNodegroups: this.$store.getters.activeGraph.nodegroups,
-            allWidgets: this.$store.getters.activeGraph.widgets,
-            formContext: {
-                tile: {
-                    data: {},
-                    nodegroup_id: '',
-                    parenttile_id: '',
-                    provisionaledits: '',
-                    resourceinstance_id: '',
-                    sortorder: '',
-                    tileid: '',
-                    type: ''
-                },
-                card: {
-                    nodegroup_id: null
-                }
-            }
-            // card: null,
-            // tile: null
+            allWidgets: this.$store.getters.activeGraph.widgets
         };
     },
     computed: {
@@ -225,14 +143,6 @@ export default {
                 }, this);
             }
         },
-        // cardWidgets: {
-        //     get: function() {
-        //         var widgets = this.$underscore.filter(this.allWidgets, function(widget) {
-        //             return widget.card_id === this.card.cardid;
-        //         }, this);
-        //         return widgets;
-        //     }
-        // },
         cardinality: {
             get: function () {
                 return this.getCardinality(this); 
@@ -241,74 +151,43 @@ export default {
     },
     watch: {
         goBack: function () {
-            if(this.showingForm){
-                this.showingForm = false;
-            }else{
-                if (this.$store.getters.activeServer.card_nav_stack.length === 1) {
-                    this.$router.push({
-                        'name': 'project',
-                        params: {
-                            'project': this.project,
-                            'carouselIndex': 1
-                        }
-                    });
-                } else {
-                    this.$store.getters.activeServer.card_nav_stack.shift();
-                }
+            if (this.$store.getters.activeServer.card_nav_stack.length === 1) {
+                this.$router.push({
+                    'name': 'project',
+                    params: {
+                        'project': this.project,
+                        'carouselIndex': 1
+                    }
+                });
+            } else {
+                this.$store.getters.activeServer.card_nav_stack.shift();
             }
         }
     },
     methods: {
         navigateChildCard: function(card, showForm) {
-            // if (!!tile || 
-            //     ((this.getCardinality(card.nodegroup_id) === 'n' && !this.hasTiles(card) && !this.hasChildCards(card)) || 
-            //     (this.getCardinality(card.nodegroup_id) === '1' && !this.hasChildCards(card)))) {
-            //     if (tile === 'blank'){
-            //         tile = {
-            //             data: {},
-            //             nodegroup_id: card.nodegroup_id,
-            //             parenttile_id: '',
-            //             provisionaledits: '',
-            //             resourceinstance_id: this.resourceid,
-            //             sortorder: '',
-            //             tileid: null,
-            //             type: 'tile'
-            //         }; // get a blank tile 
-            //     }
+            var tile = this.$underscore.filter(this.allTiles, function(tile) {
+                return tile.parenttile_id === (this.tile ? this.tile.tileid : null) && card.nodegroup_id === tile.nodegroup_id;
+            }, this);
 
-            //     this.$store.getters.activeServer.card_nav_stack.unshift({
-            //         'card': card,
-            //         'tile': tile,
-            //         'showForm': !!showForm,
-            //         'activeObject': 'card'
-            //     });
-
-            // } else {
-                var tile = this.$underscore.filter(this.allTiles, function(tile) {
-                    return tile.parenttile_id === (this.tile ? this.tile.tileid : null) && card.nodegroup_id === tile.nodegroup_id;
-                }, this);
-
-                //if(!this.hasChildCards(card) && tile.length === 1 && !this.canAdd(card)){
-                if(this.getCardinality(card) === '1' && this.hasWidgets(card) && !this.hasChildCards(card)){
-                    showForm = true;
-                    if (!!tile[0]) {
-                        tile = tile[0];
-                    } else {
-                        tile = this.getBlankTile(card, this.tile);
-                    }
+            if(this.getCardinality(card) === '1' && this.hasWidgets(card) && !this.hasChildCards(card)){
+                showForm = true;
+                if (!!tile[0]) {
+                    tile = tile[0];
                 } else {
-                    tile = this.tile;
+                    tile = this.getBlankTile(card, this.tile);
                 }
-                console.log('navigateChildCard');
-                console.log(tile);
-                this.showingForm = false;
-                this.$store.getters.activeServer.card_nav_stack.unshift({
-                    'card': card,
-                    'tile': tile,
-                    'showForm': !!showForm,
-                    'activeObject': 'card'
-                });
-            //}
+            } else {
+                tile = this.tile;
+            }
+            console.log('navigateChildCard');
+            console.log(tile);
+            this.$store.getters.activeServer.card_nav_stack.unshift({
+                'card': card,
+                'tile': tile,
+                'showForm': !!showForm,
+                'activeObject': 'card'
+            });
         },
         setTileContext: function(tile, showForm) {
             if(showForm === undefined){
@@ -320,29 +199,9 @@ export default {
             }
             if (tile === 'blank'){
                 tile = this.getBlankTile(this.card, this.tile);
-                // tile = {
-                //     data: {},
-                //     nodegroup_id: this.card.nodegroup_id,
-                //     parenttile_id: this.tile ? this.tile.tileid : null,
-                //     provisionaledits: '',
-                //     resourceinstance_id: this.resourceid,
-                //     sortorder: '',
-                //     tileid: uuidv4(),
-                //     type: 'tile'
-                // }; // get a blank tile 
             }
-            // else{
-            //     if (Object.keys(tile.data).length > 0) {
-            //         showForm = true;
-            //     }
-            // }
-            var card = this.card;
-            // if (this.hasWidgets(this.card) && this.childCards.length === 0){
-            //     console.log('TACI')
-            //     card = this.childCards[0];
-            // }
             this.$store.getters.activeServer.card_nav_stack.unshift({
-                'card': card,
+                'card': this.card,
                 'tile': tile,
                 'showForm': !!showForm,
                 'activeObject': 'tile'
