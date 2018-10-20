@@ -541,7 +541,7 @@ var store = new Vuex.Store({
             store.dispatch('getBasemapTarget').then((target) => {
                 return new Promise((resolve, reject) => {
                     target.getFile(mbtilesFile, {create: false}, function(filetoremove) {
-                        console.log(filetoremove.toURL())
+                        console.log(filetoremove.toURL());
                         filetoremove.remove(function(file) {
                             console.log('file deleted');
                         });

@@ -31,11 +31,12 @@ import uuidv4 from 'uuid/v4';
 import 'mapbox-gl-cordova-offline/www/mapbox-gl.css';
 // TODO: pull basemap layer styles from project?
 import basemapLayers from '../../../assets/map/basemap_layers.json';
+import onlineStyle from '../../../assets/map/Emerald/style.json';
 
 const mapboxgl = window.mapboxgl;
 
 export default {
-    name: 'ProjectSummaryPage',
+    name: 'ProjectMapPage',
     props: ['project', 'pageActive'],
     data() {
         return {
@@ -78,36 +79,41 @@ export default {
             });
         },
         mapInit: function() {
+            mapboxgl.accessToken = 'pk.eyJ1IjoiY2hpYXR0IiwiYSI6ImZRLTZDbVkifQ.2ZLLC1kInvxJ7isk_0_OMw';
             return new mapboxgl.OfflineMap(this.getMapConfig())
                 .then((map) => {
-                    this.setMapExtent(map);
                     map.addControl(new mapboxgl.NavigationControl());
-                    this.addResourceMarkers(map);
+                    this.setMapExtent(map);
+                    // this.addResourceMarkers(map);
                     this.$emit('map-init', map);
                 }).catch(error => {
                     console.log('map init error:', error.message);
                 });
         },
         getMapConfig: function() {
+            var offlineStyle = {
+                version: 8,
+                sources: {
+                    openmaptiles: {
+                        type: 'mbtiles',
+                        path: `${this.project.id}.mbtiles`,
+                        attribution: this.$refs.attribution.innerHTML
+                    }
+                },
+                sprite: 'static/map/styles/klokantech-basic/sprite',
+                glyphs: 'static/map/fonts/{fontstack}/{range}.pbf',
+                layers: basemapLayers
+            };
+
+            var isOffline = 'onLine' in navigator && !navigator.onLine && window.device;
+            var style = isOffline ? offlineStyle : onlineStyle;
+            style.sources.resources = {
+                type: 'geojson',
+                data: this.resourceGeoJSON
+            };
             return {
                 container: this.mapId,
-                style: {
-                    version: 8,
-                    sources: {
-                        openmaptiles: {
-                            type: 'mbtiles',
-                            path: `${this.project.id}.mbtiles`,
-                            attribution: this.$refs.attribution.innerHTML
-                        },
-                        resources: {
-                            type: 'geojson',
-                            data: this.resourceGeoJSON
-                        }
-                    },
-                    sprite: 'static/map/styles/klokantech-basic/sprite',
-                    glyphs: 'static/map/fonts/{fontstack}/{range}.pbf',
-                    layers: basemapLayers
-                },
+                style: onlineStyle,
                 hash: true
             };
         },
@@ -194,12 +200,22 @@ export default {
                 self.changes = doc;
             });
 
-        this.setupBasemaps()
+        var isOffline = 'onLine' in navigator && !navigator.onLine && window.device;
+        if (isOffline) {
+            this.setupBasemaps()
             .then(this.getResourceData)
             .then(this.mapInit)
             .then(() => {
                 this.loading = false;
             });
+        } else {
+            var self = this;
+                self.getResourceData()
+                .then(self.mapInit)
+                .then(() => {
+                    self.loading = false;
+                });
+        }
     }
 };
 </script>
