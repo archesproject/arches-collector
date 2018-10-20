@@ -78,7 +78,7 @@ export default {
         console.log('beforeCreate');
         if (!!this.$store.getters.activeServer) {
             this.$store.getters.activeServer.card_nav_stack = [];
-            this.$store.getters.activeServer.card_nav_stack.unshift({card: null, tile: null, showForm: false});
+            this.$store.getters.activeServer.card_nav_stack.unshift({card: null, tile: null, showForm: false, activeObject: 'tile'});
         }
     }
 };

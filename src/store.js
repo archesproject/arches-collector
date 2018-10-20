@@ -372,6 +372,9 @@ var store = new Vuex.Store({
         },
         setResourceAsEdited: function(state, value) {
             Vue.set(store.getters.currentProjects[value.projectId].resources_to_sync, value.resourceInstanceId, false);
+        },
+        addTile: function(state, value) {
+            state.tiles.push(value);
         }
     },
     modules: {
