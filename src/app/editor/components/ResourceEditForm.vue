@@ -1,12 +1,12 @@
 <template>
     <ons-scroll>
-        <component v-for="widget in cardWidgets" class="widget" :allNodes="allNodes" :tile="tile" :widget="widget" :save="throttle(save, saveDelay)" v-bind:is="'base-widget'"></component>
+        <component v-for="widget in cardWidgets" class="widget" :allNodes="allNodes" :tile="tile" :widget="widget" :save="throttle(save, tile, saveDelay)" v-bind:is="'base-widget'"></component>
     </ons-scroll>
 </template>
 <script>
 export default {
     name: 'ResourceEditForm',
-    props: ['formContext', 'card', 'tile'],
+    props: ['formContext', 'card', 'tile', 'save'],
     data() {
         return {
             allWidgets: this.$store.getters.activeGraph.widgets,
@@ -45,56 +45,16 @@ export default {
             // console.log(node.datatype)
             return node.datatype;
         },
-        throttle: function(fn, delay) {
+        throttle: function(fn, tile, delay) {
             var self = this;
+            var args = arguments;
             return function() {
                 var context = this;
-                var args = arguments;
                 clearTimeout(self.timer);
                 self.timer = setTimeout(function () {
-                    fn.apply(context, args);
+                    fn.call(context, tile);
                 }, delay);
             };
-        },
-        save: function() {
-            console.log('saving...');
-            console.log(this.tile.data);
-            // this.saving = true;
-            this.$emit('saving', true);
-            var self = this;
-
-            this.$store.dispatch('persistTile', this.tile)
-                .then(function(doc) {
-                    return doc;
-                })
-                .finally(function() {
-                    console.log('tile save finished...');
-                    // self.saving = false;
-                    self.$store.commit('addTile', self.tile);
-                    window.setTimeout(function() {
-                        self.$emit('saving', false);
-                    }, 2000);
-                });
-            this.$store.dispatch(
-                'getResource', {
-                    projectid: this.project.id,
-                    resourceid: this.$store.getters.activeServer.active_resource
-                }
-            ).then((res) => {
-                var resource = res['docs'][0];
-                var date = new Date();
-                resource['edited'] = {
-                    'day': date.toDateString(),
-                    'time': date.toTimeString()
-                };
-                this.$store.dispatch('persistResource', resource)
-                    .then(function(doc) {
-                        return doc;
-                    })
-                    .finally(function() {
-                        console.log('resource save finished...');
-                    });
-            });
         }
     }
 };

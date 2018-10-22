@@ -5,6 +5,8 @@ import PouchDBupsert from 'pouchdb-upsert';
 import PouchDBFind from 'pouchdb-find';
 import SqlLiteAdapter from 'pouchdb-adapter-cordova-sqlite';
 
+import uuidv4 from 'uuid/v4';
+
 Vue.use(Vuex);
 PouchDB.plugin(PouchDBupsert);
 PouchDB.plugin(PouchDBFind);
@@ -378,6 +380,29 @@ var store = new Vuex.Store({
             store.dispatch('saveServerInfo');
         },
         setResourceAsEdited: function(state, value) {
+            store.dispatch(
+                'getResource', {
+                    projectid: value.projectId,
+                    resourceid: value.resourceInstanceId
+                }
+            ).then((res) => {
+                var resource = res['docs'][0];
+                var date = new Date();
+                resource['edited'] = {
+                    'day': date.toDateString(),
+                    'time': date.toTimeString()
+                };
+                store.dispatch('persistResource', resource)
+                    .then(function(doc) {
+                        return doc;
+                    })
+                    .catch(function(err){
+                        console.log(err);
+                    })
+                    .finally(function() {
+                        console.log('resource save finished...');
+                    });
+            });
             Vue.set(store.getters.currentProjects[value.projectId].resources_to_sync, value.resourceInstanceId, false);
         },
         addTile: function(state, value) {
@@ -488,9 +513,19 @@ var store = new Vuex.Store({
             });
         },
         persistTile: function({commit, state}, tile) {
+            var tileid = uuidv4();
+            var addTile = false;
+            if (!tile.tileid) {
+                tile.tileid = tileid;
+                tile._id = tileid;
+                addTile = true;
+            }
             var project = store.getters.activeProject;
             return pouchDBs.putTile(project.id, tile)
                 .then(function(doc) {
+                    if (addTile) {
+                        commit('addTile', tile);
+                    }
                     commit('setResourceAsEdited', {'projectId': project.id, 'resourceInstanceId': tile.resourceinstance_id});
                     return doc;
                 });

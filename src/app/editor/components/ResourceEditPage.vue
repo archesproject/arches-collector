@@ -5,8 +5,7 @@
                 <v-ons-list-item tappable @click="setTileContext('blank')" addCard='lkj'>
                     <div style="display:block; width: 100%">
                         <div>Add</div>
-                       
-                        <div>Create new record 
+                        <div>Create new record
                             <span style="float:right; position:relative; top: -8px; left: -18px">
                                 <div class="fa5 fa-plus-circle text-color-dark add-card"></div>
                             </span>
@@ -19,7 +18,7 @@
                     <div><span>Tile Id: {{tile.tileid}}</span></div>
                     <ul>
                         <li class="widget" v-for="value, key in tile.data" :key="key" v-if="typeof value === 'string' || value instanceof String">
-                            {{tile.data[key]}}
+                            {{getTileData(tile, key)}}
                         </li>
                     </ul>
                 </v-ons-list-item>
@@ -43,14 +42,12 @@
                 </v-ons-list-item>
             </div>
         </v-ons-list>
-
         <div v-show="showForm">
-            <resource-edit-form :tile="tile" :card="card" v-on:saving="(val) => $emit('saving', val)" />
+            <resource-edit-form :tile="tile" :card="card" :save="saveTile" />
         </div>
     </ons-scroll>
 </template>
 <script>
-import uuidv4 from 'uuid/v4';
 export default {
     name: 'ResourceEditPage',
     props: ['goBack'],
@@ -60,7 +57,8 @@ export default {
             resourceid: this.$store.getters.activeServer.active_resource,
             allCards: this.$store.getters.activeGraph.cards,
             allNodegroups: this.$store.getters.activeGraph.nodegroups,
-            allWidgets: this.$store.getters.activeGraph.widgets
+            allWidgets: this.$store.getters.activeGraph.widgets,
+            user: this.$store.getters.activeServer.user
         };
     },
     computed: {
@@ -144,13 +142,13 @@ export default {
             }
         },
         cardinality: {
-            get: function () {
-                return this.getCardinality(this); 
+            get: function() {
+                return this.getCardinality(this);
             }
         }
     },
     watch: {
-        goBack: function () {
+        goBack: function() {
             if (this.$store.getters.activeServer.card_nav_stack.length === 1) {
                 this.$router.push({
                     'name': 'project',
@@ -165,12 +163,19 @@ export default {
         }
     },
     methods: {
+        getTileData: function(tile, key) {
+            if (this.user.id in tile.provisionaledits){
+                return tile.provisionaledits[this.user.id]['value'][key];
+            }else{
+                return tile.data[key];
+            }
+        },
         navigateChildCard: function(card, showForm) {
             var tile = this.$underscore.filter(this.allTiles, function(tile) {
                 return tile.parenttile_id === (this.tile ? this.tile.tileid : null) && card.nodegroup_id === tile.nodegroup_id;
             }, this);
 
-            if(this.getCardinality(card) === '1' && this.hasWidgets(card) && !this.hasChildCards(card)){
+            if (this.getCardinality(card) === '1' && this.hasWidgets(card) && !this.hasChildCards(card)) {
                 showForm = true;
                 if (!!tile[0]) {
                     tile = tile[0];
@@ -190,15 +195,18 @@ export default {
             });
         },
         setTileContext: function(tile, showForm) {
-            if(showForm === undefined){
-                if (this.hasChildCards() && !this.hasWidgets()){
+            if (showForm === undefined) {
+                if (this.hasChildCards() && !this.hasWidgets()) {
                     showForm = false;
-                }else{
+                } else {
                     showForm = true;
                 }
             }
-            if (tile === 'blank'){
+            if (tile === 'blank') {
                 tile = this.getBlankTile(this.card, this.tile);
+                if (!this.hasWidgets(this.card)) {
+                    this.save();
+                }
             }
             this.$store.getters.activeServer.card_nav_stack.unshift({
                 'card': this.card,
@@ -232,13 +240,13 @@ export default {
                     return widget.card_id === card.cardid;
                 }, this);
                 return widgets.length > 0;
-            } 
+            }
             return false;
         },
         canAdd: function(card) {
-            if(!!card){
+            if (!!card) {
                 return this.getCardinality(card) === 'n' || this.hasTiles(card) === false;
-            } 
+            }
             return false;
         },
         getCardinality: function(card) {
@@ -248,10 +256,9 @@ export default {
             if (!!found) {
                 return found.cardinality;
             }
-            return '1'; 
+            return '1';
         },
-        getBlankTile: function(card, parentTile){
-            var tileid = uuidv4();
+        getBlankTile: function(card, parentTile) {
             return {
                 data: {},
                 nodegroup_id: card.nodegroup_id,
@@ -259,10 +266,50 @@ export default {
                 provisionaledits: '',
                 resourceinstance_id: this.resourceid,
                 sortorder: '',
-                tileid: tileid,
+                tileid: '',
                 type: 'tile',
-                _id: tileid
+                _id: ''
             };
+        },
+        saveTile: function(tile) {
+            console.log('saving...');
+            console.log(tile);
+            // this.saving = true;
+            this.$emit('saving', true);
+            var self = this;
+
+            this.$store.dispatch('persistTile', tile)
+                .then(function(doc) {
+                    return doc;
+                })
+                .finally(function() {
+                    console.log('tile save finished...');
+                    // self.saving = false;
+                    // self.$store.commit('addTile', tile);
+                    window.setTimeout(function() {
+                        self.$emit('saving', false);
+                    }, 2000);
+                });
+            // this.$store.dispatch(
+            //     'getResource', {
+            //         projectid: this.project.id,
+            //         resourceid: this.$store.getters.activeServer.active_resource
+            //     }
+            // ).then((res) => {
+            //     var resource = res['docs'][0];
+            //     var date = new Date();
+            //     resource['edited'] = {
+            //         'day': date.toDateString(),
+            //         'time': date.toTimeString()
+            //     };
+            //     this.$store.dispatch('persistResource', resource)
+            //         .then(function(doc) {
+            //             return doc;
+            //         })
+            //         .finally(function() {
+            //             console.log('resource save finished...');
+            //         });
+            //});
         }
     }
 };
@@ -272,13 +319,16 @@ export default {
 li.widget {
     list-style-type: none;
 }
+
 .label {
     padding: 5px;
     width: 325px;
 }
+
 ul {
     padding-left: 12px;
 }
+
 .add-card {
     font-size: 14px;
 }
