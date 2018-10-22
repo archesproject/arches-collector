@@ -72,7 +72,7 @@ export default {
     methods: {
         back: function() {
             this.goBack = !this.goBack;
-        },
+        }
     },
     beforeCreate: function() {
         console.log('beforeCreate');

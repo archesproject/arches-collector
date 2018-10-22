@@ -332,6 +332,13 @@ var store = new Vuex.Store({
             store.commit('setActiveServer', newServer.url);
             store.dispatch('saveServerInfo');
         },
+        deleteServer: function(state, serverurl) {
+            Object.keys(state.dbs.app_servers.servers[serverurl].projects).forEach(function(projectid) {
+                store.dispatch('deleteProject', projectid);
+            });
+            delete state.dbs.app_servers.servers[serverurl];
+            store.dispatch('saveServerInfo', serverurl);
+        },
         setActiveServer: function(state, value) {
             state.dbs.app_servers.active = value;
         },
@@ -396,6 +403,16 @@ var store = new Vuex.Store({
             return pouchDBs.servers.upsert('servers', function(serverDoc) {
                 serverDoc = appServers;
                 return serverDoc;
+            });
+        },
+        deleteProject: function(state, projectId) {
+            pouchDBs._projectDBs[projectId]['local'].destroy(function(err, response) {
+                if (err) {
+                    return console.log(err);
+                } else {
+                    console.log('Database Deleted');
+                    store.dispatch('deleteProjectBasemaps', projectId);
+                }
             });
         },
         syncRemote: function({commit, state}, projectId) {
@@ -495,8 +512,7 @@ var store = new Vuex.Store({
             var resources = pouchDBs.getResources(ids.projectid, [ids.resourceid]);
             return resources;
         },
-        setupProjectBasemaps: function({commit, state}, project) {
-            const mbtilesFile = `${project.id}.mbtiles`;
+        getBasemapTarget: function() {
             return new Promise((resolve, reject) => {
                 if (window.device && window.device.platform === 'Android') {
                     return window.resolveLocalFileSystemURL(
@@ -521,7 +537,24 @@ var store = new Vuex.Store({
                 } else {
                     reject(new Error('Platform not supported. Map tiles only available on iOS or Android'));
                 }
-            }).then((target) => {
+            });
+        },
+        deleteProjectBasemaps: function({commit, state}, projectid) {
+            const mbtilesFile = `${projectid}.mbtiles`;
+            store.dispatch('getBasemapTarget').then((target) => {
+                return new Promise((resolve, reject) => {
+                    target.getFile(mbtilesFile, {create: false}, function(filetoremove) {
+                        console.log(filetoremove.toURL())
+                        filetoremove.remove(function(file) {
+                            console.log('file deleted');
+                        });
+                    });
+                }).catch(error => { console.log(error.message, 'mbtiles file found'); });
+            });
+        },
+        setupProjectBasemaps: function({commit, state}, project) {
+            const mbtilesFile = `${project.id}.mbtiles`;
+            store.dispatch('getBasemapTarget').then((target) => {
                 return new Promise((resolve, reject) => {
                     target.getFile(mbtilesFile, {}, resolve, reject);
                 }).catch(() => {

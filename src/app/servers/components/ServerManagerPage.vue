@@ -111,7 +111,7 @@ export default {
                     // return the response object or throw an error
                     // console.log(response);
                     if (response.ok) {
-                        return response.text();
+                        return response.json();
                     } else {
                         if (response.status === 401) {
                             self.error_message = 'The supplied username or password was not valid.';
@@ -124,7 +124,8 @@ export default {
                 })
                 .then(function(response) {
                     // console.log('Success:', response);
-                    self.server.client_id = response;
+                    self.server.client_id = response.clientid;
+                    self.server.user = response.user;
                     self.getToken();
                 })
                 .catch(function(error) {

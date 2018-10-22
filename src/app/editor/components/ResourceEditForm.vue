@@ -13,7 +13,8 @@ export default {
             allNodes: this.$store.getters.activeGraph.nodes,
             project: this.$store.getters.activeProject,
             saveDelay: 800,
-            timer: null
+            timer: null,
+            user: this.$store.getters.activeServer.user
         };
     },
     computed: {

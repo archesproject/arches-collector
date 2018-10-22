@@ -10,10 +10,22 @@ export default {
     data() {
         return {
             waiting: false,
-            project: this.$store.getters.activeProject
+            project: this.$store.getters.activeProject,
+            user: this.$store.getters.activeServer.user
         };
     },
-    methods: {},
+    methods: {
+        createNewProvisionalEdit: function(){
+            return {
+                action: "create",
+                reviewer: null,
+                reviewtimestamp: null,
+                status: "review",
+                timestamp: "",
+                value: this.tile.data
+            };
+        }
+    },
     computed: {
         widgetComponent: {
             get: function() {
@@ -28,8 +40,18 @@ export default {
         value: {
             get: function() {
                 try {
-                    if (!!this.tile.data[this.widget.node_id]) {
-                        return this.tile.data[this.widget.node_id];
+                    var provisionaledit;
+                    if (!this.tile.provisionaledits) {
+                        this.tile.provisionaledits = {};
+                    }
+                    if (!!this.tile.provisionaledits[this.user.id]) {
+                        provisionaledit = this.tile.provisionaledits[this.user.id]['value'];
+                    } else {
+                        this.tile.provisionaledits[this.user.id] = this.createNewProvisionalEdit();
+                        provisionaledit = this.tile.provisionaledits[this.user.id]['value']
+                    }
+                    if (!!provisionaledit[this.widget.node_id]) {
+                        return provisionaledit[this.widget.node_id];
                     }
                     throw('');
                 } catch (err) {
@@ -47,7 +69,7 @@ export default {
             set: function(newValue) {
                 console.log('in set');
                 console.log(newValue);
-                this.tile.data[this.widget.node_id] = newValue;
+                this.tile.provisionaledits[this.user.id]['value'][this.widget.node_id] = newValue;
                 this.save();
             }
         }

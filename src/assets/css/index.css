@@ -93,3 +93,16 @@ input {
 .label {
     padding-bottom: 2px;
 }
+
+.secondary {
+    background-color: #6c757d
+}
+.success {
+    background-color: #28a745
+}
+.danger {
+    background-color: #dc3545
+}
+.warning {
+    background-color: #ffc107;
+}
