@@ -205,7 +205,7 @@ export default {
             if (tile === 'blank') {
                 tile = this.getBlankTile(this.card, this.tile);
                 if (!this.hasWidgets(this.card)) {
-                    this.save();
+                    this.saveTile(tile);
                 }
             }
             this.$store.getters.activeServer.card_nav_stack.unshift({
