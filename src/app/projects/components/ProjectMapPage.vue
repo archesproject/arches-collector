@@ -78,13 +78,26 @@ export default {
                 this.resourceGeoJSON = resourceGeoJSON;
             });
         },
-        mapInit: function() {
+        mapOnlineInit: function() {
+            var self = this;
             mapboxgl.accessToken = 'pk.eyJ1IjoiY2hpYXR0IiwiYSI6ImZRLTZDbVkifQ.2ZLLC1kInvxJ7isk_0_OMw';
+            var map = new mapboxgl.Map(this.getMapConfig());
+            map.on('load', function(){
+                map.addControl(new mapboxgl.NavigationControl());
+                self.setMapExtent(map);
+                var resources = JSON.parse(JSON.stringify(self.resourceGeoJSON))
+                map.addSource('resources', {type:'geojson', data: resources});
+                self.addResourceMarkers(map);
+                self.$emit('map-init', map);
+                self.loading = false;
+            })
+        },
+        mapOfflineInit: function() {
             return new mapboxgl.OfflineMap(this.getMapConfig())
                 .then((map) => {
                     map.addControl(new mapboxgl.NavigationControl());
                     this.setMapExtent(map);
-                    // this.addResourceMarkers(map);
+                    this.addResourceMarkers(map);
                     this.$emit('map-init', map);
                 }).catch(error => {
                     console.log('map init error:', error.message);
@@ -98,6 +111,10 @@ export default {
                         type: 'mbtiles',
                         path: `${this.project.id}.mbtiles`,
                         attribution: this.$refs.attribution.innerHTML
+                    },
+                    resources: {
+                        type: 'geojson',
+                        data: this.resourceGeoJSON
                     }
                 },
                 sprite: 'static/map/styles/klokantech-basic/sprite',
@@ -107,13 +124,10 @@ export default {
 
             var isOffline = 'onLine' in navigator && !navigator.onLine && window.device;
             var style = isOffline ? offlineStyle : onlineStyle;
-            style.sources.resources = {
-                type: 'geojson',
-                data: this.resourceGeoJSON
-            };
+
             return {
                 container: this.mapId,
-                style: onlineStyle,
+                style: style,
                 hash: true
             };
         },
@@ -204,17 +218,14 @@ export default {
         if (isOffline) {
             this.setupBasemaps()
             .then(this.getResourceData)
-            .then(this.mapInit)
+            .then(this.mapOfflineInit)
             .then(() => {
                 this.loading = false;
             });
         } else {
             var self = this;
-                self.getResourceData()
-                .then(self.mapInit)
-                .then(() => {
-                    self.loading = false;
-                });
+                self.getResourceData();
+                self.mapOnlineInit();
         }
     }
 };
