@@ -31,11 +31,12 @@ import uuidv4 from 'uuid/v4';
 import 'mapbox-gl-cordova-offline/www/mapbox-gl.css';
 // TODO: pull basemap layer styles from project?
 import basemapLayers from '../../../assets/map/basemap_layers.json';
+import onlineStyle from '../../../assets/map/Emerald/style.json';
 
 const mapboxgl = window.mapboxgl;
 
 export default {
-    name: 'ProjectSummaryPage',
+    name: 'ProjectMapPage',
     props: ['project', 'pageActive'],
     data() {
         return {
@@ -77,11 +78,25 @@ export default {
                 this.resourceGeoJSON = resourceGeoJSON;
             });
         },
-        mapInit: function() {
+        mapOnlineInit: function() {
+            var self = this;
+            mapboxgl.accessToken = 'pk.eyJ1IjoiY2hpYXR0IiwiYSI6ImZRLTZDbVkifQ.2ZLLC1kInvxJ7isk_0_OMw';
+            var map = new mapboxgl.Map(this.getMapConfig());
+            map.on('load', function(){
+                map.addControl(new mapboxgl.NavigationControl());
+                self.setMapExtent(map);
+                var resources = JSON.parse(JSON.stringify(self.resourceGeoJSON))
+                map.addSource('resources', {type:'geojson', data: resources});
+                self.addResourceMarkers(map);
+                self.$emit('map-init', map);
+                self.loading = false;
+            })
+        },
+        mapOfflineInit: function() {
             return new mapboxgl.OfflineMap(this.getMapConfig())
                 .then((map) => {
-                    this.setMapExtent(map);
                     map.addControl(new mapboxgl.NavigationControl());
+                    this.setMapExtent(map);
                     this.addResourceMarkers(map);
                     this.$emit('map-init', map);
                 }).catch(error => {
@@ -89,25 +104,30 @@ export default {
                 });
         },
         getMapConfig: function() {
+            var offlineStyle = {
+                version: 8,
+                sources: {
+                    openmaptiles: {
+                        type: 'mbtiles',
+                        path: `${this.project.id}.mbtiles`,
+                        attribution: this.$refs.attribution.innerHTML
+                    },
+                    resources: {
+                        type: 'geojson',
+                        data: this.resourceGeoJSON
+                    }
+                },
+                sprite: 'static/map/styles/klokantech-basic/sprite',
+                glyphs: 'static/map/fonts/{fontstack}/{range}.pbf',
+                layers: basemapLayers
+            };
+
+            var isOffline = 'onLine' in navigator && !navigator.onLine && window.device;
+            var style = isOffline ? offlineStyle : onlineStyle;
+
             return {
                 container: this.mapId,
-                style: {
-                    version: 8,
-                    sources: {
-                        openmaptiles: {
-                            type: 'mbtiles',
-                            path: `${this.project.id}.mbtiles`,
-                            attribution: this.$refs.attribution.innerHTML
-                        },
-                        resources: {
-                            type: 'geojson',
-                            data: this.resourceGeoJSON
-                        }
-                    },
-                    sprite: 'static/map/styles/klokantech-basic/sprite',
-                    glyphs: 'static/map/fonts/{fontstack}/{range}.pbf',
-                    layers: basemapLayers
-                },
+                style: style,
                 hash: true
             };
         },
@@ -194,12 +214,20 @@ export default {
                 self.changes = doc;
             });
 
-        this.setupBasemaps()
+        var isOffline = 'onLine' in navigator && !navigator.onLine && window.device;
+        if (isOffline) {
+            this.setupBasemaps()
             .then(this.getResourceData)
-            .then(this.mapInit)
+            .then(this.mapOfflineInit)
             .then(() => {
                 this.loading = false;
             });
+        } else {
+            var self = this;
+                self.getResourceData().then(
+                    self.mapOnlineInit
+                );
+        }
     }
 };
 </script>
