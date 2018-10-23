@@ -224,8 +224,9 @@ export default {
             });
         } else {
             var self = this;
-                self.getResourceData();
-                self.mapOnlineInit();
+                self.getResourceData().then(
+                    self.mapOnlineInit
+                );
         }
     }
 };
