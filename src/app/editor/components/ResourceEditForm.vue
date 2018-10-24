@@ -1,12 +1,14 @@
 <template>
     <ons-scroll>
         <component v-for="widget in cardWidgets" class="widget" :allNodes="allNodes" :tile="tile" :widget="widget" :save="throttle(save, tile, saveDelay)" v-bind:is="'base-widget'"></component>
+        <div class="done-btn"><v-ons-button @click="back"><v-ons-icon class="done-btn-icon resource-header" icon="ion-android-arrow-dropleft-circle"></v-ons-icon>Done</v-ons-button></div>
+
     </ons-scroll>
 </template>
 <script>
 export default {
     name: 'ResourceEditForm',
-    props: ['formContext', 'card', 'tile', 'save'],
+    props: ['formContext', 'card', 'tile', 'save', 'back'],
     data() {
         return {
             allWidgets: this.$store.getters.activeGraph.widgets,
@@ -63,5 +65,12 @@ export default {
 <style scoped>
 .widget {
     padding: 15px;
+}
+.done-btn {
+    float: right;
+    padding: 10px;
+}
+.done-btn-icon {
+    padding-right: 7px;
 }
 </style>

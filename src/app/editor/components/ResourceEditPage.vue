@@ -43,7 +43,7 @@
             </div>
         </v-ons-list>
         <div v-show="showForm">
-            <resource-edit-form :tile="tile" :card="card" :save="saveTile" />
+            <resource-edit-form :back="back" :tile="tile" :card="card" :save="saveTile" />
         </div>
     </ons-scroll>
 </template>
@@ -149,6 +149,11 @@ export default {
     },
     watch: {
         goBack: function() {
+            this.back();
+        }
+    },
+    methods: {
+        back: function() {
             if (this.$store.getters.activeServer.card_nav_stack.length === 1) {
                 this.$router.push({
                     'name': 'project',
@@ -160,9 +165,7 @@ export default {
             } else {
                 this.$store.getters.activeServer.card_nav_stack.shift();
             }
-        }
-    },
-    methods: {
+        },
         getTileData: function(tile, key) {
             if (this.user.id in tile.provisionaledits){
                 return tile.provisionaledits[this.user.id]['value'][key];
