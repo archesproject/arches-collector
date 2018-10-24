@@ -360,7 +360,6 @@ var store = new Vuex.Store({
         },
         setActiveResourceInstance: function(state, value) {
             store.getters.activeServer.active_resource = value.resourceinstanceid;
-            store.commit('setActiveGraphId', value.graph_id);
         },
         clearActiveResourceInstance: function(state) {
             store.getters.activeServer.active_resource = null;
@@ -515,18 +514,51 @@ var store = new Vuex.Store({
         persistTile: function({commit, state}, tile) {
             var tileid = uuidv4();
             var addTile = false;
+            var newResource = false;
             if (!tile.tileid) {
                 tile.tileid = tileid;
                 tile._id = tileid;
                 addTile = true;
             }
+            if (!tile.resourceinstance_id) {
+                tile.resourceinstance_id = uuidv4();
+                newResource = true;
+            }
             var project = store.getters.activeProject;
             return pouchDBs.putTile(project.id, tile)
                 .then(function(doc) {
-                    if (addTile) {
-                        commit('addTile', tile);
+                    if (newResource) {
+                        var graph = store.getters.activeGraph;
+                        var resource = {
+                            displaydescription: "",
+                            displayname: "",
+                            geometries: [],
+                            graph_id: graph.graphid,
+                            map_popup: "",
+                            point: [],
+                            provisional_resource: "true",
+                            resourceinstanceid: tile.resourceinstance_id,
+                            root_ontology_class: graph.root.ontologyclass,
+                            type: "resource",
+                            _id: tile.resourceinstance_id
+                        };
+                        store.dispatch('persistResource', resource)
+                            .then(function(doc) {
+                                commit('addTile', resource);
+                                commit('setActiveResourceInstance', {resourceinstanceid: tile.resourceinstance_id});
+                            })
+                            .catch(function(err){
+                                console.log(err);
+                            })
+                            .finally(function() {
+                                console.log('resource save finished...');
+                            });
+                    }else{
+                        if (addTile) {
+                            commit('addTile', tile);
+                        }
+                        commit('setResourceAsEdited', {'projectId': project.id, 'resourceInstanceId': tile.resourceinstance_id});
                     }
-                    commit('setResourceAsEdited', {'projectId': project.id, 'resourceInstanceId': tile.resourceinstance_id});
                     return doc;
                 });
         },
