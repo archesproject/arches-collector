@@ -198,12 +198,18 @@ export default {
             } else {
                 var navItem = this.$store.getters.activeServer.card_nav_stack[0];
                 // var tileToReference = this.$store.getters.activeServer.card_nav_stack.length > 3 ? this.$store.getters.activeServer.card_nav_stack[3].tile : null;
+                var tile = this.$underscore.filter(this.allTiles, function(tile) {
+                    return tile.tileid === (this.tile ? this.tile.parenttile_id : null);
+                }, this);
+                if (!tile) {
+                    tile = [null];
+                }
                 if (this.hasWidgetsAndSubCards(navItem.card) && 
                     navItem.card !== this.$store.getters.activeServer.card_nav_stack[1].card &&
                     navItem.showForm === true) {
                     this.$store.getters.activeServer.card_nav_stack.splice(1, 0, {
                         'card': navItem.card,
-                        'tile': null,
+                        'tile': tile[0],
                         'showForm': false,
                         'activeObject': 'card'
                     });
