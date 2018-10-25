@@ -1,5 +1,6 @@
 <template>
-    <div style="height: 600px">
+            <v-ons-page>
+    <div style="height: 100%">
         <ons-progress-circular indeterminate v-if="loading">
         </ons-progress-circular>
         <div :id="mapId" v-on:touchstart="stopPropagation"></div>
@@ -23,6 +24,7 @@
             </div>
         </div>
     </div>
+            </v-ons-page>
 </template>
 
 <script>
