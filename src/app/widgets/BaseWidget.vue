@@ -15,7 +15,10 @@ export default {
         };
     },
     methods: {
-        createNewProvisionalEdit: function(){
+        createNewProvisionalEdit: function() {
+            if (this.widget.config.defaultValue) {
+                this.value = this.widget.config.defaultValue;
+            }
             return {
                 action: "create",
                 reviewer: null,
