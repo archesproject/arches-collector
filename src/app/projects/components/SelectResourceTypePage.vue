@@ -47,7 +47,6 @@ export default {
                     'nodegroupid': null
                 }
             });
-            console.log("You've selected:", e);
         }
     }
 };

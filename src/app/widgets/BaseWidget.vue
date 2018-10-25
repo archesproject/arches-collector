@@ -17,11 +17,11 @@ export default {
     methods: {
         createNewProvisionalEdit: function() {
             return {
-                action: "create",
+                action: 'create',
                 reviewer: null,
                 reviewtimestamp: null,
-                status: "review",
-                timestamp: "",
+                status: 'review',
+                timestamp: '',
                 value: this.tile.data
             };
         }
@@ -33,7 +33,7 @@ export default {
                     return node.nodeid === this.widget.node_id;
                 }, this);
                 // console.log('in datatype function')
-                // console.log(node.datatype)
+                // console.log(node.datatype + '-widget');
                 return node.datatype + '-widget';
             }
         },
@@ -57,10 +57,9 @@ export default {
                         return provisionaledit[this.widget.node_id];
                     }
                     throw('');
-                }
-                catch(err) {
-                    console.log('node id')
-                    console.log(this.widget.node_id)
+                } catch (err) {
+                    // console.log('node id');
+                    // console.log(this.widget.node_id);
                     return '';
                 }
                 // if (!!this.tile && !!this.tile.data) {
@@ -71,8 +70,8 @@ export default {
                 // }
             },
             set: function(newValue) {
-                console.log('in set');
-                console.log(newValue);
+                // console.log('in set');
+                // console.log(newValue);
                 this.tile.provisionaledits[this.user.id]['value'][this.widget.node_id] = newValue;
                 this.save();
             }

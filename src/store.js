@@ -5,6 +5,8 @@ import PouchDBupsert from 'pouchdb-upsert';
 import PouchDBFind from 'pouchdb-find';
 import SqlLiteAdapter from 'pouchdb-adapter-cordova-sqlite';
 
+import uuidv4 from 'uuid/v4';
+
 Vue.use(Vuex);
 PouchDB.plugin(PouchDBupsert);
 PouchDB.plugin(PouchDBFind);
@@ -358,7 +360,6 @@ var store = new Vuex.Store({
         },
         setActiveResourceInstance: function(state, value) {
             store.getters.activeServer.active_resource = value.resourceinstanceid;
-            store.commit('setActiveGraphId', value.graph_id);
         },
         clearActiveResourceInstance: function(state) {
             store.getters.activeServer.active_resource = null;
@@ -378,7 +379,33 @@ var store = new Vuex.Store({
             store.dispatch('saveServerInfo');
         },
         setResourceAsEdited: function(state, value) {
+            store.dispatch(
+                'getResource', {
+                    projectid: value.projectId,
+                    resourceid: value.resourceInstanceId
+                }
+            ).then((res) => {
+                var resource = res['docs'][0];
+                var date = new Date();
+                resource['edited'] = {
+                    'day': date.toDateString(),
+                    'time': date.toTimeString()
+                };
+                store.dispatch('persistResource', resource)
+                    .then(function(doc) {
+                        return doc;
+                    })
+                    .catch(function(err) {
+                        console.log(err);
+                    })
+                    .finally(function() {
+                        console.log('resource save finished...');
+                    });
+            });
             Vue.set(store.getters.currentProjects[value.projectId].resources_to_sync, value.resourceInstanceId, false);
+        },
+        addTile: function(state, value) {
+            state.tiles.push(value);
         }
     },
     modules: {
@@ -485,11 +512,59 @@ var store = new Vuex.Store({
             });
         },
         persistTile: function({commit, state}, tile) {
+            var tileid = uuidv4();
+            var addTile = false;
+            var newResource = false;
+            if (!tile.tileid) {
+                tile.tileid = tileid;
+                tile._id = tileid;
+                addTile = true;
+            }
+            if (!tile.resourceinstance_id) {
+                tile.resourceinstance_id = uuidv4();
+                newResource = true;
+            }
             var project = store.getters.activeProject;
             return pouchDBs.putTile(project.id, tile)
                 .then(function(doc) {
-                    commit('setResourceAsEdited', {'projectId': project.id, 'resourceInstanceId': tile.resourceinstance_id});
-                    return doc;
+                    if (newResource) {
+                        var date = new Date();
+                        var graph = store.getters.activeGraph;
+                        var resource = {
+                            displaydescription: '',
+                            displayname: '',
+                            geometries: [],
+                            graph_id: graph.graphid,
+                            map_popup: '',
+                            point: [],
+                            provisional_resource: 'true',
+                            resourceinstanceid: tile.resourceinstance_id,
+                            root_ontology_class: graph.root.ontologyclass,
+                            type: 'resource',
+                            edited: {
+                                day: date.toDateString(),
+                                time: date.toTimeString()
+                            },
+                            _id: tile.resourceinstance_id
+                        };
+                        store.dispatch('persistResource', resource)
+                            .then(function(doc) {
+                                commit('addTile', resource);
+                                commit('setActiveResourceInstance', {resourceinstanceid: tile.resourceinstance_id});
+                            })
+                            .catch(function(err) {
+                                console.log(err);
+                            })
+                            .finally(function() {
+                                console.log('resource save finished...');
+                            });
+                    } else {
+                        commit('setResourceAsEdited', {'projectId': project.id, 'resourceInstanceId': tile.resourceinstance_id});
+                    }
+                    if (addTile) {
+                        commit('addTile', tile);
+                    }
+                    return tile;
                 });
         },
         persistResource: function({commit, state}, resource) {

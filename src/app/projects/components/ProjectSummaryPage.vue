@@ -37,8 +37,6 @@
 
 <script>
 
-import uuidv4 from 'uuid/v4';
-
 export default {
     name: 'ProjectSummaryPage',
     props: ['project', 'pageActive'],
