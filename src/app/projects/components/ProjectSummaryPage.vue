@@ -1,4 +1,5 @@
 <template>
+            <v-ons-page>
     <div>
         <div class="section" style="height: 90px;">
             <div>
@@ -31,6 +32,7 @@
             </v-ons-row>
         </div>
     </div>
+            </v-ons-page>
 </template>
 
 <script>

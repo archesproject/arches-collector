@@ -1,4 +1,5 @@
 <template>
+            <v-ons-page>
     <div>
         <v-ons-list>
             <v-ons-list-item class="resource-model-name-panel" tappable modifier="longdivider" v-for="resource_type in resource_types" :key="resource_type.graphid" @click="selectResourceType(resource_type);">
@@ -16,6 +17,7 @@
             </v-ons-list-item>
         </v-ons-list>
     </div>
+            </v-ons-page>
 </template>
 
 <script>

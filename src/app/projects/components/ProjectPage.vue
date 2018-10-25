@@ -45,42 +45,22 @@
                 </v-ons-splitter-side>
 
                 <v-ons-splitter-content class="project-list-panel">
-                    <v-ons-page>
-                        <div>
-                            <v-ons-carousel fullscreen swipeable auto-scroll overscrollable :index.sync="carouselIndex" id="projectCarousel">
-                                <v-ons-carousel-item class="page-background">
-                                    <select-resource-type-page :pageActive="carouselIndex === 0" />
-                                </v-ons-carousel-item>
-                                <v-ons-carousel-item class="page-background">
-                                    <select-resource-instance-page :project="project" ref="sripage"/>
-                                </v-ons-carousel-item>
-                                <v-ons-carousel-item class="page-background">
-                                    <project-map-page :project="project" />
-                                </v-ons-carousel-item>
-                                <v-ons-carousel-item class="page-background">
-                                    <project-summary-page :project="project" />
-                                </v-ons-carousel-item>
-                            </v-ons-carousel>
-                            <div class="navbar">
-                                <a v-bind:class="carouselIndex === 0 ? 'active' : ''" @click="carouselIndex = 0">
-                                    <v-ons-icon class="text-color-dark icon" icon="fa-plus-circle"></v-ons-icon>
-                                    <div class="text-color-dark label">New</div>
-                                </a>
-                                <a v-bind:class="carouselIndex === 1 ? 'active' : ''" @click="carouselIndex = 1">
-                                    <v-ons-icon class="text-color-dark icon" icon="fa-edit"></v-ons-icon>
-                                    <div class="text-color-dark label">Review</div>
-                                </a>
-                                <a v-bind:class="carouselIndex === 2 ? 'active' : ''" @click="carouselIndex = 2">
-                                    <v-ons-icon class="text-color-dark icon" icon="fa-map-marker-alt"></v-ons-icon>
-                                    <div class="text-color-dark label">Map</div>
-                                </a>
-                                <a v-bind:class="carouselIndex === 3 ? 'active' : ''" @click="carouselIndex = 3">
-                                    <v-ons-icon class="text-color-dark icon" icon="fa-clipboard"></v-ons-icon>
-                                    <div class="text-color-dark label">Summary</div>
-                                </a>
-                            </div>
-                        </div>
-                    </v-ons-page>
+
+                      <v-ons-tabbar swipeable animation="none" :index.sync="activeIndex">
+                        <template slot="pages">
+                            <select-resource-type-page></select-resource-type-page>
+                            <select-resource-instance-page :project="project" ref="sripage"></select-resource-instance-page>
+                            <project-map-page :project="project"></project-map-page>
+                            <project-summary-page :project="project"></project-summary-page>
+                        </template>
+
+                        <v-ons-tab v-for="(tab, i) in tabs"
+                          :icon="tabs[i].icon"
+                          :label="tabs[i].label"
+                          :badge="tabs[i].badge"
+                          ></v-ons-tab>
+                      </v-ons-tabbar>
+
                 </v-ons-splitter-content>
             </v-ons-splitter>
         </v-ons-page>
@@ -92,15 +72,40 @@ export default {
     props: ['project'],
     data() {
         return {
-            carouselIndex: 0,
             showSideNav: false,
             syncing: false,
-            sync_failed: false
+            sync_failed: false,
+            activeIndex: 0,
+            tabs: [
+              {
+                icon: 'fa-plus-circle',
+                label: 'New',
+                key: "SelectResourceTypePage"
+              },
+              {
+                icon: 'fa-edit',
+                label: 'Review',
+                key: "SelectResourceInstancePage"
+              },
+              {
+                icon: 'fa-map-marker-alt',
+                label: 'Map',
+                key: "ProjectMapPage"
+              },
+              {
+                icon: 'fa-clipboard',
+                label: 'Summary',
+                key: "ProjectSummaryPage"
+              }
+            ]
         };
     },
     computed: {
         sync_btn_text() {
             return (this.syncing ? 'Syncing...' : (this.sync_failed ? 'Sync Failed' : (this.project.lastsync.date === '' ? 'Join Project' : 'Sync Now')));
+        },
+        title() {
+          return this.tabs[this.activeIndex].label;
         }
     },
     methods: {
