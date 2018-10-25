@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="label">{{widget.label}}</div>
-        <input :value="value" placeholder="derive from configs" @input="$emit('update:value', $event.target.value);">
+        <input :value="value" :placeholder="placeholder" @input="$emit('update:value', $event.target.value);">
     </div>
 </template>
 
@@ -11,7 +11,9 @@ export default {
     name: 'StringWidget',
     props: ['value', 'widget'],
     data() {
-        return {};
+        return {
+            placeholder: this.widget.config.placeholder
+        };
     },
     methods: {
     },
