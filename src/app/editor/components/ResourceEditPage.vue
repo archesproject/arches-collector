@@ -67,7 +67,6 @@ export default {
     data() {
         return {
             project: this.$store.getters.activeProject,
-            //resourceid: this.$store.getters.activeServer.active_resource,
             allCards: this.$store.getters.activeGraph.cards,
             allNodegroups: this.$store.getters.activeGraph.nodegroups,
             allWidgets: this.$store.getters.activeGraph.widgets,
@@ -174,15 +173,15 @@ export default {
     },
     methods: {
         back: function() {
-            // if the current card in the card stack hasWidgetsAndSubCards and 
+            // if the current card in the card stack hasWidgetsAndSubCards and
             // the previous card in the card stack is not equal to the current card in the card stack
             // and the form is being displayed and the form was saved (has a tileid),
             // then
             // pop the current item off the card stack and save for later,
-            // make a copy of the saved nav item, but set the activeObject to "tile", set showForm to false, 
+            // make a copy of the saved nav item, but set the activeObject to "tile", set showForm to false,
             // and set the tile to null or the parent tile of this.tile
             // push that onto the stack
-            // push the saved item back onto the stack, but change the showForm to false 
+            // push the saved item back onto the stack, but change the showForm to false
             if (this.$store.getters.activeServer.card_nav_stack.length === 1) {
                 this.$router.push({
                     'name': 'project',
@@ -194,9 +193,7 @@ export default {
             } else {
                 var navItem = this.$store.getters.activeServer.card_nav_stack[0];
                 var previousNavItem = this.$store.getters.activeServer.card_nav_stack[1];
-                if (this.hasWidgetsAndSubCards(navItem.card) && navItem.card !== previousNavItem.card &&
-                    navItem.showForm === true && this.tile.tileid !== '') {
-                    
+                if (this.hasWidgetsAndSubCards(navItem.card) && navItem.card !== previousNavItem.card && navItem.showForm === true && this.tile.tileid !== '') {
                     var parentOfThisTile = this.$underscore.find(this.allTiles, function(tile) {
                         return tile.tileid === this.tile.parenttile_id;
                     }, this);
@@ -217,9 +214,9 @@ export default {
             }
         },
         getTileData: function(tile, key) {
-            if (!!tile.provisionaledits && this.user.id in tile.provisionaledits){
+            if (!!tile.provisionaledits && this.user.id in tile.provisionaledits) {
                 return tile.provisionaledits[this.user.id]['value'][key];
-            }else{
+            } else {
                 return tile.data[key];
             }
         },

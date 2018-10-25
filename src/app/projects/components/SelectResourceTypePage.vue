@@ -39,29 +39,12 @@ export default {
         selectResourceType: function(e) {
             this.$store.commit('clearActiveResourceInstance');
             this.$store.commit('setActiveGraphId', e.graphid);
-            var resource = this.getNewResouce(e);
             this.$router.push({
                 'name': 'resource',
                 params: {
                     'nodegroupid': null
                 }
             });
-            console.log("You've selected:", e);
-        },
-        getNewResouce: function(graph){
-            var resource = {
-                displaydescription: "",
-                displayname: "",
-                geometries: [],
-                graph_id: graph.graphid,
-                map_popup: "",
-                point: [],
-                provisional_resource: "true",
-                resourceinstanceid: "",
-                root_ontology_class: graph.root.ontologyclass,
-                type: "resource"
-            }
-
         }
     }
 };

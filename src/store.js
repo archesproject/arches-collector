@@ -395,7 +395,7 @@ var store = new Vuex.Store({
                     .then(function(doc) {
                         return doc;
                     })
-                    .catch(function(err){
+                    .catch(function(err) {
                         console.log(err);
                     })
                     .finally(function() {
@@ -531,16 +531,16 @@ var store = new Vuex.Store({
                         var date = new Date();
                         var graph = store.getters.activeGraph;
                         var resource = {
-                            displaydescription: "",
-                            displayname: "",
+                            displaydescription: '',
+                            displayname: '',
                             geometries: [],
                             graph_id: graph.graphid,
-                            map_popup: "",
+                            map_popup: '',
                             point: [],
-                            provisional_resource: "true",
+                            provisional_resource: 'true',
                             resourceinstanceid: tile.resourceinstance_id,
                             root_ontology_class: graph.root.ontologyclass,
-                            type: "resource",
+                            type: 'resource',
                             edited: {
                                 day: date.toDateString(),
                                 time: date.toTimeString()
@@ -552,13 +552,13 @@ var store = new Vuex.Store({
                                 commit('addTile', resource);
                                 commit('setActiveResourceInstance', {resourceinstanceid: tile.resourceinstance_id});
                             })
-                            .catch(function(err){
+                            .catch(function(err) {
                                 console.log(err);
                             })
                             .finally(function() {
                                 console.log('resource save finished...');
                             });
-                    }else{
+                    } else {
                         commit('setResourceAsEdited', {'projectId': project.id, 'resourceInstanceId': tile.resourceinstance_id});
                     }
                     if (addTile) {
@@ -616,7 +616,7 @@ var store = new Vuex.Store({
             store.dispatch('getBasemapTarget').then((target) => {
                 return new Promise((resolve, reject) => {
                     target.getFile(mbtilesFile, {create: false}, function(filetoremove) {
-                        console.log(filetoremove.toURL())
+                        console.log(filetoremove.toURL());
                         filetoremove.remove(function(file) {
                             console.log('file deleted');
                         });

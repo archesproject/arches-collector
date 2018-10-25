@@ -52,7 +52,7 @@ export default {
             carouselIndex: 1,
             saving: false,
             project: this.$store.getters.activeProject
-        }
+        };
     },
     computed: {
         currentNavItem: function() {

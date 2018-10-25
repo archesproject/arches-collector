@@ -15,13 +15,13 @@ export default {
         };
     },
     methods: {
-        createNewProvisionalEdit: function(){
+        createNewProvisionalEdit: function() {
             return {
-                action: "create",
+                action: 'create',
                 reviewer: null,
                 reviewtimestamp: null,
-                status: "review",
-                timestamp: "",
+                status: 'review',
+                timestamp: '',
                 value: this.tile.data
             };
         }
@@ -33,7 +33,7 @@ export default {
                     return node.nodeid === this.widget.node_id;
                 }, this);
                 // console.log('in datatype function')
-                console.log(node.datatype + '-widget');
+                // console.log(node.datatype + '-widget');
                 return node.datatype + '-widget';
             }
         },
@@ -48,15 +48,15 @@ export default {
                         provisionaledit = this.tile.provisionaledits[this.user.id]['value'];
                     } else {
                         this.tile.provisionaledits[this.user.id] = this.createNewProvisionalEdit();
-                        provisionaledit = this.tile.provisionaledits[this.user.id]['value']
+                        provisionaledit = this.tile.provisionaledits[this.user.id]['value'];
                     }
                     if (!!provisionaledit[this.widget.node_id]) {
                         return provisionaledit[this.widget.node_id];
                     }
                     throw('');
                 } catch (err) {
-                    console.log('node id');
-                    console.log(this.widget.node_id);
+                    // console.log('node id');
+                    // console.log(this.widget.node_id);
                     return '';
                 }
                 // if (!!this.tile && !!this.tile.data) {
@@ -67,8 +67,8 @@ export default {
                 // }
             },
             set: function(newValue) {
-                console.log('in set');
-                console.log(newValue);
+                // console.log('in set');
+                // console.log(newValue);
                 this.tile.provisionaledits[this.user.id]['value'][this.widget.node_id] = newValue;
                 this.save();
             }

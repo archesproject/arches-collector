@@ -49,11 +49,10 @@ export default {
         },
         throttle: function(fn, tile, delay) {
             var self = this;
-            var args = arguments;
             return function() {
                 var context = this;
                 clearTimeout(self.timer);
-                self.timer = setTimeout(function () {
+                self.timer = setTimeout(function() {
                     fn.call(context, tile);
                 }, delay);
             };
