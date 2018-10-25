@@ -145,7 +145,6 @@ export default {
         },
         allTiles: {
             get: function() {
-                console.log('in allTiles')
                 if (!!this.resourceid) {
                     return this.$underscore.filter(this.$store.getters.tiles, function(tile) {
                         return tile.resourceinstance_id === this.resourceid;
@@ -157,14 +156,9 @@ export default {
         },
         cardTiles: {
             get: function() {
-                var x =  this.$underscore.filter(this.allTiles, function(tile) {
+                return this.$underscore.filter(this.allTiles, function(tile) {
                     return tile.parenttile_id === (this.tile ? this.tile.tileid : null) && tile.nodegroup_id === this.nodegroup_id;
                 }, this);
-                console.log('cardTiles');
-                console.log(this.nodegroup_id);
-                console.log(x);
-                console.log(this.tile);
-                return x;
             }
         },
         cardinality: {
@@ -181,10 +175,12 @@ export default {
     methods: {
         back: function() {
             // if the current card in the card stack hasWidgetsAndSubCards and 
-            // the previous card in the card stack is not equal to the current card in teh card stack,
+            // the previous card in the card stack is not equal to the current card in the card stack
+            // and the form is being displayed and the form was saved (has a tileid),
             // then
             // pop the current item off the card stack and save for later,
-            // make a copy of the saved nav item, but set the activeObject to "tile", set showForm to false, and set the tile to null
+            // make a copy of the saved nav item, but set the activeObject to "tile", set showForm to false, 
+            // and set the tile to null or the parent tile of this.tile
             // push that onto the stack
             // push the saved item back onto the stack, but change the showForm to false 
             if (this.$store.getters.activeServer.card_nav_stack.length === 1) {
@@ -197,19 +193,16 @@ export default {
                 });
             } else {
                 var navItem = this.$store.getters.activeServer.card_nav_stack[0];
-                // var tileToReference = this.$store.getters.activeServer.card_nav_stack.length > 3 ? this.$store.getters.activeServer.card_nav_stack[3].tile : null;
-                var tile = this.$underscore.filter(this.allTiles, function(tile) {
-                    return tile.tileid === (this.tile ? this.tile.parenttile_id : null);
-                }, this);
-                if (!tile) {
-                    tile = [null];
-                }
-                if (this.hasWidgetsAndSubCards(navItem.card) && 
-                    navItem.card !== this.$store.getters.activeServer.card_nav_stack[1].card &&
-                    navItem.showForm === true) {
+                var previousNavItem = this.$store.getters.activeServer.card_nav_stack[1];
+                if (this.hasWidgetsAndSubCards(navItem.card) && navItem.card !== previousNavItem.card &&
+                    navItem.showForm === true && this.tile.tileid !== '') {
+                    
+                    var parentOfThisTile = this.$underscore.find(this.allTiles, function(tile) {
+                        return tile.tileid === this.tile.parenttile_id;
+                    }, this);
                     this.$store.getters.activeServer.card_nav_stack.splice(1, 0, {
                         'card': navItem.card,
-                        'tile': tile[0],
+                        'tile': !!parentOfThisTile ? parentOfThisTile : null,
                         'showForm': false,
                         'activeObject': 'card'
                     });
@@ -221,7 +214,6 @@ export default {
                     });
                 }
                 this.$store.getters.activeServer.card_nav_stack.shift();
-                //this.$store.getters.activeServer.card_nav_stack.shift();
             }
         },
         getTileData: function(tile, key) {
@@ -255,8 +247,7 @@ export default {
             } else {
                 tile = this.tile;
             }
-            console.log('navigateChildCard');
-            console.log(tile);
+
             this.$store.getters.activeServer.card_nav_stack.unshift({
                 'card': card,
                 'tile': tile,
@@ -347,45 +338,19 @@ export default {
         saveTile: function(tile) {
             console.log('saving...');
             console.log(tile);
-            // this.saving = true;
             this.$emit('saving', true);
             var self = this;
 
             this.$store.dispatch('persistTile', tile)
                 .then(function(savedTile) {
-                    if (!!self.resourceid){
-                       // self.resourceid = savedTile.resourceinstance_id;
-                    }
                     return savedTile;
                 })
                 .finally(function() {
                     console.log('tile save finished...');
-                    // self.saving = false;
-                    // self.$store.commit('addTile', tile);
                     window.setTimeout(function() {
                         self.$emit('saving', false);
                     }, 2000);
                 });
-            // this.$store.dispatch(
-            //     'getResource', {
-            //         projectid: this.project.id,
-            //         resourceid: this.$store.getters.activeServer.active_resource
-            //     }
-            // ).then((res) => {
-            //     var resource = res['docs'][0];
-            //     var date = new Date();
-            //     resource['edited'] = {
-            //         'day': date.toDateString(),
-            //         'time': date.toTimeString()
-            //     };
-            //     this.$store.dispatch('persistResource', resource)
-            //         .then(function(doc) {
-            //             return doc;
-            //         })
-            //         .finally(function() {
-            //             console.log('resource save finished...');
-            //         });
-            //});
         }
     }
 };
