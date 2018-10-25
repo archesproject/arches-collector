@@ -528,6 +528,7 @@ var store = new Vuex.Store({
             return pouchDBs.putTile(project.id, tile)
                 .then(function(doc) {
                     if (newResource) {
+                        var date = new Date();
                         var graph = store.getters.activeGraph;
                         var resource = {
                             displaydescription: "",
@@ -540,6 +541,10 @@ var store = new Vuex.Store({
                             resourceinstanceid: tile.resourceinstance_id,
                             root_ontology_class: graph.root.ontologyclass,
                             type: "resource",
+                            edited: {
+                                day: date.toDateString(),
+                                time: date.toTimeString()
+                            },
                             _id: tile.resourceinstance_id
                         };
                         store.dispatch('persistResource', resource)
@@ -554,12 +559,12 @@ var store = new Vuex.Store({
                                 console.log('resource save finished...');
                             });
                     }else{
-                        if (addTile) {
-                            commit('addTile', tile);
-                        }
                         commit('setResourceAsEdited', {'projectId': project.id, 'resourceInstanceId': tile.resourceinstance_id});
                     }
-                    return doc;
+                    if (addTile) {
+                        commit('addTile', tile);
+                    }
+                    return tile;
                 });
         },
         persistResource: function({commit, state}, resource) {

@@ -26,11 +26,9 @@
             <div v-if="(activeObject === 'tile' && hasWidgets(card))">
                 <v-ons-list-item tappable @click="setTileContext(tile, true)">
                     <span style="width: 90%">
-                        <ul>
-                            <li class="widget" v-for="value, key in tile.data" :key="key" v-if="typeof value === 'string' || value instanceof String">
-                                {{getTileData(tile, key)}}
-                            </li>
-                        </ul>
+                        <div class="widget" v-for="value, key in tile.data" :key="key" v-if="typeof value === 'string' || value instanceof String">
+                            {{getTileData(tile, key)}}
+                        </div>
                         <div>Edit record</div>
                     </span>
                     <span>
@@ -69,7 +67,7 @@ export default {
     data() {
         return {
             project: this.$store.getters.activeProject,
-            resourceid: this.$store.getters.activeServer.active_resource,
+            //resourceid: this.$store.getters.activeServer.active_resource,
             allCards: this.$store.getters.activeGraph.cards,
             allNodegroups: this.$store.getters.activeGraph.nodegroups,
             allWidgets: this.$store.getters.activeGraph.widgets,
@@ -77,6 +75,13 @@ export default {
         };
     },
     computed: {
+        resourceid: {
+            get: function() {
+                if (!!this.$store.getters.activeServer) {
+                    return this.$store.getters.activeServer.active_resource;
+                }
+            }
+        },
         currentNavItem: {
             get: function() {
                 if (!!this.$store.getters.activeServer) {
@@ -140,6 +145,7 @@ export default {
         },
         allTiles: {
             get: function() {
+                console.log('in allTiles')
                 if (!!this.resourceid) {
                     return this.$underscore.filter(this.$store.getters.tiles, function(tile) {
                         return tile.resourceinstance_id === this.resourceid;
@@ -151,9 +157,14 @@ export default {
         },
         cardTiles: {
             get: function() {
-                return this.$underscore.filter(this.allTiles, function(tile) {
+                var x =  this.$underscore.filter(this.allTiles, function(tile) {
                     return tile.parenttile_id === (this.tile ? this.tile.tileid : null) && tile.nodegroup_id === this.nodegroup_id;
                 }, this);
+                console.log('cardTiles');
+                console.log(this.nodegroup_id);
+                console.log(x);
+                console.log(this.tile);
+                return x;
             }
         },
         cardinality: {
@@ -169,6 +180,13 @@ export default {
     },
     methods: {
         back: function() {
+            // if the current card in the card stack hasWidgetsAndSubCards and 
+            // the previous card in the card stack is not equal to the current card in teh card stack,
+            // then
+            // pop the current item off the card stack and save for later,
+            // make a copy of the saved nav item, but set the activeObject to "tile", set showForm to false, and set the tile to null
+            // push that onto the stack
+            // push the saved item back onto the stack, but change the showForm to false 
             if (this.$store.getters.activeServer.card_nav_stack.length === 1) {
                 this.$router.push({
                     'name': 'project',
@@ -178,7 +196,26 @@ export default {
                     }
                 });
             } else {
+                var navItem = this.$store.getters.activeServer.card_nav_stack[0];
+                // var tileToReference = this.$store.getters.activeServer.card_nav_stack.length > 3 ? this.$store.getters.activeServer.card_nav_stack[3].tile : null;
+                if (this.hasWidgetsAndSubCards(navItem.card) && 
+                    navItem.card !== this.$store.getters.activeServer.card_nav_stack[1].card &&
+                    navItem.showForm === true) {
+                    this.$store.getters.activeServer.card_nav_stack.splice(1, 0, {
+                        'card': navItem.card,
+                        'tile': null,
+                        'showForm': false,
+                        'activeObject': 'card'
+                    });
+                    this.$store.getters.activeServer.card_nav_stack.splice(1, 0, {
+                        'card': navItem.card,
+                        'tile': navItem.tile,
+                        'showForm': false,
+                        'activeObject': 'tile'
+                    });
+                }
                 this.$store.getters.activeServer.card_nav_stack.shift();
+                //this.$store.getters.activeServer.card_nav_stack.shift();
             }
         },
         getTileData: function(tile, key) {
@@ -309,8 +346,11 @@ export default {
             var self = this;
 
             this.$store.dispatch('persistTile', tile)
-                .then(function(doc) {
-                    return doc;
+                .then(function(savedTile) {
+                    if (!!self.resourceid){
+                       // self.resourceid = savedTile.resourceinstance_id;
+                    }
+                    return savedTile;
                 })
                 .finally(function() {
                     console.log('tile save finished...');
