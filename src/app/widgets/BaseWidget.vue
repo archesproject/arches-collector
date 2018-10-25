@@ -16,9 +16,6 @@ export default {
     },
     methods: {
         createNewProvisionalEdit: function() {
-            if (this.widget.config.defaultValue) {
-                this.value = this.widget.config.defaultValue;
-            }
             return {
                 action: "create",
                 reviewer: null,
@@ -52,6 +49,9 @@ export default {
                     } else {
                         this.tile.provisionaledits[this.user.id] = this.createNewProvisionalEdit();
                         provisionaledit = this.tile.provisionaledits[this.user.id]['value']
+                        if (this.widget.config.defaultValue) {
+                            this.value = this.widget.config.defaultValue;
+                        }
                     }
                     if (!!provisionaledit[this.widget.node_id]) {
                         return provisionaledit[this.widget.node_id];
