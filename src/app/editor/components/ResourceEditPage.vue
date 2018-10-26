@@ -14,20 +14,15 @@
                 </v-ons-list-item>
             </div>
             <div v-show="hasTiles(card) || activeObject === 'card'">
-                <v-ons-list-item tappable modifier="longdivider" v-for="tile in cardTiles" :key="tile.tileid" @click="setTileContext(tile)">
-                    <div><span>Tile Id: {{tile.tileid}}</span></div>
-                    <ul>
-                        <li class="widget" v-for="value, key in tile.data" :key="key" v-if="typeof value === 'string' || value instanceof String">
-                            {{getTileData(tile, key)}}
-                        </li>
-                    </ul>
-                </v-ons-list-item>
+                <div tappable modifier="longdivider" v-for="tile in cardTiles" :key="tile.tileid" @click="setTileContext(tile)" class="tile-instance">
+                    <div><span class="fa5 fa-ellipsis-v drag-bars"></span><span>{{getTileData(tile, card).value}}</span></div>
+                </div>
             </div>
             <div v-if="(activeObject === 'tile' && hasWidgets(card))">
                 <v-ons-list-item tappable @click="setTileContext(tile, true)">
                     <span style="width: 90%">
                         <div class="widget" v-for="value, key in tile.data" :key="key" v-if="typeof value === 'string' || value instanceof String">
-                            {{getTileData(tile, key)}}
+                            {{getTileData(tile, card).value}}
                         </div>
                         <div>Edit record</div>
                     </span>
@@ -213,11 +208,20 @@ export default {
                 this.$store.getters.activeServer.card_nav_stack.shift();
             }
         },
-        getTileData: function(tile, key) {
-            if (!!tile.provisionaledits && this.user.id in tile.provisionaledits) {
-                return tile.provisionaledits[this.user.id]['value'][key];
-            } else {
-                return tile.data[key];
+        getTileData: function(tile, card) {
+            var widgets = this.$underscore.filter(this.allWidgets, function(widget) {
+                return widget.card_id === card.cardid;
+            }, this);
+            if (widgets.length > 0) {
+                var value;
+                var widget = this.$underscore.sortBy(widgets, 'sortorder')[0];
+                var key = widget.node_id;
+                if (!!tile.provisionaledits && this.user.id in tile.provisionaledits) {
+                    value = tile.provisionaledits[this.user.id]['value'][key];
+                } else {
+                    value = tile.data[key];
+                }
+                return {label: widget.label, value: value}
             }
         },
         navigateChildCard: function(card, showForm) {
@@ -369,5 +373,22 @@ ul {
 
 .add-card {
     font-size: 14px;
+}
+.tile-instance {
+    padding: 0px !important;
+    border-top: solid 1px #dbdbdb;
+    background-color: whitesmoke
+}
+.tile-instance .list-item--longdivider__center {
+    padding: 0px !important;
+}
+.tile-instance:last-child {
+    border-bottom: solid 2px #dbdbdb;
+}
+.drag-bars {
+    padding: 20px 10px 20px 10px;
+    background-color: #e8e6e6;
+    display: inline-block;
+    margin-right: 5px;
 }
 </style>
