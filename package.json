@@ -18,6 +18,7 @@
         "cordova-build": "yarn run build && cordova build",
         "cordova-run": "yarn run build && cordova run browser",
         "cordova-run-ios": "yarn run build && cordova run ios",
+        "ios-mojave": "yarn run build && cordova run ios  --buildFlag='-UseModernBuildSystem=0'",
         "cordova-run-android": "yarn run build && cordova run android"
     },
     "dependencies": {
