@@ -18,8 +18,10 @@
         "cordova-build": "yarn run build && cordova build",
         "cordova-run": "yarn run build && cordova run browser",
         "cordova-run-ios": "yarn run build && cordova run ios",
+        "ios": "yarn run cordova-run-ios",
         "ios-mojave": "yarn run build && cordova run ios  --buildFlag='-UseModernBuildSystem=0'",
-        "cordova-run-android": "yarn run build && cordova run android"
+        "cordova-run-android": "yarn run build && cordova run android",
+        "android": "yarn run cordova-run-android"
     },
     "dependencies": {
         "@mapbox/geojson-extent": "^0.3.2",
