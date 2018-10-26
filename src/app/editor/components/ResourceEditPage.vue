@@ -17,7 +17,7 @@
                 <div tappable modifier="longdivider" v-for="tile in cardTiles" :key="tile.tileid" @click="setTileContext(tile)" class="tile-instance">
                     <div class="flex"><span class="fa5 fa-ellipsis-v drag-bars"></span>
                         <span class="flex tile-data"><div>{{getTileData(tile, card).value}}</div><div class="widget-label">{{getTileData(tile, card).label}}</div></span>
-                        <span class="fa5 fa-trash tile-delete"></span>
+                        <span class="fa5 fa-trash tile-delete" @click="deleteTile(tile, $event)"></span>
                     </div>
                 </div>
             </div>
@@ -225,6 +225,8 @@ export default {
                     value = tile.data[key];
                 }
                 return {label: widget.label, value: !!value ? value : 'undefined'}
+            } else {
+                return {label: '', value: card.name}
             }
         },
         navigateChildCard: function(card, showForm) {
@@ -355,6 +357,10 @@ export default {
                         self.$emit('saving', false);
                     }, 2000);
                 });
+        },
+        deleteTile: function(tile, e) {
+            console.log('in deleteTile');
+            e.stopPropagation();
         }
     }
 };
