@@ -15,7 +15,9 @@
             </div>
             <div v-show="hasTiles(card) || activeObject === 'card'">
                 <div tappable modifier="longdivider" v-for="tile in cardTiles" :key="tile.tileid" @click="setTileContext(tile)" class="tile-instance">
-                    <div><span class="fa5 fa-ellipsis-v drag-bars"></span><span>{{getTileData(tile, card)}}</span></div>
+                    <div class="flex"><span class="fa5 fa-ellipsis-v drag-bars"></span>
+                        <span class="flex tile-data"><div>{{getTileData(tile, card).value}}</div><div class="widget-label">{{getTileData(tile, card).label}}</div></span>
+                    </div>
                 </div>
             </div>
             <div v-if="(activeObject === 'tile' && hasWidgets(card))">
@@ -221,7 +223,7 @@ export default {
                 } else {
                     value = tile.data[key];
                 }
-                return value
+                return {label: widget.label, value: !!value ? value : 'undefined'}
             }
         },
         navigateChildCard: function(card, showForm) {
@@ -390,5 +392,15 @@ ul {
     background-color: #e8e6e6;
     display: inline-block;
     margin-right: 5px;
+}
+.flex {
+    display: flex;
+}
+.tile-data {
+    flex-direction: column;
+    padding-top: 11px;
+}
+.widget-label {
+    color: grey;
 }
 </style>
