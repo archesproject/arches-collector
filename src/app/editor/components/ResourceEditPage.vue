@@ -15,14 +15,14 @@
             </div>
             <div v-show="hasTiles(card) || activeObject === 'card'">
                 <div tappable modifier="longdivider" v-for="tile in cardTiles" :key="tile.tileid" @click="setTileContext(tile)" class="tile-instance">
-                    <div><span class="fa5 fa-ellipsis-v drag-bars"></span><span>{{getTileData(tile, card).value}}</span></div>
+                    <div><span class="fa5 fa-ellipsis-v drag-bars"></span><span>{{getTileData(tile, card)}}</span></div>
                 </div>
             </div>
             <div v-if="(activeObject === 'tile' && hasWidgets(card))">
                 <v-ons-list-item tappable @click="setTileContext(tile, true)">
                     <span style="width: 90%">
                         <div class="widget" v-for="value, key in tile.data" :key="key" v-if="typeof value === 'string' || value instanceof String">
-                            {{getTileData(tile, card).value}}
+                            {{getTileData(tile, card)}}
                         </div>
                         <div>Edit record</div>
                     </span>
@@ -221,7 +221,7 @@ export default {
                 } else {
                     value = tile.data[key];
                 }
-                return {label: widget.label, value: value}
+                return value
             }
         },
         navigateChildCard: function(card, showForm) {
