@@ -17,6 +17,7 @@
                 <div tappable modifier="longdivider" v-for="tile in cardTiles" :key="tile.tileid" @click="setTileContext(tile)" class="tile-instance">
                     <div class="flex"><span class="fa5 fa-ellipsis-v drag-bars"></span>
                         <span class="flex tile-data"><div>{{getTileData(tile, card).value}}</div><div class="widget-label">{{getTileData(tile, card).label}}</div></span>
+                        <span class="fa5 fa-trash tile-delete"></span>
                     </div>
                 </div>
             </div>
@@ -399,8 +400,12 @@ ul {
 .tile-data {
     flex-direction: column;
     padding-top: 11px;
+    flex-grow: 1;
 }
 .widget-label {
     color: grey;
+}
+.tile-delete {
+    padding: 20px;
 }
 </style>
