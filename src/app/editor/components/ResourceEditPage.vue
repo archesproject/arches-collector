@@ -25,7 +25,7 @@
                 <v-ons-list-item tappable @click="setTileContext(tile, true)">
                     <span style="width: 90%">
                         <div class="widget" v-for="value, key in tile.data" :key="key" v-if="typeof value === 'string' || value instanceof String">
-                            {{getTileData(tile, card)}}
+                            {{getTileData(tile, card).value       }}
                         </div>
                         <div>Edit record</div>
                     </span>
