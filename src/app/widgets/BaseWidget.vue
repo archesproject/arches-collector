@@ -46,6 +46,7 @@ export default {
                     }
                     if (!!this.tile.provisionaledits[this.user.id]) {
                         provisionaledit = this.tile.provisionaledits[this.user.id]['value'];
+                        this.tile.data[this.widget.node_id] = provisionaledit[this.widget.node_id];
                     } else {
                         this.tile.provisionaledits[this.user.id] = this.createNewProvisionalEdit();
                         provisionaledit = this.tile.provisionaledits[this.user.id]['value']
