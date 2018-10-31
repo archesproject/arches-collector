@@ -339,17 +339,19 @@ var store = new Vuex.Store({
                     }
                     ['name', 'description', 'map_popup'].forEach(function(descriptor) {
                         var config = graphFunction.config[descriptor];
-                        ret[descriptor] = '';
+                        ret[descriptor] = 'Undefined';
                         if ('nodegroup_id' in config && !!config.nodegroup_id) {
                             tiles.forEach(function(tile) {
                                 graph.nodes.forEach(function(node) {
                                     if (node.nodegroup_id === config.nodegroup_id){
                                         if (node.nodeid in tile.data) {
-                                            // datatype_factory = DataTypeFactory()
-                                            // datatype = datatype_factory.get_instance(node.datatype)
-                                            // value = datatype.get_display_value(tile, node)
-                                            // config['string_template'] = config['string_template'].replace('<%s>' % node.name, value)
-                                            ret[descriptor] = config['string_template'].replace('<' + node.name + '>', tile.data[node.nodeid]);
+                                            if (['string', 'concept'].indexOf(node.datatype) > -1) {
+                                                var data_value = tile.data[node.nodeid];
+                                                if (node.datatype === 'concept') {
+
+                                                }
+                                                ret[descriptor] = config['string_template'].replace('<' + node.name + '>', data_value);
+                                            }
                                         }
                                     }
                                 });
