@@ -33,7 +33,6 @@ import uuidv4 from 'uuid/v4';
 import 'mapbox-gl-cordova-offline/www/mapbox-gl.css';
 // TODO: pull basemap layer styles from project?
 import basemapLayers from '../../../assets/map/basemap_layers.json';
-import onlineStyle from '../../../assets/map/Emerald/style.json';
 
 const mapboxgl = window.mapboxgl;
 
@@ -57,7 +56,8 @@ export default {
                 displayname: '',
                 displaydescription: ''
             },
-            loading: true
+            loading: true,
+            onlinebasemap: this.project.onlinebasemaps ? this.project.onlinebasemaps.default : 'mapbox://styles/mapbox/satellite-v9'
         };
     },
     computed: {
@@ -125,7 +125,7 @@ export default {
             };
 
             var isOffline = 'onLine' in navigator && !navigator.onLine && window.device;
-            var style = isOffline ? offlineStyle : onlineStyle;
+            var style = isOffline ? offlineStyle : this.onlinebasemap;
 
             return {
                 container: this.mapId,
