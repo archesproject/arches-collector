@@ -62,7 +62,8 @@ export default {
             this.$router.push({
                 'name': 'resource',
                 params: {
-                    'nodegroupid': null
+                    'nodegroupid': null,
+                    'tabIndex': 1
                 }
             });
         },

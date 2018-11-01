@@ -45,7 +45,7 @@
 <script>
 export default {
     name: 'ResourcePage',
-    props: ['nodegroupid'],
+    props: ['nodegroupid', 'tabIndex'],
     data() {
         return {
             goBack: false,
@@ -74,11 +74,11 @@ export default {
             this.goBack = !this.goBack;
         }
     },
-    beforeCreate: function() {
+    created: function() {
         console.log('beforeCreate');
         if (!!this.$store.getters.activeServer) {
             this.$store.getters.activeServer.card_nav_stack = [];
-            this.$store.getters.activeServer.card_nav_stack.unshift({card: null, tile: null, showForm: false, activeObject: 'tile'});
+            this.$store.getters.activeServer.card_nav_stack.unshift({card: null, tile: null, showForm: false, activeObject: 'tile', 'tabIndex': this.tabIndex});
         }
     }
 };

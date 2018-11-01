@@ -64,7 +64,7 @@ export default {
                 project_id: project.id
             };
             this.$store.commit('setActiveProject', payload);
-            this.$router.push({'name': 'project', params: { project: project }});
+            this.$router.push({'name': 'project', params: { project: project, tabIndex: 0}});
         },
         refreshProjectList(done) {
             this.$store.dispatch('getRemoteProjects', this.$store.getters.activeServer)

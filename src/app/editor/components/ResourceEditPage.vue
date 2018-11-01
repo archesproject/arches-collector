@@ -185,7 +185,7 @@ export default {
                     'name': 'project',
                     params: {
                         'project': this.project,
-                        'carouselIndex': 1
+                        'tabIndex': this.$store.getters.activeServer.card_nav_stack[0].tabIndex
                     }
                 });
             } else {
