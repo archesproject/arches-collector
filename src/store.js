@@ -335,29 +335,30 @@ var store = new Vuex.Store({
                         tiles = $underscore.filter(getters.tiles, function(tile) {
                             return tile.resourceinstance_id === resource.resourceinstanceid;
                         }, this);
-                        tiles = $underscore.sortBy(tiles, 'sortorder');
                     }
                     ['name', 'description', 'map_popup'].forEach(function(descriptor) {
                         var config = graphFunction.config[descriptor];
-                        ret[descriptor] = 'Undefined';
+                        ret[descriptor] = config['string_template'];
                         if ('nodegroup_id' in config && !!config.nodegroup_id) {
-                            tiles.forEach(function(tile) {
+                            tiles = $underscore.filter(tiles, function(tile) {
+                                return tile.nodegroup_id === config.nodegroup_id;
+                            }, this);
+                            tiles = $underscore.sortBy(tiles, 'sortorder');
+                            tile = tiles[0];
+                            if (!!tile) {
                                 graph.nodes.forEach(function(node) {
-                                    if (node.nodegroup_id === config.nodegroup_id){
-                                        if (node.nodeid in tile.data) {
-                                            if (['string', 'concept'].indexOf(node.datatype) > -1) {
-                                                var data_value = tile.data[node.nodeid];
-                                                if (node.datatype === 'concept') {
-
-                                                }
-                                                ret[descriptor] = config['string_template'].replace('<' + node.name + '>', data_value);
+                                    if (node.nodeid in tile.data) {
+                                        if (['string'].indexOf(node.datatype) > -1) {
+                                            var data_value = tile.data[node.nodeid];
+                                            if (node.datatype === 'concept') {
+                                                // maybe we can implement in the future
                                             }
+                                            ret[descriptor] = ret[descriptor].replace('<' + node.name + '>', data_value);
                                         }
                                     }
                                 });
-                            });
+                            }
                         }
-                           
                     });
                 }
                 return ret;
