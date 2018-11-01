@@ -69,7 +69,7 @@
 <script>
 export default {
     name: 'Project',
-    props: ['project'],
+    props: ['project', 'tabIndex'],
     data() {
         return {
             showSideNav: false,
@@ -127,6 +127,11 @@ export default {
         },
         sort: function() {
             this.$refs.sripage.sorted = !this.$refs.sripage.sorted;
+        }
+    },
+    created : function () {
+        if (this.$route.params.tabIndex !== '' && this.$route.params.tabIndex !== undefined) {
+            this.activeIndex = parseInt(this.$route.params.tabIndex);
         }
     }
 };

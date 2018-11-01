@@ -2,7 +2,7 @@ import * as components from './components';
 
 export default [
     {
-        path: '/project/:id',
+        path: '/project/:tabIndex',
         component: components.ProjectPage,
         name: 'project',
         props: true
