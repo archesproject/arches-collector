@@ -1,29 +1,51 @@
 <template>
     <page-header-layout>
-        <v-ons-pull-hook
-          :action="refreshProjectList"
-          @changestate="state = $event.state"
-        >
-            <span v-show="state === 'initial'"> Pull to refresh </span>
-            <span v-show="state === 'preaction'"> Release </span>
-            <span v-show="state === 'action'"><v-ons-progress-circular indeterminate></v-ons-progress-circular></span>
-        </v-ons-pull-hook>
+
+        <v-ons-splitter>
+            <v-ons-splitter-side width="80%"
+                collapse="" side="right"
+                :open.sync="showSideNav" class="sidenav toolbar-header">
+                <v-ons-page>
+                    <v-ons-list style="margin-top: 5px;">
+                        <v-ons-list-item tappable @click="sync">
+                            <v-ons-icon class="text-color-dark icon" v-if="syncing === false" icon="fa-cloud-download-alt"></v-ons-icon>
+                            <v-ons-icon class="text-color-dark icon" v-if="syncfailed === true" icon="ion-android-alert"></v-ons-icon>
+                            <span class="text-color-dark label right-panel-label">{{sync_btn_text}}</span>
+                        </v-ons-list-item @click="">
+                    </v-ons-list>
+                </v-ons-page>
+            </v-ons-splitter-side>
+
+        <v-ons-splitter-content class="project-list-panel">
+            <v-ons-pull-hook
+              :action="refreshProjectList"
+              @changestate="state = $event.state"
+            >
+                <span v-show="state === 'initial'"> Pull to refresh </span>
+                <span v-show="state === 'preaction'"> Release </span>
+                <span v-show="state === 'action'"><v-ons-progress-circular indeterminate></v-ons-progress-circular></span>
+            </v-ons-pull-hook>
+
         <v-ons-list>
             <v-ons-list-item class="projects-header" modifier="longdivider">
                 <span class="left projects-title"><span>Projects</span></span>
                 <span class="right">
-                    <v-ons-icon icon="ion-ios-cloud-download"></v-ons-icon>
+                    <v-ons-icon icon="fa-ellipsis-v"></v-ons-icon>
                 </span>
             </v-ons-list-item>
-            <v-ons-list-item class="list-item" tappable modifier="longdivider" v-for="project in projects" :key="project.id" @click="selectProject(project);" v-bind:class="{ inactive_project: !project.active }">
-                <span style="line-height: 1.1em;">
+            <v-ons-list-item class="list-item" tappable modifier="longdivider" v-for="project in projects" :key="project.id" v-bind:class="{ inactive_project: !project.active }">
+                <span style="line-height: 1.1em;" @click="segueToProject(project);">
                     <span class="project-name">{{project.name}}</span><br>
                     <span class="project-active" v-if="project.active">Active from:</span>
                     <span class="project-inactive" v-else>Inactive</span>
                     <span class="project-dates">{{project.startdate}} - {{project.enddate}}</span>
                 </span>
+                <v-ons-icon class="right" style="display: flex" icon="fa-ellipsis-v" @click="toggleSideNav(project.id)"></v-ons-icon>
             </v-ons-list-item>
         </v-ons-list>
+        </v-ons-splitter-content>
+        </v-ons-splitter>
+
     </page-header-layout>
 </template>
 
@@ -32,7 +54,12 @@ export default {
     name: 'ProjectList',
     data() {
         return {
-            state: 'initial'
+            state: 'initial',
+            showSideNav: false,
+            syncing: false,
+            syncfailed: false,
+            selectedProject: undefined,
+            sync_btn_text: 'Sync Now'
         };
     },
     computed: {
@@ -59,12 +86,29 @@ export default {
         }
     },
     methods: {
-        selectProject(project) {
+        segueToProject(project) {
             var payload = {
                 project_id: project.id
             };
             this.$store.commit('setActiveProject', payload);
             this.$router.push({'name': 'project', params: { project: project, tabIndex: 0}});
+        },
+        toggleSideNav: function(projectid) {
+            this.selectedProject = projectid;
+            this.showSideNav = !this.showSideNav;
+        },
+        sync: function() {
+            var self = this;
+            this.syncing = true;
+            this.syncfailed = false;
+            this.$store.dispatch('syncRemote', this.selectedProject)
+                .catch(function() {
+                    self.syncfailed = true;
+                })
+                .finally(function(doc) {
+                    console.log('syncing done');
+                    self.syncing = false;
+                });
         },
         refreshProjectList(done) {
             this.$store.dispatch('getRemoteProjects', this.$store.getters.activeServer)
