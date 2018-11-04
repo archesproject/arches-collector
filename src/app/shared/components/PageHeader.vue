@@ -1,5 +1,5 @@
 <template>
-    <v-ons-toolbar>      
+    <v-ons-toolbar>
         <div class="left">
             <v-ons-toolbar-button class="left-button-offset" @click="toggleOpen">
                 <img src="../../../assets/img/favicon.png" width="20"></img>
@@ -8,11 +8,8 @@
         </div>
         <div class="center"></div>
         <div class="right">
-            <v-ons-toolbar-button style="padding-right: 0px;">
-                <v-ons-icon icon="ion-ios-search-strong"></v-ons-icon>
-            </v-ons-toolbar-button>
             <v-ons-toolbar-button>
-                <v-ons-icon icon="ion-navicon, material:md-more-vert"></v-ons-icon>
+                <v-ons-icon icon="ion-ios-search-strong"></v-ons-icon>
             </v-ons-toolbar-button>
         </div>
     </v-ons-toolbar>
