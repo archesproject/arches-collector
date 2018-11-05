@@ -178,9 +178,11 @@ export default {
 
     .menu-icon {
         width: 25px;
+        display: flex;
     }
 
     .menu-text {
+        font-size: 15px;
         display: flex;
         flex-direction: column;
     }
