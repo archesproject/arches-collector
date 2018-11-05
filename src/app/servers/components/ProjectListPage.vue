@@ -11,9 +11,26 @@
                             <span class="text-color-dark label right-panel-label" v-if="selectedProject">{{selectedProject.name}}</span>
                         </v-ons-list-item @click="">
                         <v-ons-list-item tappable @click="sync">
-                            <v-ons-icon class="text-color-dark icon" v-if="syncing === false" icon="fa-cloud-download-alt"></v-ons-icon>
-                            <v-ons-icon class="text-color-dark icon" v-if="syncfailed === true" icon="ion-android-alert"></v-ons-icon>
-                            <span class="text-color-dark label right-panel-label">{{sync_btn_text}}</span>
+                            <v-ons-icon class="text-color-dark left menu-icon" v-if="syncing === false" icon="fa-cloud-download-alt"></v-ons-icon>
+                            <v-ons-icon class="text-color-dark menu-icon" v-if="syncfailed === true" icon="ion-android-alert"></v-ons-icon>
+                            <div class="menu-text">
+                                <span class="text-color-dark">Refresh all records in a project</span>
+                                <span class="text-color-dark menu-subtext">Refresh all project data</span>
+                            </div>
+                        </v-ons-list-item @click="">
+                        <v-ons-list-item tappable>
+                            <v-ons-icon class="text-color-dark left menu-icon" v-if="syncing === false" icon="fa-toggle-off"></v-ons-icon>
+                            <div class="menu-text">
+                                <span class="text-color-dark">Leave project</span>
+                                <span class="text-color-dark menu-subtext">Stop synching with this active project</span>
+                            </div>
+                        </v-ons-list-item @click="">
+                        <v-ons-list-item tappable>
+                            <v-ons-icon class="text-color-dark left menu-icon" v-if="syncing === false" icon="fa-trash"></v-ons-icon>
+                            <div class="menu-text">
+                                <span class="text-color-dark">Delete this project from my device</span>
+                                <span class="text-color-dark menu-subtext">Remove inactive project from my device</span>
+                            </div>
                         </v-ons-list-item @click="">
                     </v-ons-list>
                 </v-ons-page>
@@ -23,9 +40,9 @@
             <v-ons-pull-hook
               :action="refreshProjectList"
               @changestate="state = $event.state">
-                <span v-show="state === 'initial'"> Pull to refresh </span>
-                <span v-show="state === 'preaction'"> Release </span>
-                <span v-show="state === 'action'"><v-ons-progress-circular indeterminate></v-ons-progress-circular></span>
+                <div v-show="state === 'initial'"> Pull to refresh </div>
+                <div v-show="state === 'preaction'"> Release </div>
+                <div v-show="state === 'action'"><v-ons-progress-circular indeterminate></v-ons-progress-circular></div>
             </v-ons-pull-hook>
 
         <v-ons-list>
@@ -60,8 +77,7 @@ export default {
             showSideNav: false,
             syncing: false,
             syncfailed: false,
-            selectedProject: undefined,
-            sync_btn_text: 'Sync Now'
+            selectedProject: undefined
         };
     },
     computed: {
@@ -157,6 +173,19 @@ export default {
 
     .project-dates {
         color: #555;
+        font-size: 12px;
+    }
+
+    .menu-icon {
+        width: 25px;
+    }
+
+    .menu-text {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .menu-subtext {
         font-size: 12px;
     }
 
