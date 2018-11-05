@@ -17,6 +17,7 @@
                                 <span class="text-color-dark menu-subtext">Refresh all project data</span>
                             </div>
                         </v-ons-list-item @click="">
+                        <v-ons-progress-bar indeterminate v-if="syncing"></v-ons-progress-bar>
                         <v-ons-list-item tappable>
                             <v-ons-icon class="text-color-dark left menu-icon" icon="fa-toggle-off"></v-ons-icon>
                             <div class="menu-text">
