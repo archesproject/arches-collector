@@ -96,8 +96,7 @@ var pouchDBs = (function() {
                 // })
                 .on('error', function(err) {
                 // boo, we hit an error!
-                    console.log('boo, we hit an error!');
-                    console.log(err);
+                    console.log(err, 'Unable to sync. Please check your data connection and try again.');
                 });
 
             // sync.cancel(); // whenever you want to cancel only if live = true

@@ -11,22 +11,21 @@
                             <span class="text-color-dark label right-panel-label" v-if="selectedProject">{{selectedProject.name}}</span>
                         </v-ons-list-item @click="">
                         <v-ons-list-item tappable @click="sync">
-                            <v-ons-icon class="text-color-dark left menu-icon" v-if="syncing === false" icon="fa-cloud-download-alt"></v-ons-icon>
-                            <v-ons-icon class="text-color-dark menu-icon" v-if="syncfailed === true" icon="ion-android-alert"></v-ons-icon>
+                            <v-ons-icon class="text-color-dark left menu-icon" icon="fa-cloud-download-alt"></v-ons-icon>
                             <div class="menu-text">
                                 <span class="text-color-dark">Refresh all records in a project</span>
                                 <span class="text-color-dark menu-subtext">Refresh all project data</span>
                             </div>
                         </v-ons-list-item @click="">
                         <v-ons-list-item tappable>
-                            <v-ons-icon class="text-color-dark left menu-icon" v-if="syncing === false" icon="fa-toggle-off"></v-ons-icon>
+                            <v-ons-icon class="text-color-dark left menu-icon" icon="fa-toggle-off"></v-ons-icon>
                             <div class="menu-text">
                                 <span class="text-color-dark">Leave project</span>
                                 <span class="text-color-dark menu-subtext">Stop synching with this active project</span>
                             </div>
                         </v-ons-list-item @click="">
                         <v-ons-list-item tappable>
-                            <v-ons-icon class="text-color-dark left menu-icon" v-if="syncing === false" icon="fa-trash"></v-ons-icon>
+                            <v-ons-icon class="text-color-dark left menu-icon" icon="fa-trash"></v-ons-icon>
                             <div class="menu-text">
                                 <span class="text-color-dark">Delete this project from my device</span>
                                 <span class="text-color-dark menu-subtext">Remove inactive project from my device</span>
@@ -53,7 +52,7 @@
                 </span>
             </v-ons-list-item>
             <v-ons-list-item class="list-item" tappable modifier="longdivider" v-for="project in projects" :key="project.id" v-bind:class="{ inactive_project: !project.active }">
-                <span style="line-height: 1.1em;" @click="segueToProject(project);">
+                <span style="line-height: 1.1em; border-style: 1px; background-color: light-blue; border-color: dark-blue;" @click="segueToProject(project);">
                     <span class="project-name">{{project.name}}</span><br>
                     <span class="project-active" v-if="project.active">Active from:</span>
                     <span class="project-inactive" v-else>Inactive</span>
