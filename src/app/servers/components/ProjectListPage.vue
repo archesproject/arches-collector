@@ -8,6 +8,9 @@
                 <v-ons-page>
                     <v-ons-list style="margin-top: 5px;">
                         <v-ons-list-item tappable @click="sync">
+                            <span class="text-color-dark label right-panel-label" v-if="selectedProject">{{selectedProject.name}}</span>
+                        </v-ons-list-item @click="">
+                        <v-ons-list-item tappable @click="sync">
                             <v-ons-icon class="text-color-dark icon" v-if="syncing === false" icon="fa-cloud-download-alt"></v-ons-icon>
                             <v-ons-icon class="text-color-dark icon" v-if="syncfailed === true" icon="ion-android-alert"></v-ons-icon>
                             <span class="text-color-dark label right-panel-label">{{sync_btn_text}}</span>
@@ -19,8 +22,7 @@
         <v-ons-splitter-content class="project-list-panel">
             <v-ons-pull-hook
               :action="refreshProjectList"
-              @changestate="state = $event.state"
-            >
+              @changestate="state = $event.state">
                 <span v-show="state === 'initial'"> Pull to refresh </span>
                 <span v-show="state === 'preaction'"> Release </span>
                 <span v-show="state === 'action'"><v-ons-progress-circular indeterminate></v-ons-progress-circular></span>
@@ -40,7 +42,7 @@
                     <span class="project-inactive" v-else>Inactive</span>
                     <span class="project-dates">{{project.startdate}} - {{project.enddate}}</span>
                 </span>
-                <v-ons-icon class="right" style="display: flex" icon="fa-ellipsis-v" @click="toggleSideNav(project.id)"></v-ons-icon>
+                <v-ons-icon class="right" style="display: flex" icon="fa-ellipsis-v" @click="toggleSideNav(project)"></v-ons-icon>
             </v-ons-list-item>
         </v-ons-list>
         </v-ons-splitter-content>
@@ -93,15 +95,15 @@ export default {
             this.$store.commit('setActiveProject', payload);
             this.$router.push({'name': 'project', params: { project: project, tabIndex: 0}});
         },
-        toggleSideNav: function(projectid) {
-            this.selectedProject = projectid;
+        toggleSideNav: function(project) {
+            this.selectedProject = project;
             this.showSideNav = !this.showSideNav;
         },
         sync: function() {
             var self = this;
             this.syncing = true;
             this.syncfailed = false;
-            this.$store.dispatch('syncRemote', this.selectedProject)
+            this.$store.dispatch('syncRemote', this.selectedProject.id)
                 .catch(function() {
                     self.syncfailed = true;
                 })
