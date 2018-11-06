@@ -25,7 +25,7 @@
                                 <span class="text-color-dark menu-subtext">Stop synching with this active project</span>
                             </div>
                         </v-ons-list-item @click="">
-                        <v-ons-list-item tappable @click="deleteProject">
+                        <v-ons-list-item tappable @click="$ons.notification.confirm({message: 'Are you sure you want to delete this Project? All unsynched data will be lost.', callback: deleteProject})">
                             <v-ons-icon class="text-color-dark left menu-icon" icon="fa-trash"></v-ons-icon>
                             <div class="menu-text">
                                 <span class="text-color-dark">Delete this project from my device</span>
@@ -130,15 +130,19 @@ export default {
                     self.syncing = false;
                 });
         },
-        deleteProject: function() {
+        deleteProject: function(answer) {
             var self = this;
-            this.$store.dispatch('deleteProject', this.selectedProject.id)
-                .catch(function() {
-                    console.log('delete failed')
-                })
-                .finally(function(doc) {
-                    console.log('project deleted');
-                });
+            if (answer === 1) {
+                this.$store.dispatch('deleteProject', this.selectedProject.id)
+                    .catch(function() {
+                        console.log('delete failed')
+                    })
+                    .finally(function(doc) {
+                        console.log('project deleted');
+                    });
+            } else {
+                console.log('not deleting project');
+            }
         },
         refreshProjectList(done) {
             this.$store.dispatch('getRemoteProjects', this.$store.getters.activeServer)
