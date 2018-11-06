@@ -442,8 +442,11 @@ var store = new Vuex.Store({
                 if (err) {
                     return console.log(err);
                 } else {
-                    console.log('Database Deleted');
                     store.dispatch('deleteProjectBasemaps', projectId);
+                    if (store.getters.activeServer.projects[projectId]) {
+                        delete store.getters.activeServer.projects[projectId];
+                        store.dispatch('saveServerInfo');
+                    }
                 }
             });
         },

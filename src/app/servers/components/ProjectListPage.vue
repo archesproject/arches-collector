@@ -25,7 +25,7 @@
                                 <span class="text-color-dark menu-subtext">Stop synching with this active project</span>
                             </div>
                         </v-ons-list-item @click="">
-                        <v-ons-list-item tappable>
+                        <v-ons-list-item tappable @click="deleteProject">
                             <v-ons-icon class="text-color-dark left menu-icon" icon="fa-trash"></v-ons-icon>
                             <div class="menu-text">
                                 <span class="text-color-dark">Delete this project from my device</span>
@@ -128,6 +128,16 @@ export default {
                 .finally(function(doc) {
                     console.log('syncing done');
                     self.syncing = false;
+                });
+        },
+        deleteProject: function() {
+            var self = this;
+            this.$store.dispatch('deleteProject', this.selectedProject.id)
+                .catch(function() {
+                    console.log('delete failed')
+                })
+                .finally(function(doc) {
+                    console.log('project deleted');
                 });
         },
         refreshProjectList(done) {
