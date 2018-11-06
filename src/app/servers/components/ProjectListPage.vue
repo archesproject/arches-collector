@@ -10,7 +10,7 @@
                         <v-ons-list-item tappable @click="sync">
                             <span class="text-color-dark label right-panel-label" v-if="selectedProject">{{selectedProject.name}}</span>
                         </v-ons-list-item @click="">
-                        <v-ons-list-item tappable @click="sync">
+                        <v-ons-list-item tappable @click="sync" v-if="selectedProject && !selectedProject.deleted">
                             <v-ons-icon class="text-color-dark left menu-icon" icon="fa-cloud-download-alt"></v-ons-icon>
                             <div class="menu-text">
                                 <span class="text-color-dark">Refresh all records in a project</span>
@@ -18,14 +18,14 @@
                             </div>
                         </v-ons-list-item @click="">
                         <v-ons-progress-bar indeterminate v-if="syncing"></v-ons-progress-bar>
-                        <v-ons-list-item tappable>
+                        <v-ons-list-item tappable v-if="selectedProject && !selectedProject.deleted">
                             <v-ons-icon class="text-color-dark left menu-icon" icon="fa-toggle-off"></v-ons-icon>
                             <div class="menu-text">
                                 <span class="text-color-dark">Leave project</span>
                                 <span class="text-color-dark menu-subtext">Stop synching with this active project</span>
                             </div>
                         </v-ons-list-item @click="">
-                        <v-ons-list-item tappable>
+                        <v-ons-list-item tappable @click="$ons.notification.confirm({message: 'Are you sure you want to delete this Project? All unsynched data will be lost.', callback: deleteProject})">
                             <v-ons-icon class="text-color-dark left menu-icon" icon="fa-trash"></v-ons-icon>
                             <div class="menu-text">
                                 <span class="text-color-dark">Delete this project from my device</span>
@@ -52,14 +52,16 @@
                     <v-ons-icon icon="fa-ellipsis-v"></v-ons-icon>
                 </span>
             </v-ons-list-item>
-            <v-ons-list-item class="list-item" tappable modifier="longdivider" v-for="project in projects" :key="project.id" v-bind:class="{ inactive_project: !project.active }">
+            <v-ons-progress-bar indeterminate v-if="syncing"></v-ons-progress-bar>
+            <v-ons-list-item class="list-item" tappable modifier="longdivider" v-for="project in projects" :key="project.id" v-bind:class="{ inactive_project: !project.active, deleted: project.deleted }">
                 <span style="line-height: 1.1em; border-style: 1px; background-color: light-blue; border-color: dark-blue;" @click="segueToProject(project);">
-                    <span class="project-name">{{project.name}}</span><br>
+                    <span class="project-name">{{project.name}}</span><span class="project-name deleted" v-if="project.deleted">(Project deleted on cloud)</span><br>
                     <span class="project-active" v-if="project.active">Active from:</span>
                     <span class="project-inactive" v-else>Inactive</span>
                     <span class="project-dates">{{project.startdate}} - {{project.enddate}}</span>
                 </span>
-                <v-ons-icon class="right" style="display: flex" icon="fa-ellipsis-v" @click="toggleSideNav(project)"></v-ons-icon>
+                <v-ons-icon class="right" style="display: flex" icon="fa-ellipsis-v" v-if="project.lastsync.date" @click="toggleSideNav(project)"></v-ons-icon>
+                <v-ons-icon class="right" style="display: flex" icon="fa-cloud-download-alt" v-if="!project.lastsync.date" @click="function(){selectedProject = project; sync()}"></v-ons-icon>
             </v-ons-list-item>
         </v-ons-list>
         </v-ons-splitter-content>
@@ -128,6 +130,20 @@ export default {
                     self.syncing = false;
                 });
         },
+        deleteProject: function(answer) {
+            var self = this;
+            if (answer === 1) {
+                this.$store.dispatch('deleteProject', this.selectedProject.id)
+                    .catch(function() {
+                        console.log('delete failed')
+                    })
+                    .finally(function(doc) {
+                        console.log('project deleted');
+                    });
+            } else {
+                console.log('not deleting project');
+            }
+        },
         refreshProjectList(done) {
             this.$store.dispatch('getRemoteProjects', this.$store.getters.activeServer)
                 .finally(function() {
@@ -161,9 +177,16 @@ export default {
         font-size: 14px;
     }
 
+    .project-name.deleted {
+        color: #454545;
+        font-size: 14px;
+        padding-left: 5px;
+    }
+
     .project-active {
         color: #777;
         font-size: 12px;
+        padding-left: 5px;
     }
 
     .project-inactive {
@@ -185,6 +208,15 @@ export default {
         font-size: 15px;
         display: flex;
         flex-direction: column;
+    }
+
+    ons-list-item[disabled] {
+      background-color: #ccc;
+      pointer-events: none;
+    }
+
+    ons-list-item.deleted {
+      background-color: #ccc;
     }
 
     .menu-subtext {

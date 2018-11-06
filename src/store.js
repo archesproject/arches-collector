@@ -393,6 +393,12 @@ var store = new Vuex.Store({
         },
         updateProjects: function(state, serverDoc) {
             var server = store.getters.server(serverDoc.url);
+            var serverProjectIds = serverDoc.projects.map(function(p) { return p.id; });
+            for (var projectid in server.projects) {
+                if (serverProjectIds.indexOf(projectid) < 0) {
+                    server.projects[projectid].deleted = true;
+                }
+            };
             serverDoc.projects.forEach(function(project) {
                 Vue.set(server.projects, project.id, project);
             });
@@ -413,6 +419,9 @@ var store = new Vuex.Store({
         },
         setActiveGraphId: function(state, value) {
             store.getters.activeServer.active_graph_id = value;
+        },
+        identifyDeletedProjects: function(state) {
+            this.currentProjects();
         },
         setLastProjectSync: function(state, projectId) {
             var now = new Date();
@@ -510,8 +519,11 @@ var store = new Vuex.Store({
                 if (err) {
                     return console.log(err);
                 } else {
-                    console.log('Database Deleted');
                     store.dispatch('deleteProjectBasemaps', projectId);
+                    if (store.getters.activeServer.projects[projectId]) {
+                        delete store.getters.activeServer.projects[projectId];
+                        store.dispatch('saveServerInfo');
+                    }
                 }
             });
         },
