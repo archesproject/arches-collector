@@ -1,10 +1,10 @@
 <template>
-    <div>
+    <v-ons-page>
         <!-- Scrollable content here -->
         <ons-scroll infinit-scroll-enable="true" on-scrolled="pagination.nextPage()" can-load="true" threshold='100'>
             <div class="report-content">A resource report goes here</div>
         </ons-scroll>
-   </div>
+   </v-ons-page>
 </template>
 
 <script>

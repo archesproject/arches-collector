@@ -24,7 +24,13 @@ export default {
                 timestamp: '',
                 value: this.tiledata
             };
+        },
+        init: function() {
+            console.log('loading', this.widget);
         }
+    },
+    mounted() {
+        this.init();
     },
     computed: {
         tiledata: {

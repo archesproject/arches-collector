@@ -15,28 +15,18 @@
             </v-ons-toolbar>
             <v-ons-splitter>
                 <v-ons-splitter-content>
-                    <v-ons-page>
-                        <div>
-                            <v-ons-carousel fullscreen swipeable auto-scroll overscrollable :index.sync="carouselIndex" id="resourceCarousel">
-                                <v-ons-carousel-item class="page-background">
-                                    <resource-report-page :project="project" />
-                                </v-ons-carousel-item>
-                                <v-ons-carousel-item class="page-background">
-                                    <resource-edit-page v-on:saving="saving = $event" :goBack="goBack"/>
-                                </v-ons-carousel-item>
-                            </v-ons-carousel>
-                            <div class="navbar">
-                                <a v-bind:class="carouselIndex === 0 ? 'active' : ''" @click="carouselIndex = 0">
-                                    <v-ons-icon class="text-color-dark icon" icon="fa-file-alt"></v-ons-icon>
-                                    <div class="text-color-dark label">Resource Report</div>
-                                </a>
-                                <a v-bind:class="carouselIndex === 1 ? 'active' : ''" @click="carouselIndex = 1">
-                                    <v-ons-icon class="text-color-dark icon" icon="fa-check"></v-ons-icon>
-                                    <div class="text-color-dark label">Editor</div>
-                                </a>
-                            </div>
-                        </div>
-                    </v-ons-page>
+                    <v-ons-tabbar swipeable animation="none" :index.sync="activeIndex">
+                      <template slot="pages">
+                          <resource-report-page :project="project"></resource-report-page>
+                          <resource-edit-page v-on:saving="saving = $event" :goBack="goBack"/>
+                      </template>
+
+                      <v-ons-tab v-for="(tab, i) in tabs"
+                        :icon="tabs[i].icon"
+                        :label="tabs[i].label"
+                        :badge="tabs[i].badge"
+                        ></v-ons-tab>
+                    </v-ons-tabbar>
                 </v-ons-splitter-content>
             </v-ons-splitter>
         </v-ons-page>
@@ -49,9 +39,21 @@ export default {
     data() {
         return {
             goBack: false,
-            carouselIndex: 1,
+            activeIndex: 1,
             saving: false,
-            project: this.$store.getters.activeProject
+            project: this.$store.getters.activeProject,
+            tabs: [
+              {
+                icon: 'fa-file-alt',
+                label: 'Resource Report',
+                key: 'ResourceReportPage'
+              },
+              {
+                icon: 'fa-check',
+                label: 'Editor',
+                key: 'ResourceEditPage'
+              }
+            ]
         };
     },
     computed: {

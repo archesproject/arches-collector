@@ -1,5 +1,5 @@
 <template>
-    <ons-scroll>
+    <v-ons-page>
         <v-ons-list v-show="!showForm">
             <div v-show="canAdd(card) && (activeObject === 'card')">
                 <v-ons-list-item tappable @click="setTileContext('blank')">
@@ -56,7 +56,7 @@
         <div v-show="showForm">
             <resource-edit-form :back="back" :tile="tile" :card="card" :save="saveTile" />
         </div>
-    </ons-scroll>
+    </v-ons-page>
 </template>
 <script>
 export default {
