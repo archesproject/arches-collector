@@ -22,11 +22,16 @@ export default {
                 reviewtimestamp: null,
                 status: 'review',
                 timestamp: '',
-                value: this.tile.data
+                value: this.tiledata
             };
         }
     },
     computed: {
+        tiledata: {
+            get: function() {
+                return !!this.tile ? this.tile.data : undefined;
+            }
+        },
         widgetComponent: {
             get: function() {
                 var node = this.$underscore.find(this.allNodes, function(node) {
@@ -46,12 +51,11 @@ export default {
                     }
                     if (!!this.tile.provisionaledits[this.user.id]) {
                         provisionaledit = this.tile.provisionaledits[this.user.id]['value'];
-                        this.tile.data[this.widget.node_id] = provisionaledit[this.widget.node_id];
                     } else {
                         this.tile.provisionaledits[this.user.id] = this.createNewProvisionalEdit();
                         provisionaledit = this.tile.provisionaledits[this.user.id]['value']
                         if (this.widget.config.defaultValue) {
-                            this.value = this.widget.config.defaultValue;
+                            provisionaledit[this.widget.node_id] = this.widget.config.defaultValue;
                         }
                     }
                     if (!!provisionaledit[this.widget.node_id]) {
