@@ -37,6 +37,7 @@ import GeojsonFeatureCollectionWidget from './app/widgets/GeojsonFeatureCollecti
 import FileListWidget from './app/widgets/FileListWidget.vue';
 import ResourceInstanceWidget from './app/widgets/ResourceInstanceWidget.vue';
 import NodeValueWidget from './app/widgets/NodeValueWidget.vue';
+import Card from './app/editor/components/Card.vue';
 
 Vue.component('page-header', PageHeader);
 Vue.component('page-header-layout', PageHeaderLayout);
@@ -61,6 +62,7 @@ Vue.component('geojson-feature-collection-widget', GeojsonFeatureCollectionWidge
 Vue.component('file-list-widget', FileListWidget);
 Vue.component('resource-instance-widget', ResourceInstanceWidget);
 Vue.component('node-value-widget', NodeValueWidget);
+Vue.component('card', Card);
 // Vue.config.productionTip = false;
 
 Object.defineProperty(Vue.prototype, '$underscore', { value: underscore });

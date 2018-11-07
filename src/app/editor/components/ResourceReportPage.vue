@@ -1,31 +1,61 @@
 <template>
     <v-ons-page>
-        <!-- Scrollable content here -->
-        <ons-scroll infinit-scroll-enable="true" on-scrolled="pagination.nextPage()" can-load="true" threshold='100'>
-            <div class="report-content">A resource report goes here</div>
-        </ons-scroll>
-   </v-ons-page>
+        <ul id="example-1">
+          <li v-for="card in topCards">
+              <card :card="card" class="report-content"></card>
+          </li>
+        </ul>
+    </v-ons-page>
 </template>
 
 <script>
 export default {
     name: 'ResourceReportPage',
-    props: ['id'],
+    props: [],
     data() {
         return {
             project: this.$store.getters.activeProject,
-            resourceid: this.$store.getters.activeServer.active_resource
+            resourceid: this.$store.getters.activeServer.active_resource,
+            allCards: this.$store.getters.activeGraph.cards,
+            allWidgets: this.$store.getters.activeGraph.widgets,
+            allNodegroups: this.$store.getters.activeGraph.nodegroups,
+            user: this.$store.getters.activeServer.user
         };
     },
     computed: {
-        tiles: {
+        topCards: {
             get: function() {
-                return this.$store.getters.tiles;
+                var self = this;
+                return this.$underscore.filter(this.allCards, function(card) {
+                    if (self.project.cards.indexOf(card.cardid) > 0) {
+                        return self.cardFactory(card)
+                        }
+                    })
             }
-        }
+        },
     },
     methods: {
-    }
+        init: function() {
+            console.log(this);
+        },
+        cardFactory: function(card) {
+            var vm = {
+                name: card.name,
+                cardid: card.cardid,
+                cardwidgets: this.getCardWidgets(card)
+            }
+            return vm;
+        },
+        getCardWidgets: function(card) {
+            var widgets = this.$underscore.filter(this.allWidgets, function(widget) {
+                return widget.card_id === card.cardid;
+            }, this);
+            return this.$underscore.sortBy(widgets, 'sortorder');
+        }
+    },
+    mounted() {
+        this.init();
+    },
 };
 </script>
 
@@ -33,7 +63,8 @@ export default {
 <style scoped>
 
 .report-content {
-    padding: 15px;
+    border-bottom-style: solid 1px #ccc;
+    padding: 5px;
 }
 
 </style>
