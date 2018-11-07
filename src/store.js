@@ -321,9 +321,10 @@ var store = new Vuex.Store({
         getResourceDescriptors: function(state, getters) {
             return function(resource, tile) {
                 var graph = getters.currentGraphs[resource.graph_id];
+                var user = getters.activeServer.user;
                 var graphFunction = null;
                 graph.functions.forEach(function(func) {
-                    if (func.function_id === '60000000-0000-0000-0000-000000000001'){
+                    if (func.function_id === '60000000-0000-0000-0000-000000000001') {
                         graphFunction = func;
                     }
                 });
@@ -345,14 +346,18 @@ var store = new Vuex.Store({
                             tiles = $underscore.sortBy(tiles, 'sortorder');
                             tile = tiles[0];
                             if (!!tile) {
+                                var tileData = tile.data;
+                                if (!!tile.provisionaledits[user.id]) {
+                                    tileData = tile.provisionaledits[user.id]['value'];
+                                }
                                 graph.nodes.forEach(function(node) {
-                                    if (node.nodeid in tile.data) {
+                                    if (node.nodeid in tileData) {
                                         if (['string'].indexOf(node.datatype) > -1) {
-                                            var data_value = tile.data[node.nodeid];
+                                            var dataValue = tileData[node.nodeid];
                                             if (node.datatype === 'concept') {
                                                 // maybe we can implement in the future
                                             }
-                                            ret[descriptor] = ret[descriptor].replace('<' + node.name + '>', data_value);
+                                            ret[descriptor] = ret[descriptor].replace('<' + node.name + '>', dataValue);
                                         }
                                     }
                                 });
