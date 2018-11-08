@@ -1,12 +1,12 @@
 <template>
-    <component :value.sync="value" v-bind:is="widgetComponent" :widget="widget"></component>
+    <component :value.sync="value" :context.sync="context" v-bind:is="widgetComponent" :widget="widget"></component>
 </template>
 
 
 <script>
 export default {
-    name: 'BaseWidget',
-    props: ['allNodes', 'widget', 'save', 'tile'],
+    name: 'Card',
+    props: ['allNodes', 'widget', 'save', 'tile', 'context'],
     data() {
         return {
             waiting: false,
@@ -26,7 +26,7 @@ export default {
             };
         },
         init: function() {
-            console.log('loading', this.widget);
+            console.log('loading:', this.widget, this.context);
         }
     },
     mounted() {

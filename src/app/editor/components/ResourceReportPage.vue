@@ -1,10 +1,8 @@
 <template>
     <v-ons-page>
-        <ul id="example-1">
-          <li v-for="card in topCards">
-              <card :card="card" class="report-content"></card>
-          </li>
-        </ul>
+      <div v-for="card in topCards">
+          <card :card="card" class="report-content"></card>
+      </div>
     </v-ons-page>
 </template>
 
@@ -19,18 +17,21 @@ export default {
             allCards: this.$store.getters.activeGraph.cards,
             allWidgets: this.$store.getters.activeGraph.widgets,
             allNodegroups: this.$store.getters.activeGraph.nodegroups,
-            user: this.$store.getters.activeServer.user
+            user: this.$store.getters.activeServer.user,
+            allTiles: this.$store.getters.tiles
         };
     },
     computed: {
         topCards: {
             get: function() {
                 var self = this;
-                return this.$underscore.filter(this.allCards, function(card) {
-                    if (self.project.cards.indexOf(card.cardid) > 0) {
-                        return self.cardFactory(card)
-                        }
-                    })
+                var vms = this.$underscore.filter(this.allCards, function(card) {
+                    return self.project.cards.indexOf(card.cardid) > 0;
+                }).map(function(projectcard){
+                    return self.cardFactory(projectcard)
+                });
+                console.log('vms', vms);
+                return vms;
             }
         },
     },
@@ -42,15 +43,25 @@ export default {
             var vm = {
                 name: card.name,
                 cardid: card.cardid,
-                cardwidgets: this.getCardWidgets(card)
-            }
+                tiles: this.getCardTiles(card)
+            };
             return vm;
         },
         getCardWidgets: function(card) {
-            var widgets = this.$underscore.filter(this.allWidgets, function(widget) {
-                return widget.card_id === card.cardid;
-            }, this);
-            return this.$underscore.sortBy(widgets, 'sortorder');
+            var widgets = this.allWidgets.filter( widget => widget.card_id === card.cardid);
+            return widgets.sort(function (a, b) {
+                return a.sortorder - b.sortorder;
+            });
+        },
+        getCardTiles: function(card) {
+            var self = this;
+            var tiles = this.allTiles.filter(function(tile){
+                return (tile.nodegroup_id === card.nodegroup_id) && self.resourceid === tile.resourceinstance_id;
+            });
+            tiles.forEach(function(tile) {
+                tile.widgets = self.getCardWidgets(card)
+            });
+            return tiles;
         }
     },
     mounted() {

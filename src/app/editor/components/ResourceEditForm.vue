@@ -1,6 +1,6 @@
 <template>
     <div>
-        <component v-for="widget in cardWidgets" class="widget" :allNodes="allNodes" :tile="tile" :widget="widget" :save="throttle(save, tile, saveDelay)" v-bind:is="'base-widget'"></component>
+        <component v-for="widget in cardWidgets" class="widget" :allNodes="allNodes" :tile="tile" :widget="widget" :context="'editor'" :save="throttle(save, tile, saveDelay)" v-bind:is="'base-widget'"></component>
         <div class="done-btn"><v-ons-button @click="back"><v-ons-icon class="done-btn-icon resource-header" icon="ion-android-arrow-dropleft-circle"></v-ons-icon>Done</v-ons-button></div>
     </div>
 </template>

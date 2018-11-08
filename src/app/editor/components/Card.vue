@@ -1,7 +1,9 @@
 <template>
     <div>
         <div>{{card.name}}</div>
-        <component v-for="widget in card.cardWidgets" class="widget" v-bind:is="'base-widget'"></component>
+        <div v-for="tile in card.tiles">
+            <component v-for="widget in tile.widgets" :allNodes="allNodes" class="widget" :context="'report'" :tile="tile" :widget="widget" v-bind:is="'base-widget'"></component>
+        </div>
     </div>
 </template>
 
@@ -15,6 +17,7 @@ export default {
             resourceid: this.$store.getters.activeServer.active_resource,
             allCards: this.$store.getters.activeGraph.cards,
             allWidgets: this.$store.getters.activeGraph.widgets,
+            allNodes: this.$store.getters.activeGraph.nodes,
             allNodegroups: this.$store.getters.activeGraph.nodegroups,
             user: this.$store.getters.activeServer.user
         };
@@ -28,7 +31,7 @@ export default {
     },
     methods: {
         init: function() {
-            console.log('card is', this);
+            console.log('card is', this.card);
         }
     },
     mounted() {
