@@ -22,7 +22,7 @@ export default {
                 reviewtimestamp: null,
                 status: 'review',
                 timestamp: '',
-                value: this.tiledata
+                value: !!this.tile ? JSON.parse(JSON.stringify(this.tile.data)) : undefined
             };
         },
         init: function() {
@@ -33,11 +33,6 @@ export default {
         this.init();
     },
     computed: {
-        tiledata: {
-            get: function() {
-                return !!this.tile ? this.tile.data : undefined;
-            }
-        },
         widgetComponent: {
             get: function() {
                 var node = this.$underscore.find(this.allNodes, function(node) {
