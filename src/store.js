@@ -286,7 +286,9 @@ var store = new Vuex.Store({
             return getters.activeServer.projects[projectId];
         },
         tiles: function(state, getters) {
-            return state.tiles;
+            var x = state.tiles.filter(tile => !!tile.tileid);
+            console.log(x);
+            return x;
         },
         activeGraph: function(state, getters) {
             if (!getters.activeServer) {
@@ -366,7 +368,7 @@ var store = new Vuex.Store({
                     });
                 }
                 return ret;
-            }
+            };
         }
     },
     mutations: {
