@@ -9,7 +9,7 @@
 <script>
 export default {
     name: 'ResourceReportPage',
-    props: [],
+    props: ['activeindex'],
     data() {
         return {
             project: this.$store.getters.activeProject,
@@ -25,20 +25,17 @@ export default {
         topCards: {
             get: function() {
                 var self = this;
+                this.allTiles.length;
                 var vms = this.$underscore.filter(this.allCards, function(card) {
                     return self.project.cards.indexOf(card.cardid) > -1;
                 }).map(function(projectcard) {
                     return self.cardFactory(projectcard);
                 });
-                console.log('vms', vms);
                 return vms;
             }
         }
     },
     methods: {
-        init: function() {
-            console.log(this);
-        },
         cardFactory: function(card) {
             var vm = {
                 name: card.name,
@@ -64,8 +61,17 @@ export default {
             return tiles;
         }
     },
-    mounted() {
-        this.init();
+    watch: {
+        activeindex: function(val, oldVal) {
+            //Forces a re-render if the tile count has changed.
+            //A better approach would be to find the change and update the
+            //affected card.
+            if (val === 0) {
+                if (this.$store.getters.tiles.length !== this.allTiles.length) {
+                    this.allTiles = this.$store.getters.tiles;
+                }
+            }
+        }
     }
 };
 </script>
