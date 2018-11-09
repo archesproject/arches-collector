@@ -89,15 +89,4 @@ export default {
 
 <style scoped>
 
-
-.label {
-    padding: 5px;
-    width: 100%;
-    font-weight: 600;
-}
-
-.widget-value {
-    padding-left: 15px;
-}
-
 </style>
