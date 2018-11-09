@@ -77,26 +77,26 @@ export default {
             sync_failed: false,
             activeIndex: 0,
             tabs: [
-              {
-                icon: 'fa-plus-circle',
-                label: 'New',
-                key: "SelectResourceTypePage"
-              },
-              {
-                icon: 'fa-edit',
-                label: 'Review',
-                key: "SelectResourceInstancePage"
-              },
-              {
-                icon: 'fa-map-marker-alt',
-                label: 'Map',
-                key: "ProjectMapPage"
-              },
-              {
-                icon: 'fa-clipboard',
-                label: 'Summary',
-                key: "ProjectSummaryPage"
-              }
+                {
+                    icon: 'fa-plus-circle',
+                    label: 'New',
+                    key: 'SelectResourceTypePage'
+                },
+                {
+                    icon: 'fa-edit',
+                    label: 'Review',
+                    key: 'SelectResourceInstancePage'
+                },
+                {
+                    icon: 'fa-map-marker-alt',
+                    label: 'Map',
+                    key: 'ProjectMapPage'
+                },
+                {
+                    icon: 'fa-clipboard',
+                    label: 'Summary',
+                    key: 'ProjectSummaryPage'
+                }
             ]
         };
     },

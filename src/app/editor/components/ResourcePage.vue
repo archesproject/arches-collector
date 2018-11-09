@@ -43,16 +43,16 @@ export default {
             saving: false,
             project: this.$store.getters.activeProject,
             tabs: [
-              {
-                icon: 'fa-file-alt',
-                label: 'Resource Report',
-                key: 'ResourceReportPage'
-              },
-              {
-                icon: 'fa-check',
-                label: 'Editor',
-                key: 'ResourceEditPage'
-              }
+                {
+                    icon: 'fa-file-alt',
+                    label: 'Resource Report',
+                    key: 'ResourceReportPage'
+                },
+                {
+                    icon: 'fa-check',
+                    label: 'Editor',
+                    key: 'ResourceEditPage'
+                }
             ]
         };
     },
