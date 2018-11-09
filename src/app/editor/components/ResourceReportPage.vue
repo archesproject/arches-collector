@@ -26,7 +26,7 @@ export default {
             get: function() {
                 var self = this;
                 var vms = this.$underscore.filter(this.allCards, function(card) {
-                    return self.project.cards.indexOf(card.cardid) > 0;
+                    return self.project.cards.indexOf(card.cardid) > -1;
                 }).map(function(projectcard) {
                     return self.cardFactory(projectcard);
                 });
