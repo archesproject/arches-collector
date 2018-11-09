@@ -27,13 +27,13 @@ export default {
                 var self = this;
                 var vms = this.$underscore.filter(this.allCards, function(card) {
                     return self.project.cards.indexOf(card.cardid) > 0;
-                }).map(function(projectcard){
-                    return self.cardFactory(projectcard)
+                }).map(function(projectcard) {
+                    return self.cardFactory(projectcard);
                 });
                 console.log('vms', vms);
                 return vms;
             }
-        },
+        }
     },
     methods: {
         init: function() {
@@ -48,25 +48,25 @@ export default {
             return vm;
         },
         getCardWidgets: function(card) {
-            var widgets = this.allWidgets.filter( widget => widget.card_id === card.cardid);
-            return widgets.sort(function (a, b) {
+            var widgets = this.allWidgets.filter(widget => widget.card_id === card.cardid);
+            return widgets.sort(function(a, b) {
                 return a.sortorder - b.sortorder;
             });
         },
         getCardTiles: function(card) {
             var self = this;
-            var tiles = this.allTiles.filter(function(tile){
+            var tiles = this.allTiles.filter(function(tile) {
                 return (tile.nodegroup_id === card.nodegroup_id) && self.resourceid === tile.resourceinstance_id;
             });
             tiles.forEach(function(tile) {
-                tile.widgets = self.getCardWidgets(card)
+                tile.widgets = self.getCardWidgets(card);
             });
             return tiles;
         }
     },
     mounted() {
         this.init();
-    },
+    }
 };
 </script>
 

@@ -224,9 +224,9 @@ export default {
                 } else {
                     value = tile.data[key];
                 }
-                return {label: widget.label, value: !!value ? value : 'undefined'}
+                return {label: widget.label, value: !!value ? value : 'undefined'};
             } else {
-                return {label: '', value: card.name}
+                return {label: '', value: card.name};
             }
         },
         navigateChildCard: function(card, showForm) {
