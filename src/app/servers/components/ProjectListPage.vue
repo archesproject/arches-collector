@@ -111,7 +111,7 @@ export default {
                 project_id: project.id
             };
             this.$store.commit('setActiveProject', payload);
-            this.$router.push({'name': 'project', params: { project: project, tabIndex: 0}});
+            this.$router.push({'name': 'project', params: {project: project, tabIndex: 0}});
         },
         toggleSideNav: function(project) {
             this.selectedProject = project;
@@ -131,11 +131,10 @@ export default {
                 });
         },
         deleteProject: function(answer) {
-            var self = this;
             if (answer === 1) {
                 this.$store.dispatch('deleteProject', this.selectedProject.id)
                     .catch(function() {
-                        console.log('delete failed')
+                        console.log('delete failed');
                     })
                     .finally(function(doc) {
                         console.log('project deleted');

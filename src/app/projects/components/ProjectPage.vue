@@ -105,7 +105,7 @@ export default {
             return (this.syncing ? 'Syncing...' : (this.sync_failed ? 'Sync Failed' : (this.project.lastsync.date === '' ? 'Join Project' : 'Sync Now')));
         },
         title() {
-          return this.tabs[this.activeIndex].label;
+            return this.tabs[this.activeIndex].label;
         }
     },
     methods: {
@@ -129,7 +129,7 @@ export default {
             this.$refs.sripage.sorted = !this.$refs.sripage.sorted;
         }
     },
-    created : function () {
+    created: function() {
         if (this.$route.params.tabIndex !== '' && this.$route.params.tabIndex !== undefined) {
             this.activeIndex = parseInt(this.$route.params.tabIndex);
         }

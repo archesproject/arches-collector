@@ -441,31 +441,6 @@ var store = new Vuex.Store({
             Vue.set(store.getters.currentProjects[projectId].lastsync, 'time', pad(now.getHours(), 2) + ':' + pad(now.getMinutes(), 2));
             store.dispatch('saveServerInfo');
         },
-        updateResourceDescriptors: function(state, resourceInstanceId) {
-            store.dispatch(
-                'getResource', {
-                    projectid: value.projectId,
-                    resourceid: value.resourceInstanceId
-                }
-            ).then((res) => {
-                var resource = res['docs'][0];
-                var date = new Date();
-                resource['edited'] = {
-                    'day': date.toDateString(),
-                    'time': date.toTimeString()
-                };
-                store.dispatch('persistResource', resource)
-                    .then(function(doc) {
-                        return doc;
-                    })
-                    .catch(function(err) {
-                        console.log(err);
-                    })
-                    .finally(function() {
-                        console.log('resource save finished...');
-                    });
-            });
-        },
         setResourceAsEdited: function(state, value) {
             store.dispatch(
                 'getResource', {

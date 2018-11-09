@@ -84,15 +84,15 @@ export default {
             var self = this;
             mapboxgl.accessToken = 'pk.eyJ1IjoiY2hpYXR0IiwiYSI6ImZRLTZDbVkifQ.2ZLLC1kInvxJ7isk_0_OMw';
             var map = new mapboxgl.Map(this.getMapConfig(false));
-            map.on('load', function(){
+            map.on('load', function() {
                 map.addControl(new mapboxgl.NavigationControl());
                 self.setMapExtent(map);
-                var resources = JSON.parse(JSON.stringify(self.resourceGeoJSON))
-                map.addSource('resources', {type:'geojson', data: resources});
+                var resources = JSON.parse(JSON.stringify(self.resourceGeoJSON));
+                map.addSource('resources', {type: 'geojson', data: resources});
                 self.addResourceMarkers(map);
                 self.$emit('map-init', map);
                 self.loading = false;
-            })
+            });
         },
         mapOfflineInit: function() {
             return new mapboxgl.OfflineMap(this.getMapConfig(true))
@@ -221,29 +221,27 @@ export default {
             var useoffline = false;
             if (self.project.tilecache) {
                 if (!self.project.onlinebasemaps) {
-                    useoffline = true
-                }
-                else if (self.project.onlinebasemaps && !self.project.onlinebasemaps.default) {
+                    useoffline = true;
+                } else if (self.project.onlinebasemaps && !self.project.onlinebasemaps.default) {
                     useoffline = true;
                 }
             }
             return useoffline;
-        }
+        };
 
         if (isOffline || useOfflineMaps()) {
             this.setupBasemaps()
-            .then(this.getResourceData)
-            .then(this.mapOfflineInit)
-            .then(() => {
-                this.loading = false;
-            }).catch(function(err) {
-                console.log('Unable to initialize offline basemap', err)
-            })
+                .then(this.getResourceData)
+                .then(this.mapOfflineInit)
+                .then(() => {
+                    this.loading = false;
+                }).catch(function(err) {
+                    console.log('Unable to initialize offline basemap', err);
+                });
         } else {
-            var self = this;
-                self.getResourceData().then(
-                    self.mapOnlineInit
-                );
+            self.getResourceData().then(
+                self.mapOnlineInit
+            );
         }
     }
 };
