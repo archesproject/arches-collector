@@ -286,9 +286,7 @@ var store = new Vuex.Store({
             return getters.activeServer.projects[projectId];
         },
         tiles: function(state, getters) {
-            var x = state.tiles.filter(tile => !!tile.tileid);
-            console.log(x);
-            return x;
+            return state.tiles.filter(tile => tile.type === 'tile');
         },
         activeGraph: function(state, getters) {
             if (!getters.activeServer) {

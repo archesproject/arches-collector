@@ -17,7 +17,7 @@
                 <v-ons-splitter-content>
                     <v-ons-tabbar swipeable animation="none" :index.sync="activeIndex">
                       <template slot="pages">
-                          <resource-report-page :project="project"></resource-report-page>
+                          <resource-report-page :project="project" :activeindex="activeIndex"></resource-report-page>
                           <resource-edit-page v-on:saving="saving = $event" :goBack="goBack"/>
                       </template>
 

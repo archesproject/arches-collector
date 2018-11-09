@@ -1,8 +1,9 @@
 <template>
     <div>
-        <div>{{card.name}}</div>
-        <div v-for="tile in card.tiles">
+        <div class="card-container"><span class="card-label">{{card.name}}</span>
+        <div class="card-container" v-for="tile in card.tiles">
             <component v-for="widget in tile.widgets" :allNodes="allNodes" class="widget" :context="'report'" :tile="tile" :widget="widget" v-bind:is="'base-widget'"></component>
+        </div>
         </div>
     </div>
 </template>
@@ -13,12 +14,7 @@ export default {
     props: ['card'],
     data() {
         return {
-            project: this.$store.getters.activeProject,
-            resourceid: this.$store.getters.activeServer.active_resource,
-            allCards: this.$store.getters.activeGraph.cards,
-            allWidgets: this.$store.getters.activeGraph.widgets,
             allNodes: this.$store.getters.activeGraph.nodes,
-            allNodegroups: this.$store.getters.activeGraph.nodegroups,
             user: this.$store.getters.activeServer.user
         };
     },
@@ -43,8 +39,18 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
-.report-content {
-    padding: 15px;
+.card-container {
+    font-size: 0.95em;
+    padding-left: 10px;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    background-color: white;
 }
+
+.card-label {
+    font-weight: 600;
+    color: #555;
+}
+
 
 </style>
