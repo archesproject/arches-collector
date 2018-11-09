@@ -62,7 +62,7 @@ export default {
                     if (!!provisionaledit[this.widget.node_id]) {
                         return provisionaledit[this.widget.node_id];
                     }
-                    throw('');
+                    throw new Error('');
                 } catch (err) {
                     // console.log('node id');
                     // console.log(this.widget.node_id);
