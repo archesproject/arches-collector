@@ -1,5 +1,5 @@
 <template>
-    <component :value.sync="value" :context.sync="context" v-bind:is="widgetComponent" :widget="widget"></component>
+    <component :value.sync="value" :context.sync="context" v-bind:is="widgetComponent" :widget="widget" :node="node"></component>
 </template>
 
 
@@ -35,12 +35,17 @@ export default {
     computed: {
         widgetComponent: {
             get: function() {
+                console.log('in datatype function')
+                console.log(this.node.datatype + '-widget');
+                return this.node.datatype + '-widget';
+            }
+        },
+        node: {
+            get: function() {
                 var node = this.$underscore.find(this.allNodes, function(node) {
                     return node.nodeid === this.widget.node_id;
                 }, this);
-                // console.log('in datatype function')
-                // console.log(node.datatype + '-widget');
-                return node.datatype + '-widget';
+                return node;
             }
         },
         value: {
