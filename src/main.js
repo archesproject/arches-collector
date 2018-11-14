@@ -53,7 +53,7 @@ Vue.component('string-widget', StringWidget);
 Vue.component('concept-widget', ConceptWidget);
 Vue.component('concept-list-widget', ConceptListWidget);
 Vue.component('date-widget', DateWidget);
-Vue.component('domain-widget', DomainWidget);
+Vue.component('domain-value-widget', DomainWidget);
 Vue.component('domain-list-widget', DomainListWidget);
 Vue.component('edtf-widget', EDTFWidget);
 Vue.component('number-widget', NumberWidget);
