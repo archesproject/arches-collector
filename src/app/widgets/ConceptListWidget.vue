@@ -21,8 +21,7 @@ export default {
     props: ['value', 'widget', 'context'],
     data() {
         return {
-            placeholder: this.widget.config.placeholder,
-            selectedOptions: []
+            placeholder: this.widget.config.placeholder
         };
     },
     computed: {
@@ -36,6 +35,26 @@ export default {
                 })
             })
             return options;
+        },
+        selectedOptions: {
+            get: function() {
+                var self = this;
+                var ret = [];
+                var val = this.value;
+                if(!Array.isArray(this.value)) {
+                    val = [this.value];
+                }
+                this.options.forEach(function(option) {
+                    if(val.includes(option.valueid)) {
+                        ret.push(option);
+                    }
+                })
+                return ret;
+
+            },
+            set: function() {
+
+            }
         }
     },
     methods: {
@@ -47,18 +66,6 @@ export default {
             })
             this.$emit('update:value', ret);
         }
-    },
-    mounted() {
-        var self = this;
-        var val = this.value;
-        if(!Array.isArray(this.value)) {
-            val = [this.value];
-        }
-        this.options.forEach(function(option){
-            if(val.includes(option.valueid)){
-                self.selectedOptions.push(option);
-            }
-        })
     }
 };
 </script>
