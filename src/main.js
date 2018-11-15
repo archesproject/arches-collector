@@ -57,7 +57,7 @@ Vue.component('concept-widget', ConceptWidget);
 Vue.component('concept-list-widget', ConceptListWidget);
 Vue.component('date-widget', DateWidget);
 Vue.component('domain-value-widget', DomainWidget);
-Vue.component('domain-list-widget', DomainListWidget);
+Vue.component('domain-value-list-widget', DomainListWidget);
 Vue.component('edtf-widget', EDTFWidget);
 Vue.component('number-widget', NumberWidget);
 Vue.component('boolean-widget', BooleanWidget);

@@ -1,7 +1,11 @@
 <template>
     <div v-if="context=='editor'">
         <div class="label">{{widget.label}}</div>
-        <multiselect v-model="selectedOptions" :placeholder="placeholder" :close-on-select="false" :options="options" :multiple="true" :taggable="true" track-by="valueid" label="value" @input="onChange"></multiselect>
+        <multiselect v-model="selectedOptions" :placeholder="placeholder" :close-on-select="false" :options="options" :multiple="true" :taggable="true" track-by="valueid" label="value" @input="onChange">
+            <template slot="option" slot-scope="props">
+              <div class="option__desc"><span class="option__title"><span v-for="n in props.option.depth-1">&nbsp;&nbsp;&nbsp;&nbsp;</span>{{ props.option.value }}</span></div>
+            </template>
+        </multiselect>
         
     </div>
     <div v-else-if="context=='report'">
@@ -55,7 +59,7 @@ export default {
                 self.selectedOptions.push(option);
             }
         })
-    },
+    }
 };
 </script>
 
