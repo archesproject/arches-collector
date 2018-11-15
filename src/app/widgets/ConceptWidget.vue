@@ -1,13 +1,12 @@
 <template>
     <div v-if="context=='editor'">
         <div class="label">{{widget.label}}</div>
-        <!-- <input :value="value"> -->
-        <v-ons-select v-model="selectedOption" @input="$emit('update:value', $event.target.value);">
-            <option v-if="!value" disabled :value="-1">{{ placeholder }}</option>
-            <option v-for="option in options" :value="option.valueid">
-                <span v-for="n in option.depth-1">&nbsp;&nbsp;&nbsp;&nbsp;</span>{{ option.value }}
-            </option>
-        </v-ons-select>
+        <!-- <input :value="selectedOption.valueid"> -->
+        <multiselect v-model="selectedOption" :placeholder="placeholder" :options="options" :show-labels="false" track-by="valueid" label="value" @input="onChange">
+            <template slot="option" slot-scope="props">
+              <div class="option__desc"><span class="option__title"><span v-for="n in props.option.depth-1">&nbsp;&nbsp;&nbsp;&nbsp;</span>{{ props.option.value }}</span></div>
+            </template>
+        </multiselect>
     </div>
     <div v-else-if="context=='report'">
         <div class="label">{{widget.label}}</div>
@@ -22,21 +21,21 @@ export default {
     props: ['value', 'widget', 'context'],
     data() {
         return {
-            placeholder: this.widget.config.placeholder,
+            placeholder: this.widget.config.placeholder
         };
     },
     computed: {
         options() {
             var self = this;
-            var options = [];
+            var ret = [];
             this.widget.config.options.forEach(function(option){
-                options.push({
+                ret.push({
                     value: option[0].value,
                     valueid: option[0].valueid,
                     depth: option[1]
                 })
             })
-            return options;
+            return ret;
         },
         selectedOption: {
             get: function() {
@@ -44,14 +43,26 @@ export default {
                 var ret = -1;
                 this.options.forEach(function(option){
                      if(option.valueid === self.value){
-                        ret = option.valueid;
+                        ret = option;
                     }
                 })
                 return ret;
+
             },
-            set: function(val){
-                // ignore this for now
+            set: function() {
+
             }
+        }
+
+    },
+    methods: {
+        onChange(value) {
+            //console.log(value);
+            var ret = null
+            if(!!value) {
+                ret = value.valueid;
+            }
+            this.$emit('update:value', ret);
         }
     }
 };

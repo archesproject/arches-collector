@@ -4,13 +4,14 @@ import 'onsenui/css/onsenui.css';
 import 'onsenui/css/onsen-css-components.css';
 import './assets/css/index.css';
 import './assets/css/fontawesome.min.css';
+import 'vue-multiselect/dist/vue-multiselect.min.css'
 
 import Vue from 'vue';
 import VueOnsen from 'vue-onsenui';
 import Cordova from './assets/js/cordova';
 import store from './store';
 import router from './router';
-
+import Multiselect from 'vue-multiselect'
 import underscore from 'underscore';
 
 // globally registered components
@@ -38,6 +39,8 @@ import FileListWidget from './app/widgets/FileListWidget.vue';
 import ResourceInstanceWidget from './app/widgets/ResourceInstanceWidget.vue';
 import NodeValueWidget from './app/widgets/NodeValueWidget.vue';
 import Card from './app/editor/components/Card.vue';
+  
+Vue.component('multiselect', Multiselect)
 
 Vue.component('page-header', PageHeader);
 Vue.component('page-header-layout', PageHeaderLayout);
@@ -54,7 +57,7 @@ Vue.component('concept-widget', ConceptWidget);
 Vue.component('concept-list-widget', ConceptListWidget);
 Vue.component('date-widget', DateWidget);
 Vue.component('domain-value-widget', DomainWidget);
-Vue.component('domain-list-widget', DomainListWidget);
+Vue.component('domain-value-list-widget', DomainListWidget);
 Vue.component('edtf-widget', EDTFWidget);
 Vue.component('number-widget', NumberWidget);
 Vue.component('boolean-widget', BooleanWidget);

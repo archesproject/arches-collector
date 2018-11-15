@@ -1,13 +1,8 @@
 <template>
     <div v-if="context=='editor'">
         <div class="label">{{widget.label}}</div>
-        <!-- <input :value="value"> -->
-        <v-ons-select v-model="selectedOption" @input="$emit('update:value', $event.target.value);">
-            <option v-if="!value" disabled :value="-1">{{ placeholder }}</option>
-            <option v-for="option in options" :value="option.valueid">
-                {{ option.value }}
-            </option>
-        </v-ons-select>
+        <multiselect v-model="selectedOption" :placeholder="placeholder" :options="options" :show-labels="false" track-by="valueid" label="value" @input="onChange">
+        </multiselect>
     </div>
     <div v-else-if="context=='report'">
         <div class="label">{{widget.label}}</div>
@@ -43,14 +38,25 @@ export default {
                 var ret = -1;
                 this.options.forEach(function(option){
                      if(option.valueid === self.value){
-                        ret = option.valueid;
+                        ret = option;
                     }
                 })
                 return ret;
+
             },
-            set: function(val){
-                // ignore this for now
+            set: function() {
+
             }
+        }
+    },
+    methods: {
+        onChange(value) {
+            //console.log(value);
+            var ret = null
+            if(!!value) {
+                ret = value.valueid;
+            }
+            this.$emit('update:value', ret);
         }
     }
 };
