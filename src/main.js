@@ -4,15 +4,33 @@ import 'onsenui/css/onsenui.css';
 import 'onsenui/css/onsen-css-components.css';
 import './assets/css/index.css';
 import './assets/css/fontawesome.min.css';
-import 'vue-multiselect/dist/vue-multiselect.min.css'
+import 'vue-multiselect/dist/vue-multiselect.min.css';
+
 
 import Vue from 'vue';
 import VueOnsen from 'vue-onsenui';
 import Cordova from './assets/js/cordova';
 import store from './store';
 import router from './router';
-import Multiselect from 'vue-multiselect'
+import Multiselect from 'vue-multiselect';
 import underscore from 'underscore';
+
+
+// import component and stylesheet
+import AirbnbStyleDatepicker from 'vue-airbnb-style-datepicker'
+import 'vue-airbnb-style-datepicker/dist/vue-airbnb-style-datepicker.min.css'
+
+// see docs for available options
+const datepickerOptions = {}
+
+// make sure we can use it in our components
+Vue.use(AirbnbStyleDatepicker, datepickerOptions);
+
+import Datetime from 'vue-datetime'
+// You need a specific loader for CSS files
+import 'vue-datetime/dist/vue-datetime.css'
+
+Vue.use(Datetime)
 
 // globally registered components
 import PageHeader from './app/shared/components/PageHeader.vue';
@@ -40,7 +58,7 @@ import ResourceInstanceWidget from './app/widgets/ResourceInstanceWidget.vue';
 import NodeValueWidget from './app/widgets/NodeValueWidget.vue';
 import Card from './app/editor/components/Card.vue';
   
-Vue.component('multiselect', Multiselect)
+Vue.component('multiselect', Multiselect);
 
 Vue.component('page-header', PageHeader);
 Vue.component('page-header-layout', PageHeaderLayout);
@@ -72,6 +90,7 @@ Object.defineProperty(Vue.prototype, '$underscore', { value: underscore });
 
 Vue.use(VueOnsen);
 Vue.use(Cordova);
+
 
 /* eslint-disable no-new */
 window.archesvue = new Vue({

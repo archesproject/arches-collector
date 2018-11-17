@@ -106,3 +106,7 @@ input {
 .warning {
     background-color: #ffc107;
 }
+
+.vdatetime-popup, .vdatetime-overlay {
+    position: absolute !important; 
+}
