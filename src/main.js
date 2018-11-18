@@ -2,10 +2,10 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import 'onsenui/css/onsenui.css';
 import 'onsenui/css/onsen-css-components.css';
-import './assets/css/index.css';
 import './assets/css/fontawesome.min.css';
 import 'vue-multiselect/dist/vue-multiselect.min.css';
 import 'vue-datetime/dist/vue-datetime.css';
+import './assets/css/index.css';
 
 
 import Vue from 'vue';
