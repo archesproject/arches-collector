@@ -64,7 +64,7 @@ export default {
                             provisionaledit[this.widget.node_id] = this.widget.config.defaultValue;
                         }
                     }
-                    if (!!provisionaledit[this.widget.node_id]) {
+                    if (provisionaledit.hasOwnProperty(this.widget.node_id)) {
                         return provisionaledit[this.widget.node_id];
                     }
                     throw new Error('');
