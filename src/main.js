@@ -2,9 +2,10 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import 'onsenui/css/onsenui.css';
 import 'onsenui/css/onsen-css-components.css';
-import './assets/css/index.css';
 import './assets/css/fontawesome.min.css';
 import 'vue-multiselect/dist/vue-multiselect.min.css';
+import 'vue-datetime/dist/vue-datetime.css';
+import './assets/css/index.css';
 
 
 import Vue from 'vue';
@@ -14,23 +15,8 @@ import store from './store';
 import router from './router';
 import Multiselect from 'vue-multiselect';
 import underscore from 'underscore';
-
-
-// import component and stylesheet
-import AirbnbStyleDatepicker from 'vue-airbnb-style-datepicker'
-import 'vue-airbnb-style-datepicker/dist/vue-airbnb-style-datepicker.min.css'
-
-// see docs for available options
-const datepickerOptions = {}
-
-// make sure we can use it in our components
-Vue.use(AirbnbStyleDatepicker, datepickerOptions);
-
-import Datetime from 'vue-datetime'
-// You need a specific loader for CSS files
-import 'vue-datetime/dist/vue-datetime.css'
-
-Vue.use(Datetime)
+import Datetime from 'vue-datetime';
+import ToggleButton from 'vue-js-toggle-button';
 
 // globally registered components
 import PageHeader from './app/shared/components/PageHeader.vue';
@@ -90,6 +76,8 @@ Object.defineProperty(Vue.prototype, '$underscore', { value: underscore });
 
 Vue.use(VueOnsen);
 Vue.use(Cordova);
+Vue.use(Datetime);
+Vue.use(ToggleButton);
 
 
 /* eslint-disable no-new */
