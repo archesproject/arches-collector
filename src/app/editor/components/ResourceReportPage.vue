@@ -7,12 +7,14 @@
 </template>
 
 <script>
+import cardtreemixin from '../mixins/card-tree';
+
 export default {
     name: 'ResourceReportPage',
     props: ['activeindex'],
+    mixins: [cardtreemixin],
     data() {
         return {
-            project: this.$store.getters.activeProject,
             resourceid: this.$store.getters.activeServer.active_resource,
             allCards: this.$store.getters.activeGraph.cards,
             allWidgets: this.$store.getters.activeGraph.widgets,
@@ -22,13 +24,20 @@ export default {
         };
     },
     computed: {
+        nodegroupTree: {
+            get: function() {
+
+            }
+        },
         topCards: {
             get: function() {
                 var self = this;
                 this.allTiles.length;
+                console.log(this.getNodegroupTree());
                 var vms = this.$underscore.filter(this.allCards, function(card) {
                     return self.project.cards.indexOf(card.cardid) > -1;
                 }).map(function(projectcard) {
+                    console.log(self.hasChildCards(projectcard), projectcard);
                     return self.cardFactory(projectcard);
                 });
                 return vms;
