@@ -13,7 +13,7 @@
                         <v-ons-list-item tappable @click="sync" v-if="selectedProject && !selectedProject.deleted">
                             <v-ons-icon class="text-color-dark left menu-icon" icon="fa-cloud-download-alt"></v-ons-icon>
                             <div class="menu-text">
-                                <span class="text-color-dark">Refresh all records in a project</span>
+                                <span class="text-color-dark">Refresh all records in this project</span>
                                 <span class="text-color-dark menu-subtext">Refresh all project data</span>
                             </div>
                         </v-ons-list-item @click="">
@@ -102,6 +102,9 @@ export default {
                 var activeProjects = filterObj('active', true);
                 var inActiveProjects = filterObj('active', false);
                 return [...activeProjects, ...inActiveProjects];
+            },
+            set: function(arr) {
+                return arr;
             }
         }
     },
@@ -131,13 +134,18 @@ export default {
                 });
         },
         deleteProject: function(answer) {
+            var self = this;
             if (answer === 1) {
                 this.$store.dispatch('deleteProject', this.selectedProject.id)
                     .catch(function() {
                         console.log('delete failed');
                     })
                     .finally(function(doc) {
-                        console.log('project deleted');
+                        var index = self.$underscore.findIndex(self.projects, { id: self.selectedProject.id });
+                        window.setTimeout(function() {
+                            self.toggleSideNav(undefined)
+                            self.projects = self.projects.splice(index, 1)
+                        }, 250);
                     });
             } else {
                 console.log('not deleting project');
