@@ -453,7 +453,7 @@ var store = new Vuex.Store({
                     'time': date.toTimeString()
                 };
                 var descriptors = store.getters.getResourceDescriptors(resource);
-                if(!!descriptors) {
+                if (!!descriptors) {
                     resource.displayname = descriptors.name;
                     resource.displaydescription = descriptors.description;
                     resource.map_popup = descriptors.map_popup;
