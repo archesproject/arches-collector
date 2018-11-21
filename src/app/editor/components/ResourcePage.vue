@@ -10,12 +10,12 @@
                 </div>
                 <div class="center"></div>
                 <div class="right">
-                    <transition name="fade"><span class="saving-popup" v-show="saving">saving...</span></transition>
                     <transition name="fade">
-                        <v-ons-toolbar-button v-show="!saving" @click="toggleSideNav">
-                            <v-ons-icon class="text-color-dark project-name" icon="md-home"></v-ons-icon>
-                        </v-ons-toolbar-button>
+                        <span class="saving-popup" v-show="saving">saving...</span>
                     </transition>
+                    <v-ons-toolbar-button @click="toggleSideNav">
+                        <v-ons-icon class="text-color-dark project-name" icon="md-home"></v-ons-icon>
+                    </v-ons-toolbar-button>
                 </div>
             </v-ons-toolbar>
             <v-ons-splitter>
@@ -171,7 +171,7 @@ export default {
 }
 
 .saving-popup {
-    padding-right: 20px;
+    vertical-align: top;
     font-size: 16px;
     color: #359a35;
 }
