@@ -2,10 +2,12 @@
     <div>
         <div class="card-container"><span class="card-label">{{nodegroup.card.name}}</span>
         <div class="card-container" v-for="tile in nodegroup.card.tiles">
+            <div class="done-btn" @touchstart="toeditor(nodegroup.card, tile)">
             <component v-for="widget in tile.widgets" :allNodes="allNodes" class="widget" :context="'report'" :tile="tile" :widget="widget" v-bind:is="'base-widget'"></component>
+            </div>
         </div>
         <div v-for="nodegroup in nodegroup.children">
-            <card :nodegroup="nodegroup" class="report-content"></card>
+            <card :nodegroup="nodegroup" class="report-content" v-on:switch-tabs="updateActiveIndex"></card>
         </div>
         </div>
     </div>
@@ -13,7 +15,7 @@
 
 <script>
 export default {
-    name: 'ResourceReportPage',
+    name: 'Card',
     props: ['nodegroup'],
     data() {
         return {
@@ -21,7 +23,24 @@ export default {
             user: this.$store.getters.activeServer.user
         };
     },
+    methods: {
+        updateActiveIndex: function(event) {
+            this.$emit('switch-tabs', 1);
+        },
+        toeditor: function(card, tile) {
+            this.$store.getters.activeServer.card_nav_stack.unshift({card: card, tile: tile, showForm: true, activeObject: 'tile', 'tabIndex': 1});
+            this.$emit('switch-tabs', 1);
+        }
+    },
     computed: {
+        tabIndex: {
+            get: function() {
+                return this.activeIndex;
+            },
+            set: function(val) {
+                this.activeIndex = val;
+            }
+        },
         tiles: {
             get: function() {
                 return this.$store.getters.tiles;

@@ -15,9 +15,9 @@
             </v-ons-toolbar>
             <v-ons-splitter>
                 <v-ons-splitter-content>
-                    <v-ons-tabbar swipeable animation="none" :index.sync="activeIndex">
+                    <v-ons-tabbar swipeable animation="none" :index.sync="activeindex">
                       <template slot="pages">
-                          <resource-report-page :project="project" :activeindex="activeIndex"></resource-report-page>
+                          <resource-report-page :project="project" :activeindex="activeindex" v-on:switch-tabs="updateActiveIndex"></resource-report-page>
                           <resource-edit-page v-on:saving="saving = $event" :goBack="goBack"/>
                       </template>
 
@@ -39,7 +39,7 @@ export default {
     data() {
         return {
             goBack: false,
-            activeIndex: 1,
+            activeindex: 0,
             saving: false,
             project: this.$store.getters.activeProject,
             tabs: [
@@ -74,10 +74,12 @@ export default {
     methods: {
         back: function() {
             this.goBack = !this.goBack;
+        },
+        updateActiveIndex: function(event) {
+            this.activeindex = event;
         }
     },
     created: function() {
-        console.log('beforeCreate');
         if (!!this.$store.getters.activeServer) {
             this.$store.getters.activeServer.card_nav_stack = [];
             this.$store.getters.activeServer.card_nav_stack.unshift({card: null, tile: null, showForm: false, activeObject: 'tile', 'tabIndex': this.tabIndex});
