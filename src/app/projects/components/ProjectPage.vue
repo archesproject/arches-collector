@@ -27,19 +27,19 @@
                                 <v-ons-icon class="text-color-dark icon" v-if="syncing === false" icon="fa-cloud-download-alt"></v-ons-icon>
                                 <v-ons-icon class="text-color-dark icon" v-if="sync_failed === true" icon="ion-android-alert"></v-ons-icon>
                                 <span class="text-color-dark label right-panel-label">{{sync_btn_text}}</span>
-                            </v-ons-list-item @click="">
+                            </v-ons-list-item>
                             <v-ons-list-item tappable @click="sort">
                                 <v-ons-icon class="text-color-dark icon" icon="fa-sort-alpha-down"></v-ons-icon>
                                 <span class="text-color-dark label right-panel-label">Sort by name</span>
-                            </v-ons-list-item @click="">
+                            </v-ons-list-item>
                             <v-ons-list-item tappable>
                                 <v-ons-icon class="text-color-dark icon" icon="fa-sort-amount-desc"></v-ons-icon>
                                 <span class="text-color-dark label right-panel-label">Most recent edit</span>
-                            </v-ons-list-item @click="">
+                            </v-ons-list-item>
                             <v-ons-list-item tappable>
                                 <v-ons-icon class="text-color-dark icon" icon="fa-map"></v-ons-icon>
                                 <span class="text-color-dark label right-panel-label">Project map</span>
-                            </v-ons-list-item @click="">
+                            </v-ons-list-item>
                         </v-ons-list>
                     </v-ons-page>
                 </v-ons-splitter-side>

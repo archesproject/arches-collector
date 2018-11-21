@@ -41,8 +41,16 @@ body {
     border-color: #d9534f;
 }
 
-.text-color-dark{
+.text-color-dark {
+    color: rgb(81,74,116);
+}
+
+.text-color-light {
     color: dimgrey;
+}
+
+.subtitle-font-size {
+    font-size: 13px;
 }
 
 .ons-icon[icon*="ion-"] {
