@@ -2,16 +2,10 @@ export default {
     data() {
         return {
             project: this.$store.getters.activeProject,
-            allCards: this.$store.getters.activeGraph.cards,
-            projectCards: this.$underscore.filter(this.allCards, function(card) {
-                return self.project.cards.indexOf(card.cardid) > -1;
-            })
+            allCards: this.$store.getters.activeGraph.cards
         };
     },
     methods: {
-        getNodegroupCards() {
-            console.log(this.projectCards);
-        },
         cardFactory: function(card) {
             var vm = {
                 name: card.name,
@@ -55,6 +49,16 @@ export default {
         }
     },
     computed: {
+        projectNodegroupIds: {
+            get: function() {
+                var self = this;
+                return this.allCards.filter(function(card) {
+                    return self.project.cards.indexOf(card.cardid) > -1;
+                }).map(function(c) {
+                    return c.nodegroup_id;
+                });
+            }
+        },
         cardTree: {
             get: function() {
                 var nodegroups = this.allNodegroups;
@@ -62,7 +66,7 @@ export default {
                 var tree = {};
                 var self = this;
                 nodegroups.forEach(function(nodegroup) {
-                    if (nodegroup.parentnodegroup_id === null) {
+                    if (nodegroup.parentnodegroup_id === null && self.projectNodegroupIds.indexOf(nodegroup.nodegroupid) > -1) {
                         var nodegroupCard = cards.find(function(card) {
                             return card.nodegroup_id === nodegroup.nodegroupid;
                         });
