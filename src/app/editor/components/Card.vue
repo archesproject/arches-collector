@@ -27,14 +27,6 @@ export default {
                 return this.$store.getters.tiles;
             }
         }
-    },
-    methods: {
-        init: function() {
-            console.log('card is', this.nodegroup);
-        }
-    },
-    mounted() {
-        this.init();
     }
 };
 </script>
