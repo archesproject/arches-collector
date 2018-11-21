@@ -10,10 +10,53 @@
                 </div>
                 <div class="center"></div>
                 <div class="right">
-                    <transition name="fade"><span class="saving-popup" v-show="saving">saving...</span></transition>
+                    <transition name="fade">
+                        <span class="saving-popup" v-show="saving">saving...</span>
+                    </transition>
+                    <v-ons-toolbar-button @click="toggleSideNav">
+                        <v-ons-icon class="text-color-dark project-name" icon="md-home"></v-ons-icon>
+                    </v-ons-toolbar-button>
                 </div>
             </v-ons-toolbar>
             <v-ons-splitter>
+                <v-ons-splitter-side width="80%"
+                    swipeable collapse="" side="right"
+                    :open.sync="showSideNav" class="sidenav toolbar-header">
+                    <v-ons-page>
+                        <v-ons-list>
+                            <v-ons-list-item tappable @click="createNewRecord">
+                                <div class="fa5 fa-plus-circle text-color-dark"></div>
+                                <span class="text-color-dark label right-panel-label">New {{this.$store.getters.activeGraph.name}}
+                                    <div class="text-color-light subtitle-font-size">Create a new record</div>
+                                </span>
+                            </v-ons-list-item>
+                            <v-ons-list-item tappable @click="showResourceList">
+                                <div class="fa5 fa-edit text-color-dark"></div>
+                                <span class="text-color-dark label right-panel-label">Edit an Existing Resource
+                                    <div class="text-color-light subtitle-font-size">Select an existing resource and update</div>
+                                </span>
+                            </v-ons-list-item>
+                            <v-ons-list-item tappable @click="showResourceModels">
+                                <div class="fa5 fa-external-link-alt text-color-dark"></div>
+                                <span class="text-color-dark label right-panel-label">Select a New Resource Model
+                                    <div class="text-color-light subtitle-font-size">Pick a model and create a new resource</div>
+                                </span>
+                            </v-ons-list-item>
+                            <v-ons-list-item tappable @click="showProjectMap">
+                                <div class="fa5 fa-map-marker-alt text-color-dark"></div>
+                                <span class="text-color-dark label right-panel-label">Project Map
+                                    <div class="text-color-light subtitle-font-size">View the location of resources</div>
+                                </span>
+                            </v-ons-list-item>
+                            <v-ons-list-item tappable @click="selectProject">
+                                <div class="fa5 fa-exchange-alt text-color-dark"></div>
+                                <span class="text-color-dark label right-panel-label">Jump to a Different Project
+                                    <div class="text-color-light subtitle-font-size">Work with resources in another project</div>
+                                </span>
+                            </v-ons-list-item>
+                        </v-ons-list>
+                    </v-ons-page>
+                </v-ons-splitter-side>
                 <v-ons-splitter-content>
                     <v-ons-tabbar swipeable animation="none" :index.sync="activeindex">
                       <template slot="pages">
@@ -38,6 +81,7 @@ export default {
     props: ['nodegroupid', 'tabIndex'],
     data() {
         return {
+            showSideNav: false,
             goBack: false,
             activeindex: 0,
             saving: false,
@@ -77,6 +121,41 @@ export default {
         },
         updateActiveIndex: function(event) {
             this.activeindex = event;
+        },
+        toggleSideNav: function() {
+            this.showSideNav = !this.showSideNav;
+        },
+        createNewRecord: function(e) {
+            this.$store.commit('clearActiveResourceInstance');
+            this.$store.getters.activeServer.card_nav_stack = [];
+            this.$store.getters.activeServer.card_nav_stack.unshift({card: null, tile: null, showForm: false, activeObject: 'tile', 'tabIndex': this.tabIndex});
+            this.nodegroupid = null;
+            this.tabIndex = 0;
+            this.toggleSideNav();
+        },
+        jumpToProjectPage: function(tabIndex) {
+            this.$store.commit('clearActiveResourceInstance');
+            this.$store.getters.activeServer.card_nav_stack = [];
+            var payload = {
+                project_id: this.project.id
+            };
+            this.$store.commit('setActiveProject', payload);
+            this.$router.push({'name': 'project', params: {project: this.project, tabIndex: tabIndex}});
+        },
+        showResourceModels: function(e) {
+           this.jumpToProjectPage(0);
+        },
+        showResourceList: function(e) {
+            this.jumpToProjectPage(1);
+        },
+        showProjectMap: function(e) {
+            this.jumpToProjectPage(2);
+        },
+        selectProject: function(e) {
+            this.$store.commit('clearActiveResourceInstance');
+            this.$router.push({
+                'name': 'projectlist'
+            });
         }
     },
     created: function() {
@@ -89,22 +168,18 @@ export default {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.page-background {
-    background-color: white;
-}
-
-.padded-page.map-page > ons-page {
-    margin-bottom: 60px;
-}
-
 .resource-header {
     font-size: 18px;
 }
 
 .saving-popup {
-    padding-right: 20px;
+    vertical-align: top;
     font-size: 16px;
     color: #359a35;
+}
+
+.sidenav .label{
+    padding-left: 10px;
 }
 
 .fade-enter-active,
@@ -118,7 +193,6 @@ export default {
 .fade-enter,
 .fade-leave-to
 /* .fade-leave-active below version 2.1.8 */
-
 {
     opacity: 0;
 }
@@ -126,69 +200,8 @@ export default {
 .fade-enter-to,
 .fade-leave
 /* .fade-leave-active below version 2.1.8 */
-
 {
     opacity: 1;
 }
 
-.cover {
-    width: 100%;
-    background-color: gray;
-    height: 100%;
-    position: absolute;
-    left: 0;
-    top: 0;
-    opacity: .2;
-    display: none;
-}
-
-
-/* Place the navbar at the bottom of the page, and make it stick */
-
-.navbar {
-    background-color: #f5f5f5;
-    overflow: hidden;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    padding: 0;
-    margin: 0;
-    list-style: none;
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
-    display: flex;
-    -webkit-flex-flow: row wrap;
-    justify-content: space-around;
-}
-
-
-/* Style the links inside the navigation bar */
-
-.navbar a {
-    float: left;
-    display: block;
-    color: #f2f2f2;
-    text-align: center;
-    padding: 14px 0px;
-    text-decoration: none;
-    font-size: 17px;
-    width: 33%;
-    flex-grow: 1;
-}
-
-.navbar .icon {
-    font-size: 14px !important;
-    font-family: FontAwesome5;
-}
-
-.navbar .label {
-    font-size: 12px !important;
-}
-
-.navbar a.active {
-    background-color: white;
-    color: white;
-}
 </style>
