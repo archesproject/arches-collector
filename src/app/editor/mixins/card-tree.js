@@ -1,59 +1,77 @@
 export default {
     data() {
         return {
-            message: 'hello',
-            project: this.$store.getters.activeProject
+            project: this.$store.getters.activeProject,
+            allCards: this.$store.getters.activeGraph.cards,
+            projectCards: this.$underscore.filter(this.allCards, function(card) {
+                return self.project.cards.indexOf(card.cardid) > -1;
+            })
         };
     },
     methods: {
-        sayhello() {
-            console.log('hello');
+        getNodegroupCards() {
+            console.log(this.projectCards);
         },
-        hasChildCards(card) {
-            if (!card) {
-                card = this.card;
-            }
-            console.log(this.allNodegroups);
-            var found = this.$underscore.find(this.allNodegroups, function(nodegroup) {
-                return nodegroup.parentnodegroup_id === (!!card ? card.nodegroup_id : null);
-            }, this);
-            return !!found;
+        cardFactory: function(card) {
+            var vm = {
+                name: card.name,
+                cardid: card.cardid,
+                tiles: this.getCardTiles(card)
+            };
+            return vm;
         },
-        getChildNodegroups(parent) {
+        getCardWidgets: function(card) {
+            var widgets = this.allWidgets.filter(widget => widget.card_id === card.cardid);
+            return widgets.sort(function(a, b) {
+                return a.sortorder - b.sortorder;
+            });
+        },
+        getCardTiles: function(card) {
+            var self = this;
+            var tiles = this.allTiles.filter(function(tile) {
+                return (tile.nodegroup_id === card.nodegroup_id) && self.resourceid === tile.resourceinstance_id;
+            });
+            tiles.forEach(function(tile) {
+                tile.widgets = self.getCardWidgets(card);
+            });
+            return tiles;
+        },
+        getChildNodegroups(parent, cards) {
             parent.children = {};
             var self = this;
+            if (!cards) {
+                cards = this.allCards;
+            }
             this.allNodegroups.forEach(function(nodegroup) {
                 if (nodegroup.parentnodegroup_id === parent.nodegroupid) {
+                    var nodegroupCard = cards.find(function(card) {
+                        return card.nodegroup_id === nodegroup.nodegroupid;
+                    });
+                    nodegroup.card = self.cardFactory(nodegroupCard);
                     parent['children'][nodegroup.nodegroupid] = nodegroup;
                     self.getChildNodegroups(nodegroup);
                 }
             });
-        },
-        getNodegroupTree() {
-            var tree = {};
-            var self = this;
-            this.allNodegroups.forEach(function(nodegroup) {
-                if (nodegroup.parentnodegroup_id === null) {
-                    tree[nodegroup.nodegroupid] = nodegroup
-                    self.getChildNodegroups(nodegroup);
-                }
-            });
-            return tree;
         }
     },
     computed: {
-        projectnodegroups: {
+        cardTree: {
             get: function() {
-                var self = this;
+                var nodegroups = this.allNodegroups;
+                var cards = this.allCards;
                 var tree = {};
-                var nodegroupids = this.$underscore.chain(this.allCards)
-                    .filter(function(card) {
-                        return self.project.cards.indexOf(card.cardid) > -1;
-                    })
-                    .map(function(projcard) {
-                        return projcard.nodegroup_id;
-                    }).value();
-                var nodegroups = this.allNodegroups.filter(nodegroup => this.$underscore.contains(nodegroupids, nodegroup.nodegroupid));
+                var self = this;
+                nodegroups.forEach(function(nodegroup) {
+                    if (nodegroup.parentnodegroup_id === null) {
+                        var nodegroupCard = cards.find(function(card) {
+                            return card.nodegroup_id === nodegroup.nodegroupid;
+                        });
+                        nodegroup.card = self.cardFactory(nodegroupCard);
+                        tree[nodegroup.nodegroupid] = nodegroup;
+                        self.getChildNodegroups(nodegroup, cards);
+                    }
+                });
+                return tree;
             }
         }
     }
