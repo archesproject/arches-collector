@@ -79,6 +79,17 @@ export default {
                 }
             }
         },
+        projectCards: {
+            get: function() {
+                /*
+                 * Get a list of cards that belong to the current project
+                 */
+                var self = this;
+                return this.allCards.filter(function(card) {
+                    return self.project.cards.indexOf(card.cardid) > -1;
+                })
+            }
+        },
         currentNavItem: {
             get: function() {
                 if (!!this.$store.getters.activeServer) {
@@ -129,7 +140,7 @@ export default {
         },
         childCards: {
             get: function() {
-                return this.$underscore.filter(this.allCards, function(card) {
+                return this.$underscore.filter(this.projectCards, function(card) {
                     var nodegroups = this.$underscore.chain(this.allNodegroups)
                         .filter(function(group) {
                             return group.parentnodegroup_id === this.nodegroup_id;

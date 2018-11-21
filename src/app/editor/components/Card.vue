@@ -1,8 +1,11 @@
 <template>
     <div>
-        <div class="card-container"><span class="card-label">{{card.name}}</span>
-        <div class="card-container" v-for="tile in card.tiles">
+        <div class="card-container"><span class="card-label">{{nodegroup.card.name}}</span>
+        <div class="card-container" v-for="tile in nodegroup.card.tiles">
             <component v-for="widget in tile.widgets" :allNodes="allNodes" class="widget" :context="'report'" :tile="tile" :widget="widget" v-bind:is="'base-widget'"></component>
+        </div>
+        <div v-for="nodegroup in nodegroup.children">
+            <card :nodegroup="nodegroup" class="report-content"></card>
         </div>
         </div>
     </div>
@@ -11,7 +14,7 @@
 <script>
 export default {
     name: 'ResourceReportPage',
-    props: ['card'],
+    props: ['nodegroup'],
     data() {
         return {
             allNodes: this.$store.getters.activeGraph.nodes,
@@ -24,14 +27,6 @@ export default {
                 return this.$store.getters.tiles;
             }
         }
-    },
-    methods: {
-        init: function() {
-            console.log('card is', this.card);
-        }
-    },
-    mounted() {
-        this.init();
     }
 };
 </script>
