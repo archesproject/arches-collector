@@ -2,9 +2,9 @@
     <div>
         <div class="card-container"><span class="card-label">{{nodegroup.card.name}}</span>
         <div class="card-container" v-if="nodegroup.card.tiles.length > 0" v-for="tile in nodegroup.card.tiles">
-            <div class="done-btn" @touchstart="toeditor(nodegroup.card, tile)">
+            <vue-touch class="done-btn" @doubletap="toeditor(nodegroup.card, tile)">
                 <component v-for="widget in tile.widgets" :allNodes="allNodes" class="widget" :context="'report'" :tile="tile" :widget="widget" v-bind:is="'base-widget'"></component>
-            </div>
+            </vue-touch>
         </div>
         <div class="card-container" v-if="nodegroup.card.tiles.length == 0">
             <div>None</div>
