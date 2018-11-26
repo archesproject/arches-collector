@@ -1,8 +1,10 @@
 <template>
     <v-ons-page>
-      <div v-for="nodegroup in cardTree">
-          <card :nodegroup="nodegroup" class="report-content" :activeindex="activeindex" v-on:switch-tabs="updateActiveIndex"></card>
+      <div v-for="cardlist in cardTree.cards">
+        <div v-for="cardtile in cardlist">
+          <card :card="cardtile" class="report-content" :activeindex="activeindex" v-on:switch-tabs="updateActiveIndex"></card>
       </div>
+     </div>
     </v-ons-page>
 </template>
 

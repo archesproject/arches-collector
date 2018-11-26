@@ -24,19 +24,11 @@ export default {
                 timestamp: '',
                 value: !!this.tile ? JSON.parse(JSON.stringify(this.tile.data)) : undefined
             };
-        },
-        init: function() {
-            console.log('loading:', this.widget, this.context);
         }
-    },
-    mounted() {
-        this.init();
     },
     computed: {
         widgetComponent: {
             get: function() {
-                console.log('in datatype function')
-                console.log(this.node.datatype + '-widget');
                 return this.node.datatype + '-widget';
             }
         },
@@ -81,8 +73,6 @@ export default {
                 // }
             },
             set: function(newValue) {
-                // console.log('in set');
-                // console.log(newValue);
                 this.tile.provisionaledits[this.user.id]['value'][this.widget.node_id] = newValue;
                 this.tile.provisionaledits[this.user.id]['timestamp'] = new Date().toJSON();
                 this.save();

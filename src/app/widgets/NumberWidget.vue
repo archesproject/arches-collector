@@ -19,9 +19,6 @@ export default {
     },
     methods: {
     },
-    mounted() {
-        console.log('this', this.context, this.tile);
-    },
     computed: {
     }
 };
