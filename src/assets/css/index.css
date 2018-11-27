@@ -129,5 +129,22 @@ input {
 }
 
 .vdatetime-popup, .vdatetime-overlay {
-    position: absolute !important; 
+    position: absolute !important;
+}
+
+.report.widget-value {
+    color: #777;
+}
+
+.report.widget-label {
+    font-weight: 600;
+    color: #555;
+}
+
+.report.card-label {
+
+}
+
+.report.row {
+    align-items: center;
 }

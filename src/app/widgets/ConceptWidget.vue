@@ -8,17 +8,20 @@
             </template>
         </multiselect>
     </div>
-    <div v-else-if="context=='report'">
-        <div class="label">{{widget.label}}</div>
-        <div class="widget-value">{{value}}</div>
-    </div>
+    <ons-row class="row" v-else-if="context=='report'">
+        <ons-col class="report widget-label">{{widget.label}}</ons-col>
+        <ons-col class="report widget-value">{{conceptLabel.value}}</ons-col>
+    </ons-row>
 </template>
 
 
 <script>
+import concept from '../shared/mixins/concepts';
+
 export default {
     name: 'ConceptWidget',
     props: ['value', 'widget', 'context'],
+    mixins: [concept],
     data() {
         return {
             placeholder: this.widget.config.placeholder
@@ -55,7 +58,13 @@ export default {
         }
 
     },
+    mounted() {
+        this.init();
+    },
     methods: {
+        init() {
+            console.log(this.conceptLabel);
+        },
         onChange(value) {
             //console.log(value);
             var ret = null
@@ -69,4 +78,5 @@ export default {
 </script>
 
 <style scoped>
+
 </style>
