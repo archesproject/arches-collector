@@ -4,7 +4,6 @@
 
         <!-- <div class="card-container" v-if="card.cards.length > 0" v-for="card in card.cards"> -->
             <vue-touch class="done-btn" @doubletap="segueToForm(card, card.tile)">
-                <div>{{card.tile.tileid}}</div>
                 <component v-for="widget in card.widgets" :allNodes="allNodes" class="widget" :context="'report'" :tile="card.tile" :widget="widget" v-bind:is="'base-widget'"></component>
             </vue-touch>
         <!-- </div> -->
