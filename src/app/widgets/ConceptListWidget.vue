@@ -8,7 +8,7 @@
         </multiselect>
 
     </div>
-    <div v-else-if="context=='report'">
+    <div class="report-widget" v-else-if="context=='report'">
         <ons-row>
             <ons-col class="report widget-label">{{widget.label}}</ons-col>
             <ons-col>

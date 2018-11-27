@@ -7,7 +7,7 @@
 
         <div id="textWidthElement"></div>
     </div>
-    <div v-else-if="context=='report'">
+    <div class="report-widget" v-else-if="context=='report'">
         <div class="report widget-label">{{widget.label}}</div>
         <div class="report widget-value">{{value}}</div>
     </div>

@@ -8,7 +8,7 @@
             </template>
         </multiselect>
     </div>
-    <ons-row class="row" v-else-if="context=='report'">
+    <ons-row class="report-widget" v-else-if="context=='report'">
         <ons-col class="report widget-label">{{widget.label}}</ons-col>
         <ons-col class="report widget-value">{{conceptLabel.value}}</ons-col>
     </ons-row>
