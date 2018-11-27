@@ -1,6 +1,6 @@
 <template>
     <div v-if="context=='editor'">
-        <span class="label">{{widget.label}}</span>
+        <span class="editor widget-label">{{widget.label}}</span>
         <toggle-button id="changed-font" style="float: right" :value="bool_value" :width="width"
                :labels="{'checked': node.config.trueLabel, 'unchecked': node.config.falseLabel}"
                  @input="onChange"/>
@@ -8,16 +8,16 @@
         <div id="textWidthElement"></div>
     </div>
     <div v-else-if="context=='report'">
-        <div class="label">{{widget.label}}</div>
-        <div class="widget-value">{{value}}</div>
+        <div class="report widget-label">{{widget.label}}</div>
+        <div class="report widget-value">{{value}}</div>
     </div>
 </template>
 
 
 <script>
 var getTextWidth = function(text, fontSize){
-    var el = document.getElementById("textWidthElement"); 
-    var textContent = document.createTextNode(text); 
+    var el = document.getElementById("textWidthElement");
+    var textContent = document.createTextNode(text);
     el.innerHTML = '';
     el.appendChild(textContent);
     var width = (el.clientWidth + 30);
