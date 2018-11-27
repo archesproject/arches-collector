@@ -3,10 +3,10 @@
         <div class="editor widget-label">{{widget.label}}</div>
         <input :value="value" placeholder="derive from configs" @input="$emit('update:value', $event.target.value);">
     </div>
-    <div v-else-if="context=='report'">
-        <div class="report widget-label">{{widget.label}}</div>
-        <div class="report widget-value">{{value}}</div>
-    </div>
+    <ons-row class="report-widget" v-else-if="context=='report'">
+        <ons-col class="report widget-label">{{widget.label}}</ons-col>
+        <ons-col class="report widget-value">{{value}}</ons-col>
+    </ons-row>
 </template>
 
 

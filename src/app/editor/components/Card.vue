@@ -1,16 +1,14 @@
 <template>
     <div>
-        <div class="card-container"><span class="card-label">{{nodegroup.card.name}}</span>
-        <div class="card-container" v-if="nodegroup.card.tiles.length > 0" v-for="tile in nodegroup.card.tiles">
-            <vue-touch class="done-btn" @doubletap="toeditor(nodegroup.card, tile)">
-                <component v-for="widget in tile.widgets" :allNodes="allNodes" class="widget" :context="'report'" :tile="tile" :widget="widget" v-bind:is="'base-widget'"></component>
+        <div class="card-container"><span @doubletap="segueToEditor(card)" class="card-label">{{card.name}}</span>
+
+        <!-- <div class="card-container" v-if="card.cards.length > 0" v-for="card in card.cards"> -->
+            <vue-touch class="done-btn" @doubletap="segueToForm(card, card.tile)">
+                <component v-for="widget in card.widgets" :allNodes="allNodes" class="widget" :context="'report'" :tile="card.tile" :widget="widget" v-bind:is="'base-widget'"></component>
             </vue-touch>
-        </div>
-        <div class="card-container" v-if="nodegroup.card.tiles.length == 0">
-            <div>None</div>
-        </div>
-        <div v-for="nodegroup in nodegroup.children">
-            <card :nodegroup="nodegroup" class="report-content" v-on:switch-tabs="updateActiveIndex"></card>
+        <!-- </div> -->
+        <div v-for="cardtile in card.cards">
+            <card :card="cardtile" class="report-content" v-on:switch-tabs="updateActiveIndex"></card>
         </div>
         </div>
     </div>
@@ -19,7 +17,7 @@
 <script>
 export default {
     name: 'Card',
-    props: ['nodegroup'],
+    props: ['card'],
     data() {
         return {
             allNodes: this.$store.getters.activeGraph.nodes,
@@ -30,8 +28,18 @@ export default {
         updateActiveIndex: function(event) {
             this.$emit('switch-tabs', 1);
         },
-        toeditor: function(card, tile) {
+        segueToForm: function(card, tile) {
             this.$store.getters.activeServer.card_nav_stack.unshift({card: card, tile: tile, showForm: true, activeObject: 'tile', 'tabIndex': 1});
+            this.$emit('switch-tabs', 1);
+        },
+        segueToEditor: function(nodegroup, tile) {
+            this.$store.getters.activeServer.card_nav_stack.unshift({
+                card: nodegroup.card,
+                tile: tile,
+                showForm: false,
+                activeObject: 'card',
+                tabIndex: 1
+            });
             this.$emit('switch-tabs', 1);
         }
     },

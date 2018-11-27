@@ -4,7 +4,7 @@
         <input :value="value" type=number placeholder="derive from configs" @input="$emit('update:value', $event.target.value);"/>
     </div>
 
-    <ons-row class="report row" v-else-if="context=='report'">
+    <ons-row class="report-widget" v-else-if="context=='report'">
         <ons-col class="report widget-label">{{widget.label}}</ons-col>
         <ons-col class="report widget-value">{{value}}</ons-col>
     </ons-row>

@@ -133,12 +133,17 @@ input {
 }
 
 /* report */
+.report-widget {
+    padding-left: 10px;
+}
+
+
 .report.widget-value {
     color: #777;
 }
 
 .report.widget-label {
-    font-weight: 600;
+    font-weight: 550;
     color: #555;
 }
 
