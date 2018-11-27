@@ -1,6 +1,6 @@
 <template>
     <div v-if="context=='editor'">
-        <div class="label">{{widget.label}}</div>
+        <div class="editor widget-label">{{widget.label}}</div>
         <!-- <input :value="selectedOption.valueid"> -->
         <multiselect v-model="selectedOption" :placeholder="placeholder" :options="options" :show-labels="false" track-by="valueid" label="value" @input="onChange">
             <template slot="option" slot-scope="props">
@@ -8,17 +8,20 @@
             </template>
         </multiselect>
     </div>
-    <div v-else-if="context=='report'">
-        <div class="label">{{widget.label}}</div>
-        <div class="widget-value">{{value}}</div>
-    </div>
+    <ons-row class="row" v-else-if="context=='report'">
+        <ons-col class="report widget-label">{{widget.label}}</ons-col>
+        <ons-col class="report widget-value">{{conceptLabel.value}}</ons-col>
+    </ons-row>
 </template>
 
 
 <script>
+import concept from '../shared/mixins/concepts';
+
 export default {
     name: 'ConceptWidget',
     props: ['value', 'widget', 'context'],
+    mixins: [concept],
     data() {
         return {
             placeholder: this.widget.config.placeholder
@@ -57,7 +60,6 @@ export default {
     },
     methods: {
         onChange(value) {
-            //console.log(value);
             var ret = null
             if(!!value) {
                 ret = value.valueid;
@@ -69,4 +71,5 @@ export default {
 </script>
 
 <style scoped>
+
 </style>

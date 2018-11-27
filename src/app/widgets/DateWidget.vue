@@ -1,12 +1,12 @@
 <template>
     <div v-if="context=='editor'">
-        <div class="label">{{widget.label}}</div>
+        <div class="editor widget-label">{{widget.label}}</div>
         <datetime v-model="date_value" @input="onChange"></datetime>
     </div>
-    <div v-else-if="context=='report'">
-        <div class="label">{{widget.label}}</div>
-        <div class="widget-value">{{value}}</div>
-    </div>
+    <ons-row class="row" v-else-if="context=='report'">
+        <ons-col class="report widget-label">{{widget.label}}</ons-col>
+        <ons-col class="report widget-value">{{value}}</ons-col>
+    </ons-row>
 </template>
 
 
