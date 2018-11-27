@@ -9,10 +9,14 @@
 
     </div>
     <div v-else-if="context=='report'">
-        <div class="report widget-label">{{widget.label}}</div>
-        <div v-for="label in conceptLabels">
-            <div class="report widget-value">{{label.value}}</div>
-        </div>
+        <ons-row>
+            <ons-col class="report widget-label">{{widget.label}}</ons-col>
+            <ons-col>
+            <div v-for="label in conceptLabels">
+                <div class="report widget-value">{{label.value}}</div>
+            </div>
+            </ons-col>
+        </ons-row>
     </div>
 </template>
 
