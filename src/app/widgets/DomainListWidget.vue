@@ -55,7 +55,6 @@ export default {
     },
     methods: {
         onChange (value) {
-            // console.log(value);
             var ret = [];
             value.forEach(function(val){
                 ret.push(val.valueid);

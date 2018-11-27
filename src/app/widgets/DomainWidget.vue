@@ -51,7 +51,6 @@ export default {
     },
     methods: {
         onChange(value) {
-            //console.log(value);
             var ret = null
             if(!!value) {
                 ret = value.valueid;

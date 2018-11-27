@@ -66,16 +66,8 @@ export default {
             }
         }
     },
-    mounted() {
-        this.init();
-    },
     methods: {
-        init() {
-            console.log(this);
-            console.log(this.conceptLabels);
-        },
         onChange (value) {
-            // console.log(value);
             var ret = [];
             value.forEach(function(val){
                 ret.push(val.valueid);

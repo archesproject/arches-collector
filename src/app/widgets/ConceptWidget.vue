@@ -58,15 +58,8 @@ export default {
         }
 
     },
-    mounted() {
-        this.init();
-    },
     methods: {
-        init() {
-            console.log(this.conceptLabel);
-        },
         onChange(value) {
-            //console.log(value);
             var ret = null
             if(!!value) {
                 ret = value.valueid;
