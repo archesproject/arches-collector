@@ -1,7 +1,7 @@
 <template>
     <v-ons-page>
       <div v-for="nodegroup in cardTree">
-          <card :nodegroup="nodegroup" class="report-content"></card>
+          <card :nodegroup="nodegroup" class="report-content" :activeindex="activeindex" v-on:switch-tabs="updateActiveIndex"></card>
       </div>
     </v-ons-page>
 </template>
@@ -18,6 +18,11 @@ export default {
             resourceid: this.$store.getters.activeServer.active_resource,
             user: this.$store.getters.activeServer.user,
         };
+    },
+    methods: {
+        updateActiveIndex: function(event) {
+            this.$emit('switch-tabs', 1);
+        }
     },
     watch: {
         activeindex: function(val, oldVal) {

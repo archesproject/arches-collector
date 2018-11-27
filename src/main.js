@@ -17,6 +17,7 @@ import Multiselect from 'vue-multiselect';
 import underscore from 'underscore';
 import Datetime from 'vue-datetime';
 import ToggleButton from 'vue-js-toggle-button';
+import VueTouch from 'vue-touch';
 
 // globally registered components
 import PageHeader from './app/shared/components/PageHeader.vue';
@@ -43,7 +44,7 @@ import FileListWidget from './app/widgets/FileListWidget.vue';
 import ResourceInstanceWidget from './app/widgets/ResourceInstanceWidget.vue';
 import NodeValueWidget from './app/widgets/NodeValueWidget.vue';
 import Card from './app/editor/components/Card.vue';
-  
+
 Vue.component('multiselect', Multiselect);
 
 Vue.component('page-header', PageHeader);
@@ -78,7 +79,7 @@ Vue.use(VueOnsen);
 Vue.use(Cordova);
 Vue.use(Datetime);
 Vue.use(ToggleButton);
-
+Vue.use(VueTouch);
 
 /* eslint-disable no-new */
 window.archesvue = new Vue({
