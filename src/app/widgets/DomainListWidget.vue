@@ -1,13 +1,13 @@
 <template>
     <div v-if="context=='editor'">
-        <div class="label">{{widget.label}}</div>
+        <div class="editor widget-label">{{widget.label}}</div>
         <multiselect v-model="selectedOptions" :placeholder="placeholder" :close-on-select="false" :options="options" :multiple="true" :taggable="true" track-by="valueid" label="value" @input="onChange">
         </multiselect>
-        
+
     </div>
     <div v-else-if="context=='report'">
-        <div class="label">{{widget.label}}</div>
-        <div class="widget-value">{{value}}</div>
+        <div class="report widget-label">{{widget.label}}</div>
+        <div class="report widget-value">{{value}}</div>
     </div>
 </template>
 

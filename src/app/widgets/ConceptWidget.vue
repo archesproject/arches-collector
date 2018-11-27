@@ -1,6 +1,6 @@
 <template>
     <div v-if="context=='editor'">
-        <div class="label">{{widget.label}}</div>
+        <div class="editor widget-label">{{widget.label}}</div>
         <!-- <input :value="selectedOption.valueid"> -->
         <multiselect v-model="selectedOption" :placeholder="placeholder" :options="options" :show-labels="false" track-by="valueid" label="value" @input="onChange">
             <template slot="option" slot-scope="props">

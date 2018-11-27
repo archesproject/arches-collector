@@ -132,6 +132,7 @@ input {
     position: absolute !important;
 }
 
+/* report */
 .report.widget-value {
     color: #777;
 }
@@ -141,10 +142,16 @@ input {
     color: #555;
 }
 
-.report.card-label {
-
-}
-
 .report.row {
     align-items: center;
+}
+
+/* editor */
+.editor.widget-label {
+    font-weight: 600;
+    color: #555;
+}
+
+.editor.widget-value {
+    color: #777;
 }
