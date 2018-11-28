@@ -40,10 +40,6 @@ export default {
             });
             var childNodegroups = this.getSubNodegroups(nodegroup);
             vm.cards = self.getCards(childNodegroups, tile);
-            // if (childNodegroups.length > 0) {
-            //     childNodegroups.forEach(function(childnodegroup) {
-            //     });
-            // }
             return vm;
         },
         deepcopy(obj) {
@@ -75,7 +71,6 @@ export default {
                     card = self.cardFactory(nodegroup, null);
                 }
                 cards.push(self.deepcopy(card));
-                // console.log(card.name, card.nodegroup_id, nodegroup.parentnodegroup_id)
             });
             return cards;
         }
