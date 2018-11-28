@@ -7,15 +7,22 @@
     </div>
     <ons-row class="report-widget" v-else-if="context=='report'">
         <ons-col class="report widget-label">{{widget.label}}</ons-col>
-        <ons-col class="report widget-value">{{value}}</ons-col>
+        <ons-col>
+            <div v-for="label in conceptLabels">
+                <div class="report widget-value">{{label.value}}</div>
+            </div>
+        </ons-col>
     </ons-row>
 </template>
 
 
 <script>
+import concept from '../shared/mixins/concepts';
+
 export default {
     name: 'DomainListWidget',
     props: ['value', 'widget', 'node', 'context'],
+    mixins: [concept],
     data() {
         return {
             placeholder: this.widget.config.placeholder
