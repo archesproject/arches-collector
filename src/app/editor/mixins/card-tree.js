@@ -9,25 +9,6 @@ export default {
         };
     },
     methods: {
-        cardFactory: function(nodegroup, tile) {
-            /*
-             * Return an object that will support the card component in a report
-             */
-            var self = this;
-            var card = this.allCards.find(function(card) { return card.nodegroup_id === nodegroup.nodegroupid; });
-            var vm = this.$underscore.extend(card, {
-                tile: tile,
-                widgets: this.getCardWidgets(card),
-                cards: []
-            });
-            var childNodegroups = this.getSubNodegroups(nodegroup);
-            if (childNodegroups.length > 0) {
-                childNodegroups.forEach(function(childnodegroup) {
-                    vm.cards = self.getCards(childnodegroup, tile);
-                });
-            }
-            return vm;
-        },
         getCardWidgets: function(card) {
             /*
              * Get the widgets that belong to a given card
@@ -46,32 +27,56 @@ export default {
                 return nodegroup.parentnodegroup_id === parent.nodegroupid;
             });
         },
-        getCards(nodegroup, tile) {
+        cardFactory: function(nodegroup, tile) {
+            /*
+             * Return an object that will support the card component in a report
+             */
+            var self = this;
+            var card = this.allCards.find(function(card) { return card.nodegroup_id === nodegroup.nodegroupid; });
+            var vm = this.$underscore.extend(card, {
+                tile: tile,
+                widgets: this.getCardWidgets(card),
+                cards: []
+            });
+            var childNodegroups = this.getSubNodegroups(nodegroup);
+            vm.cards = self.getCards(childNodegroups, tile);
+            // if (childNodegroups.length > 0) {
+            //     childNodegroups.forEach(function(childnodegroup) {
+            //     });
+            // }
+            return vm;
+        },
+        deepcopy(obj) {
+            return JSON.parse(JSON.stringify(obj));
+        },
+        getCards(nodegroups, tile) {
             /*
              * Build an array of nodegroups with its card and child nodegroups
              */
-            var self = this;
             var cards = [];
-            var card;
-            var tiles;
-            if (tile) {
-                tiles = this.resourceTiles.filter(function(t) {
-                    return (t.nodegroup_id === nodegroup.nodegroupid && t.parenttile_id === tile.tileid);
-                });
-            } else {
-                tiles = this.resourceTiles.filter(function(t) {
-                    return (t.nodegroup_id === nodegroup.nodegroupid);
-                });
-            }
-            if (tiles.length) {
-                tiles.forEach(function(tile) {
-                    card = self.cardFactory(nodegroup, tile);
-                    var c = JSON.stringify(card);
-                    cards.push(JSON.parse(c));
-                });
-            } else {
-                cards.push(self.cardFactory(nodegroup, null));
-            }
+            var self = this;
+            nodegroups.forEach(function(nodegroup) {
+                var card;
+                var tiles;
+                if (tile) {
+                    tiles = self.resourceTiles.filter(function(t) {
+                        return (t.nodegroup_id === nodegroup.nodegroupid && t.parenttile_id === tile.tileid);
+                    });
+                } else {
+                    tiles = self.resourceTiles.filter(function(t) {
+                        return (t.nodegroup_id === nodegroup.nodegroupid);
+                    });
+                }
+                if (tiles.length) {
+                    tiles.forEach(function(tile) {
+                        card = self.cardFactory(nodegroup, tile);
+                    });
+                } else {
+                    card = self.cardFactory(nodegroup, null);
+                }
+                cards.push(self.deepcopy(card));
+                // console.log(card.name, card.nodegroup_id, nodegroup.parentnodegroup_id)
+            });
             return cards;
         }
     },
@@ -105,18 +110,14 @@ export default {
                 /*
                  * Build an array of nodegroups with its card and child nodegroups
                  */
+                var self = this;
                 var rootNodegroups = this.allNodegroups.filter(function(nodegroup) {
-                    return nodegroup.parentnodegroup_id === null;
+                    return nodegroup.parentnodegroup_id === null && self.projectNodegroupIds.indexOf(nodegroup.nodegroupid) > -1;
                 });
                 var tree = {
                     cards: []
                 };
-                var self = this;
-                rootNodegroups.forEach(function(nodegroup) {
-                    if (self.projectNodegroupIds.indexOf(nodegroup.nodegroupid) > -1) {
-                        tree.cards.push(self.getCards(nodegroup));
-                    }
-                });
+                tree.cards = self.getCards(rootNodegroups)
                 return tree;
             }
         }

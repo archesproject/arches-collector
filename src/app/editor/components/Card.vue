@@ -4,7 +4,10 @@
 
         <!-- <div class="card-container" v-if="card.cards.length > 0" v-for="card in card.cards"> -->
             <vue-touch class="done-btn" @doubletap="segueToForm(card)">
+                <div class="report widget-value" style="padding-left:5px" v-if="card.tile === null">No data yet added</div>
+                <div v-if="card.tile !== null">
                 <component v-for="widget in card.widgets" :allNodes="allNodes" class="widget" :context="'report'" :tile="card.tile" :widget="widget" v-bind:is="'base-widget'"></component>
+                </div>
             </vue-touch>
         <!-- </div> -->
         <div v-for="cardtile in card.cards">
