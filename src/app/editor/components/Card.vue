@@ -32,16 +32,18 @@ export default {
             this.$emit('switch-tabs', 1);
         },
         segueToForm: function(card) {
-            var dbtile = this.$store.getters.tiles.find(function(t){
-                return t.tileid === card.tile.tileid;
-            });
-            this.$store.getters.activeServer.card_nav_stack.unshift({
-                card: card,
-                tile: dbtile,
-                showForm: true,
-                activeObject: 'tile'
-            });
-            this.$emit('switch-tabs', 1);
+            if (card.tile !== null) {
+                var dbtile = this.$store.getters.tiles.find(function(t){
+                    return t.tileid === card.tile.tileid;
+                });
+                this.$store.getters.activeServer.card_nav_stack.unshift({
+                    card: card,
+                    tile: dbtile,
+                    showForm: true,
+                    activeObject: 'tile'
+                });
+                this.$emit('switch-tabs', 1);
+            }
         },
         segueToEditor: function(nodegroup, tile) {
             this.$store.getters.activeServer.card_nav_stack.unshift({
