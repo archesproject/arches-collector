@@ -110,11 +110,13 @@ export default {
     },
     methods: {
         segueToProject(project) {
-            var payload = {
-                project_id: project.id
-            };
-            this.$store.commit('setActiveProject', payload);
-            this.$router.push({'name': 'project', params: {project: project, tabIndex: 0}});
+            if (project.lastsync.date) {
+                var payload = {
+                    project_id: project.id
+                };
+                this.$store.commit('setActiveProject', payload);
+                this.$router.push({'name': 'project', params: {project: project, tabIndex: 0}});
+            }
         },
         toggleSideNav: function(project) {
             this.selectedProject = project;
