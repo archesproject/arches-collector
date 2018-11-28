@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="card-container"><span @doubletap="segueToEditor(card)" class="card-label">{{card.name}}</span>
+        <div class="card-container"><span class="card-label">{{card.name}}</span>
 
         <!-- <div class="card-container" v-if="card.cards.length > 0" v-for="card in card.cards"> -->
             <vue-touch class="done-btn" @doubletap="segueToForm(card)">
