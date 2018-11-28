@@ -347,7 +347,7 @@ var store = new Vuex.Store({
                             tile = tiles[0];
                             if (!!tile) {
                                 var tileData = tile.data;
-                                if (!!tile.provisionaledits[user.id]) {
+                                if (!!tile.provisionaledits && !!tile.provisionaledits[user.id]) {
                                     tileData = tile.provisionaledits[user.id]['value'];
                                 }
                                 graph.nodes.forEach(function(node) {
