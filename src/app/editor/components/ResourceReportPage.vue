@@ -25,20 +25,6 @@ export default {
         updateActiveIndex: function(event) {
             this.$emit('switch-tabs', 1);
         }
-    },
-    watch: {
-        activeindex: function(val, oldVal) {
-            /*
-             * Forces a re-render if the tile count has changed.
-             * A better approach would be to find the change and update the
-             * affected card.
-             */
-            if (val === 0) {
-                if (this.$store.getters.tiles.length !== this.allTiles.length) {
-                    this.allTiles = this.$store.getters.tiles;
-                }
-            }
-        }
     }
 };
 </script>
