@@ -83,7 +83,7 @@ export default {
         return {
             showSideNav: false,
             goBack: false,
-            activeindex: 0,
+            activeindex: this.tabIndex,
             saving: false,
             project: this.$store.getters.activeProject,
             tabs: [
