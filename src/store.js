@@ -148,6 +148,10 @@ var pouchDBs = (function() {
                     console.log(err);
                 });
         },
+        deleteTiles: function(projectId, tiles) {
+            var removedTiles = tiles.map(tile => this._projectDBs[projectId]['local'].remove(tile));
+            return Promise.all(removedTiles);
+        },
         putResource: function(projectId, resource) {
             this._projectDBs[projectId]['local']
                 .changes({
@@ -633,6 +637,29 @@ var store = new Vuex.Store({
                     }
                     return tile;
                 });
+        },
+        deleteTile: function({commit, state}, tile) {
+            var childTiles = [tile];
+            var getChildTiles = function(parentTile){
+                state.tiles.forEach(function(tile){
+                    if(tile.type === 'tile' && tile.parenttile_id === parentTile.tileid){
+                        childTiles.push(tile);
+                        getChildTiles(tile);
+                    }
+                })
+                return childTiles;
+            }
+            getChildTiles(tile);
+            console.log('childTiles', childTiles)
+            
+            var project = store.getters.activeProject;
+            return pouchDBs.deleteTiles(project.id, childTiles)
+            .then(function(){
+                store.dispatch('getTiles', project.id);
+            })
+            .catch(function(err) {
+                console.log(err);
+            });
         },
         persistResource: function({commit, state}, resource) {
             var project = store.getters.activeProject;
