@@ -66,11 +66,12 @@ export default {
                 if (tiles.length) {
                     tiles.forEach(function(tile) {
                         card = self.cardFactory(nodegroup, tile);
+                        cards.push(self.deepcopy(card));
                     });
                 } else {
                     card = self.cardFactory(nodegroup, null);
+                    cards.push(self.deepcopy(card));
                 }
-                cards.push(self.deepcopy(card));
             });
             return cards;
         }
