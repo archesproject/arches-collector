@@ -63,7 +63,7 @@ export default {
                 'name': 'resource',
                 params: {
                     'nodegroupid': null,
-                    'tabIndex': 1
+                    'tabIndex': 0
                 }
             });
         },
