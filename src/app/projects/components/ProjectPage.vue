@@ -18,7 +18,7 @@
                 </div>
             </v-ons-toolbar>
             <v-ons-splitter>
-                <v-ons-splitter-side width="80%"
+                <v-ons-splitter-side width="50%"
                     swipeable collapse="" side="right"
                     :open.sync="showSideNav" class="sidenav toolbar-header">
                     <v-ons-page>
@@ -28,11 +28,11 @@
                                 <v-ons-icon class="text-color-dark icon" v-if="sync_failed === true" icon="ion-android-alert"></v-ons-icon>
                                 <span class="text-color-dark label right-panel-label">{{sync_btn_text}}</span>
                             </v-ons-list-item>
-                            <v-ons-list-item tappable @click="sort">
+                            <v-ons-list-item tappable @click="sortByName">
                                 <v-ons-icon class="text-color-dark icon" icon="fa-sort-alpha-down"></v-ons-icon>
                                 <span class="text-color-dark label right-panel-label">Sort by name</span>
                             </v-ons-list-item>
-                            <v-ons-list-item tappable>
+                            <v-ons-list-item tappable @click="sortByEditDate">
                                 <v-ons-icon class="text-color-dark icon" icon="fa-sort-amount-desc"></v-ons-icon>
                                 <span class="text-color-dark label right-panel-label">Most recent edit</span>
                             </v-ons-list-item>
@@ -125,7 +125,12 @@ export default {
                     self.syncing = false;
                 });
         },
-        sort: function() {
+        sortByName: function() {
+            this.$refs.sripage.sortValue = 'name';
+            this.$refs.sripage.sorted = !this.$refs.sripage.sorted;
+        },
+        sortByEditDate: function() {
+            this.$refs.sripage.sortValue = 'editDate';
             this.$refs.sripage.sorted = !this.$refs.sripage.sorted;
         }
     },

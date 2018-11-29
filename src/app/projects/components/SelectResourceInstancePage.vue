@@ -29,19 +29,39 @@ export default {
             state: 'initial',
             instances: [],
             resource_types: {},
-            sorted: true,
+            sorted: false,
+            sortValue: 'editDate',
             filter: ''
         };
     },
     computed: {
         resource_instances: function() {
+            var self = this;
             if (this.sorted) {
                 return this.$underscore.sortBy(this.instances, function(resourceInstance) {
-                    return resourceInstance.displayname;
+                    if(self.sortValue === 'name'){
+                        return resourceInstance.displayname;
+                    }
+                    if(self.sortValue === 'editDate'){
+                        if(!!resourceInstance.edited){
+                            return new Date(resourceInstance.edited.day + ' ' + resourceInstance.edited.time).valueOf();
+                        }else{
+                            return 0;
+                        }
+                    }
                 });
             } else {
                 return this.$underscore.sortBy(this.instances, function(resourceInstance) {
-                    return resourceInstance.displayname;
+                    if(self.sortValue === 'name'){
+                        return resourceInstance.displayname;
+                    }
+                    if(self.sortValue === 'editDate'){
+                        if(!!resourceInstance.edited){
+                            return new Date(resourceInstance.edited.day + ' ' + resourceInstance.edited.time).valueOf();
+                        }else{
+                            return 0;
+                        }
+                    }
                 }).reverse();
             }
         }
