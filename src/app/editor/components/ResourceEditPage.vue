@@ -372,6 +372,16 @@ export default {
         deleteTile: function(tile, e) {
             console.log('in deleteTile');
             e.stopPropagation();
+            this.$store.dispatch('deleteTile', tile)
+                // .then(function(savedTile) {
+                //     return savedTile;
+                // })
+                .finally(function() {
+                    console.log('tile delete finished...');
+                    // window.setTimeout(function() {
+                    //     self.$emit('saving', false);
+                    // }, 2000);
+                });
         }
     }
 };
