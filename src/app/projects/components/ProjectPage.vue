@@ -148,7 +148,6 @@ export default {
 }
 
 .project-list-toolbar {
-    height: 50px;
     background: #f4f4f4;
     padding-top: 2px;
 }
