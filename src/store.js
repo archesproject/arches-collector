@@ -516,6 +516,15 @@ var store = new Vuex.Store({
         syncRemote: function({commit, state}, projectId) {
             return pouchDBs.syncProject(projectId)
                 .then(function() {
+                    var server = store.getters.activeServer;
+                    return fetch(server.url + '/sync/' + projectId, {
+                        method: 'GET',
+                        headers: new Headers({
+                            'Authorization': 'Bearer ' + server.token
+                        })
+                    })
+                })
+                .then(function() {
                     return store.dispatch('getTiles', projectId);
                 })
                 .then(function() {
