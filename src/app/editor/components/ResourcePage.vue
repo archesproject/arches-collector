@@ -3,12 +3,33 @@
         <v-ons-page>
             <v-ons-toolbar style="background-color: whitesmoke;">
                 <div class="left">
-                    <v-ons-toolbar-button>
+                    <v-ons-toolbar-button class="flex">
                         <v-ons-icon class="text-color-dark resource-header" icon="ion-android-arrow-dropleft-circle" @click="back"></v-ons-icon>
-                        <span class="text-color-dark resource-header">{{headerName}}</span>
+                        <span v-if="headerName.label">
+                            <span style="display: flex; flex-direction: column; line-height: 22px; padding-top: 6px; padding-left: 8px;"  class="flex text-color-dark resource-header">
+                                <span class="flex">
+                                    {{headerName.value}}<br>{{headerName.label}}
+                                </span>
+                            </span>
+                        </span>
+                        <span v-else>
+                            <span style="padding-left: 8px;" class="text-color-dark resource-header">{{headerName.value}}</span>
+                        </span>
+                        <!-- <span class="text-color-dark resource-header">{{headerName}}</span> -->
+                        
+                        
+                        <!-- <span style="display: flex; flex-direction: column; line-height: 22px;
+    padding-top: 6px;" class="text-color-dark resource-header">
+                            <span style="display: flex">
+                                {{headerName.value}}<br>{{headerName.label}}
+                            </span>
+                        </span>   -->
+                        
                     </v-ons-toolbar-button>
                 </div>
-                <div class="center"></div>
+                <div class="center">
+                    
+                </div>
                 <div class="right">
                     <transition name="fade">
                         <span class="saving-popup" v-show="saving">saving...</span>
@@ -61,7 +82,7 @@
                     <v-ons-tabbar swipeable animation="none" :index.sync="activeindex">
                       <template slot="pages">
                           <resource-report-page :project="project" :activeindex="activeindex" v-on:switch-tabs="updateActiveIndex"></resource-report-page>
-                          <resource-edit-page v-on:saving="saving = $event" :goBack="goBack"/>
+                          <resource-edit-page v-on:saving="saving = $event" :goBack="goBack"  ref="resource_edit_page"/>
                       </template>
 
                       <v-ons-tab v-for="(tab, i) in tabs"
@@ -109,9 +130,16 @@ export default {
         headerName: function() {
             var navItem = this.currentNavItem;
             if (!!navItem && !!navItem.card) {
-                return navItem.card.name;
+                if(navItem.showForm || navItem.activeObject === 'card') {
+                    return {'value': navItem.card.name, 'label': ''};
+                }
+                if(!!navItem.tile) {
+                    var x = this.$refs.resource_edit_page.getTileData(navItem.tile,navItem.card);
+                    return x;
+                }
+                return {'value': navItem.card.name, 'label': ''};
             } else {
-                return this.$store.getters.activeGraph.name;
+                return {'value': this.$store.getters.activeGraph.name, 'label': ''}
             }
         }
     },
@@ -204,4 +232,7 @@ export default {
     opacity: 1;
 }
 
+.flex {
+    display: flex;
+}
 </style>

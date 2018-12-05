@@ -148,6 +148,10 @@ var pouchDBs = (function() {
                     console.log(err);
                 });
         },
+        deleteTiles: function(projectId, tiles) {
+            var removedTiles = tiles.map(tile => this._projectDBs[projectId]['local'].remove(tile));
+            return Promise.all(removedTiles);
+        },
         putResource: function(projectId, resource) {
             this._projectDBs[projectId]['local']
                 .changes({
@@ -512,6 +516,15 @@ var store = new Vuex.Store({
         syncRemote: function({commit, state}, projectId) {
             return pouchDBs.syncProject(projectId)
                 .then(function() {
+                    var server = store.getters.activeServer;
+                    return fetch(server.url + '/sync/' + projectId, {
+                        method: 'GET',
+                        headers: new Headers({
+                            'Authorization': 'Bearer ' + server.token
+                        })
+                    })
+                })
+                .then(function() {
                     return store.dispatch('getTiles', projectId);
                 })
                 .then(function() {
@@ -633,6 +646,29 @@ var store = new Vuex.Store({
                     }
                     return tile;
                 });
+        },
+        deleteTile: function({commit, state}, tile) {
+            var childTiles = [tile];
+            var getChildTiles = function(parentTile){
+                state.tiles.forEach(function(tile){
+                    if(tile.type === 'tile' && tile.parenttile_id === parentTile.tileid){
+                        childTiles.push(tile);
+                        getChildTiles(tile);
+                    }
+                })
+                return childTiles;
+            }
+            getChildTiles(tile);
+            console.log('childTiles', childTiles)
+            
+            var project = store.getters.activeProject;
+            return pouchDBs.deleteTiles(project.id, childTiles)
+            .then(function(){
+                store.dispatch('getTiles', project.id);
+            })
+            .catch(function(err) {
+                console.log(err);
+            });
         },
         persistResource: function({commit, state}, resource) {
             var project = store.getters.activeProject;

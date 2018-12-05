@@ -36,19 +36,18 @@
             </div>
             <div v-if="(activeObject === 'tile')">
                 <v-ons-list-item tappable modifier="longdivider" v-for="childCard in childCards" :key="childCard.resourceinstanceid" @click="navigateChildCard(childCard)">
-                    <span style="width: 90%">
-                       <div>{{childCard.name}}</div>
-                       <div v-if="(tileCount(childCard) > 0)">{{tileCount(childCard)}} record(s)</div>
-                       <div v-if="(tileCount(childCard) === 0)">No data entered</div>
-                    </span>
-                    <span v-if="hasChildCards(childCard)">
-                        >
-                    </span>
-                    <span v-if="hasTiles(childCard)">
-                        +
-                    </span>
-                    <span v-if="canAdd(childCard)">
-                        <div class="fa5 fa-plus-circle text-color-dark add-card"></div>
+                    <span style="display: flex; width: 100%">
+                        <span style="width: 90%">
+                            <div>{{childCard.name}}</div>
+                            <div v-if="(tileCount(childCard) > 0)">{{tileCount(childCard)}} record(s)</div>
+                            <div v-if="(tileCount(childCard) === 0)">No data entered</div>
+                        </span>
+                        <span style="padding-top: 7px;" v-if="hasTiles(childCard) && getCardinality(childCard) === '1' && !hasChildCards(childCard)">
+                            <div class="fa5 fa-trash" @click="deleteTile(getCardTiles(childCard)[0], $event)"></div>
+                        </span>
+                        <span style="padding-top: 7px;" v-if="canAdd(childCard)">
+                            <div class="fa5 fa-plus-circle text-color-dark add-card"></div>
+                        </span>
                     </span>
                 </v-ons-list-item>
             </div>
@@ -302,12 +301,15 @@ export default {
             }, this);
             return !!found;
         },
-        tileCount: function(card) {
+        getCardTiles: function(card){
             var nodegroupid = card ? card.nodegroup_id : this.nodegroup_id;
             var tiles = this.$underscore.filter(this.allTiles, function(tile) {
                 return tile.nodegroup_id === nodegroupid;
             }, this);
-            return tiles.length;
+            return tiles;
+        },
+        tileCount: function(card) {
+            return this.getCardTiles(card).length;
         },
         hasTiles: function(card) {
             return this.tileCount(card) > 0;
@@ -371,7 +373,12 @@ export default {
         },
         deleteTile: function(tile, e) {
             console.log('in deleteTile');
+            console.log('tile: ', tile)
             e.stopPropagation();
+            this.$store.dispatch('deleteTile', tile)
+                .finally(function() {
+                    console.log('tile delete finished...');
+                });
         }
     }
 };
