@@ -7,7 +7,6 @@ import 'vue-multiselect/dist/vue-multiselect.min.css';
 import 'vue-datetime/dist/vue-datetime.css';
 import './assets/css/index.css';
 
-
 import Vue from 'vue';
 import VueOnsen from 'vue-onsenui';
 import Cordova from './assets/js/cordova';

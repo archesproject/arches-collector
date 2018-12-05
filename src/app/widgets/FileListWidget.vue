@@ -4,7 +4,7 @@
         <ons-row class="file-widget">
             <ons-col v-if="!value">No images yet collected</ons-col>
             <ons-col v-if="value">
-                <ons-row v-for="file in value.files">
+                <ons-row v-for="file in value">
                     <ons-col>{{file.name}}</ons-col>
                     <ons-col>{{file.type}}</ons-col>
                 </ons-row>
@@ -25,7 +25,7 @@
 <script>
 export default {
     name: 'FileListWidget',
-    props: ['value', 'widget', 'context'],
+    props: ['value', 'widget', 'context', 'tile'],
     data() {
         return {};
     },
@@ -59,16 +59,25 @@ export default {
         },
         attachImage: function(imgUri) {
             var image = {
-                name: "some photo.jpg",
+                name: "somephoto.jpg",
                 type: "image/jpeg"
             };
             if (this.value) {
-                this.value.files.push(image);
+                image.name = (this.value.length + 1) + image.name;
+                this.value.push(image);
             } else {
-                this.value = {files:[image]}
+                image.name = "1" + image.name;
+                this.value = [image]
             }
             console.log(JSON.parse(JSON.stringify(this.value)));
-            console.log(this.tile);
+            if (!this.tile._attachments) {
+                this.tile._attachments = {};
+            }
+            this.tile._attachments[image.name] = {
+                content_type: 'image/jpg',
+                data: imgUri
+            };
+            this.$emit('update:value', this.value);
         },
         setOptions(srcType, saveToAlbum) {
             var options = {
