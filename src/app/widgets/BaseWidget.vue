@@ -1,11 +1,11 @@
 <template>
-    <component :value.sync="value" :context.sync="context" v-bind:is="widgetComponent" :widget="widget" :node="node"></component>
+    <component :value.sync="value" :context.sync="context" v-bind:is="widgetComponent" :tile="tile" :widget="widget" :node="node"></component>
 </template>
 
 
 <script>
 export default {
-    name: 'Card',
+    name: 'BaseWidget',
     props: ['allNodes', 'widget', 'save', 'tile', 'context'],
     data() {
         return {
