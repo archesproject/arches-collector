@@ -19,7 +19,12 @@ import Datetime from 'vue-datetime';
 import ToggleButton from 'vue-js-toggle-button';
 import VueTouch from 'vue-touch';
 import { ModelSelect } from 'vue-search-select';
+import { MultiSelect } from 'vue-search-select';
 import { ModelListSelect } from 'vue-search-select';
+import { MultiListSelect } from 'vue-search-select';
+import vSelect from 'vue-select';
+
+Vue.component('v-select', vSelect);
 
 // globally registered components
 import PageHeader from './app/shared/components/PageHeader.vue';
@@ -49,7 +54,9 @@ import Card from './app/editor/components/Card.vue';
 
 Vue.component('multiselect', Multiselect);
 Vue.component('model-select', ModelSelect);
+Vue.component('multi-select', MultiSelect);
 Vue.component('model-list-select', ModelListSelect);
+Vue.component('multi-list-select', MultiListSelect);
 
 Vue.component('page-header', PageHeader);
 Vue.component('page-header-layout', PageHeaderLayout);

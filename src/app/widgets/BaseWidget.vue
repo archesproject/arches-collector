@@ -82,6 +82,8 @@ export default {
 };
 </script>
 
+<style src="semantic-ui-css/semantic.css"></style>
+
 <style scoped>
 
 </style>

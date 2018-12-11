@@ -12,7 +12,7 @@ export default {
                 if (Array.isArray(self.value)) {
                     return self.value.map(function(val) {
                         return self.options.find(function(option) {
-                            return option.valueid === val;
+                            return option.value === val;
                         });
                     });
                 } else {
@@ -25,7 +25,7 @@ export default {
                 var self = this;
                 if (self.value) {
                     return this.options.find(function(val) {
-                        return val.valueid === self.value;
+                        return val.value === self.value;
                     });
                 } else {
                     return '';
