@@ -17,6 +17,8 @@ import underscore from 'underscore';
 import Datetime from 'vue-datetime';
 import ToggleButton from 'vue-js-toggle-button';
 import VueTouch from 'vue-touch';
+import { ModelSelect } from 'vue-search-select';
+import { ModelListSelect } from 'vue-search-select';
 
 // globally registered components
 import PageHeader from './app/shared/components/PageHeader.vue';
@@ -45,6 +47,8 @@ import NodeValueWidget from './app/widgets/NodeValueWidget.vue';
 import Card from './app/editor/components/Card.vue';
 
 Vue.component('multiselect', Multiselect);
+Vue.component('model-select', ModelSelect);
+Vue.component('model-list-select', ModelListSelect);
 
 Vue.component('page-header', PageHeader);
 Vue.component('page-header-layout', PageHeaderLayout);

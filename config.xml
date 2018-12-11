@@ -30,8 +30,8 @@
     <plugin name="cordova-plugin-camera" spec="^4.0.3" />
     <preference name="DisallowOverscroll" value="true" />
     <engine name="browser" spec="^5.0.3" />
-    <engine name="ios" spec="^4.5.4" />
     <engine name="android" spec="^7.0.0" />
+    <engine name="ios" spec="^4.5.5" />
     <edit-config target="NSCameraUsageDescription" file="*-Info.plist" mode="merge">
     <string>need camera access to take pictures</string>
     </edit-config>

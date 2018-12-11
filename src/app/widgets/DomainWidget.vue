@@ -1,8 +1,12 @@
 <template>
     <div v-if="context=='editor'">
         <div class="editor widget-label">{{widget.label}}</div>
-        <multiselect v-model="selectedOption" :placeholder="placeholder" :options="options" :show-labels="false" track-by="valueid" label="value" @input="onChange">
-        </multiselect>
+        <model-select style="max-width: 87%;" 
+            v-model="selectedOption"
+            :options="options"
+            :placeholder="placeholder" 
+            @input="onChange">
+        </model-select>
     </div>
     <ons-row class="report-widget" v-else-if="context=='report'">
         <ons-col class="report widget-label">{{widget.label}}</ons-col>
@@ -20,7 +24,7 @@ export default {
     mixins: [concept],
     data() {
         return {
-            placeholder: this.widget.config.placeholder,
+            placeholder: this.widget.config.placeholder
         };
     },
     computed: {
@@ -29,8 +33,8 @@ export default {
             var options = [];
             this.node.config.options.forEach(function(option){
                 options.push({
-                    value: option.text,
-                    valueid: option.id
+                    text: option.text,
+                    value: option.id
                 })
             })
             return options;
@@ -38,9 +42,9 @@ export default {
         selectedOption: {
             get: function() {
                 var self = this;
-                var ret = -1;
+                var ret = {};
                 this.options.forEach(function(option){
-                     if(option.valueid === self.value){
+                     if(option.value === self.value){
                         ret = option;
                     }
                 })
@@ -48,7 +52,6 @@ export default {
 
             },
             set: function() {
-
             }
         }
     },
@@ -56,7 +59,7 @@ export default {
         onChange(value) {
             var ret = null
             if(!!value) {
-                ret = value.valueid;
+                ret = value.value;
             }
             this.$emit('update:value', ret);
         }

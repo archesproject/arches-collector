@@ -550,6 +550,7 @@ var store = new Vuex.Store({
                 });
         },
         getRemoteProjects: function({commit, state}, server) {
+            var self = this;
             return fetch(server.url + '/surveys', {
                 method: 'GET',
                 headers: new Headers({
@@ -575,10 +576,13 @@ var store = new Vuex.Store({
                         project.resources_to_sync = {};
                         project.resources_with_conflicts = {};
                     });
-                    commit('updateProjects', {
-                        url: server.url,
-                        projects: json
-                    });
+                    store.dispatch('initServerStore')
+                        .finally(function(doc) {
+                            commit('updateProjects', {
+                                url: server.url,
+                                projects: json
+                            });
+                        });
                     return json;
                 })
                 .catch(function(error) {
