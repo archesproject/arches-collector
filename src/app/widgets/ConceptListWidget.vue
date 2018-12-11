@@ -1,19 +1,19 @@
 <template>
     <div v-if="context=='editor'">
         <div class="editor widget-label">{{widget.label}}</div>
-        <multiselect v-model="selectedOptions" :placeholder="placeholder" :close-on-select="false" :options="options" :multiple="true" :taggable="true" track-by="valueid" label="value" @input="onChange">
-            <template slot="option" slot-scope="props">
-              <div class="option__desc"><span class="option__title"><span v-for="n in props.option.depth-1">&nbsp;&nbsp;&nbsp;&nbsp;</span>{{ props.option.value }}</span></div>
-            </template>
-        </multiselect>
-
+        <multi-select class="test"
+            :selected-options="selectedOptions"
+            :options="options"
+            :placeholder="placeholder"
+            @select="onChange">
+        </multi-select>
     </div>
     <div class="report-widget" v-else-if="context=='report'">
         <ons-row>
             <ons-col class="report widget-label">{{widget.label}}</ons-col>
             <ons-col>
             <div v-for="label in conceptLabels">
-                <div class="report widget-value">{{label.value}}</div>
+                <div class="report widget-value">{{label.text}}</div>
             </div>
             </ons-col>
         </ons-row>
@@ -38,8 +38,8 @@ export default {
             var options = [];
             this.widget.config.options.forEach(function(option){
                 options.push({
-                    value: option[0].value,
-                    valueid: option[0].valueid,
+                    text: option[0].value,
+                    value: option[0].valueid,
                     depth: option[1]
                 })
             })
@@ -47,14 +47,13 @@ export default {
         },
         selectedOptions: {
             get: function() {
-                var self = this;
                 var ret = [];
                 var val = this.value;
-                if(!Array.isArray(this.value)) {
-                    val = [this.value];
+                if(!Array.isArray(val)) {
+                    val = [val];
                 }
                 this.options.forEach(function(option) {
-                    if(val.includes(option.valueid)) {
+                    if(val.includes(option.value)) {
                         ret.push(option);
                     }
                 })
@@ -67,10 +66,10 @@ export default {
         }
     },
     methods: {
-        onChange (value) {
+        onChange (selectedOptions, lastSelectedOption) {
             var ret = [];
-            value.forEach(function(val){
-                ret.push(val.valueid);
+            selectedOptions.forEach(function(option){
+                ret.push(option.value);
             })
             this.$emit('update:value', ret);
         }
@@ -79,4 +78,7 @@ export default {
 </script>
 
 <style scoped>
+    .test > input.search{
+        height: 30px;
+    }
 </style>
