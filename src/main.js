@@ -3,7 +3,6 @@
 import 'onsenui/css/onsenui.css';
 import 'onsenui/css/onsen-css-components.css';
 import './assets/css/fontawesome.min.css';
-import 'vue-multiselect/dist/vue-multiselect.min.css';
 import 'vue-datetime/dist/vue-datetime.css';
 import './assets/css/index.css';
 
@@ -13,7 +12,6 @@ import VueOnsen from 'vue-onsenui';
 import Cordova from './assets/js/cordova';
 import store from './store';
 import router from './router';
-import Multiselect from 'vue-multiselect';
 import underscore from 'underscore';
 import Datetime from 'vue-datetime';
 import ToggleButton from 'vue-js-toggle-button';
@@ -22,9 +20,7 @@ import { ModelSelect } from 'vue-search-select';
 import { MultiSelect } from 'vue-search-select';
 import { ModelListSelect } from 'vue-search-select';
 import { MultiListSelect } from 'vue-search-select';
-import vSelect from 'vue-select';
 
-Vue.component('v-select', vSelect);
 
 // globally registered components
 import PageHeader from './app/shared/components/PageHeader.vue';
@@ -52,7 +48,6 @@ import ResourceInstanceWidget from './app/widgets/ResourceInstanceWidget.vue';
 import NodeValueWidget from './app/widgets/NodeValueWidget.vue';
 import Card from './app/editor/components/Card.vue';
 
-Vue.component('multiselect', Multiselect);
 Vue.component('model-select', ModelSelect);
 Vue.component('multi-select', MultiSelect);
 Vue.component('model-list-select', ModelListSelect);
