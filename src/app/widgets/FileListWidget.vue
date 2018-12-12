@@ -49,7 +49,7 @@ export default {
     },
     methods: {
         init: function(){
-            console.log(this.value)
+            console.log(this.value);
         },
         updateList: function() {
             this.$emit('update:value', ret);
@@ -94,7 +94,6 @@ export default {
             this.$emit('update:value', this.value);
         },
         removePhoto: function(image) {
-            console.log('deleting', image);
             var i = this.value.findIndex(function(item) {return item.file_id === image.file_id});
             this.value.splice(i, 1);
             if (this.tile._attachments[image.file_id]) {
@@ -144,26 +143,7 @@ export default {
         }
     }
 };
-/*
-{
-    "41d064e3-f367-11e8-b0d1-c4b301baab9f": [
-        {
-            "url": "/files/uploadedfiles/Photo_on_3-16-18_at_11.49_AM_2_keJCgpc.jpg",
-            "name": "Photo on 3-16-18 at 11.49 AM #2.jpg",
-            "size": 168641,
-            "type": "image/jpeg",
-            "index": 0,
-            "width": 1080,
-            "height": 720,
-            "status": "uploaded",
-            "content": "blob:http://localhost:8000/96d93563-4953-4f83-aa1a-4a3c24f08ba9",
-            "file_id": "309989c7-f420-11e8-9771-c4b301baab9f",
-            "accepted": true,
-            "lastModified": 1521226186044
-        }
-    ]
-}
-*/
+
 </script>
 
 <style scoped>
