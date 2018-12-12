@@ -28,7 +28,7 @@
         "@mapbox/geojson-extent": "^0.3.2",
         "cordova-android": "^7.0.0",
         "cordova-browser": "^5.0.3",
-        "cordova-ios": "^4.5.4",
+        "cordova-ios": "^4.5.5",
         "cordova-plugin-device": "^2.0.1",
         "cordova-plugin-file": "^6.0.1",
         "cordova-plugin-file-transfer": "^1.7.1",
@@ -137,13 +137,14 @@
             "cordova-plugin-whitelist": {},
             "cordova-plugin-device": {},
             "cordova-plugin-file": {},
+            "cordova-plugin-camera": {},
             "cordova-sqlite-ext": {},
             "cordova-plugin-file-transfer": {}
         },
         "platforms": [
             "browser",
-            "ios",
-            "android"
+            "android",
+            "ios"
         ]
     }
 }
