@@ -1,7 +1,7 @@
 <template>
     <div v-if="context=='editor'">
         <div class="editor widget-label">{{widget.label}}</div>
-        <model-select style="max-width: 87%;" 
+        <model-select
             v-model="selectedOption"
             :options="options"
             :placeholder="placeholder" 
@@ -10,7 +10,7 @@
     </div>
     <ons-row class="report-widget" v-else-if="context=='report'">
         <ons-col class="report widget-label">{{widget.label}}</ons-col>
-        <ons-col class="report widget-value">{{conceptLabel.value}}</ons-col>
+        <ons-col class="report widget-value">{{conceptLabel.text}}</ons-col>
     </ons-row>
 </template>
 
@@ -30,14 +30,14 @@ export default {
     computed: {
         options() {
             var self = this;
-            var options = [];
+            var ret = [];
             this.node.config.options.forEach(function(option){
-                options.push({
-                    text: option.text,
-                    value: option.id
+                ret.push({
+                    value: option.id,
+                    text: option.text
                 })
             })
-            return options;
+            return ret;
         },
         selectedOption: {
             get: function() {
@@ -56,10 +56,10 @@ export default {
         }
     },
     methods: {
-        onChange(value) {
+        onChange(option) {
             var ret = null
-            if(!!value) {
-                ret = value.value;
+            if(!!option) {
+                ret = option.value;
             }
             this.$emit('update:value', ret);
         }
