@@ -1,23 +1,21 @@
 <template>
     <div v-if="context=='editor'">
         <div class="editor widget-label">{{widget.label}}</div>
-        <multi-select class="test"
+        <multi-select
             :selected-options="selectedOptions"
             :options="options"
             :placeholder="placeholder"
             @select="onChange">
         </multi-select>
     </div>
-    <div class="report-widget" v-else-if="context=='report'">
-        <ons-row>
-            <ons-col class="report widget-label">{{widget.label}}</ons-col>
-            <ons-col>
+    <ons-row class="report-widget" v-else-if="context=='report'">
+        <ons-col class="report widget-label">{{widget.label}}</ons-col>
+        <ons-col>
             <div v-for="label in conceptLabels">
                 <div class="report widget-value">{{label.text}}</div>
             </div>
-            </ons-col>
-        </ons-row>
-    </div>
+        </ons-col>
+    </ons-row>
 </template>
 
 
@@ -25,8 +23,8 @@
 import concept from '../shared/mixins/concepts';
 
 export default {
-    name: 'ConceptListWidget',
-    props: ['value', 'widget', 'context'],
+    name: 'ResourceInstanceListWidget',
+    props: ['value', 'widget', 'node', 'context'],
     mixins: [concept],
     data() {
         var local_value = [];
@@ -41,13 +39,14 @@ export default {
     computed: {
         options() {
             var options = [];
-            this.widget.config.options.forEach(function(option){
-                options.push({
-                    text: option[0].value,
-                    value: option[0].valueid,
-                    depth: option[1]
+            if(!!this.node.config.options){
+                this.node.config.options.forEach(function(option){
+                    options.push({
+                        text: option.name,
+                        value: option.id
+                    })
                 })
-            })
+            }
             return options;
         },
         selectedOptions: {
@@ -81,7 +80,4 @@ export default {
 </script>
 
 <style scoped>
-    .test > input.search{
-        height: 30px;
-    }
 </style>

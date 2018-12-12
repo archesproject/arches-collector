@@ -27,8 +27,13 @@ export default {
     props: ['value', 'widget', 'node', 'context'],
     mixins: [concept],
     data() {
+        var local_value = [];
+        if(Array.isArray(this.value)) {
+            local_value = this.value;
+        }
         return {
-            placeholder: this.widget.config.placeholder
+            placeholder: this.widget.config.placeholder,
+            local_value: local_value
         };
     },
     computed: {
@@ -45,10 +50,7 @@ export default {
         selectedOptions: {
             get: function() {
                 var ret = [];
-                var val = this.value;
-                if(!Array.isArray(val)) {
-                    val = [val];
-                }
+                var val = this.local_value;
                 this.options.forEach(function(option) {
                     if(val.includes(option.value)) {
                         ret.push(option);
@@ -68,6 +70,7 @@ export default {
             selectedOptions.forEach(function(option){
                 ret.push(option.value);
             })
+            this.local_value = ret;
             this.$emit('update:value', ret);
         }
     }

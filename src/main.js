@@ -44,6 +44,7 @@ import BooleanWidget from './app/widgets/BooleanWidget.vue';
 import GeojsonFeatureCollectionWidget from './app/widgets/GeojsonFeatureCollectionWidget.vue';
 import FileListWidget from './app/widgets/FileListWidget.vue';
 import ResourceInstanceWidget from './app/widgets/ResourceInstanceWidget.vue';
+import ResourceInstanceListWidget from './app/widgets/ResourceInstanceListWidget.vue';
 import NodeValueWidget from './app/widgets/NodeValueWidget.vue';
 import Card from './app/editor/components/Card.vue';
 
@@ -74,6 +75,7 @@ Vue.component('boolean-widget', BooleanWidget);
 Vue.component('geojson-feature-collection-widget', GeojsonFeatureCollectionWidget);
 Vue.component('file-list-widget', FileListWidget);
 Vue.component('resource-instance-widget', ResourceInstanceWidget);
+Vue.component('resource-instance-list-widget', ResourceInstanceListWidget);
 Vue.component('node-value-widget', NodeValueWidget);
 Vue.component('card', Card);
 // Vue.config.productionTip = false;
