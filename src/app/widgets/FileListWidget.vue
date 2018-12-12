@@ -1,26 +1,35 @@
 <template>
     <div v-if="context=='editor'">
-        <div class="editor widget-label file-widget">{{widget.label}}</div>
-        <ons-row class="file-widget">
+        <div class="editor widget-label">{{widget.label}}</div>
             <ons-col v-if="!value">No images yet collected</ons-col>
-            <ons-col v-if="value">
-                <ons-row v-for="file in value">
-                    <ons-col width="60%">
-                        <v-ons-input width="100%" underbar placeholder="Photo name" v-on:keyup="updateImages" v-model="file.name"></v-ons-input>
-                    </ons-col>
-                    <ons-col width="15%"><img width="55px" height="55px" v-bind:src="thumbnails[file.file_id]"></img></ons-col>
-                    <ons-col width="15%"><v-ons-button @click="removePhoto(file)" class="right"><v-ons-icon class="fa5 fa-trash" icon="fa-trash"></v-ons-icon></v-ons-button></ons-col>
-                </ons-row>
-            </ons-col>
-        </ons-row>
+            <ons-list class="photo-list">
+                <ons-list-item v-for="file in value">
+                  <div class="left">
+                    <img class="list-item__thumbnail" v-bind:src="thumbnails[file.file_id]"></img>
+                  </div>
+                  <div class="center">
+                      <v-ons-input underbar placeholder="Photo name" v-on:keyup="updateImages" v-model="file.name"></v-ons-input>
+                  </div>
+                  <div class="right">
+                      <ons-col width="10%"><v-ons-button @click="removePhoto(file)" class="right"><v-ons-icon class="fa5 fa-trash" icon="fa-trash"></v-ons-icon></v-ons-button></ons-col>
+                  </div>
+                </ons-list-item>
+            </ons-list>
         <ons-row class="file-widget">
             <ons-col><v-ons-button @click="selectPhoto"><v-ons-icon class="folder-icon" icon="ion-folder"></v-ons-icon><span class="btn-text">Select Photo</span></v-ons-button></ons-col>
             <ons-col><v-ons-button @click="getPhoto"><v-ons-icon class="camera-icon" icon="ion-camera"></v-ons-icon><span class="btn-text">Take Photo</span></v-ons-button></ons-col>
         </ons-row>
+
     </div>
     <ons-row class="report-widget" v-else-if="context=='report'">
-        <ons-col class="report widget-label">{{widget.label}}</ons-col>
-        <ons-col class="report widget-value">{{value}}</ons-col>
+        <ons-list class="photo-list">
+            <ons-list-item v-for="file in value">
+              <div class="left">
+                <img class="list-item__thumbnail" v-bind:src="thumbnails[file.file_id]"></img>
+              </div>
+              <div class="center" style="padding-left: 15px">{{file.name}}</div>
+            </ons-list-item>
+        </ons-list>
     </ons-row>
 </template>
 
@@ -124,11 +133,8 @@ export default {
         thumbnails: function(){
             var res = {}
             var self = this;
-            console.log(self.tile._attachments)
             this.value.forEach(function(photo){
-                console.log(photo);
-                if (self.tile._attachments && self.tile._attachments[photo.file_id]) {
-                    console.log('hi', photo.name);
+                if (self.tile._attachments && self.tile._attachments[photo.file_id] && self.tile._attachments[photo.file_id].data) {
                     res[photo.file_id] = "data:image/png;base64," + self.tile._attachments[photo.file_id].data
                 } else {
                     res[photo.file_id] = self.activeServer.url + photo.url;
@@ -162,10 +168,14 @@ export default {
 
 <style scoped>
 .file-widget {
-    padding-top: 5px;
+    padding-top: 20px;
     padding-bottom: 5px;
 }
 .btn-text {
     padding-left: 5px;
+}
+.photo-list {
+    width: 100%;
+    background: none;
 }
 </style>
