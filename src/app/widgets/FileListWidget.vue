@@ -17,7 +17,7 @@
             </ons-list>
         <ons-row class="file-widget">
             <ons-col><v-ons-button @click="selectPhoto"><v-ons-icon class="folder-icon" icon="ion-folder"></v-ons-icon><span class="btn-text">Select Photo</span></v-ons-button></ons-col>
-            <ons-col><v-ons-button @click="getPhoto"><v-ons-icon class="camera-icon" icon="ion-camera"></v-ons-icon><span class="btn-text">Take Photo</span></v-ons-button></ons-col>
+            <ons-col><v-ons-button @click="takePhoto"><v-ons-icon class="camera-icon" icon="ion-camera"></v-ons-icon><span class="btn-text">Take Photo</span></v-ons-button></ons-col>
         </ons-row>
 
     </div>
