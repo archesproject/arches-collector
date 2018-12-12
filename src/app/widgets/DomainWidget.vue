@@ -24,7 +24,8 @@ export default {
     mixins: [concept],
     data() {
         return {
-            placeholder: this.widget.config.placeholder
+            placeholder: this.widget.config.placeholder,
+            local_value: this.value
         };
     },
     computed: {
@@ -44,7 +45,7 @@ export default {
                 var self = this;
                 var ret = {};
                 this.options.forEach(function(option){
-                     if(option.value === self.value){
+                     if(option.value === self.local_value){
                         ret = option;
                     }
                 })
@@ -61,6 +62,7 @@ export default {
             if(!!option) {
                 ret = option.value;
             }
+            this.local_value = ret;
             this.$emit('update:value', ret);
         }
     }
