@@ -23,11 +23,14 @@
                     :open.sync="showSideNav" class="sidenav toolbar-header">
                     <v-ons-page>
                         <v-ons-list style="margin-top: 5px;">
+
                             <v-ons-list-item tappable @click="sync">
-                                <v-ons-icon class="text-color-dark icon" v-if="syncing === false" icon="fa-cloud-download-alt"></v-ons-icon>
-                                <v-ons-icon class="text-color-dark icon" v-if="sync_failed === true" icon="ion-android-alert"></v-ons-icon>
-                                <span class="text-color-dark label right-panel-label">{{sync_btn_text}}</span>
-                            </v-ons-list-item>
+                                <v-ons-icon class="text-color-dark icon" icon="fa-cloud-download-alt"></v-ons-icon>
+                                <div class="menu-text">
+                                    <span class="text-color-dark label right-panel-label">Refresh project data</span>
+                                </div>
+                            </v-ons-list-item @click="">
+                            <v-ons-progress-bar indeterminate v-if="syncing"></v-ons-progress-bar>
                             <v-ons-list-item tappable @click="sortByName">
                                 <v-ons-icon class="text-color-dark icon" icon="fa-sort-alpha-down"></v-ons-icon>
                                 <span class="text-color-dark label right-panel-label">Sort by name</span>
