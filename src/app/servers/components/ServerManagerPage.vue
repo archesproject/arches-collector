@@ -9,9 +9,9 @@
                         <div class="center left-button-text">Sign In</div>
                     </v-ons-toolbar>
 
-                    <v-ons-input class="input" placeholder="My Arches Application URL" float v-model="server.url">
+                    <v-ons-input class="input" placeholder="My Arches Application URL" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" float v-model="server.url">
                     </v-ons-input>
-                    <v-ons-input class="input" placeholder="Nickname" float v-model="server.nickname">
+                    <v-ons-input class="input" placeholder="Nickname" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" float v-model="server.nickname">
                     </v-ons-input>
 
                     <v-ons-button modifier="large" :disabled="disableNext" class="btn-success" v-on:click="next">Next</v-ons-button>
@@ -28,9 +28,9 @@
                         </div>
                     </v-ons-toolbar>
 
-                    <v-ons-input class="input" placeholder="Username" float v-model="server.username">
+                    <v-ons-input class="input" placeholder="Username" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" float v-model="server.username">
                     </v-ons-input>
-                    <v-ons-input class="input" placeholder="Password" float v-model="server.password">
+                    <v-ons-input class="input" placeholder="Password" type="password" float v-model="server.password">
                     </v-ons-input>
 
                     <v-ons-list-item v-if="error">
