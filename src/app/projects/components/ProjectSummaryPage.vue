@@ -52,7 +52,6 @@ export default {
     },
     mounted() {
         var self = this;
-        console.log('mounted');
         this.$store.dispatch('getProjectChanges', this.project.id)
             .finally(function(doc) {
                 self.changes = doc;

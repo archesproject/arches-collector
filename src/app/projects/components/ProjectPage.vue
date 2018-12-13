@@ -49,8 +49,8 @@
                       <v-ons-tabbar swipeable animation="none" :index.sync="activeIndex">
                         <template slot="pages">
                             <select-resource-type-page></select-resource-type-page>
-                            <select-resource-instance-page :project="project" ref="sripage"></select-resource-instance-page>
-                            <project-map-page :project="project"></project-map-page>
+                            <select-resource-instance-page :project="project" :lastsync="lastsync" ref="sripage"></select-resource-instance-page>
+                            <project-map-page :project="project" :lastsync="lastsync"></project-map-page>
                             <project-summary-page :project="project"></project-summary-page>
                         </template>
 
@@ -76,6 +76,7 @@ export default {
             syncing: false,
             sync_failed: false,
             activeIndex: 0,
+            lastsync: '',
             tabs: [
                 {
                     icon: 'fa-plus-circle',
@@ -121,8 +122,8 @@ export default {
                     self.sync_failed = true;
                 })
                 .finally(function(doc) {
-                    console.log('syncing done');
                     self.syncing = false;
+                    self.lastsync = self.project.lastsync;
                 });
         },
         sortByName: function() {
