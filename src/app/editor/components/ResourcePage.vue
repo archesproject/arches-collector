@@ -16,19 +16,19 @@
                             <span style="padding-left: 8px;" class="text-color-dark resource-header">{{headerName.value}}</span>
                         </span>
                         <!-- <span class="text-color-dark resource-header">{{headerName}}</span> -->
-                        
-                        
+
+
                         <!-- <span style="display: flex; flex-direction: column; line-height: 22px;
     padding-top: 6px;" class="text-color-dark resource-header">
                             <span style="display: flex">
                                 {{headerName.value}}<br>{{headerName.label}}
                             </span>
                         </span>   -->
-                        
+
                     </v-ons-toolbar-button>
                 </div>
                 <div class="center">
-                    
+
                 </div>
                 <div class="right">
                     <transition name="fade">
@@ -84,12 +84,11 @@
                           <resource-report-page :project="project" :activeindex="activeindex" v-on:switch-tabs="updateActiveIndex"></resource-report-page>
                           <resource-edit-page v-on:saving="saving = $event" :goBack="goBack"  ref="resource_edit_page"/>
                       </template>
-
-                      <v-ons-tab v-for="(tab, i) in tabs"
-                        :icon="tabs[i].icon"
-                        :label="tabs[i].label"
-                        :badge="tabs[i].badge"
-                        ></v-ons-tab>
+                          <v-ons-tab v-for="(tab, i) in tabs"
+                            :icon="tabs[i].icon"
+                            :label="tabs[i].label"
+                            :badge="tabs[i].badge">
+                          </v-ons-tab>
                     </v-ons-tabbar>
                 </v-ons-splitter-content>
             </v-ons-splitter>
