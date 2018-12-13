@@ -76,6 +76,15 @@ export default {
             return cards;
         }
     },
+    watch: {
+        activeindex: function(val) {
+            // Updating the resourceid triggers an update of this.resourceTiles
+            // This in turn updates the tree with the new tile data
+            if (this.resourceTiles.length === 0) {
+                this.resourceid = this.$store.getters.activeServer.active_resource;
+            }
+        }
+    },
     computed: {
         projectNodegroupIds: {
             get: function() {
@@ -113,7 +122,7 @@ export default {
                 var tree = {
                     cards: []
                 };
-                tree.cards = self.getCards(rootNodegroups)
+                tree.cards = self.getCards(rootNodegroups);
                 return tree;
             }
         }

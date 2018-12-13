@@ -46,6 +46,8 @@ export default {
             }
         },
         segueToEditor: function(nodegroup, tile) {
+            // TODO This function is currently unused, but intended navigate
+            // users to the card in the editor where they manage sub cards/tiles
             this.$store.getters.activeServer.card_nav_stack.unshift({
                 card: nodegroup.card,
                 tile: tile,
