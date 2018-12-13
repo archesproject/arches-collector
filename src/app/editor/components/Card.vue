@@ -66,11 +66,6 @@ export default {
             set: function(val) {
                 this.activeIndex = val;
             }
-        },
-        tiles: {
-            get: function() {
-                return this.$store.getters.tiles;
-            }
         }
     }
 };
