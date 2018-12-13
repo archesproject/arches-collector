@@ -81,7 +81,8 @@ export default {
             // Updating the resourceid triggers an update of this.resourceTiles
             // This in turn updates the tree with the new tile data
             if (this.resourceTiles.length === 0) {
-                this.resourceid = this.$store.getters.activeServer.active_resource;
+                var resourceid = this.$store.getters.activeServer.active_resource;
+                this.resourceid = resourceid;
             }
         }
     },
@@ -115,14 +116,20 @@ export default {
                 /*
                  * Build an array of nodegroups with its card and child nodegroups
                  */
-                var self = this;
-                var rootNodegroups = this.allNodegroups.filter(function(nodegroup) {
-                    return nodegroup.parentnodegroup_id === null && self.projectNodegroupIds.indexOf(nodegroup.nodegroupid) > -1;
-                });
                 var tree = {
                     cards: []
                 };
-                tree.cards = self.getCards(rootNodegroups);
+                if (this.activeindex !== null) {
+                    // TODO This if statement is here because activeindex is reactive,
+                    // It forces a refresh of the card tree when the active tab is changed.
+                    // It would be better if there was a different property repersenting tile state
+                    // could be used to update a card.
+                    var self = this;
+                    var rootNodegroups = this.allNodegroups.filter(function(nodegroup) {
+                        return nodegroup.parentnodegroup_id === null && self.projectNodegroupIds.indexOf(nodegroup.nodegroupid) > -1;
+                    });
+                    tree.cards = self.getCards(rootNodegroups);
+                }
                 return tree;
             }
         }
