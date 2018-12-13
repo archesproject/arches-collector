@@ -36,7 +36,6 @@ export default {
     },
     watch: {
         lastsync: function(val) {
-            console.log('last sync', val);
             this.getResourceData();
         }
     },

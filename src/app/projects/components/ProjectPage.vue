@@ -105,9 +105,6 @@ export default {
         };
     },
     computed: {
-        sync_btn_text() {
-            return (this.syncing ? 'Syncing...' : (this.sync_failed ? 'Sync Failed' : (this.project.lastsync.date === '' ? 'Join Project' : 'Sync Now')));
-        },
         title() {
             return this.tabs[this.activeIndex].label;
         }
