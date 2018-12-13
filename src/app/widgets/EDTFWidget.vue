@@ -1,7 +1,7 @@
 <template>
     <div v-if="context=='editor'">
         <div class="editor widget-label">{{widget.label}}</div>
-        <input :value="value" placeholder="derive from configs" @input="$emit('update:value', $event.target.value);">
+        <input :value="value" :placeholder="placeholder" @input="$emit('update:value', $event.target.value);">
     </div>
     <ons-row class="report-widget" v-else-if="context=='report'">
         <ons-col class="report widget-label">{{widget.label}}</ons-col>
@@ -15,7 +15,9 @@ export default {
     name: 'EDTFWidget',
     props: ['value', 'widget', 'context'],
     data() {
-        return {};
+        return {
+            placeholder: this.widget.config.placeholder
+        };
     },
     methods: {
     },
