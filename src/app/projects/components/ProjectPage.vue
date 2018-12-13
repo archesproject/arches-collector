@@ -23,11 +23,14 @@
                     :open.sync="showSideNav" class="sidenav toolbar-header">
                     <v-ons-page>
                         <v-ons-list style="margin-top: 5px;">
+
                             <v-ons-list-item tappable @click="sync">
-                                <v-ons-icon class="text-color-dark icon" v-if="syncing === false" icon="fa-cloud-download-alt"></v-ons-icon>
-                                <v-ons-icon class="text-color-dark icon" v-if="sync_failed === true" icon="ion-android-alert"></v-ons-icon>
-                                <span class="text-color-dark label right-panel-label">{{sync_btn_text}}</span>
-                            </v-ons-list-item>
+                                <v-ons-icon class="text-color-dark icon" icon="fa-cloud-download-alt"></v-ons-icon>
+                                <div class="menu-text">
+                                    <span class="text-color-dark label right-panel-label">Refresh project data</span>
+                                </div>
+                            </v-ons-list-item @click="">
+                            <v-ons-progress-bar indeterminate v-if="syncing"></v-ons-progress-bar>
                             <v-ons-list-item tappable @click="sortByName">
                                 <v-ons-icon class="text-color-dark icon" icon="fa-sort-alpha-down"></v-ons-icon>
                                 <span class="text-color-dark label right-panel-label">Sort by name</span>
@@ -49,8 +52,8 @@
                       <v-ons-tabbar swipeable animation="none" :index.sync="activeIndex">
                         <template slot="pages">
                             <select-resource-type-page></select-resource-type-page>
-                            <select-resource-instance-page :project="project" ref="sripage"></select-resource-instance-page>
-                            <project-map-page :project="project"></project-map-page>
+                            <select-resource-instance-page :project="project" :lastsync="lastsync" ref="sripage"></select-resource-instance-page>
+                            <project-map-page :project="project" :lastsync="lastsync"></project-map-page>
                             <project-summary-page :project="project"></project-summary-page>
                         </template>
 
@@ -76,6 +79,7 @@ export default {
             syncing: false,
             sync_failed: false,
             activeIndex: 0,
+            lastsync: '',
             tabs: [
                 {
                     icon: 'fa-plus-circle',
@@ -121,8 +125,8 @@ export default {
                     self.sync_failed = true;
                 })
                 .finally(function(doc) {
-                    console.log('syncing done');
                     self.syncing = false;
+                    self.lastsync = self.project.lastsync;
                 });
         },
         sortByName: function() {

@@ -23,7 +23,7 @@
 <script>
 export default {
     name: 'SelectResourceInstancePage',
-    props: ['project'],
+    props: ['project', 'lastsync'],
     data() {
         return {
             state: 'initial',
@@ -33,6 +33,12 @@ export default {
             sortValue: 'editDate',
             filter: ''
         };
+    },
+    watch: {
+        lastsync: function(val) {
+            console.log('last sync', val);
+            this.getResourceData();
+        }
     },
     computed: {
         resource_instances: function() {
@@ -88,16 +94,21 @@ export default {
             });
         },
         getResourceData: function() {
+            var self = this;
             return this.$store.dispatch(
                 'getProjectResources',
                 this.$store.getters.activeProject.id
             ).then((res) => {
-                this.instances = res['docs'];
+                self.instances = [];
+                res['docs'].forEach(function(doc){
+                    if (self.resource_types[doc.graph_id]) {
+                        self.instances.push(doc);
+                    }
+                });
             });
         },
         sortResources: function(passeddata) {}
-
-    }
+    },
 };
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
