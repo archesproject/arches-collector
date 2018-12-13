@@ -30,7 +30,7 @@
 
                     <v-ons-input class="input" placeholder="Username" float v-model="server.username">
                     </v-ons-input>
-                    <v-ons-input class="input" placeholder="Password" float v-model="server.password">
+                    <v-ons-input class="input" placeholder="Password" type="password" float v-model="server.password">
                     </v-ons-input>
 
                     <v-ons-list-item v-if="error">
