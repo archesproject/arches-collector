@@ -402,14 +402,17 @@ var store = new Vuex.Store({
         },
         updateProjects: function(state, serverDoc) {
             var server = store.getters.server(serverDoc.url);
-            var serverProjectIds = serverDoc.projects.map(function(p) { return p.id; });
+            var remoteProjectIds = serverDoc.projects.map(function(p) { return p.id; });
             for (var projectid in server.projects) {
-                if (serverProjectIds.indexOf(projectid) < 0) {
+                Vue.set(server.projects[projectid], 'deleted', false);
+                if (remoteProjectIds.indexOf(projectid) < 0) {
                     server.projects[projectid].deleted = true;
                 }
             };
             serverDoc.projects.forEach(function(project) {
-                Vue.set(server.projects, project.id, project);
+                if (server.projects.hasOwnProperty(project.id) === false) {
+                    Vue.set(server.projects, project.id, project);
+                }
             });
             store.dispatch('saveServerInfo');
         },
@@ -664,7 +667,7 @@ var store = new Vuex.Store({
             }
             getChildTiles(tile);
             console.log('childTiles', childTiles)
-            
+
             var project = store.getters.activeProject;
             return pouchDBs.deleteTiles(project.id, childTiles)
             .then(function(){
