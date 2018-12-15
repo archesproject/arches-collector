@@ -348,7 +348,7 @@ export default {
                 parenttile_id: parentTile ? parentTile.tileid : null,
                 provisionaledits: '',
                 resourceinstance_id: this.resourceid,
-                sortorder: '',
+                sortorder: 0,
                 tileid: '',
                 type: 'tile',
                 _id: ''
