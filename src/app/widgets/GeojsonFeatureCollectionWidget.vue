@@ -47,7 +47,6 @@ export default {
             });
         },
         updateValue: function() {
-            console.log(this.draw);
             this.value = this.draw.getAll();
             this.$emit('update:value', this.value);
         }
