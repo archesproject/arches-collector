@@ -1,7 +1,9 @@
 <template>
     <div v-if="context=='editor'">
         <div class="editor widget-label">{{widget.label}}</div>
-        <input :value="value" placeholder="derive from configs" @input="$emit('update:value', $event.target.value);">
+        <div class="map-wrapper">
+            <project-map></project-map>
+        </div>
     </div>
     <ons-row class="report-widget" v-else-if="context=='report'">
         <ons-col class="report widget-label">{{widget.label}}</ons-col>
@@ -25,4 +27,7 @@ export default {
 </script>
 
 <style scoped>
+    .map-wrapper {
+        height: 200px;
+    }
 </style>
