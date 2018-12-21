@@ -1,8 +1,13 @@
 <template>
     <div v-if="context=='editor'">
         <div class="editor widget-label">{{widget.label}}</div>
-        <div class="map-wrapper">
-            <project-map v-on:map-init="mapInit"></project-map>
+        <div class="map-wrapper" v-bind:class="{fullscreen: fullscreenActive}">
+            <project-map v-on:map-init="mapInit" :extent="bounds"></project-map>
+        </div>
+        <div class="fullscreen-control-template">
+            <div class="mapboxgl-ctrl mapboxgl-ctrl-group">
+                <button class="mapboxgl-ctrl-icon mapboxgl-ctrl-fullscreen" type="button" v-on:click="toggleFullscreen"></button>
+            </div>
         </div>
     </div>
     <ons-row class="report-widget" v-else-if="context=='report'">
@@ -16,16 +21,40 @@
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 
+const mapboxgl = window.mapboxgl;
+
 export default {
     name: 'GeojsonFeatureCollectionWidget',
     props: ['value', 'widget', 'context'],
     data() {
-        return {};
+        var bounds = this.$store.getters.activeProject.bounds;
+        if (typeof this.value === 'object') {
+            bounds = this.value;
+        }
+        return {
+            bounds: bounds,
+            fullscreenActive: false
+        };
     },
     methods: {
         mapInit: function(map) {
             var self = this;
+
+            class FullscreenControl {
+                onAdd(map) {
+                    this._map = map;
+                    this._container = self.$el.querySelector('.fullscreen-control-template div');
+                    return this._container;
+                }
+
+                onRemove() {
+                    this._container.parentNode.removeChild(this._container);
+                    this._map = undefined;
+                }
+            }
+
             this.map = map;
+            map.addControl(new FullscreenControl());
             this.draw = new MapboxDraw({
                 controls: {
                     'combine_features': false,
@@ -49,6 +78,13 @@ export default {
         updateValue: function() {
             this.value = this.draw.getAll();
             this.$emit('update:value', this.value);
+        },
+        toggleFullscreen: function() {
+            var self = this;
+            this.fullscreenActive = !this.fullscreenActive;
+            setTimeout(function() {
+                self.map.resize();
+            }, 100);
         }
     }
 };
@@ -57,5 +93,14 @@ export default {
 <style scoped>
     .map-wrapper {
         height: 260px;
+    }
+    .fullscreen.map-wrapper {
+        height: auto;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        z-index: 10;
     }
 </style>

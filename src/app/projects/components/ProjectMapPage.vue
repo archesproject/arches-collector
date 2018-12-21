@@ -1,6 +1,6 @@
 <template>
     <v-ons-page>
-        <project-map></project-map>
+        <project-map :extent="project.bounds"></project-map>
     </v-ons-page>
 </template>
 

@@ -36,7 +36,7 @@ const mapboxgl = window.mapboxgl;
 
 export default {
     name: 'ProjectMap',
-    props: [],
+    props: ['extent'],
     data() {
         var project = this.$store.getters.activeProject;
         return {
@@ -44,7 +44,7 @@ export default {
             mapId: `project-map-${uuidv4()}`,
             bounds: new mapboxgl.LngLatBounds(
                 geojsonExtent(
-                    project.bounds
+                    this.extent
                 )
             ),
             resourceGeoJSON: {
@@ -81,6 +81,12 @@ export default {
             var map = new mapboxgl.Map(this.getMapConfig(false));
             map.on('load', function() {
                 map.addControl(new mapboxgl.NavigationControl());
+                map.addControl(new mapboxgl.GeolocateControl({
+                    positionOptions: {
+                        enableHighAccuracy: true
+                    },
+                    trackUserLocation: true
+                }));
                 self.setMapExtent(map);
                 var resources = JSON.parse(JSON.stringify(self.resourceGeoJSON));
                 map.addSource('resources', {type: 'geojson', data: resources});
@@ -93,6 +99,12 @@ export default {
             return new mapboxgl.OfflineMap(this.getMapConfig(true))
                 .then((map) => {
                     map.addControl(new mapboxgl.NavigationControl());
+                    map.addControl(new mapboxgl.GeolocateControl({
+                        positionOptions: {
+                            enableHighAccuracy: true
+                        },
+                        trackUserLocation: true
+                    }));
                     this.setMapExtent(map);
                     this.addResourceMarkers(map);
                     this.$emit('map-init', map);
