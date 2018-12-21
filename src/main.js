@@ -24,6 +24,7 @@ import { MultiListSelect } from 'vue-search-select';
 // globally registered components
 import PageHeader from './app/shared/components/PageHeader.vue';
 import PageHeaderLayout from './app/shared/components/PageHeaderLayout.vue';
+import ProjectMap from './app/shared/components/ProjectMap.vue';
 import ProjectSummaryPage from './app/projects/components/ProjectSummaryPage.vue';
 import ProjectMapPage from './app/projects/components/ProjectMapPage.vue';
 import SelectResourceInstancePage from './app/projects/components/SelectResourceInstancePage.vue';
@@ -55,6 +56,7 @@ Vue.component('multi-list-select', MultiListSelect);
 
 Vue.component('page-header', PageHeader);
 Vue.component('page-header-layout', PageHeaderLayout);
+Vue.component('project-map', ProjectMap);
 Vue.component('project-summary-page', ProjectSummaryPage);
 Vue.component('project-map-page', ProjectMapPage);
 Vue.component('select-resource-instance-page', SelectResourceInstancePage);
