@@ -101,8 +101,8 @@ export default {
                     'type': 'fill',
                     'source': 'report-data',
                     'paint': {
-                        'fill-color': 'rgb(0, 150, 185)',
-                        'fill-opacity': 0.2
+                        'fill-color': 'rgb(0, 169, 208)',
+                        'fill-opacity': 0.1
                     }
                 });
                 map.addLayer({
@@ -110,7 +110,8 @@ export default {
                     'type': 'line',
                     'source': 'report-data',
                     'paint': {
-                        'line-color': 'rgb(0, 150, 185)'
+                        'line-color': 'rgb(0, 169, 208)',
+                        'line-width': 2
                     }
                 });
                 map.addLayer({
@@ -118,7 +119,7 @@ export default {
                     'type': 'circle',
                     'source': 'report-data',
                     'paint': {
-                        'circle-color': 'rgb(0, 150, 185)'
+                        'circle-color': 'rgb(0, 169, 208)'
                     },
                     "filter": ["==", "$type", "Point"]
                 });
