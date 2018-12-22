@@ -10,10 +10,19 @@
             </div>
         </div>
     </div>
-    <ons-row class="report-widget" v-else-if="context=='report'">
+    <div class="report-widget" v-else-if="context=='report'">
         <ons-col class="report widget-label">{{widget.label}}</ons-col>
-        <ons-col class="report widget-value">{{value}}</ons-col>
-    </ons-row>
+        <ons-col class="report widget-value">
+            <div class="map-wrapper" v-bind:class="{fullscreen: fullscreenActive}">
+                <project-map v-on:map-init="mapInit" :extent="bounds"></project-map>
+                <div class="fullscreen-control-template">
+                    <div class="mapboxgl-ctrl mapboxgl-ctrl-group">
+                        <button class="mapboxgl-ctrl-icon mapboxgl-ctrl-fullscreen" type="button" v-on:click="toggleFullscreen"></button>
+                    </div>
+                </div>
+            </div>
+        </ons-col>
+    </div>
 </template>
 
 
@@ -55,25 +64,65 @@ export default {
 
             this.map = map;
             map.addControl(new FullscreenControl());
-            this.draw = new MapboxDraw({
-                controls: {
-                    'combine_features': false,
-                    'uncombine_features': false
+            if (this.context=='editor') {
+                this.draw = new MapboxDraw({
+                    controls: {
+                        'combine_features': false,
+                        'uncombine_features': false
+                    }
+                });
+                this.map.addControl(this.draw, 'top-left');
+                if (typeof this.value === 'object') {
+                    this.draw.add(this.value);
                 }
-            });
-            this.map.addControl(this.draw, 'top-left');
-            if (typeof this.value === 'object') {
-                this.draw.add(this.value);
+                map.on('draw.create', function() {
+                    self.updateValue();
+                });
+                map.on('draw.update', function() {
+                    self.updateValue();
+                });
+                map.on('draw.delete', function() {
+                    self.updateValue();
+                });
+            } else {
+                var value = this.value
+                if (typeof value !== 'object') {
+                    value = {
+                        type: 'FeatureCollection',
+                        features: []
+                    };
+                }
+                map.addSource('report-data', {
+                    'type': 'geojson',
+                    'data': value
+                })
+                map.addLayer({
+                    'id': 'report-fill',
+                    'type': 'fill',
+                    'source': 'report-data',
+                    'paint': {
+                        'fill-color': 'rgb(0, 150, 185)',
+                        'fill-opacity': 0.2
+                    }
+                });
+                map.addLayer({
+                    'id': 'report-line',
+                    'type': 'line',
+                    'source': 'report-data',
+                    'paint': {
+                        'line-color': 'rgb(0, 150, 185)'
+                    }
+                });
+                map.addLayer({
+                    'id': 'report-circle',
+                    'type': 'circle',
+                    'source': 'report-data',
+                    'paint': {
+                        'circle-color': 'rgb(0, 150, 185)'
+                    },
+                    "filter": ["==", "$type", "Point"]
+                });
             }
-            map.on('draw.create', function() {
-                self.updateValue();
-            });
-            map.on('draw.update', function() {
-                self.updateValue();
-            });
-            map.on('draw.delete', function() {
-                self.updateValue();
-            });
         },
         updateValue: function() {
             this.value = this.draw.getAll();
@@ -93,6 +142,7 @@ export default {
 <style scoped>
     .map-wrapper {
         height: 260px;
+        margin-right: 20px;
     }
     .fullscreen.map-wrapper {
         height: auto;
@@ -102,5 +152,6 @@ export default {
         right: 0;
         left: 0;
         z-index: 10;
+        margin: 0;
     }
 </style>
