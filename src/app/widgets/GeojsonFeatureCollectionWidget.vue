@@ -119,7 +119,10 @@ export default {
                     'type': 'circle',
                     'source': 'report-data',
                     'paint': {
-                        'circle-color': 'rgb(0, 169, 208)'
+                        'circle-color': 'rgb(0, 169, 208)',
+                        'circle-radius': 3,
+                        'circle-stroke-width': 2,
+                        'circle-stroke-color': 'white'
                     },
                     "filter": ["==", "$type", "Point"]
                 });
