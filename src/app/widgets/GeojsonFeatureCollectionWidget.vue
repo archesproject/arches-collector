@@ -142,6 +142,9 @@ export default {
 <style scoped>
     .map-wrapper {
         height: 260px;
+    }
+
+    .report .map-wrapper {
         margin-right: 20px;
     }
     .fullscreen.map-wrapper {
