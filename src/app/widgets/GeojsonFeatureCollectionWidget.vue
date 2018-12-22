@@ -145,6 +145,7 @@ export default {
     }
 
     .report .map-wrapper {
+        margin-top: 5px;
         margin-right: 20px;
     }
     .fullscreen.map-wrapper {
