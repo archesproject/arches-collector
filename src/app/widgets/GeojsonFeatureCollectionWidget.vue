@@ -36,23 +36,21 @@ export default {
     name: 'GeojsonFeatureCollectionWidget',
     props: ['value', 'widget', 'context'],
     data() {
-        var bounds = this.$store.getters.activeProject.bounds;
-        if (typeof this.value === 'object') {
-            bounds = this.value;
-        }
+        const bounds = this.$store.getters.activeProject.bounds;
         return {
-            bounds: bounds,
+            bounds: typeof this.value === 'object' ? this.value : bounds,
             fullscreenActive: false
         };
     },
     methods: {
         mapInit: function(map) {
-            var self = this;
+            const self = this;
 
             class FullscreenControl {
                 onAdd(map) {
+                    const tmpSelector = '.fullscreen-control-template div';
                     this._map = map;
-                    this._container = self.$el.querySelector('.fullscreen-control-template div');
+                    this._container = self.$el.querySelector(tmpSelector);
                     return this._container;
                 }
 
@@ -64,6 +62,7 @@ export default {
 
             this.map = map;
             map.addControl(new FullscreenControl());
+
             if (this.context=='editor') {
                 this.draw = new MapboxDraw({
                     controls: {
@@ -85,47 +84,44 @@ export default {
                     self.updateValue();
                 });
             } else {
-                var value = this.value
-                if (typeof value !== 'object') {
-                    value = {
+                const color = '#3bb2d0';
+                let style = map.getStyle();
+                style.sources['report-data'] = {
+                    'type': 'geojson',
+                    'data': typeof this.value === 'object' ? this.value : {
                         type: 'FeatureCollection',
                         features: []
-                    };
-                }
-                map.addSource('report-data', {
-                    'type': 'geojson',
-                    'data': value
-                })
-                map.addLayer({
+                    }
+                };
+                style.layers.push({
                     'id': 'report-fill',
                     'type': 'fill',
                     'source': 'report-data',
                     'paint': {
-                        'fill-color': 'rgb(0, 169, 208)',
+                        'fill-color': color,
                         'fill-opacity': 0.1
                     }
-                });
-                map.addLayer({
+                }, {
                     'id': 'report-line',
                     'type': 'line',
                     'source': 'report-data',
                     'paint': {
-                        'line-color': 'rgb(0, 169, 208)',
+                        'line-color': color,
                         'line-width': 2
                     }
-                });
-                map.addLayer({
+                }, {
                     'id': 'report-circle',
                     'type': 'circle',
                     'source': 'report-data',
                     'paint': {
-                        'circle-color': 'rgb(0, 169, 208)',
+                        'circle-color': color,
                         'circle-radius': 3,
                         'circle-stroke-width': 2,
                         'circle-stroke-color': 'white'
                     },
                     "filter": ["==", "$type", "Point"]
                 });
+                map.setStyle(style);
             }
         },
         updateValue: function() {
@@ -133,7 +129,7 @@ export default {
             this.$emit('update:value', this.value);
         },
         toggleFullscreen: function() {
-            var self = this;
+            const self = this;
             this.fullscreenActive = !this.fullscreenActive;
             setTimeout(function() {
                 self.map.resize();
@@ -147,7 +143,6 @@ export default {
     .map-wrapper {
         height: 260px;
     }
-
     .report .map-wrapper {
         margin-top: 5px;
         margin-right: 20px;
