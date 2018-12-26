@@ -84,10 +84,7 @@ export default {
                 let style = map.getStyle();
                 style.sources['report-data'] = {
                     'type': 'geojson',
-                    'data': typeof this.value === 'object' ? this.value : {
-                        type: 'FeatureCollection',
-                        features: []
-                    }
+                    'data': this.featureCollection
                 };
                 style.layers.push({
                     'id': 'report-fill',
