@@ -62,9 +62,10 @@ export default {
     },
     methods: {
         mapInit(map) {
-            const fs = this.$el.querySelector('.fullscreen-control div');
             this.map = map;
-            map.addControl(new FullscreenControl(fs));
+            map.addControl(new FullscreenControl(
+                this.$el.querySelector('.fullscreen-control div')
+            ));
             if (this.context=='editor') {
                 this.draw = new MapboxDraw({
                     controls: {
@@ -123,6 +124,9 @@ export default {
                 this.map.resize();
             }, 10);
         }
+    },
+    destroyed() {
+        this.map = undefined;
     }
 };
 </script>
