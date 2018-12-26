@@ -33,13 +33,11 @@ class FullscreenControl {
     constructor(container) {
         this._container = container;
     }
-    onAdd(map) {
-        this._map = map;
+    onAdd() {
         return this._container;
     }
     onRemove() {
         this._container.parentNode.removeChild(this._container);
-        this._map = undefined;
     }
 }
 
@@ -125,7 +123,7 @@ export default {
             this.fullscreenActive = !this.fullscreenActive;
             setTimeout(() => {
                 this.map.resize();
-            }, 100);
+            }, 10);
         }
     }
 };
