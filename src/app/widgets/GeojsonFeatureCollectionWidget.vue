@@ -74,9 +74,7 @@ export default {
                 });
                 this.map.addControl(this.draw, 'top-left');
                 this.draw.add(this.featureCollection);
-                map.on('draw.create', () => this.updateValue());
-                map.on('draw.update', () => this.updateValue());
-                map.on('draw.delete', () => this.updateValue());
+                map.on('draw.render', () => this.updateValue());
             } else {
                 const color = '#3bb2d0';
                 let style = map.getStyle();
