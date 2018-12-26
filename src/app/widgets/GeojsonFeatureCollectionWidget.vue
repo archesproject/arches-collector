@@ -31,7 +31,7 @@ const mapboxgl = window.mapboxgl;
 
 class FullscreenControl {
     constructor(container) {
-        this._container = container
+        this._container = container;
     }
     onAdd(map) {
         this._map = map;
