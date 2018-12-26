@@ -251,9 +251,6 @@ export default {
                 self.mapOnlineInit
             );
         }
-    },
-    destroyed() {
-        this.map = undefined;
     }
 };
 </script>

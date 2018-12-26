@@ -126,6 +126,7 @@ export default {
         }
     },
     destroyed() {
+        this.draw = undefined;
         this.map = undefined;
     }
 };
