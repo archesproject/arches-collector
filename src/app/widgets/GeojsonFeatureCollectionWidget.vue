@@ -71,15 +71,14 @@ export default {
         }
     },
     watch: {
-        featureCollection: function(value) {
+        featureCollection(value) {
             if (this.map) {
-                if (this.context === 'editor') {
-                    this.draw.set(this.featureCollection);
-                } else {
-                    let source = this.map.getSource('report-data');
-                    source.setData(this.featureCollection);
-                }
+                if (this.context === 'editor') this.draw.set(value);
+                else this.map.getSource('report-data').setData(value);
             }
+        },
+        fullscreenActive() {
+            if (this.map) setTimeout(() => this.map.resize(), 10);
         }
     },
     methods: {
@@ -141,9 +140,6 @@ export default {
         },
         toggleFullscreen() {
             this.fullscreenActive = !this.fullscreenActive;
-            setTimeout(() => {
-                this.map.resize();
-            }, 10);
         }
     },
     destroyed() {
