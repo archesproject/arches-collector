@@ -28,49 +28,8 @@
 <script>
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
-
-class FullscreenControl {
-    constructor(container) {
-        this._container = container;
-    }
-    onAdd() {
-        return this._container;
-    }
-    onRemove() {
-        this._container.parentNode.removeChild(this._container);
-    }
-}
-
-const color = '#3bb2d0';
-const reportLayers = [{
-    'id': 'report-fill',
-    'type': 'fill',
-    'source': 'report-data',
-    'paint': {
-        'fill-color': color,
-        'fill-opacity': 0.1
-    },
-    "filter": ["==", "$type", "Polygon"]
-}, {
-    'id': 'report-line',
-    'type': 'line',
-    'source': 'report-data',
-    'paint': {
-        'line-color': color,
-        'line-width': 2
-    }
-}, {
-    'id': 'report-circle',
-    'type': 'circle',
-    'source': 'report-data',
-    'paint': {
-        'circle-color': color,
-        'circle-radius': 3,
-        'circle-stroke-width': 2,
-        'circle-stroke-color': 'white'
-    },
-    "filter": ["==", "$type", "Point"]
-}];
+import GenericControl from '../../assets/map/GenericControl';
+import reportLayers from '../../assets/map/report_layers.json';
 
 export default {
     name: 'GeojsonFeatureCollectionWidget',
@@ -107,7 +66,7 @@ export default {
     methods: {
         mapInit(map) {
             this.map = map;
-            map.addControl(new FullscreenControl(
+            map.addControl(new GenericControl(
                 this.$el.querySelector('.fullscreen-control div')
             ));
             if (this.context === 'editor') this.initDraw();

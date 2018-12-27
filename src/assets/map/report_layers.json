@@ -1,0 +1,29 @@
+[{
+    "id": "report-fill",
+    "type": "fill",
+    "source": "report-data",
+    "paint": {
+        "fill-color": "#3bb2d0",
+        "fill-opacity": 0.1
+    },
+    "filter": ["==", "$type", "Polygon"]
+}, {
+    "id": "report-line",
+    "type": "line",
+    "source": "report-data",
+    "paint": {
+        "line-color": "#3bb2d0",
+        "line-width": 2
+    }
+}, {
+    "id": "report-circle",
+    "type": "circle",
+    "source": "report-data",
+    "paint": {
+        "circle-color": "#3bb2d0",
+        "circle-radius": 3,
+        "circle-stroke-width": 2,
+        "circle-stroke-color": "white"
+    },
+    "filter": ["==", "$type", "Point"]
+}]
