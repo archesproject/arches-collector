@@ -55,15 +55,15 @@ export default {
     name: 'GeojsonFeatureCollectionWidget',
     props: ['value', 'widget', 'context'],
     data() {
-        return {
-            fullscreenActive: false,
-            featureCollection: typeof this.value === 'object' ? this.value : {
-                type: 'FeatureCollection',
-                features: []
-            }
-        };
+        return { fullscreenActive: false };
     },
     computed: {
+        featureCollection() {
+            return typeof this.value === 'object' ? this.value : {
+                type: 'FeatureCollection',
+                features: []
+            };
+        },
         bounds() {
             const bounds = this.$store.getters.activeProject.bounds;
             const fc = this.featureCollection;
@@ -71,16 +71,14 @@ export default {
         }
     },
     watch: {
-        value: function(value) {
-            this.featureCollection = typeof value === 'object' ? value : {
-                type: 'FeatureCollection',
-                features: []
-            };
-            if (this.context === 'editor') {
-                this.draw.set(this.featureCollection);
-            } else {
-                let source = this.map.getSource('report-data');
-                source.setData(this.featureCollection);
+        featureCollection: function(value) {
+            if (this.map) {
+                if (this.context === 'editor') {
+                    this.draw.set(this.featureCollection);
+                } else {
+                    let source = this.map.getSource('report-data');
+                    source.setData(this.featureCollection);
+                }
             }
         }
     },
