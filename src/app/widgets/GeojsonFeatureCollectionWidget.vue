@@ -88,8 +88,9 @@ export default {
             };
         },
         bounds() {
-            const bounds = this.$store.getters.activeProject.bounds;
-            return this.featureCollection.features.length > 0 ? this.featureCollection : bounds;
+            return this.featureCollection.features.length > 0 ?
+                this.featureCollection :
+                this.$store.getters.activeProject.bounds;
         }
     },
     watch: {
