@@ -96,9 +96,7 @@ export default {
                 });
                 this.map.addControl(this.draw, 'top-left');
                 this.draw.add(this.featureCollection);
-                map.on('draw.render', () => {
-                    this.$emit('update:value', this.draw.getAll());
-                });
+                map.on('draw.render', () => this.updateDrawings());
             } else {
                 const color = '#3bb2d0';
                 let style = map.getStyle();
@@ -137,6 +135,9 @@ export default {
                 });
                 map.setStyle(style);
             }
+        },
+        updateDrawings() {
+            this.$emit('update:value', this.draw.getAll());
         },
         toggleFullscreen() {
             this.fullscreenActive = !this.fullscreenActive;
