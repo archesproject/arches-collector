@@ -1,7 +1,7 @@
 <template>
 <div>
-    <div class="fullscreen-control">
-        <div class="mapboxgl-ctrl mapboxgl-ctrl-group">
+    <div class="map-controls">
+        <div class="mapboxgl-ctrl mapboxgl-ctrl-group fullscreen-control">
             <button class="mapboxgl-ctrl-icon" type="button" v-on:click="toggleFullscreen" v-bind:class="{
                         'mapboxgl-ctrl-shrink': fullscreenActive,
                         'mapboxgl-ctrl-fullscreen': !fullscreenActive
@@ -65,10 +65,9 @@ export default {
     },
     methods: {
         mapInit(map) {
+            const fullscreenControl = this.$el.querySelector('.fullscreen-control');
             this.map = map;
-            map.addControl(new GenericControl(
-                this.$el.querySelector('.fullscreen-control div')
-            ));
+            map.addControl(new GenericControl(fullscreenControl));
             if (this.context === 'editor') this.initDraw();
             else this.initReport();
         },
@@ -110,12 +109,10 @@ export default {
 .map-wrapper {
     height: 260px;
 }
-
 .report .map-wrapper {
     margin-top: 5px;
     margin-right: 20px;
 }
-
 .fullscreen.map-wrapper {
     height: auto;
     position: absolute;
@@ -126,8 +123,7 @@ export default {
     z-index: 10;
     margin: 0;
 }
-
-.fullscreen-control {
+.map-controls {
     display: none;
 }
 </style>

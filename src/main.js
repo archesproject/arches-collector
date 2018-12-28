@@ -15,11 +15,7 @@ import underscore from 'underscore';
 import Datetime from 'vue-datetime';
 import ToggleButton from 'vue-js-toggle-button';
 import VueTouch from 'vue-touch';
-import { ModelSelect } from 'vue-search-select';
-import { MultiSelect } from 'vue-search-select';
-import { ModelListSelect } from 'vue-search-select';
-import { MultiListSelect } from 'vue-search-select';
-
+import { ModelSelect, MultiSelect, ModelListSelect, MultiListSelect } from 'vue-search-select';
 
 // globally registered components
 import PageHeader from './app/shared/components/PageHeader.vue';
