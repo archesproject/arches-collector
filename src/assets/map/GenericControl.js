@@ -1,4 +1,4 @@
-class GenericControl {
+export default class GenericControl {
     constructor(container) {
         this._container = container;
     }
@@ -9,5 +9,3 @@ class GenericControl {
         this._container.parentNode.removeChild(this._container);
     }
 }
-
-export default GenericControl;
