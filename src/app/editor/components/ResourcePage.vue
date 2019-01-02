@@ -40,7 +40,7 @@
                 </div>
             </v-ons-toolbar>
             <v-ons-splitter>
-                <v-ons-splitter-side width="80%"
+                <v-ons-splitter-side width="325px"
                     swipeable collapse="" side="right"
                     :open.sync="showSideNav" class="sidenav toolbar-header">
                     <v-ons-page>
@@ -48,31 +48,31 @@
                             <v-ons-list-item tappable @click="createNewRecord">
                                 <div class="fa5 fa-plus-circle text-color-dark"></div>
                                 <span class="text-color-dark label right-panel-label">New {{this.$store.getters.activeGraph.name}}
-                                    <div class="text-color-light subtitle-font-size">Create a new record</div>
+                                    <div class="subtitle-text-color subtitle-font-size">Create a new record</div>
                                 </span>
                             </v-ons-list-item>
                             <v-ons-list-item tappable @click="showResourceList">
                                 <div class="fa5 fa-edit text-color-dark"></div>
                                 <span class="text-color-dark label right-panel-label">Edit an Existing Resource
-                                    <div class="text-color-light subtitle-font-size">Select an existing resource and update</div>
+                                    <div class="subtitle-text-color subtitle-font-size">Select an existing resource and update</div>
                                 </span>
                             </v-ons-list-item>
                             <v-ons-list-item tappable @click="showResourceModels">
                                 <div class="fa5 fa-external-link-alt text-color-dark"></div>
                                 <span class="text-color-dark label right-panel-label">Select a New Resource Model
-                                    <div class="text-color-light subtitle-font-size">Pick a model and create a new resource</div>
+                                    <div class="subtitle-text-color subtitle-font-size">Pick a model and create a new resource</div>
                                 </span>
                             </v-ons-list-item>
                             <v-ons-list-item tappable @click="showProjectMap">
                                 <div class="fa5 fa-map-marker-alt text-color-dark"></div>
                                 <span class="text-color-dark label right-panel-label">Project Map
-                                    <div class="text-color-light subtitle-font-size">View the location of resources</div>
+                                    <div class="subtitle-text-color subtitle-font-size">View the location of resources</div>
                                 </span>
                             </v-ons-list-item>
                             <v-ons-list-item tappable @click="selectProject">
                                 <div class="fa5 fa-exchange-alt text-color-dark"></div>
                                 <span class="text-color-dark label right-panel-label">Jump to a Different Project
-                                    <div class="text-color-light subtitle-font-size">Work with resources in another project</div>
+                                    <div class="subtitle-text-color subtitle-font-size">Work with resources in another project</div>
                                 </span>
                             </v-ons-list-item>
                         </v-ons-list>
@@ -195,6 +195,10 @@ export default {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.subtitle-text-color {
+    color: #aaa;
+}
+
 .resource-header {
     font-size: 18px;
 }
