@@ -150,7 +150,6 @@ export default {
 
 .project-list-toolbar {
     background: #f4f4f4;
-    padding-top: 2px;
 }
 
 .project-header {
@@ -167,7 +166,7 @@ export default {
 }
 
 .project-list-panel {
-    margin-top: 6px;
+    margin-top: 1px;
 }
 
 .right-panel-label {
