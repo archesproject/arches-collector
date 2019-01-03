@@ -1,7 +1,7 @@
 <template>
     <div v-if="context=='editor'">
         <div class="editor widget-label">{{widget.label}}</div>
-            <ons-col v-if="!value">No images yet collected</ons-col>
+            <ons-col class="widget-value" v-if="!value">No images yet collected</ons-col>
             <ons-list class="photo-list">
                 <ons-list-item v-for="file in value">
                   <div class="left">
@@ -11,13 +11,13 @@
                       <v-ons-input underbar placeholder="Photo name" v-on:keyup="updateImages" v-model="file.name"></v-ons-input>
                   </div>
                   <div class="right">
-                      <ons-col width="10%"><v-ons-button @click="removePhoto(file)" class="right"><v-ons-icon class="fa5 fa-trash" icon="fa-trash"></v-ons-icon></v-ons-button></ons-col>
+                      <ons-col width="10%"><v-ons-button @click="removePhoto(file)" class="right warning"><v-ons-icon class="fa5 fa-trash" icon="fa-trash"></v-ons-icon></v-ons-button></ons-col>
                   </div>
                 </ons-list-item>
             </ons-list>
         <ons-row class="file-widget">
-            <ons-col><v-ons-button @click="selectPhoto"><v-ons-icon class="folder-icon" icon="ion-folder"></v-ons-icon><span class="btn-text">Select Photo</span></v-ons-button></ons-col>
-            <ons-col><v-ons-button @click="takePhoto"><v-ons-icon class="camera-icon" icon="ion-camera"></v-ons-icon><span class="btn-text">Take Photo</span></v-ons-button></ons-col>
+            <ons-col class="button-column"><v-ons-button class="file-button btn-mint" @click="selectPhoto"><v-ons-icon class="folder-icon" icon="ion-folder"></v-ons-icon><span class="btn-text">Select Photo</span></v-ons-button></ons-col>
+            <ons-col class="button-column"><v-ons-button class="file-button btn-mint" @click="takePhoto"><v-ons-icon class="camera-icon" icon="ion-camera"></v-ons-icon><span class="btn-text">Take Photo</span></v-ons-button></ons-col>
         </ons-row>
 
     </div>
@@ -147,6 +147,31 @@ export default {
 </script>
 
 <style scoped>
+.widget-value {
+  color: #999;
+}
+.widget-label {
+  font-weight: 600;
+  color: #271F4C;
+  padding-right: 5px;
+}
+.button-column {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+.file-button {
+    width: 100%;
+    text-align: center;
+}
+.folder-icon {
+    vertical-align: -15%;
+}
+.warning {
+  background: red;
+}
+.btn-mint {
+  background: #29b2a6;
+}
 .file-widget {
     padding-top: 20px;
     padding-bottom: 5px;
