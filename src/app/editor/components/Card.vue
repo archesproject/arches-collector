@@ -83,8 +83,8 @@ export default {
 }
 
 .card-label {
-  background: #534A7A;
-  color: #fff;
+  background: #77DAD3;
+  color: #0D3688;
   font-weight: 600;
   display: inherit;
   margin-top: -5px;
