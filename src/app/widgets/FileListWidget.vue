@@ -160,8 +160,9 @@ export default {
 }
 .image-thumbnail {
     border-radius: 1px;
-    height: 60px;
+    height: 100px;
     width: auto;
+    margin-left: -20px;
     padding: 5px 0 0 0;
 }
 </style>

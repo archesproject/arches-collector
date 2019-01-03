@@ -30,11 +30,12 @@ export default {
 
 <style scoped>
 .widget-value {
-  padding-left: 5px;
+
 }
 
 .widget-label {
   font-weight: 600;
   color: #271F4C;
+  padding-right: 5px;
 }
 </style>
