@@ -6,7 +6,7 @@
                 <span>
                     <div class='resource-model-name'>
                         <span class="icon-circle" v-bind:style="{ background: [resource_type.color], color: '#fff'}">
-                            <v-ons-icon class="resource-model-icon" v-bind:icon="resource_type.iconclass.replace('fa ', '')" v-bind:style="{height:'14px', width:'14px'}"></v-ons-icon>
+                            <v-ons-icon class="resource-model-icon" v-bind:icon="resource_type.iconclass.replace('fa ', '')" v-bind:style="{}"></v-ons-icon>
                         </span>
                     <span class='resource-model-title'>
                         <span style="padding-left: 0"> New {{resource_type.name}}</span>
@@ -67,7 +67,7 @@ export default {
         display: flex;
         flex-direction: column;
         padding-left: 5px;
-        color: #666;
+        color: #271F4C;
         font-size: 14px;
     }
     .resource-model-subtitle {

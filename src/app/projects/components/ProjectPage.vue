@@ -18,11 +18,11 @@
                 </div>
             </v-ons-toolbar>
             <v-ons-splitter>
-                <v-ons-splitter-side width="50%"
+                <v-ons-splitter-side width="325px"
                     swipeable collapse="" side="right"
                     :open.sync="showSideNav" class="sidenav toolbar-header">
                     <v-ons-page>
-                        <v-ons-list style="margin-top: 5px;">
+                        <v-ons-list style="margin-top: 0px;">
 
                             <v-ons-list-item tappable @click="sync">
                                 <v-ons-icon class="text-color-dark icon" icon="fa-cloud-download-alt"></v-ons-icon>
@@ -150,7 +150,6 @@ export default {
 
 .project-list-toolbar {
     background: #f4f4f4;
-    padding-top: 2px;
 }
 
 .project-header {
@@ -167,7 +166,7 @@ export default {
 }
 
 .project-list-panel {
-    margin-top: 6px;
+    margin-top: 1px;
 }
 
 .right-panel-label {

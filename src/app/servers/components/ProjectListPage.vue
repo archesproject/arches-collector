@@ -55,7 +55,7 @@
                     <span class="project-name">{{project.name}}</span><span class="project-name deleted" v-if="project.deleted">(Project deleted on cloud)</span><br>
                     <span class="project-active" v-if="project.active">Active from:</span>
                     <span class="project-inactive" v-else>Inactive</span>
-                    <span class="project-dates">{{project.startdate}} - {{project.enddate}}</span>
+                    <span class="project-dates">{{project.startdate}} to {{project.enddate}}</span>
                 </span>
                 <v-ons-icon class="right" style="display: flex" icon="fa-ellipsis-v" v-if="project.lastsync.date || project.deleted" @click="toggleSideNav(project)"></v-ons-icon>
                 <v-ons-icon class="right" style="display: flex" icon="fa-cloud-download-alt" v-if="!project.lastsync.date && !project.deleted" @click="function(){selectedProject = project; sync()}"></v-ons-icon>
@@ -192,7 +192,7 @@ export default {
     .project-active {
         color: #777;
         font-size: 12px;
-        padding-left: 5px;
+        padding-left: 0px;
     }
 
     .project-inactive {

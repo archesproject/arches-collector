@@ -4,8 +4,8 @@
             <div v-show="canAdd(card) && (activeObject === 'card')">
                 <v-ons-list-item tappable @click="setTileContext('blank')">
                     <div style="display:block; width: 100%">
-                        <div>Add</div>
-                        <div>Create new record
+                        <div class="card-name">Add</div>
+                        <div class="widget-label">Create new record
                             <span style="float:right; position:relative; top: -8px; left: -18px">
                                 <div class="fa5 fa-plus-circle text-color-dark add-card"></div>
                             </span>
@@ -35,12 +35,12 @@
                 </v-ons-list-item>
             </div>
             <div v-if="(activeObject === 'tile')">
-                <v-ons-list-item tappable modifier="longdivider" v-for="childCard in childCards" :key="childCard.resourceinstanceid" @click="navigateChildCard(childCard)">
+                <v-ons-list-item class="root-card" tappable modifier="longdivider" v-for="childCard in childCards" :key="childCard.resourceinstanceid" @click="navigateChildCard(childCard)">
                     <span style="display: flex; width: 100%">
-                        <span style="width: 90%">
-                            <div>{{childCard.name}}</div>
-                            <div v-if="(tileCount(childCard) > 0)">{{tileCount(childCard)}} record(s)</div>
-                            <div v-if="(tileCount(childCard) === 0)">No data entered</div>
+                        <span style="width: 93%">
+                            <div class="card-name">{{childCard.name}}</div>
+                            <div class="card-instance-count" v-if="(tileCount(childCard) > 0)">{{tileCount(childCard)}} record(s)</div>
+                            <div class="card-instance-count" v-if="(tileCount(childCard) === 0)">No data entered</div>
                         </span>
                         <span style="padding-top: 7px;" v-if="hasTiles(childCard) && getCardinality(childCard) === '1' && !hasChildCards(childCard)">
                             <div class="fa5 fa-trash" @click="deleteTile(getCardTiles(childCard)[0], $event)"></div>
@@ -385,6 +385,19 @@ export default {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.root-card {
+    border-bottom: 1px solid #ddd;
+}
+
+.card-name {
+    color: #271F4C;
+}
+
+.card-instance-count {
+    color: #999;
+    font-size: 13px;
+}
+
 li.widget {
     list-style-type: none;
 }
@@ -403,14 +416,17 @@ ul {
 }
 .tile-instance {
     padding: 0px !important;
-    border-top: solid 1px #dbdbdb;
+    border-bottom: solid 1px #ccc;
     background-color: whitesmoke
 }
 .tile-instance .list-item--longdivider__center {
     padding: 0px !important;
 }
+.tile-instance:first-child {
+    border-top: solid 1px #ccc;
+}
 .tile-instance:last-child {
-    border-bottom: solid 2px #dbdbdb;
+    border-bottom: solid 1px #ccc;
 }
 .drag-bars {
     padding: 20px 10px 20px 10px;
@@ -421,13 +437,17 @@ ul {
 .flex {
     display: flex;
 }
+.flex .flex {
+    border-bottom: transparent;
+}
 .tile-data {
     flex-direction: column;
     padding-top: 11px;
     flex-grow: 1;
 }
 .widget-label {
-    color: grey;
+    color: #999;
+    font-size: 13px;
 }
 .tile-delete {
     padding: 20px;

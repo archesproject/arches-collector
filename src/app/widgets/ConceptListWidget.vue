@@ -10,11 +10,11 @@
     </div>
     <div class="report-widget" v-else-if="context=='report'">
         <ons-row>
-            <ons-col class="report widget-label">{{widget.label}}</ons-col>
-            <ons-col>
-            <div v-for="label in conceptLabels">
-                <div class="report widget-value">{{label.text}}</div>
-            </div>
+            <ons-col
+                <span class="report widget-label">{{widget.label}}</span>
+                <span v-for="label in conceptLabels">
+                    <span class="report widget-value">{{label.text}}</span>
+                </span>
             </ons-col>
         </ons-row>
     </div>
@@ -83,5 +83,14 @@ export default {
 <style scoped>
     .test > input.search{
         height: 30px;
+    }
+
+    .widget-value {
+      padding-left: 5px;
+    }
+
+    .widget-label {
+      font-weight: 600;
+      color: #271F4C;
     }
 </style>
