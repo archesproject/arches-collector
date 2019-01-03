@@ -25,9 +25,9 @@
         <ons-list class="photo-list">
             <ons-list-item v-for="file in value">
               <div class="left">
-                <img class="list-item__thumbnail" v-bind:src="thumbnails[file.file_id]"></img>
+                <img class="image-thumbnail" v-bind:src="thumbnails[file.file_id]"></img>
               </div>
-              <div class="center" style="padding-left: 15px">{{file.name}}</div>
+              <div class="center" style="padding-left: 15px; color: #777;">{{file.name}}</div>
             </ons-list-item>
         </ons-list>
     </ons-row>
@@ -157,5 +157,11 @@ export default {
 .photo-list {
     width: 100%;
     background: none;
+}
+.image-thumbnail {
+    border-radius: 1px;
+    height: 60px;
+    width: auto;
+    padding: 5px 0 0 0;
 }
 </style>

@@ -79,19 +79,25 @@ export default {
     padding-left: 10px;
     padding-bottom: 15px;
     padding-top: 5px;
-    background-color: white;
+    background-color: #fbfbfb;
+    border: 1px solid #ddd;
 }
 
 .card-label {
-  background: #77DAD3;
-  color: #0D3688;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+  color: #007E75;
   font-weight: 600;
   display: inherit;
   margin-top: -5px;
   margin-left: -10px;
   margin-bottom: 5px;
-  padding: 3px 0 3px 5px;
+  padding: 5px 0 5px 10px;
 }
 
+.card-container .card-container {
+  margin-bottom: 10px;
+  margin-right: 5px;
+}
 
 </style>
