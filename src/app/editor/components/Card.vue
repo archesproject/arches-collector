@@ -77,14 +77,20 @@ export default {
 .card-container {
     font-size: 0.95em;
     padding-left: 10px;
-    padding-bottom: 5px;
+    padding-bottom: 15px;
     padding-top: 5px;
     background-color: white;
 }
 
 .card-label {
-    font-weight: 600;
-    color: #555;
+  background: #534A7A;
+  color: #fff;
+  font-weight: 600;
+  display: inherit;
+  margin-top: -5px;
+  margin-left: -10px;
+  margin-bottom: 5px;
+  padding: 3px 0 3px 5px;
 }
 
 
