@@ -4,8 +4,10 @@
         <input :value="value" :placeholder="placeholder" @input="$emit('update:value', $event.target.value);">
     </div>
     <ons-row class="report-widget" v-else-if="context=='report'">
-        <ons-col class="report widget-label">{{widget.label}}</ons-col>
-        <ons-col class="report widget-value">{{value}}</ons-col>
+        <ons-col
+          <span class="report widget-label">{{widget.label}}</span>
+          <span class="report widget-value">{{value}}</span>
+        </ons-col>
     </ons-row>
 </template>
 
@@ -27,4 +29,12 @@ export default {
 </script>
 
 <style scoped>
+.widget-value {
+  padding-left: 5px;
+}
+
+.widget-label {
+  font-weight: 600;
+  color: #271F4C;
+}
 </style>

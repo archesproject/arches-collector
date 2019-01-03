@@ -17,11 +17,11 @@
                 </v-ons-col>
             </v-ons-row>
             <v-ons-row>
-                <v-ons-col style="padding-top: 10px;">
+                <v-ons-col style="padding-top: 20px;">
                     <div class="record-text">125</div>
                     <span class="status-type-text">Records download</span>
                 </v-ons-col>
-                <v-ons-col style="padding-top: 10px;">
+                <v-ons-col style="padding-top: 20px;">
                     <div class="record-text">30</div>
                     <span class="status-type-text">Records Edited</span>
                 </v-ons-col>
