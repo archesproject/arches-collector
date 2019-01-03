@@ -8,12 +8,14 @@
                         <span v-if="headerName.label">
                             <span style="display: flex; flex-direction: column; line-height: 22px; padding-top: 6px; padding-left: 8px;"  class="flex text-color-dark resource-header">
                                 <span class="flex">
-                                    {{headerName.value}}<br>{{headerName.label}}
+                                   {{headerName.value}}<br>{{headerName.label}}
                                 </span>
                             </span>
                         </span>
-                        <span v-else>
-                            <span style="padding-left: 8px;" class="text-color-dark resource-header">{{headerName.value}}</span>
+                        <span class="instance-name-position" v-else>
+                            <span class="instance-name">Instance Name
+                                <div class="resource-type">{{headerName.value}}</div>
+                            </span>
                         </span>
                         <!-- <span class="text-color-dark resource-header">{{headerName}}</span> -->
 
@@ -195,6 +197,23 @@ export default {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.instance-name-position {
+    margin-top: -12px;
+}
+
+.instance-name {
+    font-size: 16px;
+    padding-left: 8px;
+    color: #271F4C;
+}
+
+.resource-type {
+    font-size: 13px;
+    color: #534A7A;
+    margin-top: -35px;
+    padding-left: 8px;
+}
+
 .subtitle-text-color {
     color: #aaa;
 }

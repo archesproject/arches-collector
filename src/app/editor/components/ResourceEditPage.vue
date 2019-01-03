@@ -416,14 +416,17 @@ ul {
 }
 .tile-instance {
     padding: 0px !important;
-    border-top: solid 1px #ddd;
+    border-bottom: solid 1px #ccc;
     background-color: whitesmoke
 }
 .tile-instance .list-item--longdivider__center {
     padding: 0px !important;
 }
+.tile-instance:first-child {
+    border-top: solid 1px #ccc;
+}
 .tile-instance:last-child {
-    border-bottom: solid 1px #ddd;
+    border-bottom: solid 1px #ccc;
 }
 .drag-bars {
     padding: 20px 10px 20px 10px;
@@ -433,6 +436,9 @@ ul {
 }
 .flex {
     display: flex;
+}
+.flex .flex {
+    border-bottom: transparent;
 }
 .tile-data {
     flex-direction: column;

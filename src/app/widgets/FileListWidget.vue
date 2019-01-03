@@ -5,7 +5,7 @@
             <ons-list class="photo-list">
                 <ons-list-item v-for="file in value">
                   <div class="left">
-                    <img class="list-item__thumbnail" v-bind:src="thumbnails[file.file_id]"></img>
+                    <img class="image-thumbnail-input" v-bind:src="thumbnails[file.file_id]"></img>
                   </div>
                   <div class="center">
                       <v-ons-input underbar placeholder="Photo name" v-on:keyup="updateImages" v-model="file.name"></v-ons-input>
@@ -186,6 +186,13 @@ export default {
 .image-thumbnail {
     border-radius: 1px;
     height: 100px;
+    width: auto;
+    margin-left: -20px;
+    padding: 5px 0 0 0;
+}
+.image-thumbnail-input {
+    border-radius: 1px;
+    height: 60px;
     width: auto;
     margin-left: -20px;
     padding: 5px 0 0 0;
