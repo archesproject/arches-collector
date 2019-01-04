@@ -117,7 +117,7 @@ export default {
             var self = this;
             this.syncing = true;
             this.sync_failed = false;
-            this.$store.dispatch('syncRemote', this.project.id)
+            this.$store.dispatch('syncRemote', {'projectId': this.project.id})
                 .catch(function() {
                     self.sync_failed = true;
                 })

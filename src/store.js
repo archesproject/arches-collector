@@ -68,8 +68,24 @@ var pouchDBs = (function() {
                 }
             });
         },
+        updateServerToken: function(server) {
+            var self = this;
+            return this.servers.get('servers')
+            .then(function(doc){
+                Object.keys(doc.servers[server.url].projects).forEach(function(projectId) {
+                    self._projectDBs[projectId]['remote'] = new PouchDB(server.url + '/couchdb/project_' + projectId, {
+                        ajax: {
+                            headers: {
+                                authorization: 'Bearer ' + server.token
+                            },
+                            withCredentials: false
+                        }
+                    });
+                });
+            });
+        },
         syncProject: function(projectId) {
-            // setupDBs(projectId);
+
 
             return this._projectDBs[projectId]['local']
                 .sync(this._projectDBs[projectId]['remote'], {
@@ -94,12 +110,17 @@ var pouchDBs = (function() {
                 // .on('active', function() {
                 //     // replicate resumed (e.g. new changes replicating, user went back online)
                 // })
-                // .on('denied', function(err) {
-                //     // a document failed to replicate (e.g. due to permissions)
-                // })
+                .on('denied', function(err) {
+                    // a document failed to replicate (e.g. due to permissions)
+                    console.log(err, 'denied')
+                })
                 .on('error', function(err) {
                 // boo, we hit an error!
                     console.log(err, 'Unable to sync. Please check your data connection and try again.');
+                    //if(err.status === 403) {
+                    //Promise.reject(new Error(err));
+                    throw err;
+                    //}
                 });
 
             // sync.cancel(); // whenever you want to cancel only if live = true
@@ -516,24 +537,76 @@ var store = new Vuex.Store({
                 }
             });
         },
-        syncRemote: function({commit, state}, projectId) {
-            return pouchDBs.syncProject(projectId)
-                .then(function() {
-                    var server = store.getters.activeServer;
-                    return fetch(server.url + '/sync/' + projectId, {
-                        method: 'GET',
-                        headers: new Headers({
-                            'Authorization': 'Bearer ' + server.token
-                        })
-                    })
+        updateToken: function({commit, state}) {
+            var server = store.getters.activeServer;
+            var formData = new FormData();
+            formData.append('refresh_token',server.refresh_token);
+            formData.append('grant_type', 'refresh_token');
+            formData.append('client_id', server.client_id);
+
+            return fetch(server.url.replace(/\/$/, '') + '/o/token/', {
+                method: 'POST',
+                body: formData,
+                headers: new Headers({
+                    // 'Content-Type': 'text/plain'
+                    // 'Content-Type': 'application/x-www-form-urlencoded'
                 })
-                .then(function() {
-                    return store.dispatch('getTiles', projectId);
+            })
+                .then(function(response) {
+                    // return the response object or throw an error
+                    // console.log(response);
+                    if (response.ok) {
+                        return response.json();
+                    }else if (response.status === 401) {
+                        
+                    }
+
+                    throw new Error('Network response was not ok.  In updateToken method.');
                 })
-                .then(function() {
-                    return store.commit('setLastProjectSync', projectId);
+                .then(function(response) {
+                    server.token = response.access_token;
+                    server.refresh_token = response.refresh_token;
+                    pouchDBs.updateServerToken(server);
+                    return store.dispatch('saveServerInfo');
                 });
-            // don't catch here, let the calling function catch and handle any error
+        },
+        syncRemote: function({commit, state}, {projectId, syncAttempts}) {
+            // return store.dispatch('updateToken')
+            // .then(function(){
+                return pouchDBs.syncProject(projectId)
+                    .then(function() {
+                        var server = store.getters.activeServer;
+                        return fetch(server.url + '/sync/' + projectId, {
+                            method: 'GET',
+                            headers: new Headers({
+                                'Authorization': 'Bearer ' + server.token
+                            })
+                        });
+                    })
+                    .then(function() {
+                        return store.dispatch('getTiles', projectId);
+                    })
+                    .then(function() {
+                        return store.commit('setLastProjectSync', projectId);
+                    })
+                    .catch(function(err){
+                        if(err.status === 403) {
+                            var count = syncAttempts === undefined ? 0 : syncAttempts + 1;
+                            console.log('syncAttempts:', count);
+                            if (count < 6){
+                                return store.dispatch('updateToken')
+                                .then(function(){
+                                    return store.dispatch('syncRemote', {'projectId': projectId, 'syncAttempts': count});
+                                });
+                            }
+                        }
+
+                        throw err;
+
+                    });
+                    // don't catch here, let the calling function catch and handle any error
+                
+            //});
         },
         initServerStore: function({ commit, state }) {
             pouchDBs.setupServer();
