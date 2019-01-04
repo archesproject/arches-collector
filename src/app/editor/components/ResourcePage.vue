@@ -201,16 +201,29 @@ export default {
     margin-top: -12px;
 }
 
-.instance-name {
+.toolbar-button--material .instance-name {
     font-size: 16px;
     padding-left: 8px;
     color: #271F4C;
 }
 
-.resource-type {
+.instance-name {
+    font-size: 15px;
+    padding-left: 8px;
+    color: #271F4C;
+}
+
+.toolbar-button--material .resource-type {
     font-size: 13px;
-    color: #534A7A;
-    margin-top: -35px;
+    color: rgba(83,74,122, 0.75);
+    margin-top: -37px;
+    padding-left: 8px;
+}
+
+.resource-type {
+    font-size: 11px;
+    color: rgba(83,74,122, 0.75);
+    margin-top: -30px;
     padding-left: 8px;
 }
 

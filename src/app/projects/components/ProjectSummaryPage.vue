@@ -1,15 +1,15 @@
 <template>
             <v-ons-page>
     <div>
-        <div class="section" style="height: 90px;">
-            <div>
+        <div class="section description">
+            <div class="description-label">
                 Description
             </div>
             <div class="description-text" style="padding-top: 5px;">
                 {{project.description}}
             </div>
         </div>
-        <div class="section">
+        <div class="section summary">
             <v-ons-row>
                 <v-ons-col style="">
                     <div class="date-text">{{project.lastsync.date}}&nbsp;<span class="time-text">{{project.lastsync.time}}</span></div>
@@ -17,11 +17,11 @@
                 </v-ons-col>
             </v-ons-row>
             <v-ons-row>
-                <v-ons-col style="padding-top: 20px;">
+                <v-ons-col class="stats">
                     <div class="record-text">125</div>
                     <span class="status-type-text">Records download</span>
                 </v-ons-col>
-                <v-ons-col style="padding-top: 20px;">
+                <v-ons-col class="stats">
                     <div class="record-text">30</div>
                     <span class="status-type-text">Records Edited</span>
                 </v-ons-col>
@@ -58,32 +58,62 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+    .description {
+        height: 190px;
+        background: #fff;
+    }
+
+    .section.description {
+        padding: 10px 15px;
+    }
+
+    .description-label {
+        font-size: 15px;
+        color: #271F4C;
+    }
+
     .description-text {
         padding-top: 5px;
         font-size: 15px;
         color: #aaa;
     }
 
+    .summary {
+        height: 180px;
+        background: #fcfcfc;
+    }
+
+    .section.summary {
+        padding: 30px 15px 15px 15px;
+    }
+
+    .stats {
+        padding-top: 30px;
+    }
+
     .time-text {
         font-size: 24px;
-        color: #454545;
+        color: #999;
         font-weight: 400;
     }
     .date-text {
         font-size: 32px;
         font-weight: 300;
-        color: #454545;
+        color: #999;
+        padding-bottom: 4px;
     }
 
     .status-type-text {
-        font-size: 15px;
-        color: #aaa;
+        font-size: 14px;
+        margin-top: 3px;
+        color: #271F4C;
     }
 
     .record-text {
         font-size: 32px;
         font-weight: 300;
-        color: #454545;
+        color: #999;
+        padding-bottom: 4px;
     }
 
     .section {
