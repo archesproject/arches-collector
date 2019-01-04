@@ -8,7 +8,7 @@
                     <img class="image-thumbnail-input" v-bind:src="thumbnails[file.file_id]"></img>
                   </div>
                   <div class="center">
-                      <v-ons-input underbar placeholder="Photo name" v-on:keyup="updateImages" v-model="file.name"></v-ons-input>
+                      <v-ons-input class="photo-name" underbar placeholder="Photo name" v-on:keyup="updateImages" v-model="file.name"></v-ons-input>
                   </div>
                   <div class="right">
                       <ons-col width="10%"><v-ons-button @click="removePhoto(file)" class="right warning"><v-ons-icon class="fa5 fa-trash" icon="fa-trash"></v-ons-icon></v-ons-button></ons-col>
@@ -24,10 +24,10 @@
     <ons-row class="report-widget" v-else-if="context=='report'">
         <ons-list class="photo-list">
             <ons-list-item v-for="file in value">
-              <div class="left">
+              <ons-col>
                 <img class="image-thumbnail" v-bind:src="thumbnails[file.file_id]"></img>
-              </div>
-              <div class="center" style="padding-left: 15px; color: #777;">{{file.name}}</div>
+              </ons-col>
+              <ons-col class="" style="margin-left: -40px; padding-right: 10px; color: #777;">{{file.name}}</ons-col>
             </ons-list-item>
         </ons-list>
     </ons-row>
@@ -147,6 +147,13 @@ export default {
 </script>
 
 <style scoped>
+.list-item--material__center .photo-name {
+    padding-left: 15px;
+    width: calc(100% - 10px);
+}
+.photo-name {
+    width: calc(100% - 10px);
+}
 .widget-value {
   color: #999;
 }
