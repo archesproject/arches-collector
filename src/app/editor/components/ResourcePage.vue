@@ -207,10 +207,17 @@ export default {
     color: #271F4C;
 }
 
-.resource-type {
+.toolbar-button--material .resource-type {
     font-size: 13px;
     color: #534A7A;
     margin-top: -35px;
+    padding-left: 8px;
+}
+
+.resource-type {
+    font-size: 11px;
+    color: rgba(83,74,122, 0.75);
+    margin-top: -30px;
     padding-left: 8px;
 }
 
