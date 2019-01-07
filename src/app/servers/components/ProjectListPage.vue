@@ -15,6 +15,7 @@
                             <div class="menu-text">
                                 <span class="text-color-dark">Refresh all records in this project</span>
                                 <span class="text-color-dark menu-subtext">Refresh all project data</span>
+                                <span v-if="syncfailed" class="text-color-dark menu-subtext">Sync Failed... please try again.</span>
                             </div>
                         </v-ons-list-item @click="">
                         <v-ons-progress-bar indeterminate v-if="syncing"></v-ons-progress-bar>
@@ -123,7 +124,7 @@ export default {
             var self = this;
             this.syncing = true;
             this.syncfailed = false;
-            this.$store.dispatch('syncRemote', this.selectedProject.id)
+            this.$store.dispatch('syncRemote', {'projectId': this.selectedProject.id})
                 .catch(function() {
                     self.syncfailed = true;
                 })
