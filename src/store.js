@@ -562,11 +562,6 @@ var store = new Vuex.Store({
                     // 'Content-Type': 'application/x-www-form-urlencoded'
                 })
             });
-                // .then(function(response) {
-                //     return new Promise(function(resolve, reject){
-                //         resolve(response);
-                //     });
-                // });
         },
         getToken: function({commit, state}, {url, username, password, client_id}) {
             var self = this;
@@ -587,43 +582,6 @@ var store = new Vuex.Store({
                     // 'Content-Type': 'application/x-www-form-urlencoded'
                 })
             });
-                // .then(function(response) {
-                //     return response.json();
-                //     // return new Promise(function(resolve, reject){
-                //     //     resolve(response);
-                //     // });
-                // })
-                // .then(function(response) {
-                //     return new Promise(function(resolve, reject){
-                //         resolve(response);
-                //     });
-                // })
-                // .then(function(response) {
-                //     // return the response object or throw an error
-                //     // console.log(response);
-                //     if (response.ok) {
-                //         return response.json();
-                //     } else {
-                //         if (response.status === 401) {
-                //             self.error_message = 'The supplied username or password was not valid.';
-                //         } else {
-                //             self.error_message = self.default_error_message;
-                //         }
-                //     }
-
-                //     throw new Error('Network response was not ok.');
-                // })
-                // .then(function(response) {
-                //     // console.log('Success:', response);
-                //     self.server.token = response.access_token;
-                //     self.server.refresh_token = response.refresh_token;
-                //     self.$store.commit('addNewServer', self.server);
-                //     self.$router.push({'name': 'projectlist'});
-                // })
-                // .catch(function(error) {
-                //     console.log('Error:', error);
-                //     self.error = true;
-                // });
         },
         updateToken: function({commit, state}) {
             var server = store.getters.activeServer;
@@ -641,8 +599,6 @@ var store = new Vuex.Store({
                 })
             })
                 .then(function(response) {
-                    // return the response object or throw an error
-                    // console.log(response);
                     if (response.ok) {
                         return response.json();
                     }else if (response.status === 401) {
@@ -661,48 +617,42 @@ var store = new Vuex.Store({
                     server.refresh_token = response.refresh_token;
                     pouchDBs.updateServerToken(server);
                     return store.dispatch('saveServerInfo');
-                })
-                .catch(function(err){
-
                 });
         },
         syncRemote: function({commit, state}, {projectId, syncAttempts}) {
-            // return store.dispatch('updateToken')
-            // .then(function(){
-                return pouchDBs.syncProject(projectId)
-                    .then(function() {
-                        var server = store.getters.activeServer;
-                        return fetch(server.url + '/sync/' + projectId, {
-                            method: 'GET',
-                            headers: new Headers({
-                                'Authorization': 'Bearer ' + server.token
-                            })
-                        });
-                    })
-                    .then(function() {
-                        return store.dispatch('getTiles', projectId);
-                    })
-                    .then(function() {
-                        return store.commit('setLastProjectSync', projectId);
-                    })
-                    .catch(function(err){
-                        if(err.status === 403) {
-                            var count = syncAttempts === undefined ? 0 : syncAttempts + 1;
-                            console.log('syncAttempts:', count);
-                            if (count < 6){
-                                return store.dispatch('updateToken')
-                                .then(function(){
-                                    return store.dispatch('syncRemote', {'projectId': projectId, 'syncAttempts': count});
-                                });
-                            }
-                        }
-
-                        throw err;
-
+            return pouchDBs.syncProject(projectId)
+                .then(function() {
+                    var server = store.getters.activeServer;
+                    return fetch(server.url + '/sync/' + projectId, {
+                        method: 'GET',
+                        headers: new Headers({
+                            'Authorization': 'Bearer ' + server.token
+                        })
                     });
-                    // don't catch here, let the calling function catch and handle any error
-                
-            //});
+                })
+                .then(function(response) {
+                    if(response.ok) {
+                        return store.dispatch('getTiles', projectId);
+                    }else {
+                        throw response;
+                    }
+                })
+                .then(function() {
+                    return store.commit('setLastProjectSync', projectId);
+                })
+                .catch(function(err){
+                    if(err.status === 403) {
+                        var count = syncAttempts === undefined ? 0 : syncAttempts + 1;
+                        //console.log('syncAttempts:', count);
+                        if (count < 6){
+                            return store.dispatch('updateToken')
+                            .then(function(){
+                                return store.dispatch('syncRemote', {'projectId': projectId, 'syncAttempts': count});
+                            });
+                        }
+                    }
+                    throw err;
+                });
         },
         initServerStore: function({ commit, state }) {
             pouchDBs.setupServer();
