@@ -250,6 +250,7 @@ var pouchDBs = (function() {
     servers: {
         server_url: {
             url: server_url,
+            user: userObj,
             nickname: nickname,
             username: username, <-- maybe we don't store
             password: password, <-- maybe we don't store
@@ -411,6 +412,14 @@ var store = new Vuex.Store({
             store.commit('setActiveServer', newServer.url);
             store.dispatch('saveServerInfo');
         },
+        // updateServer: function(state, serverObj) {
+        //     if (typeof store.getters.server(serverObj.url) !== 'undefined') {
+        //         Object.keys(serverObj).forEach(function(serverProps) {
+        //             state.dbs.app_servers.servers[serverObj.url][serverProps] = serverObj[serverProps];
+        //         });
+        //         store.dispatch('saveServerInfo');
+        //     }
+        // },
         deleteServer: function(state, serverurl) {
             Object.keys(state.dbs.app_servers.servers[serverurl].projects).forEach(function(projectid) {
                 store.dispatch('deleteProject', projectid);
@@ -537,6 +546,85 @@ var store = new Vuex.Store({
                 }
             });
         },
+        getClientId: function({commit, state}, {url, username, password}) {
+            var self = this;
+            self.error = false;
+
+            var formData = new FormData();
+            formData.append('username', username);
+            formData.append('password', password);
+
+            return fetch(url.replace(/\/$/, '') + '/auth/get_client_id', {
+                method: 'POST',
+                body: formData,
+                headers: new Headers({
+                    // 'Content-Type': 'text/plain'
+                    // 'Content-Type': 'application/x-www-form-urlencoded'
+                })
+            });
+                // .then(function(response) {
+                //     return new Promise(function(resolve, reject){
+                //         resolve(response);
+                //     });
+                // });
+        },
+        getToken: function({commit, state}, {url, username, password, client_id}) {
+            var self = this;
+            var server = store.getters.activeServer;
+            self.error = false;
+
+            var formData = new FormData();
+            formData.append('username', username);
+            formData.append('password', password);
+            formData.append('grant_type', 'password');
+            formData.append('client_id', client_id);
+
+            return fetch(url.replace(/\/$/, '') + '/o/token/', {
+                method: 'POST',
+                body: formData,
+                headers: new Headers({
+                    // 'Content-Type': 'text/plain'
+                    // 'Content-Type': 'application/x-www-form-urlencoded'
+                })
+            });
+                // .then(function(response) {
+                //     return response.json();
+                //     // return new Promise(function(resolve, reject){
+                //     //     resolve(response);
+                //     // });
+                // })
+                // .then(function(response) {
+                //     return new Promise(function(resolve, reject){
+                //         resolve(response);
+                //     });
+                // })
+                // .then(function(response) {
+                //     // return the response object or throw an error
+                //     // console.log(response);
+                //     if (response.ok) {
+                //         return response.json();
+                //     } else {
+                //         if (response.status === 401) {
+                //             self.error_message = 'The supplied username or password was not valid.';
+                //         } else {
+                //             self.error_message = self.default_error_message;
+                //         }
+                //     }
+
+                //     throw new Error('Network response was not ok.');
+                // })
+                // .then(function(response) {
+                //     // console.log('Success:', response);
+                //     self.server.token = response.access_token;
+                //     self.server.refresh_token = response.refresh_token;
+                //     self.$store.commit('addNewServer', self.server);
+                //     self.$router.push({'name': 'projectlist'});
+                // })
+                // .catch(function(error) {
+                //     console.log('Error:', error);
+                //     self.error = true;
+                // });
+        },
         updateToken: function({commit, state}) {
             var server = store.getters.activeServer;
             var formData = new FormData();
@@ -558,7 +646,12 @@ var store = new Vuex.Store({
                     if (response.ok) {
                         return response.json();
                     }else if (response.status === 401) {
-                        
+                        return store.dispatch('getToken', server)
+                        .then(function(response){
+                            if (response.ok) {
+                                return response.json();
+                            }
+                        });
                     }
 
                     throw new Error('Network response was not ok.  In updateToken method.');
@@ -568,6 +661,9 @@ var store = new Vuex.Store({
                     server.refresh_token = response.refresh_token;
                     pouchDBs.updateServerToken(server);
                     return store.dispatch('saveServerInfo');
+                })
+                .catch(function(err){
+
                 });
         },
         syncRemote: function({commit, state}, {projectId, syncAttempts}) {

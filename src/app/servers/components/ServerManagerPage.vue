@@ -40,7 +40,7 @@
                         <div class="center">{{error_message}}</div>
                     </v-ons-list-item>
 
-                    <v-ons-button modifier="large" :disabled="disableSignIn" class="btn-success" v-on:click="getClientId">Sign In</v-ons-button>
+                    <v-ons-button modifier="large" :disabled="disableSignIn" class="btn-success" v-on:click="login">Sign In</v-ons-button>
                     <v-ons-button modifier="large quiet" class="btn-danger" style="margin-top: 10px;" v-on:click="cancel">Cancel</v-ons-button>
                 </div>
             </v-ons-carousel-item>
@@ -65,7 +65,8 @@ export default {
                 refresh_token: '',
                 client_id: '',
                 active_project: '',
-                projects: {}
+                projects: {},
+                user: {}
             },
             error: false,
             error_message: '',
@@ -90,28 +91,34 @@ export default {
         cancel: function() {
             this.$router.back();
         },
-        getClientId: function() {
+        login: function() {
             var self = this;
-            self.error = false;
+            this.$store.dispatch('getClientId', this.server)
+            .then(function(response){
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    if (response.status === 401) {
+                        self.error_message = 'The supplied username or password was not valid.';
+                    } else {
+                        self.error_message = self.default_error_message;
+                    }
+                }
 
-            var formData = new FormData();
-            formData.append('username', this.server.username);
-            formData.append('password', this.server.password);
-            this.server.url = this.server.url.replace(/\/$/, '');
-
-            fetch(this.server.url.replace(/\/$/, '') + '/auth/get_client_id', {
-                method: 'POST',
-                body: formData,
-                headers: new Headers({
-                    // 'Content-Type': 'text/plain'
-                    // 'Content-Type': 'application/x-www-form-urlencoded'
-                })
+                throw new Error('Network response was not ok.');
             })
-                .then(function(response) {
-                    // return the response object or throw an error
-                    // console.log(response);
+            .then(function(response){
+                self.server.client_id = response.clientid;
+                self.server.user = response.user;
+                return self.$store.dispatch('getToken', self.server)
+                .then(function(response){
                     if (response.ok) {
-                        return response.json();
+                        var responseJson = response.json();
+                        self.server.token = responseJson.access_token;
+                        self.server.refresh_token = responseJson.refresh_token;
+                        self.$store.commit('addNewServer', self.server);
+                        self.$router.push({'name': 'projectlist'});
+                        return self.server;
                     } else {
                         if (response.status === 401) {
                             self.error_message = 'The supplied username or password was not valid.';
@@ -121,65 +128,13 @@ export default {
                     }
 
                     throw new Error('Network response was not ok.');
-                })
-                .then(function(response) {
-                    // console.log('Success:', response);
-                    self.server.client_id = response.clientid;
-                    self.server.user = response.user;
-                    self.getToken();
-                })
-                .catch(function(error) {
-                    console.log('Error:', error);
-                    self.error = true;
                 });
-        },
-        getToken: function() {
-            var self = this;
-            self.error = false;
-
-            var formData = new FormData();
-            formData.append('username', this.server.username);
-            formData.append('password', this.server.password);
-            formData.append('grant_type', 'password');
-            formData.append('client_id', this.server.client_id);
-            this.server.url = this.server.url.replace(/\/$/, '');
-
-            fetch(this.server.url.replace(/\/$/, '') + '/o/token/', {
-                method: 'POST',
-                body: formData,
-                headers: new Headers({
-                    // 'Content-Type': 'text/plain'
-                    // 'Content-Type': 'application/x-www-form-urlencoded'
-                })
             })
-                .then(function(response) {
-                    // return the response object or throw an error
-                    // console.log(response);
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        if (response.status === 401) {
-                            self.error_message = 'The supplied username or password was not valid.';
-                        } else {
-                            self.error_message = self.default_error_message;
-                        }
-                    }
-
-                    throw new Error('Network response was not ok.');
-                })
-                .then(function(response) {
-                    // console.log('Success:', response);
-                    self.server.token = response.access_token;
-                    self.server.refresh_token = response.refresh_token;
-                    self.$store.commit('addNewServer', self.server);
-                    self.$router.push({'name': 'projectlist'});
-                })
-                .catch(function(error) {
-                    console.log('Error:', error);
-                    self.error = true;
-                });
+            .catch(function(error) {
+                // console.log('Error:', error);
+                self.error = true;
+            });
         },
-
         onSwipe: function(newIndex) {
             // console.log('swipping');
             // console.log(newIndex);
