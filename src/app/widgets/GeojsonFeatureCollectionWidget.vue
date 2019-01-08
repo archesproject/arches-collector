@@ -58,16 +58,13 @@ export default {
                 if (this.context === 'editor') this.draw.set(value);
                 else this.map.getSource('report-data').setData(value);
             }
-        },
-        fullscreenActive() {
-            if (this.map) setTimeout(() => this.map.resize(), 10);
         }
     },
     methods: {
         mapInit(map) {
-            const fullscreenControl = this.$el.querySelector('.fullscreen-control');
+            const fullscreenEl = this.$el.querySelector('.fullscreen-control');
             this.map = map;
-            map.addControl(new GenericControl(fullscreenControl));
+            map.addControl(new GenericControl(fullscreenEl));
             if (this.context === 'editor') this.initDraw();
             else this.initReport();
         },
@@ -98,6 +95,9 @@ export default {
             this.fullscreenActive = !this.fullscreenActive;
         }
     },
+    updated() {
+        if (this.map) this.$nextTick(() => this.map.resize());
+    },
     destroyed() {
         this.draw = undefined;
         this.map = undefined;
@@ -109,10 +109,12 @@ export default {
 .map-wrapper {
     height: 260px;
 }
+
 .report .map-wrapper {
     margin-top: 5px;
     margin-right: 20px;
 }
+
 .fullscreen.map-wrapper {
     height: auto;
     position: absolute;
@@ -123,6 +125,7 @@ export default {
     z-index: 10;
     margin: 0;
 }
+
 .map-controls {
     display: none;
 }
