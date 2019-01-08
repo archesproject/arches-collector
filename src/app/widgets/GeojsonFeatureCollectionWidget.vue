@@ -58,6 +58,9 @@ export default {
                 if (this.context === 'editor') this.draw.set(value);
                 else this.map.getSource('report-data').setData(value);
             }
+        },
+        fullscreenActive() {
+            if (this.map) this.$nextTick(() => this.map.resize());
         }
     },
     methods: {
@@ -94,9 +97,6 @@ export default {
         toggleFullscreen() {
             this.fullscreenActive = !this.fullscreenActive;
         }
-    },
-    updated() {
-        if (this.map) this.$nextTick(() => this.map.resize());
     },
     destroyed() {
         this.draw = undefined;
