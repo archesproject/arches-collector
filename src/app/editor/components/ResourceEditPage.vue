@@ -78,17 +78,6 @@ export default {
                 }
             }
         },
-        projectCards: {
-            get: function() {
-                /*
-                 * Get a list of cards that belong to the current project
-                 */
-                var self = this;
-                return this.allCards.filter(function(card) {
-                    return self.project.cards.indexOf(card.cardid) > -1;
-                })
-            }
-        },
         currentNavItem: {
             get: function() {
                 if (!!this.$store.getters.activeServer) {
