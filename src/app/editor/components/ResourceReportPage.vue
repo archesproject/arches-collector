@@ -1,7 +1,7 @@
 <template>
     <v-ons-page>
       <div v-for="cardtile in cardTree.cards">
-          <card :card="cardtile" class="report-content" :activeindex="activeindex" v-on:switch-tabs="updateActiveIndex"></card>
+          <card :card="cardtile" class="report-content" :tiles="tiles" :activeindex="activeindex" v-on:switch-tabs="updateActiveIndex"></card>
      </div>
     </v-ons-page>
 </template>
@@ -11,13 +11,10 @@ import cardtreemixin from '../mixins/card-tree';
 
 export default {
     name: 'ResourceReportPage',
-    props: ['activeindex'],
+    props: ['activeindex', 'resourceid', 'tiles'],
     mixins: [cardtreemixin],
     data() {
-        return {
-            resourceid: this.$store.getters.activeServer.active_resource,
-            user: this.$store.getters.activeServer.user,
-        };
+        return {};
     },
     methods: {
         updateActiveIndex: function(event) {

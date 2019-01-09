@@ -53,14 +53,14 @@
             </div>
         </v-ons-list>
         <div v-show="showForm">
-            <resource-edit-form :back="back" :tile="tile" :card="card" :save="saveTile" />
+            <resource-edit-form :back="back" :tile="tile" :tiles="tiles" :card="card" :save="saveTile" />
         </div>
     </v-ons-page>
 </template>
 <script>
 export default {
     name: 'ResourceEditPage',
-    props: ['goBack'],
+    props: ['goBack', 'resourceid', 'tiles'],
     data() {
         return {
             project: this.$store.getters.activeProject,
@@ -71,13 +71,6 @@ export default {
         };
     },
     computed: {
-        resourceid: {
-            get: function() {
-                if (!!this.$store.getters.activeServer) {
-                    return this.$store.getters.activeServer.active_resource;
-                }
-            }
-        },
         projectCards: {
             get: function() {
                 /*
@@ -150,20 +143,9 @@ export default {
                 }, this);
             }
         },
-        allTiles: {
-            get: function() {
-                if (!!this.resourceid) {
-                    return this.$underscore.filter(this.$store.getters.tiles, function(tile) {
-                        return tile.resourceinstance_id === this.resourceid;
-                    }, this);
-                } else {
-                    return [];
-                }
-            }
-        },
         cardTiles: {
             get: function() {
-                return this.$underscore.filter(this.allTiles, function(tile) {
+                return this.$underscore.filter(this.tiles, function(tile) {
                     return tile.parenttile_id === (this.tile ? this.tile.tileid : null) && tile.nodegroup_id === this.nodegroup_id;
                 }, this);
             }
@@ -202,7 +184,7 @@ export default {
                 var navItem = this.$store.getters.activeServer.card_nav_stack[0];
                 var previousNavItem = this.$store.getters.activeServer.card_nav_stack[1];
                 if (this.hasWidgetsAndSubCards(navItem.card) && navItem.card !== previousNavItem.card && navItem.showForm === true && this.tile.tileid !== '') {
-                    var parentOfThisTile = this.$underscore.find(this.allTiles, function(tile) {
+                    var parentOfThisTile = this.$underscore.find(this.tiles, function(tile) {
                         return tile.tileid === this.tile.parenttile_id;
                     }, this);
                     this.$store.getters.activeServer.card_nav_stack.splice(1, 0, {
@@ -240,7 +222,7 @@ export default {
             }
         },
         navigateChildCard: function(card, showForm) {
-            var tile = this.$underscore.filter(this.allTiles, function(tile) {
+            var tile = this.$underscore.filter(this.tiles, function(tile) {
                 return tile.parenttile_id === (this.tile ? this.tile.tileid : null) && card.nodegroup_id === tile.nodegroup_id;
             }, this);
 
@@ -303,7 +285,7 @@ export default {
         },
         getCardTiles: function(card){
             var nodegroupid = card ? card.nodegroup_id : this.nodegroup_id;
-            var tiles = this.$underscore.filter(this.allTiles, function(tile) {
+            var tiles = this.$underscore.filter(this.tiles, function(tile) {
                 return tile.nodegroup_id === nodegroupid;
             }, this);
             return tiles;

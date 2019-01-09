@@ -6,7 +6,7 @@
             <vue-touch class="done-btn" @doubletap="segueToForm(card)">
                 <div class="report widget-value" style="padding-left:5px" v-if="card.tile === null">No data yet added</div>
                 <div v-if="card.tile !== null">
-                <component v-for="widget in card.widgets" :allNodes="allNodes" class="widget" :context="'report'" :tile="card.tile" :widget="widget" v-bind:is="'base-widget'"></component>
+                <component v-for="widget in card.widgets" :allNodes="allNodes" class="widget" :tiles="tiles" :context="'report'" :tile="card.tile" :widget="widget" v-bind:is="'base-widget'"></component>
                 </div>
             </vue-touch>
         <!-- </div> -->
@@ -20,7 +20,7 @@
 <script>
 export default {
     name: 'Card',
-    props: ['card'],
+    props: ['card', 'tiles'],
     data() {
         return {
             allNodes: this.$store.getters.activeGraph.nodes,
