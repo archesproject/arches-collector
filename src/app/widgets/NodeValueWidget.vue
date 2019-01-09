@@ -25,7 +25,8 @@ export default {
         return {
             placeholder: this.widget.config.placeholder,
             local_value: this.value,
-            user: this.$store.getters.activeServer.user
+            user: this.$store.getters.activeServer.user,
+            allWidgets: this.$store.getters.activeGraph.widgets
         };
     },
     computed: {
@@ -40,7 +41,7 @@ export default {
                     if (provisionaledit.hasOwnProperty(self.node.config.nodeid)) {
                         ret.push({
                             value: tile.tileid,
-                            text: provisionaledit[self.node.config.nodeid],
+                            text: self.displayLabel + ': ' + provisionaledit[self.node.config.nodeid],
                             depth: 1
                         })
                         found = true;
@@ -50,7 +51,7 @@ export default {
                     if (tile.data.hasOwnProperty(self.node.config.nodeid)) {
                         ret.push({
                             value: tile.tileid,
-                            text: tile.data[self.node.config.nodeid],
+                            text: self.displayLabel + ': ' + tile.data[self.node.config.nodeid],
                             depth: 1
                         })
                     }
@@ -76,6 +77,13 @@ export default {
         },
         displayValue: function() {
             return this.selectedOption.text;
+        },
+        displayLabel: function() {
+            var self = this;
+            var widget = this.$underscore.filter(this.allWidgets, function(widget) {
+                return widget.node_id === self.node.config.nodeid;
+            }, this);
+            return widget[0].label;
         }
     },
     methods: {
