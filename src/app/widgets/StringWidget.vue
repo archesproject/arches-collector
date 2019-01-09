@@ -4,7 +4,7 @@
         <input :value="value" :placeholder="placeholder" @input="$emit('update:value', $event.target.value);">
     </div>
     <ons-row class="report-widget" v-else-if="context=='report'">
-        <ons-col
+        <ons-col>
           <span class="report widget-label">{{widget.label}}</span>
           <span class="report widget-value">{{value}}</span>
         </ons-col>

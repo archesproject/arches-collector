@@ -4,7 +4,6 @@ export default {
             project: this.$store.getters.activeProject,
             allCards: this.$store.getters.activeGraph.cards,
             allWidgets: this.$store.getters.activeGraph.widgets,
-            allTiles: this.$store.getters.tiles,
             allNodegroups: this.$store.getters.activeGraph.nodegroups
         };
     },
