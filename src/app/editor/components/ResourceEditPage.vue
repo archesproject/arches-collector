@@ -139,7 +139,7 @@ export default {
         },
         childCards: {
             get: function() {
-                return this.$underscore.filter(this.projectCards, function(card) {
+                return this.$underscore.filter(this.allCards, function(card) {
                     var nodegroups = this.$underscore.chain(this.allNodegroups)
                         .filter(function(group) {
                             return group.parentnodegroup_id === this.nodegroup_id;
