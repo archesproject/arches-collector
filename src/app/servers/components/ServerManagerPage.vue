@@ -130,6 +130,9 @@ export default {
                     throw new Error('Network response was not ok.');
                 });
             })
+            .then(function(response) {
+                return self.$store.dispatch('getRemoteProjects', self.$store.getters.activeServer);
+            })
             .catch(function(error) {
                 // console.log('Error:', error);
                 self.error = true;

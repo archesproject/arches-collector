@@ -583,7 +583,7 @@ var store = new Vuex.Store({
                 })
             });
         },
-        updateToken: function({commit, state}) {
+        refreshToken: function({commit, state}) {
             var server = store.getters.activeServer;
             var formData = new FormData();
             formData.append('refresh_token',server.refresh_token);
@@ -610,14 +610,17 @@ var store = new Vuex.Store({
                         });
                     }
 
-                    throw new Error('Network response was not ok.  In updateToken method.');
+                    throw new Error('Network response was not ok.  In refreshToken method.');
                 })
                 .then(function(response) {
                     server.token = response.access_token;
                     server.refresh_token = response.refresh_token;
-                    pouchDBs.updateServerToken(server);
-                    return store.dispatch('saveServerInfo');
+                    return store.dispatch('updateToken', server);
                 });
+        },
+        updateToken: function({commit, state}, server){
+            pouchDBs.updateServerToken(server);
+            return store.dispatch('saveServerInfo');
         },
         syncRemote: function({commit, state}, {projectId, syncAttempts}) {
             return pouchDBs.syncProject(projectId)
@@ -645,7 +648,7 @@ var store = new Vuex.Store({
                         var count = syncAttempts === undefined ? 0 : syncAttempts + 1;
                         //console.log('syncAttempts:', count);
                         if (count < 6){
-                            return store.dispatch('updateToken')
+                            return store.dispatch('refreshToken')
                             .then(function(){
                                 return store.dispatch('syncRemote', {'projectId': projectId, 'syncAttempts': count});
                             });
