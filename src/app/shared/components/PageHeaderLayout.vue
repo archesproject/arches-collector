@@ -51,22 +51,22 @@
                         <div>
                             <div class="server-url">Application Nickname</div>
                         </div>
-                        <v-ons-input class="input" placeholder="Nickname" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" float v-model="selectedServer.nickname">
-                        </v-ons-input>
+                        <input class="input" v-model="selectedServer.nickname">
+                        </input>
                     </v-ons-row>
                     <v-ons-row class="app-details" v-if="selectedServer !== undefined">
                         <div>
                             <div class="server-url">Username</div>
                         </div>
-                        <v-ons-input class="input" placeholder="Username" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" float v-model="selectedServer.username">
-                        </v-ons-input>
+                        <input class="input" v-model="selectedServer.username">
+                        </input>
                     </v-ons-row>
                     <v-ons-row class="app-details" v-if="selectedServer !== undefined">
                         <div>
                             <div class="server-url">Password</div>
                         </div>
-                        <v-ons-input type="password" class="input" placeholder="Password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" float v-model="selectedServer.password">
-                        </v-ons-input>
+                        <input class="input" type="password" v-model="selectedServer.password">
+                        </input>
                     </v-ons-row>
                     <v-ons-row v-if="error">
                         <div class="left">
@@ -77,7 +77,7 @@
                     <v-ons-row class="app-button-row">
                         <v-ons-column>
                             <v-ons-row>
-                                <v-ons-col class="app-button-col"><v-ons-button class="left success" @click="login">Login</v-ons-button></v-ons-col>
+                                <v-ons-col class="app-button-col"><v-ons-button class="left success" @click="login">Save</v-ons-button></v-ons-col>
                                 <v-ons-col class="app-button-col"><v-ons-button class="right danger" @click="$ons.notification.confirm({message: 'Are you sure you want to delete this App? All unsynched data will be lost.', callback: deleteServer})">Delete App</v-ons-button></v-ons-col>
                             </v-ons-row>
                         </v-ons-column>
@@ -179,6 +179,9 @@ export default {
             .then(function(response) {
                 return self.$store.dispatch('getRemoteProjects', self.$store.getters.activeServer);
             })
+            .then(function() {
+                self.selectedServer = false;
+            })
             .catch(function(error) {
                 // console.log('Error:', error);
                 self.error = true;
@@ -203,7 +206,6 @@ export default {
     background-color: whitesmoke;
     padding-left: 10px;
     margin: 10px 0;
-    width: 200px;
 }
 
 .toolbar-header {
