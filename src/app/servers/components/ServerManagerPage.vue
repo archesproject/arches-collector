@@ -111,24 +111,27 @@ export default {
                 self.server.client_id = response.clientid;
                 self.server.user = response.user;
                 return self.$store.dispatch('getToken', self.server)
-                .then(function(response){
-                    if (response.ok) {
-                        var responseJson = response.json();
-                        self.server.token = responseJson.access_token;
-                        self.server.refresh_token = responseJson.refresh_token;
-                        self.$store.commit('addNewServer', self.server);
-                        self.$router.push({'name': 'projectlist'});
-                        return self.server;
+                
+            })
+            .then(function(response){
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    if (response.status === 401) {
+                        self.error_message = 'The supplied username or password was not valid.';
                     } else {
-                        if (response.status === 401) {
-                            self.error_message = 'The supplied username or password was not valid.';
-                        } else {
-                            self.error_message = self.default_error_message;
-                        }
+                        self.error_message = self.default_error_message;
                     }
+                }
 
-                    throw new Error('Network response was not ok.');
-                });
+                throw new Error('Network response was not ok.');
+            })
+            .then(function(response) {
+                self.server.token = response.access_token;
+                self.server.refresh_token = response.refresh_token;
+                self.$store.commit('addNewServer', self.server);
+                self.$router.push({'name': 'projectlist'});
+                return self.server;
             })
             .then(function(response) {
                 return self.$store.dispatch('getRemoteProjects', self.$store.getters.activeServer);

@@ -97,7 +97,7 @@ window.archesvue = new Vue({
             var self = this;
             this.deviceready = true;
 
-            store.dispatch('initServerStore')
+            store.dispatch('initServerStoreFromPouch')
                 .finally(function(doc) {
                     if (store.getters.activeServer) {
                     // go to the last active server and project
