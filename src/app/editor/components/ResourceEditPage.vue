@@ -60,7 +60,7 @@
 <script>
 export default {
     name: 'ResourceEditPage',
-    props: ['goBack', 'resourceid', 'tiles'],
+    props: ['goBack', 'resourceid', 'tiles', 'activeindex'],
     data() {
         return {
             project: this.$store.getters.activeProject,
@@ -71,17 +71,6 @@ export default {
         };
     },
     computed: {
-        projectCards: {
-            get: function() {
-                /*
-                 * Get a list of cards that belong to the current project
-                 */
-                var self = this;
-                return this.allCards.filter(function(card) {
-                    return self.project.cards.indexOf(card.cardid) > -1;
-                });
-            }
-        },
         currentNavItem: {
             get: function() {
                 if (!!this.$store.getters.activeServer) {
@@ -178,6 +167,14 @@ export default {
                     params: {
                         'project': this.project,
                         'tabIndex': this.$store.getters.activeServer.card_nav_stack[0].tabIndex
+                    }
+                });
+            } else if (this.activeindex===0) {
+                this.$router.push({
+                    'name': 'project',
+                    params: {
+                        'project': this.project,
+                        'tabIndex': 1
                     }
                 });
             } else {
