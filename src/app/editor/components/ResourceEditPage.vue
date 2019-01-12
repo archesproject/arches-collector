@@ -161,20 +161,20 @@ export default {
             // and set the tile to null or the parent tile of this.tile
             // push that onto the stack
             // push the saved item back onto the stack, but change the showForm to false
-            if (this.$store.getters.activeServer.card_nav_stack.length === 1) {
-                this.$router.push({
-                    'name': 'project',
-                    params: {
-                        'project': this.project,
-                        'tabIndex': this.$store.getters.activeServer.card_nav_stack[0].tabIndex
-                    }
-                });
-            } else if (this.activeindex===0) {
+            if (this.activeindex===0) {
                 this.$router.push({
                     'name': 'project',
                     params: {
                         'project': this.project,
                         'tabIndex': 1
+                    }
+                });
+            } else if (this.$store.getters.activeServer.card_nav_stack.length === 1) {
+                this.$router.push({
+                    'name': 'project',
+                    params: {
+                        'project': this.project,
+                        'tabIndex': this.$store.getters.activeServer.card_nav_stack[0].tabIndex
                     }
                 });
             } else {
