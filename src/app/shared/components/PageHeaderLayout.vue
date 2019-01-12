@@ -162,10 +162,7 @@ export default {
             })
             .then(function(response){
                 if (response.ok) {
-                    var responseJson = response.json();
-                    self.selectedServer.token = responseJson.access_token;
-                    self.selectedServer.refresh_token = responseJson.refresh_token;
-                    return self.$store.dispatch('updateToken', self.selectedServer);
+                    return response.json();
                 } else {
                     if (response.status === 401) {
                         self.error_message = 'The supplied username or password was not valid.';
@@ -175,6 +172,11 @@ export default {
                 }
 
                 throw new Error('Network response was not ok.');
+            })
+            .then(function(response) {
+                self.selectedServer.token = response.access_token;
+                self.selectedServer.refresh_token = response.refresh_token;
+                return self.$store.dispatch('updateToken', self.selectedServer);
             })
             .then(function(response) {
                 return self.$store.dispatch('getRemoteProjects', self.$store.getters.activeServer);
