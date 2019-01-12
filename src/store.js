@@ -71,22 +71,20 @@ var pouchDBs = (function() {
         updateServerToken: function(server) {
             var self = this;
             return this.servers.get('servers')
-            .then(function(doc){
-                Object.keys(doc.servers[server.url].projects).forEach(function(projectId) {
-                    self._projectDBs[projectId]['remote'] = new PouchDB(server.url + '/couchdb/project_' + projectId, {
-                        ajax: {
-                            headers: {
-                                authorization: 'Bearer ' + server.token
-                            },
-                            withCredentials: false
-                        }
+                .then(function(doc) {
+                    Object.keys(doc.servers[server.url].projects).forEach(function(projectId) {
+                        self._projectDBs[projectId]['remote'] = new PouchDB(server.url + '/couchdb/project_' + projectId, {
+                            ajax: {
+                                headers: {
+                                    authorization: 'Bearer ' + server.token
+                                },
+                                withCredentials: false
+                            }
+                        });
                     });
                 });
-            });
         },
         syncProject: function(projectId) {
-
-
             return this._projectDBs[projectId]['local']
                 .sync(this._projectDBs[projectId]['remote'], {
                     // live: true,
@@ -112,15 +110,15 @@ var pouchDBs = (function() {
                 // })
                 .on('denied', function(err) {
                     // a document failed to replicate (e.g. due to permissions)
-                    console.log(err, 'denied')
+                    console.log(err, 'denied');
                 })
                 .on('error', function(err) {
                 // boo, we hit an error!
                     console.log(err, 'Unable to sync. Please check your data connection and try again.');
-                    //if(err.status === 403) {
-                    //Promise.reject(new Error(err));
+                    // if(err.status === 403) {
+                    // Promise.reject(new Error(err));
                     throw err;
-                    //}
+                    // }
                 });
 
             // sync.cancel(); // whenever you want to cancel only if live = true
@@ -565,7 +563,6 @@ var store = new Vuex.Store({
         },
         getToken: function({commit, state}, {url, username, password, client_id}) {
             var self = this;
-            var server = store.getters.activeServer;
             self.error = false;
 
             var formData = new FormData();
@@ -586,7 +583,7 @@ var store = new Vuex.Store({
         refreshToken: function({commit, state}) {
             var server = store.getters.activeServer;
             var formData = new FormData();
-            formData.append('refresh_token',server.refresh_token);
+            formData.append('refresh_token', server.refresh_token);
             formData.append('grant_type', 'refresh_token');
             formData.append('client_id', server.client_id);
 
@@ -601,13 +598,13 @@ var store = new Vuex.Store({
                 .then(function(response) {
                     if (response.ok) {
                         return response.json();
-                    }else if (response.status === 401) {
+                    } else if (response.status === 401) {
                         return store.dispatch('getToken', server)
-                        .then(function(response){
-                            if (response.ok) {
-                                return response.json();
-                            }
-                        });
+                            .then(function(response) {
+                                if (response.ok) {
+                                    return response.json();
+                                }
+                            });
                     }
 
                     throw new Error('Network response was not ok.  In refreshToken method.');
@@ -618,7 +615,7 @@ var store = new Vuex.Store({
                     return store.dispatch('updateToken', server);
                 });
         },
-        updateToken: function({commit, state}, server){
+        updateToken: function({commit, state}, server) {
             pouchDBs.updateServerToken(server);
             return store.dispatch('saveServerInfo');
         },
@@ -634,24 +631,24 @@ var store = new Vuex.Store({
                     });
                 })
                 .then(function(response) {
-                    if(response.ok) {
+                    if (response.ok) {
                         return store.dispatch('getTiles', projectId);
-                    }else {
+                    } else {
                         throw response;
                     }
                 })
                 .then(function() {
                     return store.commit('setLastProjectSync', projectId);
                 })
-                .catch(function(err){
-                    if(err.status === 403) {
+                .catch(function(err) {
+                    if (err.status === 403) {
                         var count = syncAttempts === undefined ? 0 : syncAttempts + 1;
-                        //console.log('syncAttempts:', count);
-                        if (count < 6){
+                        // console.log('syncAttempts:', count);
+                        if (count < 6) {
                             return store.dispatch('refreshToken')
-                            .then(function(){
-                                return store.dispatch('syncRemote', {'projectId': projectId, 'syncAttempts': count});
-                            });
+                                .then(function() {
+                                    return store.dispatch('syncRemote', {'projectId': projectId, 'syncAttempts': count});
+                                });
                         }
                     }
                     throw err;
@@ -778,26 +775,26 @@ var store = new Vuex.Store({
         },
         deleteTile: function({commit, state}, tile) {
             var childTiles = [tile];
-            var getChildTiles = function(parentTile){
-                state.tiles.forEach(function(tile){
-                    if(tile.type === 'tile' && tile.parenttile_id === parentTile.tileid){
+            var getChildTiles = function(parentTile) {
+                state.tiles.forEach(function(tile) {
+                    if (tile.type === 'tile' && tile.parenttile_id === parentTile.tileid) {
                         childTiles.push(tile);
                         getChildTiles(tile);
                     }
-                })
+                });
                 return childTiles;
-            }
+            };
             getChildTiles(tile);
-            console.log('childTiles', childTiles)
+            console.log('childTiles', childTiles);
 
             var project = store.getters.activeProject;
             return pouchDBs.deleteTiles(project.id, childTiles)
-            .then(function(){
-                store.dispatch('getTiles', project.id);
-            })
-            .catch(function(err) {
-                console.log(err);
-            });
+                .then(function() {
+                    store.dispatch('getTiles', project.id);
+                })
+                .catch(function(err) {
+                    console.log(err);
+                });
         },
         persistResource: function({commit, state}, resource) {
             var project = store.getters.activeProject;
