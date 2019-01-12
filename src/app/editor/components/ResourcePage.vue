@@ -84,7 +84,7 @@ r<template>
                     <v-ons-tabbar swipeable animation="none" :index.sync="activeindex">
                       <template slot="pages">
                           <resource-report-page :resourceid="resourceid" :tiles="tiles" :project="project" :activeindex="activeindex" v-on:switch-tabs="updateActiveIndex"></resource-report-page>
-                          <resource-edit-page v-on:saving="saving = $event" :resourceid="resourceid" :tiles="tiles" :goBack="goBack"  ref="resource_edit_page"/>
+                          <resource-edit-page v-on:saving="saving = $event" :resourceid="resourceid" :tiles="tiles" :goBack="goBack" :activeindex="activeindex" ref="resource_edit_page"/>
                       </template>
                           <v-ons-tab v-for="(tab, i) in tabs"
                             :icon="tabs[i].icon"
