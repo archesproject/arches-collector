@@ -19,7 +19,7 @@
                             </div>
                         </v-ons-list-item @click="">
                         <v-ons-progress-bar indeterminate v-if="syncing"></v-ons-progress-bar>
-                        <v-ons-list-item tappable v-if="selectedProject && !selectedProject.deleted">
+                        <v-ons-list-item tappable v-if="selectedProject && !selectedProject.deleted" @click="$ons.notification.confirm({message: 'Are you sure you want to leave this project?. Projects you have left will not sync with the remote server.', callback: leaveProject})">
                             <v-ons-icon class="text-color-dark left menu-icon" icon="fa-toggle-off"></v-ons-icon>
                             <div class="menu-text">
                                 <span class="text-color-dark">Leave project</span>
@@ -53,7 +53,7 @@
             <v-ons-progress-bar indeterminate v-if="syncing"></v-ons-progress-bar>
             <v-ons-list-item class="list-item" tappable modifier="longdivider" v-for="project in projects" :key="project.id" v-bind:class="{ inactive_project: !project.active, deleted: project.deleted }">
                 <span style="line-height: 1.1em; border-style: 1px; background-color: light-blue; border-color: dark-blue;" @click="segueToProject(project);">
-                    <span class="project-name">{{project.name}}</span><span class="project-name deleted" v-if="project.deleted">(Project deleted on cloud)</span><br>
+                    <span class="project-name">{{project.name}}</span><span class="project-name deleted" v-if="project.deleted">(Project is inactive)</span><br>
                     <span class="project-active" v-if="project.active">Active from:</span>
                     <span class="project-inactive" v-else>Inactive</span>
                     <span class="project-dates">{{project.startdate}} to {{project.enddate}}</span>
@@ -149,6 +149,23 @@ export default {
                     });
             } else {
                 console.log('not deleting project');
+            }
+        },
+        leaveProject: function(answer) {
+            var self = this;
+            if (answer === 1) {
+                this.$store.dispatch('leaveProject', this.selectedProject.id)
+                    .catch(function() {
+                        console.log('failed to leave project');
+                    })
+                    .finally(function(doc) {
+                        var index = self.$underscore.findIndex(self.projects, { id: self.selectedProject.id });
+                        window.setTimeout(function() {
+                            self.toggleSideNav(undefined)
+                        }, 150);
+                    }, this);
+            } else {
+                console.log('you are not leaving');
             }
         },
         refreshProjectList(done) {

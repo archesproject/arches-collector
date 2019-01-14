@@ -402,6 +402,7 @@ var store = new Vuex.Store({
             newServer.active_graph_id = '';
             newServer.active_resource = '';
             newServer.card_nav_stack = [];
+            newServer.user_project_status = {};
             if (typeof store.getters.server(newServer.url) === 'undefined') {
                 Vue.set(state.dbs.app_servers.servers, newServer.url, newServer);
             } else {
@@ -531,6 +532,10 @@ var store = new Vuex.Store({
                 return serverDoc;
             });
         },
+        leaveProject: function(state, projectId) {
+            var server = this.getters.activeServer;
+            console.log(server);
+        },
         deleteProject: function(state, projectId) {
             pouchDBs._projectDBs[projectId]['local'].destroy(function(err, response) {
                 if (err) {
@@ -539,6 +544,10 @@ var store = new Vuex.Store({
                     store.dispatch('deleteProjectBasemaps', projectId);
                     if (store.getters.activeServer.projects[projectId]) {
                         delete store.getters.activeServer.projects[projectId];
+                        var server = store.getters.activeServer;
+                        if (server.user_project_status[server.user.id]) {
+                            delete server.user_project_status[server.user.id];
+                        }
                         store.dispatch('saveServerInfo');
                     }
                 }
@@ -623,6 +632,9 @@ var store = new Vuex.Store({
             return pouchDBs.syncProject(projectId)
                 .then(function() {
                     var server = store.getters.activeServer;
+                    if (server.user_project_status[server.user.id] === undefined) {
+                        server.user_project_status[server.user.id] = {'joined': true};
+                    }
                     return fetch(server.url + '/sync/' + projectId, {
                         method: 'GET',
                         headers: new Headers({
