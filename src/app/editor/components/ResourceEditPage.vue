@@ -17,7 +17,9 @@
                 <div tappable modifier="longdivider" v-for="tile in cardTiles" :key="tile.tileid" @click="setTileContext(tile)" class="tile-instance">
                     <div class="flex"><span class="fa5 fa-ellipsis-v drag-bars"></span>
                         <span class="flex tile-data"><div>{{getTileData(tile, card).value}}</div><div class="widget-label">{{getTileData(tile, card).label}}</div></span>
-                        <span class="fa5 fa-trash tile-delete" @click="deleteTile(tile, $event)"></span>
+                        <span v-if="canDelete(tile)" class="tile-delete">
+                            <span class="fa5 fa-trash" @click="deleteTile(tile, $event)"></span>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -308,6 +310,12 @@ export default {
         canAdd: function(card) {
             if (!!card) {
                 return this.getCardinality(card) === 'n' || this.hasTiles(card) === false;
+            }
+            return false;
+        },
+        canDelete: function(tile) {
+            if (!!tile) {
+                return this.user.is_reviewer || (Object.keys(tile.data).length === 0 && Object.keys(tile.provisionaledits).length === 1 && Object.keys(tile.provisionaledits)[0] === String(this.user.id));
             }
             return false;
         },
