@@ -24,7 +24,7 @@
                             <span class="application-list-item-url">{{server.url}}</span>
                         </span>
                         <span class="right">
-                            <v-ons-icon class="add-application-icon" v-if="selectedServer !== server" icon="fa-info-circle" @click="setSelectedServer($event, server);"></v-ons-icon>
+                            <v-ons-icon v-if="selectedServer !== server" icon="fa-info-circle" @click="setSelectedServer($event, server);"></v-ons-icon>
                         </span>
                     </v-ons-list-item>
                     <v-ons-list-item class="application-item-panel" tappable @click="goTo('servermanager');">
@@ -184,74 +184,87 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
-    .inactive_project{
-        background-color: #f3f3f3;
-    }
 
-    .projects-header {
-        color: #645F87;
-        background: #f4f4f4;
-        border-bottom: 1px solid #ddd;
-    }
+.list-item .ons-icon {
+    font-size: 30px;
+}
 
-    .projects-title {
-        font-size: 17px;
-        font-weight: 500;
-    }
+.left-button-text{
+    color: white;
+}
 
-    .project-name {
-        color: #454545;
-        font-size: 14px;
-    }
+.input {
+    background-color: whitesmoke;
+    padding-left: 10px;
+    margin: 10px 0;
+}
 
-    .project-name.deleted {
-        color: #454545;
-        font-size: 14px;
-        padding-left: 5px;
-    }
+.toolbar-header {
+    background-color: #413040;
+    align-items: center;
+}
 
-    .project-active {
-        color: #777;
-        font-size: 12px;
-        padding-left: 0px;
-    }
 
-    .project-inactive {
-        color: #777;
-        font-size: 13px;
-    }
+.toolbar-header-icon {
+    vertical-align: middle;
+}
 
-    .project-dates {
-        color: #555;
-        font-size: 12px;
-    }
+.application-list {
+    color: #fff;
+}
 
-    .menu-icon {
-        width: 25px;
-        display: flex;
-    }
+.application-item-panel {
+    border-bottom: 1px solid #413040;
+}
 
-    .menu-text {
-        font-size: 15px;
-        display: flex;
-        flex-direction: column;
-    }
+.application-list-item {
+    font-size: 15px;
+    padding-left: 10px;
+}
 
-    ons-list-item[disabled] {
-      background-color: #ccc;
-      pointer-events: none;
-    }
+.application-list-item-prepanel {
+    background: #392B39;
+    height: 36px;
+    width: 36px;
+}
 
-    ons-list-item.deleted {
-      background-color: #ccc;
-    }
+.application-list-item-icon {
+    padding-top: 6px;
+    padding-left: 8px;
+    color: #A0B193;
+}
 
-    .menu-subtext {
-        font-size: 12px;
-    }
+.application-list-item-url {
+    font-size: 12px;
+    color: #aaa;
+}
 
-    .list-item {
-        border-bottom: 1px solid #eee;
-    }
+.add-application-icon {
+    padding-top: 6px;
+    padding-left: 8px;
+    color: #fff;
+}
+
+.app-details {
+    padding: 15px;
+}
+
+.app-page-color {
+    color: #fff;
+    height: 100%;
+}
+
+.app-details .server-url {
+    color: #ccc;
+    font-size: 15px;
+}
+
+.app-button-row {
+    justify-content: space-evenly;
+}
+
+.app-button-col {
+    padding: 10px;
+}
 
 </style>
