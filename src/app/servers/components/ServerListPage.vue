@@ -15,6 +15,12 @@
             </v-ons-toolbar> -->
             <div v-show="selectedServer === undefined || selectedServer === false" class="app-page-color">
                 <v-ons-list class="application-list">
+                    <v-ons-list-item class="application-item-panel" tappable @click="goTo('servermanager');">
+                        <span class="application-list-item-prepanel">
+                            <v-ons-icon class="add-application-icon" icon="ion-plus-round"></v-ons-icon>
+                        </span>
+                        <span class="application-list-item">Add Application</span>
+                    </v-ons-list-item>
                     <v-ons-list-item class="application-item-panel" tappable modifier="longdivider" v-for="(server, key) in servers" :key="server.url" @click="setActiveServer(server.url);">
                         <span class="application-list-item-prepanel">
                             <v-ons-icon class="application-list-item-icon" icon="ion-checkmark-round"></v-ons-icon>
@@ -26,12 +32,6 @@
                         <span class="right">
                             <v-ons-icon v-if="selectedServer !== server" icon="fa-info-circle" @click="setSelectedServer($event, server);"></v-ons-icon>
                         </span>
-                    </v-ons-list-item>
-                    <v-ons-list-item class="application-item-panel" tappable @click="goTo('servermanager');">
-                        <span class="application-list-item-prepanel">
-                            <v-ons-icon class="add-application-icon" icon="ion-plus-round"></v-ons-icon>
-                        </span>
-                        <span class="application-list-item">Add Application</span>
                     </v-ons-list-item>
                 </v-ons-list>
             </div>
