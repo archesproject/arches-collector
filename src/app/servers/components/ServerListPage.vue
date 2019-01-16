@@ -38,7 +38,6 @@
             <div class="app-page-color" v-show="selectedServer">
                 <v-ons-row class="app-details">
                     <v-ons-col>
-                        <span>Arches Application</span>
                         <span v-if="selectedServer !== undefined">
                             <div class="server-url">{{selectedServer.url}}</div>
                         </span>
@@ -46,21 +45,21 @@
                 </v-ons-row>
                 <v-ons-row class="app-details" v-if="selectedServer !== undefined">
                     <div>
-                        <div class="server-url">Application Nickname</div>
+                        <div>Application Nickname</div>
                     </div>
                     <input class="input" v-model="selectedServer.nickname">
                     </input>
                 </v-ons-row>
                 <v-ons-row class="app-details" v-if="selectedServer !== undefined">
                     <div>
-                        <div class="server-url">Username</div>
+                        <div>Username</div>
                     </div>
                     <input class="input" v-model="selectedServer.username">
                     </input>
                 </v-ons-row>
                 <v-ons-row class="app-details" v-if="selectedServer !== undefined">
                     <div>
-                        <div class="server-url">Password</div>
+                        <div>Password</div>
                     </div>
                     <input class="input" type="password" v-model="selectedServer.password">
                     </input>
@@ -75,6 +74,7 @@
                     <v-ons-column>
                         <v-ons-row>
                             <v-ons-col class="app-button-col"><v-ons-button class="left success" @click="login">Save</v-ons-button></v-ons-col>
+                            <v-ons-col class="app-button-col"><v-ons-button class="middle success" @click="cancel">Cancel</v-ons-button></v-ons-col>
                             <v-ons-col class="app-button-col"><v-ons-button class="right danger" @click="$ons.notification.confirm({message: 'Are you sure you want to delete this App? All unsynched data will be lost.', callback: deleteServer})">Delete App</v-ons-button></v-ons-col>
                         </v-ons-row>
                     </v-ons-column>
@@ -92,6 +92,7 @@ export default {
         return {
             openSide: false,
             selectedServer: undefined,
+            selectedServerCopy: undefined,
             error: false,
             error_message: '',
             default_error_message: 'Oops, something happened, maybe you\re offline?'
@@ -117,6 +118,7 @@ export default {
         setSelectedServer: function(e, serverurl) {
             e.stopPropagation();
             this.selectedServer = serverurl;
+            this.selectedServerCopy = Object.assign({}, serverurl);
         },
         deleteServer: function(answer) {
             if (answer === 1) {
@@ -125,6 +127,10 @@ export default {
             } else {
                 console.log('not deleting');
             }
+        },
+        cancel: function() {
+            Object.assign(this.selectedServer, this.selectedServerCopy);
+            this.selectedServer = false;
         },
         login: function() {
             var self = this;
@@ -250,13 +256,12 @@ export default {
 }
 
 .app-page-color {
-    color: #fff;
+    color: black;
     height: 100%;
 }
 
 .app-details .server-url {
-    color: #ccc;
-    font-size: 15px;
+    font-size: 20px;
 }
 
 .app-button-row {
