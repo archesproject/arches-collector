@@ -1,50 +1,44 @@
 <template>
     <v-ons-page>
-        <v-ons-carousel fullscreen auto-scroll overscrollable
-        :index.sync="carouselIndex" :on-swipe="onSwipe">
-            <v-ons-carousel-item>
-                <div class="body">
-
-                    <v-ons-toolbar>
-                        <div class="center left-button-text">Sign In</div>
-                    </v-ons-toolbar>
-
-                    <v-ons-input class="input" placeholder="My Arches Application URL" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" float v-model="server.url">
-                    </v-ons-input>
-                    <v-ons-input class="input" placeholder="Nickname" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" float v-model="server.nickname">
-                    </v-ons-input>
-
-                    <v-ons-button modifier="large" :disabled="disableNext" class="btn-success" v-on:click="next">Next</v-ons-button>
+        <div class="body">
+            <v-ons-toolbar>
+                <div class="left">
+                    <span class="left-button-text">{{server.url}}</span>
                 </div>
-            </v-ons-carousel-item>
-            <v-ons-carousel-item>
-                <div class="body">
-                    <v-ons-toolbar>
-                        <div class="left">
-                            <v-ons-toolbar-button class="left-button-text" @click="back">
-                                <v-ons-icon icon="ion-android-arrow-back"></v-ons-icon>
-                                <span>{{server.url}}</span>
-                            </v-ons-toolbar-button>
-                        </div>
-                    </v-ons-toolbar>
+            </v-ons-toolbar>
 
-                    <v-ons-input class="input" placeholder="Username" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" float v-model="server.username">
-                    </v-ons-input>
-                    <v-ons-input class="input" placeholder="Password" type="password" float v-model="server.password">
-                    </v-ons-input>
+            <v-ons-input class="input" placeholder="My Arches Application URL" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" float v-model="server.url">
+            </v-ons-input>
 
-                    <v-ons-list-item v-if="error">
-                        <div class="left">
-                            <v-ons-icon icon="exclamation-triangle" class="list-item__icon" style="color:#ea8a0b;"></v-ons-icon>
-                        </div>
-                        <div class="center">{{error_message}}</div>
-                    </v-ons-list-item>
+            <v-ons-input class="input" placeholder="Nickname" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" float v-model="server.nickname">
+            </v-ons-input>
 
-                    <v-ons-button modifier="large" :disabled="disableSignIn" class="btn-success" v-on:click="login">Sign In</v-ons-button>
-                    <v-ons-button modifier="large quiet" class="btn-danger" style="margin-top: 10px;" v-on:click="cancel">Cancel</v-ons-button>
+            <v-ons-input class="input" placeholder="Username" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" float v-model="server.username">
+            </v-ons-input>
+
+            <v-ons-input class="input" placeholder="Password" type="password" float v-model="server.password">
+            </v-ons-input>
+
+            <v-ons-list-item v-if="error">
+                <div class="left">
+                    <v-ons-icon icon="exclamation-triangle" class="list-item__icon" style="color:#ea8a0b;"></v-ons-icon>
                 </div>
-            </v-ons-carousel-item>
-        </v-ons-carousel>
+                <div class="center">{{error_message}}</div>
+            </v-ons-list-item>
+
+            <v-ons-row class="app-button-row">
+                <v-ons-column>
+                    <v-ons-row>
+                        <v-ons-col class="app-button-col">
+                            <v-ons-button :disabled="disableSignIn" class="btn-success left" v-on:click="login">Sign In</v-ons-button>
+                        </v-ons-col>
+                        <v-ons-col class="app-button-col">
+                            <v-ons-button class="btn-danger right" v-on:click="cancel">Cancel</v-ons-button>
+                        </v-ons-col>
+                    </v-ons-row>
+                </v-ons-column>
+            </v-ons-row>
+        </div>
     </v-ons-page>
 </template>
 
@@ -52,10 +46,8 @@
 
 export default {
     name: 'ServerManager',
-    // props: ['index'],
     data() {
         return {
-            carouselIndex: 0,
             server: {
                 url: 'http://localhost:8000',
                 nickname: 'test',
@@ -74,20 +66,11 @@ export default {
         };
     },
     computed: {
-        disableNext: function() {
-            return !this.server.url || !this.server.nickname;
-        },
         disableSignIn: function() {
             return !this.server.url || !this.server.nickname || !this.server.username || !this.server.password;
         }
     },
     methods: {
-        next: function() {
-            this.carouselIndex = 1;
-        },
-        back: function() {
-            this.carouselIndex = 0;
-        },
         cancel: function() {
             this.$router.back();
         },
@@ -140,13 +123,6 @@ export default {
                 // console.log('Error:', error);
                 self.error = true;
             });
-        },
-        onSwipe: function(newIndex) {
-            // console.log('swipping');
-            // console.log(newIndex);
-            if (this.carouselIndex === 0) {
-                this.carouselIndex = 0;
-            }
         }
     }
 };
@@ -162,6 +138,7 @@ export default {
 }
 
 .left-button-text {
+    padding-left: 15px;
     font-size: 22px;
     color: dimgrey;
 }
@@ -170,6 +147,14 @@ export default {
     width: 80%;
     padding: 4px 0;
     margin: 20px 0;
+}
+
+.app-button-row {
+    justify-content: space-evenly;
+}
+
+.app-button-col {
+    padding: 10px;
 }
 
 </style>

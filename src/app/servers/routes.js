@@ -10,5 +10,10 @@ export default [
         path: '/projectlist',
         component: components.ProjectListPage,
         name: 'projectlist'
+    },
+    {
+        path: '/serverlist',
+        component: components.ServerListPage,
+        name: 'serverlist'
     }
 ];
