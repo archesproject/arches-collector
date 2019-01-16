@@ -26,9 +26,18 @@
                 <div class="center">{{error_message}}</div>
             </v-ons-list-item>
 
-            <v-ons-button modifier="large" :disabled="disableSignIn" class="btn-success" v-on:click="login">Sign In</v-ons-button>
-            <v-ons-button modifier="large quiet" class="btn-danger" style="margin-top: 10px;" v-on:click="cancel">Cancel</v-ons-button>
-
+            <v-ons-row class="app-button-row">
+                <v-ons-column>
+                    <v-ons-row>
+                        <v-ons-col class="app-button-col">
+                            <v-ons-button :disabled="disableSignIn" class="btn-success left" v-on:click="login">Sign In</v-ons-button>
+                        </v-ons-col>
+                        <v-ons-col class="app-button-col">
+                            <v-ons-button class="btn-danger right" v-on:click="cancel">Cancel</v-ons-button>
+                        </v-ons-col>
+                    </v-ons-row>
+                </v-ons-column>
+            </v-ons-row>
         </div>
     </v-ons-page>
 </template>
@@ -138,6 +147,14 @@ export default {
     width: 80%;
     padding: 4px 0;
     margin: 20px 0;
+}
+
+.app-button-row {
+    justify-content: space-evenly;
+}
+
+.app-button-col {
+    padding: 10px;
 }
 
 </style>
