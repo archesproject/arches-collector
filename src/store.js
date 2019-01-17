@@ -476,37 +476,51 @@ var store = new Vuex.Store({
             store.dispatch('saveServerInfoToPouch');
         },
         setResourceAsEdited: function(state, value) {
-            store.dispatch(
-                'getResource', {
-                    projectid: value.projectId,
-                    resourceid: value.resourceInstanceId
-                }
-            ).then((res) => {
-                var resource = res['docs'][0];
-                var date = new Date();
-                resource['edited'] = {
-                    'day': date.toDateString(),
-                    'time': date.toTimeString()
-                };
-                var descriptors = store.getters.getResourceDescriptors(resource);
-                if (!!descriptors) {
-                    resource.displayname = descriptors.name;
-                    resource.displaydescription = descriptors.description;
-                    resource.map_popup = descriptors.map_popup;
-                }
-                store.dispatch('persistResource', resource)
-                    .then(function(doc) {
-                        return doc;
-                    })
-                    .catch(function(err) {
-                        console.log(err);
-                    })
-                    .finally(function() {
-                        console.log('resource save finished...');
-                    });
-                return resource;
-            });
+            // store.dispatch(
+            //     'getResource', {
+            //         projectid: value.projectId,
+            //         resourceid: value.resourceInstanceId
+            //     }
+            // ).then((res) => {
+            //     var resource = res['docs'][0];
+            //     var date = new Date();
+            //     resource['edited'] = {
+            //         'day': date.toDateString(),
+            //         'time': date.toTimeString()
+            //     };
+            //     var descriptors = store.getters.getResourceDescriptors(resource);
+            //     if (!!descriptors) {
+            //         resource.displayname = descriptors.name;
+            //         resource.displaydescription = descriptors.description;
+            //         resource.map_popup = descriptors.map_popup;
+            //     }
+            //     store.dispatch('persistResource', resource)
+            //         .then(function(doc) {
+            //             return doc;
+            //         })
+            //         .catch(function(err) {
+            //             console.log(err);
+            //         })
+            //         .finally(function() {
+            //             console.log('resource save finished...');
+            //         });
+            //     return resource;
+            // });
             Vue.set(store.getters.currentProjects[value.projectId].resources_to_sync, value.resourceInstanceId, false);
+        },
+        updateResourceEditDateAndDescriptors: function(state, resource) {
+            var date = new Date();
+            resource['edited'] = {
+                'day': date.toDateString(),
+                'time': date.toTimeString()
+            };
+            var descriptors = store.getters.getResourceDescriptors(resource);
+            if (!!descriptors) {
+                resource.displayname = descriptors.name;
+                resource.displaydescription = descriptors.description;
+                resource.map_popup = descriptors.map_popup;
+            }
+            return resource;
         },
         addTile: function(state, value) {
             state.tiles.push(value);
@@ -756,40 +770,34 @@ var store = new Vuex.Store({
                                 type: 'resource',
                                 _id: tile.resourceinstance_id
                             };
-                            var descriptors = store.getters.getResourceDescriptors(resource);
-                            if (!!descriptors) {
-                                resource.displayname = descriptors.name;
-                                resource.displaydescription = descriptors.description;
-                                resource.map_popup = descriptors.map_popup;
-                            }
-                            store.dispatch('persistResource', resource)
-                                .then(function(doc) {
-                                    commit('addTile', resource);
-                                    commit('setActiveResourceInstance', resource);
-                                    commit('setResourceAsEdited', {'projectId': project.id, 'resourceInstanceId': tile.resourceinstance_id});
-                                })
-                                .catch(function(err) {
-                                    console.log(err);
-                                })
-                                .finally(function() {
-                                    console.log('resource save finished...');
-                                });
+                            // var descriptors = store.getters.getResourceDescriptors(resource);
+                            // if (!!descriptors) {
+                            //     resource.displayname = descriptors.name;
+                            //     resource.displaydescription = descriptors.description;
+                            //     resource.map_popup = descriptors.map_popup;
+                            // }
+                            commit('updateResourceEditDateAndDescriptors', resource);
+                            commit('addTile', resource);
+                            commit('setActiveResourceInstance', resource);
+                            Vue.set(store.getters.currentProjects[ project.id].resources_to_sync, tile.resourceinstance_id, false);
+                            //commit('setResourceAsEdited', {'projectId': project.id, 'resourceInstanceId': tile.resourceinstance_id});
+                            store.dispatch('persistResource', resource);
                         }
                     }
                     if (!newResource) {
                         var resource = store.getters.activeServer.active_resource;
-                        var descriptors = store.getters.getResourceDescriptors(resource);
-                            if (!!descriptors) {
-                                resource.displayname = descriptors.name;
-                                resource.displaydescription = descriptors.description;
-                                resource.map_popup = descriptors.map_popup;
-                            }
-                        commit('setResourceAsEdited', {'projectId': project.id, 'resourceInstanceId': tile.resourceinstance_id});
+                        // var descriptors = store.getters.getResourceDescriptors(resource);
+                        //     if (!!descriptors) {
+                        //         resource.displayname = descriptors.name;
+                        //         resource.displaydescription = descriptors.description;
+                        //         resource.map_popup = descriptors.map_popup;
+                        //     }
+                        commit('updateResourceEditDateAndDescriptors', resource);
+                        Vue.set(store.getters.currentProjects[ project.id].resources_to_sync, tile.resourceinstance_id, false);
+                        store.dispatch('persistResource', resource);
+                        //commit('setResourceAsEdited', {'projectId': project.id, 'resourceInstanceId': tile.resourceinstance_id});
                         // commit('setActiveResourceInstance', {});
                         //commit('setActiveResourceInstance', resource);
-                    }
-                    if (resource) {
-
                     }
 
                     return tile;
