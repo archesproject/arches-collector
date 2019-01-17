@@ -79,9 +79,8 @@ export default {
         activeindex: function(val) {
             // Updating the resourceid triggers an update of this.resourceTiles
             // This in turn updates the tree with the new tile data
-            if (this.resourceTiles.length === 0) {
-                var resourceid = this.$store.getters.activeServer.active_resource;
-                this.resourceid = resourceid;
+            if (this.resourceTiles.length === 0 && !!this.$store.getters.activeServer.active_resource) {
+                this.resourceid = this.$store.getters.activeServer.active_resource.resourceinstanceid;
             }
         }
     },

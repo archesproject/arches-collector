@@ -264,7 +264,7 @@ var pouchDBs = (function() {
             },
             active_project: project_id,
             project_sort: [project_id1, project_id2...],
-            active_resource: resource_instance_id
+            active_resource: resource_instance_object
             active_graph_id: graph id being edited
         }
     }
@@ -399,7 +399,7 @@ var store = new Vuex.Store({
         addNewServer: function(state, newServer) {
             newServer.active_project = '';
             newServer.active_graph_id = '';
-            newServer.active_resource = '';
+            newServer.active_resource = null;
             newServer.card_nav_stack = [];
             if (typeof store.getters.server(newServer.url) === 'undefined') {
                 Vue.set(state.dbs.app_servers.servers, newServer.url, newServer);
@@ -426,6 +426,7 @@ var store = new Vuex.Store({
         },
         setActiveServer: function(state, value) {
             state.dbs.app_servers.active = value;
+            store.dispatch('saveServerInfoToPouch');
         },
         updateProjects: function(state, serverDoc) {
             var server = store.getters.server(serverDoc.url);
@@ -452,7 +453,7 @@ var store = new Vuex.Store({
                 });
         },
         setActiveResourceInstance: function(state, value) {
-            store.getters.activeServer.active_resource = value.resourceinstanceid;
+            store.getters.activeServer.active_resource = value;
         },
         clearActiveResourceInstance: function(state) {
             store.getters.activeServer.active_resource = null;
@@ -474,37 +475,19 @@ var store = new Vuex.Store({
             Vue.set(store.getters.currentProjects[projectId].lastsync, 'time', pad(now.getHours(), 2) + ':' + pad(now.getMinutes(), 2));
             store.dispatch('saveServerInfoToPouch');
         },
-        setResourceAsEdited: function(state, value) {
-            store.dispatch(
-                'getResource', {
-                    projectid: value.projectId,
-                    resourceid: value.resourceInstanceId
-                }
-            ).then((res) => {
-                var resource = res['docs'][0];
-                var date = new Date();
-                resource['edited'] = {
-                    'day': date.toDateString(),
-                    'time': date.toTimeString()
-                };
-                var descriptors = store.getters.getResourceDescriptors(resource);
-                if (!!descriptors) {
-                    resource.displayname = descriptors.name;
-                    resource.displaydescription = descriptors.description;
-                    resource.map_popup = descriptors.map_popup;
-                }
-                store.dispatch('persistResource', resource)
-                    .then(function(doc) {
-                        return doc;
-                    })
-                    .catch(function(err) {
-                        console.log(err);
-                    })
-                    .finally(function() {
-                        console.log('resource save finished...');
-                    });
-            });
-            Vue.set(store.getters.currentProjects[value.projectId].resources_to_sync, value.resourceInstanceId, false);
+        updateResourceEditDateAndDescriptors: function(state, resource) {
+            var date = new Date();
+            resource['edited'] = {
+                'day': date.toDateString(),
+                'time': date.toTimeString()
+            };
+            var descriptors = store.getters.getResourceDescriptors(resource);
+            if (!!descriptors) {
+                resource.displayname = descriptors.name;
+                resource.displaydescription = descriptors.description;
+                resource.map_popup = descriptors.map_popup;
+            }
+            return resource;
         },
         addTile: function(state, value) {
             state.tiles.push(value);
@@ -717,8 +700,10 @@ var store = new Vuex.Store({
             return pouchDBs.getChanges(projectId);
         },
         getTiles: function({commit, state}, projectId) {
-            pouchDBs.getTiles(projectId).then(function(tiles) {
+            return pouchDBs.getTiles(projectId)
+            .then(function(tiles) {
                 state.tiles = tiles;
+                return state.tiles;
             });
         },
         persistTile: function({commit, state}, tile) {
@@ -754,23 +739,20 @@ var store = new Vuex.Store({
                                 type: 'resource',
                                 _id: tile.resourceinstance_id
                             };
-                            store.dispatch('persistResource', resource)
-                                .then(function(doc) {
-                                    commit('addTile', resource);
-                                    commit('setActiveResourceInstance', {resourceinstanceid: tile.resourceinstance_id});
-                                    commit('setResourceAsEdited', {'projectId': project.id, 'resourceInstanceId': tile.resourceinstance_id});
-                                })
-                                .catch(function(err) {
-                                    console.log(err);
-                                })
-                                .finally(function() {
-                                    console.log('resource save finished...');
-                                });
+                            commit('updateResourceEditDateAndDescriptors', resource);
+                            commit('addTile', resource);
+                            commit('setActiveResourceInstance', resource);
+                            Vue.set(store.getters.currentProjects[ project.id].resources_to_sync, tile.resourceinstance_id, false);
+                            store.dispatch('persistResource', resource);
                         }
                     }
                     if (!newResource) {
-                        commit('setResourceAsEdited', {'projectId': project.id, 'resourceInstanceId': tile.resourceinstance_id});
+                        var resource = store.getters.activeServer.active_resource;
+                        commit('updateResourceEditDateAndDescriptors', resource);
+                        Vue.set(store.getters.currentProjects[ project.id].resources_to_sync, tile.resourceinstance_id, false);
+                        store.dispatch('persistResource', resource);
                     }
+
                     return tile;
                 });
         },
@@ -791,7 +773,12 @@ var store = new Vuex.Store({
             var project = store.getters.activeProject;
             return pouchDBs.deleteTiles(project.id, childTiles)
             .then(function(){
-                store.dispatch('getTiles', project.id);
+                return store.dispatch('getTiles', project.id)
+                .then(function(tiles) {
+                    var resource = store.getters.activeServer.active_resource;
+                    commit('updateResourceEditDateAndDescriptors', resource);
+                    return store.dispatch('persistResource', resource);
+                });
             })
             .catch(function(err) {
                 console.log(err);
