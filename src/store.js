@@ -264,7 +264,7 @@ var pouchDBs = (function() {
             },
             active_project: project_id,
             project_sort: [project_id1, project_id2...],
-            active_resource: resource_instance_id
+            active_resource: resource_instance_object
             active_graph_id: graph id being edited
         }
     }
@@ -399,7 +399,7 @@ var store = new Vuex.Store({
         addNewServer: function(state, newServer) {
             newServer.active_project = '';
             newServer.active_graph_id = '';
-            newServer.active_resource = '';
+            newServer.active_resource = null;
             newServer.card_nav_stack = [];
             if (typeof store.getters.server(newServer.url) === 'undefined') {
                 Vue.set(state.dbs.app_servers.servers, newServer.url, newServer);
@@ -426,6 +426,7 @@ var store = new Vuex.Store({
         },
         setActiveServer: function(state, value) {
             state.dbs.app_servers.active = value;
+            store.dispatch('saveServerInfoToPouch');
         },
         updateProjects: function(state, serverDoc) {
             var server = store.getters.server(serverDoc.url);
@@ -452,7 +453,7 @@ var store = new Vuex.Store({
                 });
         },
         setActiveResourceInstance: function(state, value) {
-            store.getters.activeServer.active_resource = value.resourceinstanceid;
+            store.getters.activeServer.active_resource = value;
         },
         clearActiveResourceInstance: function(state) {
             store.getters.activeServer.active_resource = null;
@@ -503,6 +504,7 @@ var store = new Vuex.Store({
                     .finally(function() {
                         console.log('resource save finished...');
                     });
+                return resource;
             });
             Vue.set(store.getters.currentProjects[value.projectId].resources_to_sync, value.resourceInstanceId, false);
         },
@@ -754,10 +756,16 @@ var store = new Vuex.Store({
                                 type: 'resource',
                                 _id: tile.resourceinstance_id
                             };
+                            var descriptors = store.getters.getResourceDescriptors(resource);
+                            if (!!descriptors) {
+                                resource.displayname = descriptors.name;
+                                resource.displaydescription = descriptors.description;
+                                resource.map_popup = descriptors.map_popup;
+                            }
                             store.dispatch('persistResource', resource)
                                 .then(function(doc) {
                                     commit('addTile', resource);
-                                    commit('setActiveResourceInstance', {resourceinstanceid: tile.resourceinstance_id});
+                                    commit('setActiveResourceInstance', resource);
                                     commit('setResourceAsEdited', {'projectId': project.id, 'resourceInstanceId': tile.resourceinstance_id});
                                 })
                                 .catch(function(err) {
@@ -769,8 +777,21 @@ var store = new Vuex.Store({
                         }
                     }
                     if (!newResource) {
+                        var resource = store.getters.activeServer.active_resource;
+                        var descriptors = store.getters.getResourceDescriptors(resource);
+                            if (!!descriptors) {
+                                resource.displayname = descriptors.name;
+                                resource.displaydescription = descriptors.description;
+                                resource.map_popup = descriptors.map_popup;
+                            }
                         commit('setResourceAsEdited', {'projectId': project.id, 'resourceInstanceId': tile.resourceinstance_id});
+                        // commit('setActiveResourceInstance', {});
+                        //commit('setActiveResourceInstance', resource);
                     }
+                    if (resource) {
+
+                    }
+
                     return tile;
                 });
         },
