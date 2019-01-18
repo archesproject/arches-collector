@@ -731,11 +731,12 @@ var store = new Vuex.Store({
             var project = store.getters.activeProject;
             return pouchDBs.putTile(project.id, tile)
                 .then(function(doc) {
+                    var resource;
                     if (addTile) {
                         commit('addTile', tile);
                         if (newResource) {
                             var graph = store.getters.activeGraph;
-                            var resource = {
+                            resource = {
                                 displaydescription: '',
                                 displayname: '',
                                 geometries: [],
@@ -756,7 +757,7 @@ var store = new Vuex.Store({
                         }
                     }
                     if (!newResource) {
-                        var resource = store.getters.activeServer.active_resource;
+                        resource = store.getters.activeServer.active_resource;
                         commit('updateResourceEditDateAndDescriptors', resource);
                         Vue.set(store.getters.currentProjects[project.id].resources_to_sync, tile.resourceinstance_id, false);
                         store.dispatch('persistResource', resource);
