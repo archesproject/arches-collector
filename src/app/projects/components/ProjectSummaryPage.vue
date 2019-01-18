@@ -18,11 +18,11 @@
             </v-ons-row>
             <v-ons-row>
                 <v-ons-col class="stats">
-                    <div class="record-text">125</div>
+                    <div class="record-text">{{records_downloaded}}</div>
                     <span class="status-type-text">Records download</span>
                 </v-ons-col>
                 <v-ons-col class="stats">
-                    <div class="record-text">30</div>
+                    <div class="record-text">{{records_to_sync}}</div>
                     <span class="status-type-text">Records Edited</span>
                 </v-ons-col>
             </v-ons-row>
@@ -42,6 +42,13 @@ export default {
     computed: {
         records_to_sync() {
             return this.$store.getters.resourcesToSync;
+        },
+        records_downloaded() {
+            var resources = {};
+            this.$store.getters.tiles.forEach(function(tile) {
+                resources[tile.resourceinstance_id] = null;
+            });
+            return Object.keys(resources).length;
         }
     },
     methods: {

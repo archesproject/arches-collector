@@ -1,19 +1,24 @@
-r<template>
+<template>
     <page-header-layout>
         <v-ons-page>
             <v-ons-toolbar style="background-color: whitesmoke;">
                 <div class="left">
                     <v-ons-toolbar-button class="flex">
                         <v-ons-icon class="text-color-dark resource-header" icon="ion-android-arrow-dropleft-circle" @click="back"></v-ons-icon>
-                        <span v-if="headerName.label">
+                        <!-- <span v-if="headerName.label">
                             <span style="display: flex; flex-direction: column; line-height: 22px; padding-top: 6px; padding-left: 8px;"  class="flex text-color-dark resource-header">
                                 <span class="flex">
                                    {{headerName.value}}<br>{{headerName.label}}
                                 </span>
                             </span>
+                        </span> -->
+                        <span v-if="!!headerName.label" class="instance-name-position">
+                            <span class="instance-name">{{headerName.label}}
+                                <div class="resource-type">{{headerName.value}}</div>
+                            </span>
                         </span>
-                        <span class="instance-name-position" v-else>
-                            <span class="instance-name">Instance Name
+                        <span v-else class="instance-name-position">
+                            <span class="instance-name">
                                 <div class="resource-type">{{headerName.value}}</div>
                             </span>
                         </span>
@@ -128,25 +133,29 @@ export default {
                 return this.$store.getters.activeServer.card_nav_stack[0];
             }
         },
+
         headerName: function() {
             var navItem = this.currentNavItem;
+            var displayname = this.resourceid ? this.$store.getters.activeServer.active_resource.displayname : 'Unnamed Resource';
             if (!!navItem && !!navItem.card) {
                 if(navItem.showForm || navItem.activeObject === 'card') {
-                    return {'value': navItem.card.name, 'label': ''};
+                    return {'value': navItem.card.name, 'label': displayname};
                 }
                 if(!!navItem.tile) {
                     var x = this.$refs.resource_edit_page.getTileData(navItem.tile,navItem.card);
                     return x;
                 }
-                return {'value': navItem.card.name, 'label': ''};
+                return {'value': navItem.card.name, 'label': displayname};
             } else {
-                return {'value': this.$store.getters.activeGraph.name, 'label': ''}
+                return {'value': this.$store.getters.activeGraph.name, 'label': displayname}
             }
         },
         resourceid: {
             get: function() {
-                if (!!this.$store.getters.activeServer) {
-                    return this.$store.getters.activeServer.active_resource;
+                if (!!this.$store.getters.activeServer && this.$store.getters.activeServer.active_resource) {
+                    return this.$store.getters.activeServer.active_resource.resourceinstanceid;
+                } else {
+                    return null;
                 }
             }
         },
