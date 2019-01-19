@@ -6,7 +6,21 @@
                 collapse="" side="right"
                 :open.sync="showSideNav" class="sidenav toolbar-header">
                 <v-ons-page>
-                    <v-ons-list style="margin-top: 5px;">
+
+                    <v-ons-list style="margin-top: 5px;" v-if="showAllProjectsMenuContent">
+                        <v-ons-list-item>
+                            <span class="text-color-dark label right-panel-label">All Projects</span>
+                        </v-ons-list-item>
+                        <v-ons-list-item tappable>
+                            <v-ons-icon class="text-color-dark left menu-icon" icon="fa-toggle-off"></v-ons-icon>
+                            <div class="menu-text">
+                                <span class="text-color-dark">Show projects I've left</span>
+                                <span class="text-color-dark menu-subtext">List all projects regardless of status</span>
+                            </div>
+                        </v-ons-list-item @click="">
+                    </v-ons-list>
+
+                    <v-ons-list style="margin-top: 5px;" v-else>
                         <v-ons-list-item tappable @click="sync">
                             <span class="text-color-dark label right-panel-label" v-if="selectedProject">{{selectedProject.name}}</span>
                         </v-ons-list-item @click="">
@@ -43,7 +57,7 @@
                     <span class="left projects-title"><span>Projects</span></span>
                     <div class="center"></div>
                     <div class="right">
-                        <v-ons-toolbar-button @click="toggleSideNav">
+                        <v-ons-toolbar-button @click="toggleSideNav(projects)">
                             <v-ons-icon class="text-color-dark project-name" icon="fa-ellipsis-v"></v-ons-icon>
                         </v-ons-toolbar-button>
                     </div>
@@ -87,7 +101,9 @@ export default {
             showSideNav: false,
             syncing: false,
             syncfailed: false,
-            selectedProject: undefined
+            selectedProject: undefined,
+            showUnjoinedProjects: false,
+            showAllProjectsMenuContent: false
         };
     },
     computed: {
@@ -127,7 +143,13 @@ export default {
             }
         },
         toggleSideNav: function(project) {
-            this.selectedProject = project;
+            if (project && project.length) {
+                this.selectedProject = undefined;
+                this.showAllProjectsMenuContent = true;
+            } else {
+                this.showAllProjectsMenuContent = false;
+                this.selectedProject = project;
+            }
             this.showSideNav = !this.showSideNav;
         },
         sync: function() {
