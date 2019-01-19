@@ -40,7 +40,7 @@
         <v-ons-splitter-content class="project-list-panel">
             <v-ons-page>
                 <v-ons-toolbar class="project-list-toolbar" style="background-color: whitesmoke;" modifier="longdivider">
-                    <span class="left"><span>Projects</span></span>
+                    <span class="left projects-title"><span>Projects</span></span>
                     <div class="center"></div>
                     <div class="right">
                         <v-ons-toolbar-button @click="toggleSideNav">
@@ -202,8 +202,6 @@ export default {
     }
 
     .projects-title {
-        font-size: 17px;
-        font-weight: 500;
         padding: 0 15px;
     }
 
