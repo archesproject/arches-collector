@@ -71,22 +71,20 @@ var pouchDBs = (function() {
         updateServerToken: function(server) {
             var self = this;
             return this.servers.get('servers')
-            .then(function(doc){
-                Object.keys(doc.servers[server.url].projects).forEach(function(projectId) {
-                    self._projectDBs[projectId]['remote'] = new PouchDB(server.url + '/couchdb/project_' + projectId, {
-                        ajax: {
-                            headers: {
-                                authorization: 'Bearer ' + server.token
-                            },
-                            withCredentials: false
-                        }
+                .then(function(doc) {
+                    Object.keys(doc.servers[server.url].projects).forEach(function(projectId) {
+                        self._projectDBs[projectId]['remote'] = new PouchDB(server.url + '/couchdb/project_' + projectId, {
+                            ajax: {
+                                headers: {
+                                    authorization: 'Bearer ' + server.token
+                                },
+                                withCredentials: false
+                            }
+                        });
                     });
                 });
-            });
         },
         syncProject: function(projectId) {
-
-
             return this._projectDBs[projectId]['local']
                 .sync(this._projectDBs[projectId]['remote'], {
                     // live: true,
@@ -112,15 +110,15 @@ var pouchDBs = (function() {
                 // })
                 .on('denied', function(err) {
                     // a document failed to replicate (e.g. due to permissions)
-                    console.log(err, 'denied')
+                    console.log(err, 'denied');
                 })
                 .on('error', function(err) {
                 // boo, we hit an error!
                     console.log(err, 'Unable to sync. Please check your data connection and try again.');
-                    //if(err.status === 403) {
-                    //Promise.reject(new Error(err));
+                    // if(err.status === 403) {
+                    // Promise.reject(new Error(err));
                     throw err;
-                    //}
+                    // }
                 });
 
             // sync.cancel(); // whenever you want to cancel only if live = true
@@ -401,6 +399,7 @@ var store = new Vuex.Store({
             newServer.active_graph_id = '';
             newServer.active_resource = null;
             newServer.card_nav_stack = [];
+            newServer.user_project_status = {};
             if (typeof store.getters.server(newServer.url) === 'undefined') {
                 Vue.set(state.dbs.app_servers.servers, newServer.url, newServer);
             } else {
@@ -439,9 +438,9 @@ var store = new Vuex.Store({
             };
 
             serverDoc.projects.forEach(function(project) {
-                //if (server.projects.hasOwnProperty(project.id) === false) {
+                // if (server.projects.hasOwnProperty(project.id) === false) {
                 Vue.set(server.projects, project.id, project);
-                //}
+                // }
             });
             store.dispatch('saveServerInfoToPouch');
         },
@@ -514,6 +513,10 @@ var store = new Vuex.Store({
                 return serverDoc;
             });
         },
+        leaveProject: function(state, projectId) {
+            var server = this.getters.activeServer;
+            console.log(server);
+        },
         deleteProject: function(state, projectId) {
             pouchDBs._projectDBs[projectId]['local'].destroy(function(err, response) {
                 if (err) {
@@ -522,6 +525,10 @@ var store = new Vuex.Store({
                     store.dispatch('deleteProjectBasemaps', projectId);
                     if (store.getters.activeServer.projects[projectId]) {
                         delete store.getters.activeServer.projects[projectId];
+                        var server = store.getters.activeServer;
+                        if (server.user_project_status[server.user.id]) {
+                            delete server.user_project_status[server.user.id];
+                        }
                         store.dispatch('saveServerInfoToPouch');
                     }
                 }
@@ -546,7 +553,6 @@ var store = new Vuex.Store({
         },
         getToken: function({commit, state}, {url, username, password, client_id}) {
             var self = this;
-            var server = store.getters.activeServer;
             self.error = false;
 
             var formData = new FormData();
@@ -567,7 +573,7 @@ var store = new Vuex.Store({
         refreshToken: function({commit, state}) {
             var server = store.getters.activeServer;
             var formData = new FormData();
-            formData.append('refresh_token',server.refresh_token);
+            formData.append('refresh_token', server.refresh_token);
             formData.append('grant_type', 'refresh_token');
             formData.append('client_id', server.client_id);
 
@@ -582,13 +588,13 @@ var store = new Vuex.Store({
                 .then(function(response) {
                     if (response.ok) {
                         return response.json();
-                    }else if (response.status === 401) {
+                    } else if (response.status === 401) {
                         return store.dispatch('getToken', server)
-                        .then(function(response){
-                            if (response.ok) {
-                                return response.json();
-                            }
-                        });
+                            .then(function(response) {
+                                if (response.ok) {
+                                    return response.json();
+                                }
+                            });
                     }
 
                     throw new Error('Network response was not ok.  In refreshToken method.');
@@ -599,7 +605,7 @@ var store = new Vuex.Store({
                     return store.dispatch('updateToken', server);
                 });
         },
-        updateToken: function({commit, state}, server){
+        updateToken: function({commit, state}, server) {
             pouchDBs.updateServerToken(server);
             return store.dispatch('saveServerInfoToPouch');
         },
@@ -607,6 +613,9 @@ var store = new Vuex.Store({
             return pouchDBs.syncProject(projectId)
                 .then(function() {
                     var server = store.getters.activeServer;
+                    if (server.user_project_status[server.user.id] === undefined) {
+                        server.user_project_status[server.user.id] = {'joined': true};
+                    }
                     return fetch(server.url + '/sync/' + projectId, {
                         method: 'GET',
                         headers: new Headers({
@@ -615,24 +624,24 @@ var store = new Vuex.Store({
                     });
                 })
                 .then(function(response) {
-                    if(response.ok) {
+                    if (response.ok) {
                         return store.dispatch('getTiles', projectId);
-                    }else {
+                    } else {
                         throw response;
                     }
                 })
                 .then(function() {
                     return store.commit('setLastProjectSync', projectId);
                 })
-                .catch(function(err){
-                    if(err.status === 403) {
+                .catch(function(err) {
+                    if (err.status === 403) {
                         var count = syncAttempts === undefined ? 0 : syncAttempts + 1;
-                        //console.log('syncAttempts:', count);
-                        if (count < 6){
+                        // console.log('syncAttempts:', count);
+                        if (count < 6) {
                             return store.dispatch('refreshToken')
-                            .then(function(){
-                                return store.dispatch('syncRemote', {'projectId': projectId, 'syncAttempts': count});
-                            });
+                                .then(function() {
+                                    return store.dispatch('syncRemote', {'projectId': projectId, 'syncAttempts': count});
+                                });
                         }
                     }
                     throw err;
@@ -701,10 +710,10 @@ var store = new Vuex.Store({
         },
         getTiles: function({commit, state}, projectId) {
             return pouchDBs.getTiles(projectId)
-            .then(function(tiles) {
-                state.tiles = tiles;
-                return state.tiles;
-            });
+                .then(function(tiles) {
+                    state.tiles = tiles;
+                    return state.tiles;
+                });
         },
         persistTile: function({commit, state}, tile) {
             var tileid = uuidv4();
@@ -722,11 +731,12 @@ var store = new Vuex.Store({
             var project = store.getters.activeProject;
             return pouchDBs.putTile(project.id, tile)
                 .then(function(doc) {
+                    var resource;
                     if (addTile) {
                         commit('addTile', tile);
                         if (newResource) {
                             var graph = store.getters.activeGraph;
-                            var resource = {
+                            resource = {
                                 displaydescription: '',
                                 displayname: '',
                                 geometries: [],
@@ -742,14 +752,14 @@ var store = new Vuex.Store({
                             commit('updateResourceEditDateAndDescriptors', resource);
                             commit('addTile', resource);
                             commit('setActiveResourceInstance', resource);
-                            Vue.set(store.getters.currentProjects[ project.id].resources_to_sync, tile.resourceinstance_id, false);
+                            Vue.set(store.getters.currentProjects[project.id].resources_to_sync, tile.resourceinstance_id, false);
                             store.dispatch('persistResource', resource);
                         }
                     }
                     if (!newResource) {
-                        var resource = store.getters.activeServer.active_resource;
+                        resource = store.getters.activeServer.active_resource;
                         commit('updateResourceEditDateAndDescriptors', resource);
-                        Vue.set(store.getters.currentProjects[ project.id].resources_to_sync, tile.resourceinstance_id, false);
+                        Vue.set(store.getters.currentProjects[project.id].resources_to_sync, tile.resourceinstance_id, false);
                         store.dispatch('persistResource', resource);
                     }
 
@@ -758,31 +768,31 @@ var store = new Vuex.Store({
         },
         deleteTile: function({commit, state}, tile) {
             var childTiles = [tile];
-            var getChildTiles = function(parentTile){
-                state.tiles.forEach(function(tile){
-                    if(tile.type === 'tile' && tile.parenttile_id === parentTile.tileid){
+            var getChildTiles = function(parentTile) {
+                state.tiles.forEach(function(tile) {
+                    if (tile.type === 'tile' && tile.parenttile_id === parentTile.tileid) {
                         childTiles.push(tile);
                         getChildTiles(tile);
                     }
-                })
+                });
                 return childTiles;
-            }
+            };
             getChildTiles(tile);
-            console.log('childTiles', childTiles)
+            console.log('childTiles', childTiles);
 
             var project = store.getters.activeProject;
             return pouchDBs.deleteTiles(project.id, childTiles)
-            .then(function(){
-                return store.dispatch('getTiles', project.id)
-                .then(function(tiles) {
-                    var resource = store.getters.activeServer.active_resource;
-                    commit('updateResourceEditDateAndDescriptors', resource);
-                    return store.dispatch('persistResource', resource);
+                .then(function() {
+                    return store.dispatch('getTiles', project.id)
+                        .then(function(tiles) {
+                            var resource = store.getters.activeServer.active_resource;
+                            commit('updateResourceEditDateAndDescriptors', resource);
+                            return store.dispatch('persistResource', resource);
+                        });
+                })
+                .catch(function(err) {
+                    console.log(err);
                 });
-            })
-            .catch(function(err) {
-                console.log(err);
-            });
         },
         persistResource: function({commit, state}, resource) {
             var project = store.getters.activeProject;

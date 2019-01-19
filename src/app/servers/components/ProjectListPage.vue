@@ -19,7 +19,7 @@
                             </div>
                         </v-ons-list-item @click="">
                         <v-ons-progress-bar indeterminate v-if="syncing"></v-ons-progress-bar>
-                        <v-ons-list-item tappable v-if="selectedProject && !selectedProject.deleted">
+                        <v-ons-list-item tappable v-if="selectedProject && !selectedProject.deleted" @click="$ons.notification.confirm({message: 'Are you sure you want to leave this project?. Projects you have left will not sync with the remote server.', callback: leaveProject})">
                             <v-ons-icon class="text-color-dark left menu-icon" icon="fa-toggle-off"></v-ons-icon>
                             <div class="menu-text">
                                 <span class="text-color-dark">Leave project</span>
@@ -38,30 +38,40 @@
             </v-ons-splitter-side>
 
         <v-ons-splitter-content class="project-list-panel">
-            <v-ons-pull-hook
-              :action="refreshProjectList"
-              @changestate="state = $event.state">
-                <div v-show="state === 'initial'"> Pull to refresh </div>
-                <div v-show="state === 'preaction'"> Release </div>
-                <div v-show="state === 'action'"><v-ons-progress-circular indeterminate></v-ons-progress-circular></div>
-            </v-ons-pull-hook>
+            <v-ons-page>
+                <v-ons-toolbar class="project-list-toolbar" style="background-color: whitesmoke;" modifier="longdivider">
+                    <span class="left projects-title"><span>Projects</span></span>
+                    <div class="center"></div>
+                    <div class="right">
+                        <v-ons-toolbar-button @click="toggleSideNav">
+                            <v-ons-icon class="text-color-dark project-name" icon="fa-ellipsis-v"></v-ons-icon>
+                        </v-ons-toolbar-button>
+                    </div>
 
-        <v-ons-list>
-            <v-ons-list-item class="projects-header" modifier="longdivider">
-                <span class="left projects-title"><span>Projects</span></span>
-            </v-ons-list-item>
-            <v-ons-progress-bar indeterminate v-if="syncing"></v-ons-progress-bar>
-            <v-ons-list-item class="list-item" tappable modifier="longdivider" v-for="project in projects" :key="project.id" v-bind:class="{ inactive_project: !project.active, deleted: project.deleted }">
-                <span style="line-height: 1.1em; border-style: 1px; background-color: light-blue; border-color: dark-blue;" @click="segueToProject(project);">
-                    <span class="project-name">{{project.name}}</span><span class="project-name deleted" v-if="project.deleted">(Project deleted on cloud)</span><br>
-                    <span class="project-active" v-if="project.active">Active from:</span>
-                    <span class="project-inactive" v-else>Inactive</span>
-                    <span class="project-dates">{{project.startdate}} to {{project.enddate}}</span>
-                </span>
-                <v-ons-icon class="right" style="display: flex" icon="fa-ellipsis-v" v-if="project.lastsync.date || project.deleted" @click="toggleSideNav(project)"></v-ons-icon>
-                <v-ons-icon class="right" style="display: flex" icon="fa-cloud-download-alt" v-if="!project.lastsync.date && !project.deleted" @click="function(){selectedProject = project; sync()}"></v-ons-icon>
-            </v-ons-list-item>
-        </v-ons-list>
+                </v-ons-toolbar>
+
+                <v-ons-pull-hook
+                  :action="refreshProjectList"
+                  @changestate="state = $event.state">
+                    <div v-show="state === 'initial'"> Pull to refresh </div>
+                    <div v-show="state === 'preaction'"> Release </div>
+                    <div v-show="state === 'action'"><v-ons-progress-circular indeterminate></v-ons-progress-circular></div>
+                </v-ons-pull-hook>
+
+            <v-ons-list>
+                <v-ons-progress-bar indeterminate v-if="syncing"></v-ons-progress-bar>
+                <v-ons-list-item class="list-item" tappable modifier="longdivider" v-for="project in projects" :key="project.id" v-bind:class="{ inactive_project: !project.active, deleted: project.deleted }">
+                    <span style="line-height: 1.1em; border-style: 1px; background-color: light-blue; border-color: dark-blue;" @click="segueToProject(project);">
+                        <span class="project-name">{{project.name}}</span><span class="project-name deleted" v-if="project.deleted">(Project is inactive)</span><br>
+                        <span class="project-active" v-if="project.active">Active from:</span>
+                        <span class="project-inactive" v-else>Inactive</span>
+                        <span class="project-dates">{{project.startdate}} to {{project.enddate}}</span>
+                    </span>
+                    <v-ons-icon class="right" style="display: flex" icon="fa-ellipsis-v" v-if="project.lastsync.date || project.deleted" @click="toggleSideNav(project)"></v-ons-icon>
+                    <v-ons-icon class="right" style="display: flex" icon="fa-cloud-download-alt" v-if="!project.lastsync.date && !project.deleted" @click="function(){selectedProject = project; sync()}"></v-ons-icon>
+                </v-ons-list-item>
+            </v-ons-list>
+        </v-ons-page>
         </v-ons-splitter-content>
         </v-ons-splitter>
 
@@ -151,6 +161,23 @@ export default {
                 console.log('not deleting project');
             }
         },
+        leaveProject: function(answer) {
+            var self = this;
+            if (answer === 1) {
+                this.$store.dispatch('leaveProject', this.selectedProject.id)
+                    .catch(function() {
+                        console.log('failed to leave project');
+                    })
+                    .finally(function(doc) {
+                        var index = self.$underscore.findIndex(self.projects, { id: self.selectedProject.id });
+                        window.setTimeout(function() {
+                            self.toggleSideNav(undefined)
+                        }, 150);
+                    }, this);
+            } else {
+                console.log('you are not leaving');
+            }
+        },
         refreshProjectList(done) {
             this.$store.dispatch('getRemoteProjects', this.$store.getters.activeServer)
                 .finally(function() {
@@ -175,8 +202,7 @@ export default {
     }
 
     .projects-title {
-        font-size: 17px;
-        font-weight: 500;
+        padding: 0 15px;
     }
 
     .project-name {
