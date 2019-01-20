@@ -39,10 +39,6 @@
                                 <v-ons-icon class="text-color-dark icon" icon="fa-sort-amount-desc"></v-ons-icon>
                                 <span class="text-color-dark label right-panel-label">Most recent edit</span>
                             </v-ons-list-item>
-                            <v-ons-list-item tappable>
-                                <v-ons-icon class="text-color-dark icon" icon="fa-map"></v-ons-icon>
-                                <span class="text-color-dark label right-panel-label">Project map</span>
-                            </v-ons-list-item>
                         </v-ons-list>
                     </v-ons-page>
                 </v-ons-splitter-side>
