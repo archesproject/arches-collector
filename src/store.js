@@ -400,6 +400,7 @@ var store = new Vuex.Store({
             newServer.active_resource = null;
             newServer.card_nav_stack = [];
             newServer.user_project_status = {};
+            newServer.user_project_status[newServer.user.id] = {};
             if (typeof store.getters.server(newServer.url) === 'undefined') {
                 Vue.set(state.dbs.app_servers.servers, newServer.url, newServer);
             } else {
@@ -465,6 +466,7 @@ var store = new Vuex.Store({
         },
         setLastProjectSync: function(state, projectId) {
             var now = new Date();
+            var server = store.getters.activeServer;
             function pad(n, width, z) {
                 z = z || '0';
                 n = n + '';
@@ -472,6 +474,9 @@ var store = new Vuex.Store({
             }
             Vue.set(store.getters.currentProjects[projectId].lastsync, 'date', now.toISOString().split('T')[0].replace(/-/g, '/'));
             Vue.set(store.getters.currentProjects[projectId].lastsync, 'time', pad(now.getHours(), 2) + ':' + pad(now.getMinutes(), 2));
+            if (server.user_project_status[server.user.id][projectId] === undefined) {
+                server.user_project_status[server.user.id][projectId] = {joined: true};
+            }
             store.dispatch('saveServerInfoToPouch');
         },
         updateResourceEditDateAndDescriptors: function(state, resource) {
@@ -513,9 +518,17 @@ var store = new Vuex.Store({
                 return serverDoc;
             });
         },
-        leaveProject: function(state, projectId) {
+        toggleProjectParticipation: function(state, projectId) {
             var server = this.getters.activeServer;
-            console.log(server);
+            if (server.user_project_status[server.user.id] === undefined) {
+                server.user_project_status[server.user.id] = {};
+            }
+            if (server.user_project_status[server.user.id][projectId] === undefined) {
+                server.user_project_status[server.user.id][projectId] = {joined: false};
+            } else {
+                server.user_project_status[server.user.id][projectId].joined = !server.user_project_status[server.user.id][projectId].joined;
+            }
+            store.dispatch('saveServerInfoToPouch');
         },
         deleteProject: function(state, projectId) {
             pouchDBs._projectDBs[projectId]['local'].destroy(function(err, response) {
@@ -613,9 +626,6 @@ var store = new Vuex.Store({
             return pouchDBs.syncProject(projectId)
                 .then(function() {
                     var server = store.getters.activeServer;
-                    if (server.user_project_status[server.user.id] === undefined) {
-                        server.user_project_status[server.user.id] = {'joined': true};
-                    }
                     return fetch(server.url + '/sync/' + projectId, {
                         method: 'GET',
                         headers: new Headers({

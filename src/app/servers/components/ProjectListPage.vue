@@ -11,11 +11,15 @@
                         <v-ons-list-item>
                             <span class="text-color-dark label right-panel-label">All Projects</span>
                         </v-ons-list-item>
-                        <v-ons-list-item tappable>
+                        <v-ons-list-item tappable @click=toggleShowUnjoined>
                             <v-ons-icon class="text-color-dark left menu-icon" icon="fa-toggle-off"></v-ons-icon>
-                            <div class="menu-text">
+                            <div class="menu-text" v-if="showUnjoinedProjects === false">
                                 <span class="text-color-dark">Show projects I've left</span>
                                 <span class="text-color-dark menu-subtext">List all projects regardless of status</span>
+                            </div>
+                            <div class="menu-text" v-else>
+                                <span class="text-color-dark">Show only projects I've joined</span>
+                                <span class="text-color-dark menu-subtext">Show only projects I'm able to sync</span>
                             </div>
                         </v-ons-list-item @click="">
                     </v-ons-list>
@@ -24,7 +28,7 @@
                         <v-ons-list-item tappable @click="sync">
                             <span class="text-color-dark label right-panel-label" v-if="selectedProject">{{selectedProject.name}}</span>
                         </v-ons-list-item @click="">
-                        <v-ons-list-item tappable @click="sync" v-if="selectedProject && !selectedProject.deleted">
+                        <v-ons-list-item tappable @click="sync" v-if="selectedProject && !selectedProject.deleted && selectedProject.joined">
                             <v-ons-icon class="text-color-dark left menu-icon" icon="fa-cloud-download-alt"></v-ons-icon>
                             <div class="menu-text">
                                 <span class="text-color-dark">Refresh all records in this project</span>
@@ -33,11 +37,18 @@
                             </div>
                         </v-ons-list-item @click="">
                         <v-ons-progress-bar indeterminate v-if="syncing"></v-ons-progress-bar>
-                        <v-ons-list-item tappable v-if="selectedProject && !selectedProject.deleted" @click="$ons.notification.confirm({message: 'Are you sure you want to leave this project?. Projects you have left will not sync with the remote server.', callback: leaveProject})">
+                        <v-ons-list-item tappable v-if="selectedProject && !selectedProject.deleted && selectedProject.joined" @click="$ons.notification.confirm({message: 'Are you sure you want to leave this project?. If you leave, this project will not sync with the remote server unless you rejoin.', callback: toggleProjectParticipation})">
                             <v-ons-icon class="text-color-dark left menu-icon" icon="fa-toggle-off"></v-ons-icon>
                             <div class="menu-text">
                                 <span class="text-color-dark">Leave project</span>
                                 <span class="text-color-dark menu-subtext">Stop synching with this active project</span>
+                            </div>
+                        </v-ons-list-item @click="">
+                        <v-ons-list-item tappable v-if="selectedProject && !selectedProject.deleted && selectedProject.joined === false" @click="function(){toggleProjectParticipation(1)}">
+                            <v-ons-icon class="text-color-dark left menu-icon" icon="fa-toggle-off"></v-ons-icon>
+                            <div class="menu-text">
+                                <span class="text-color-dark">Join project</span>
+                                <span class="text-color-dark menu-subtext">Resume synching with this active project</span>
                             </div>
                         </v-ons-list-item @click="">
                         <v-ons-list-item tappable @click="$ons.notification.confirm({message: 'Are you sure you want to delete this Project? All unsynched data will be lost.', callback: deleteProject})">
@@ -74,15 +85,16 @@
 
             <v-ons-list>
                 <v-ons-progress-bar indeterminate v-if="syncing"></v-ons-progress-bar>
-                <v-ons-list-item class="list-item" tappable modifier="longdivider" v-for="project in projects" :key="project.id" v-bind:class="{ inactive_project: !project.active, deleted: project.deleted }">
+                <v-ons-list-item class="list-item" tappable modifier="longdivider" v-for="project in projects" :key="project.id" v-bind:class="{ deleted: project.deleted, unjoined: project.joined === false }">
                     <span style="line-height: 1.1em; border-style: 1px; background-color: light-blue; border-color: dark-blue;" @click="segueToProject(project);">
-                        <span class="project-name">{{project.name}}</span><span class="project-name deleted" v-if="project.deleted">(Project is inactive)</span><br>
+                        <span class="project-name">{{project.name}}</span>
+                        <span class="project-name deleted" v-if="project.deleted">(Project is inactive)</span><br>
                         <span class="project-active" v-if="project.active">Active from:</span>
-                        <span class="project-inactive" v-else>Inactive</span>
                         <span class="project-dates">{{project.startdate}} to {{project.enddate}}</span>
+                        <br><span class="project-active" v-if="project.joined === false">Disabled - join to enable sync</span>
                     </span>
-                    <v-ons-icon class="right" style="display: flex" icon="fa-ellipsis-v" v-if="project.lastsync.date || project.deleted" @click="toggleSideNav(project)"></v-ons-icon>
-                    <v-ons-icon class="right" style="display: flex" icon="fa-cloud-download-alt" v-if="!project.lastsync.date && !project.deleted" @click="function(){selectedProject = project; sync()}"></v-ons-icon>
+                    <v-ons-icon class="right" style="display: flex" icon="fa-ellipsis-v" v-if="project.joined !== undefined || project.deleted" @click="toggleSideNav(project)"></v-ons-icon>
+                    <v-ons-icon class="right" style="display: flex" icon="fa-cloud-download-alt" v-if="project.joined === undefined && !project.deleted" @click="function(){selectedProject = project; sync()}"></v-ons-icon>
                 </v-ons-list-item>
             </v-ons-list>
         </v-ons-page>
@@ -103,7 +115,8 @@ export default {
             syncfailed: false,
             selectedProject: undefined,
             showUnjoinedProjects: false,
-            showAllProjectsMenuContent: false
+            showAllProjectsMenuContent: false,
+            server: this.$store.getters.activeServer
         };
     },
     computed: {
@@ -118,29 +131,53 @@ export default {
                     return Object.keys(self.$store.getters.currentProjects)
                         .map(function(key) {
                             return self.$store.getters.currentProjects[key];
-                        })
+                        }, self)
                         .filter(function(item) {
                             return item[objProp] === value;
-                        });
+                        }, this);
                 };
                 var activeProjects = filterObj('active', true);
                 var inActiveProjects = filterObj('active', false);
-                return [...activeProjects, ...inActiveProjects];
+                var projectList = [...activeProjects, ...inActiveProjects].filter(function(p){
+                    if (self.projectStatus) {
+                        if (self.projectStatus[p.id] && (self.projectStatus[p.id].joined || self.showUnjoinedProjects) ) {
+                            p.joined = self.userIsJoined(p.id)
+                            return p;
+                        } else if (self.projectStatus[p.id] === undefined) {
+                            return p;
+                        }
+                    } else {
+                        return p;
+                    }
+                })
+                return projectList;
             },
             set: function(arr) {
                 return arr;
+            }
+        },
+        projectStatus: {
+            get: function() {
+                var userProjectStatus;
+                if (this.server && this.server.user_project_status) {
+                    userProjectStatus = this.server.user_project_status[this.server.user.id]
+                }
+                return userProjectStatus;
             }
         }
     },
     methods: {
         segueToProject(project) {
-            if (project.lastsync.date) {
+            if (project.joined) {
                 var payload = {
                     project_id: project.id
                 };
                 this.$store.commit('setActiveProject', payload);
                 this.$router.push({'name': 'project', params: {project: project, tabIndex: 0}});
             }
+        },
+        userIsJoined: function(projectid) {
+            return this.projectStatus[projectid].joined;
         },
         toggleSideNav: function(project) {
             if (project && project.length) {
@@ -151,6 +188,9 @@ export default {
                 this.selectedProject = project;
             }
             this.showSideNav = !this.showSideNav;
+        },
+        toggleShowUnjoined: function(project) {
+            this.showUnjoinedProjects = !this.showUnjoinedProjects;
         },
         sync: function() {
             var self = this;
@@ -183,10 +223,10 @@ export default {
                 console.log('not deleting project');
             }
         },
-        leaveProject: function(answer) {
+        toggleProjectParticipation: function(answer) {
             var self = this;
             if (answer === 1) {
-                this.$store.dispatch('leaveProject', this.selectedProject.id)
+                this.$store.dispatch('toggleProjectParticipation', this.selectedProject.id)
                     .catch(function() {
                         console.log('failed to leave project');
                     })
@@ -244,11 +284,6 @@ export default {
         padding-left: 0px;
     }
 
-    .project-inactive {
-        color: #777;
-        font-size: 13px;
-    }
-
     .project-dates {
         color: #555;
         font-size: 12px;
@@ -272,6 +307,11 @@ export default {
 
     ons-list-item.deleted {
       background-color: #ccc;
+    }
+
+    ons-list-item.unjoined {
+      background-color: #ddd;
+      color: red;
     }
 
     .menu-subtext {
