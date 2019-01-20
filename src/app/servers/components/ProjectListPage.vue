@@ -311,7 +311,6 @@ export default {
 
     ons-list-item.unjoined {
       background-color: #ddd;
-      color: red;
     }
 
     .menu-subtext {
