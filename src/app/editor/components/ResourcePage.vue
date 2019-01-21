@@ -138,13 +138,6 @@ export default {
             var navItem = this.currentNavItem;
             var displayname = this.resourceid ? this.$store.getters.activeServer.active_resource.displayname : 'Unnamed Resource';
             if (!!navItem && !!navItem.card) {
-                if(navItem.showForm || navItem.activeObject === 'card') {
-                    return {'value': navItem.card.name, 'label': displayname};
-                }
-                if(!!navItem.tile) {
-                    var x = this.$refs.resource_edit_page.getTileData(navItem.tile,navItem.card);
-                    return x;
-                }
                 return {'value': navItem.card.name, 'label': displayname};
             } else {
                 return {'value': this.$store.getters.activeGraph.name, 'label': displayname}
