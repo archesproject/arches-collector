@@ -16,6 +16,15 @@
             </div>
         </ons-col>
     </ons-row>
+    <span class="flex tile-data" v-else-if="context=='nav'">
+        <div class="flex">
+            <span style="display: inline;" v-for="(label, index) in conceptLabels">
+                <span v-if="index < 2"><span v-if="index > 0 && index < 2">, </span>{{label.text}}</span>
+                <span v-else-if="index == 2">, ...</span>
+            </span>
+        </div>
+        <div class="widget-label">{{widget.label}}</div>
+    </span>
 </template>
 
 

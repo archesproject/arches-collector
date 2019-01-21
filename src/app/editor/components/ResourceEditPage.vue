@@ -15,8 +15,10 @@
             </div>
             <div v-show="hasTiles(card) || activeObject === 'card'">
                 <div tappable modifier="longdivider" v-for="tile in cardTiles" :key="tile.tileid" @click="setTileContext(tile)" class="tile-instance">
-                    <div class="flex"><span class="fa5 fa-ellipsis-v drag-bars"></span>
-                        <span class="flex tile-data"><div>{{getTileData(tile, card).value}}</div><div class="widget-label">{{getTileData(tile, card).label}}</div></span>
+                    <div class="flex">
+                        <span class="fa5 fa-ellipsis-v drag-bars"></span>
+                        <!-- <span class="flex tile-data"><div>{{getTileData(tile, card).value}}</div><div class="widget-label">{{getTileData(tile, card).label}}</div></span> -->
+                        <component v-if="card" class="widget" :allNodes="allNodes" :tile="tile" :tiles="tiles" :widget="displayWidget(card)" :context="'nav'" v-bind:is="'base-widget'"></component>
                         <span v-if="canDelete(tile)" class="tile-delete">
                             <span class="fa5 fa-trash" @click="deleteTile(tile, $event)"></span>
                         </span>
@@ -27,7 +29,7 @@
                 <v-ons-list-item tappable @click="setTileContext(tile, true)">
                     <span style="width: 90%">
                         <div class="widget" v-for="value, key in tile.data" :key="key" v-if="typeof value === 'string' || value instanceof String">
-                            {{getTileData(tile, card).value       }}
+                            {{getTileData(tile, card).value}}
                         </div>
                         <div>Edit record</div>
                     </span>
@@ -67,6 +69,7 @@ export default {
         return {
             project: this.$store.getters.activeProject,
             allCards: this.$store.getters.activeGraph.cards,
+            allNodes: this.$store.getters.activeGraph.nodes,
             allNodegroups: this.$store.getters.activeGraph.nodegroups,
             allWidgets: this.$store.getters.activeGraph.widgets,
             user: this.$store.getters.activeServer.user
@@ -202,6 +205,16 @@ export default {
                 this.$store.getters.activeServer.card_nav_stack.shift();
             }
         },
+        displayWidget: function(card) {
+            var widgets = this.$underscore.filter(this.allWidgets, function(widget) {
+                return widget.card_id === card.cardid;
+            }, this);
+            if (widgets.length > 0) {
+                var value;
+                return this.$underscore.sortBy(widgets, 'sortorder')[0];
+            }
+            return undefined;
+        },
         getTileData: function(tile, card) {
             var widgets = this.$underscore.filter(this.allWidgets, function(widget) {
                 return widget.card_id === card.cardid;
@@ -210,6 +223,9 @@ export default {
                 var value;
                 var widget = this.$underscore.sortBy(widgets, 'sortorder')[0];
                 var key = widget.node_id;
+                var node = this.$underscore.find(this.allNodes, function(node) {
+                    return node.nodeid === key;
+                });
                 if (!!tile.provisionaledits && this.user.id in tile.provisionaledits) {
                     value = tile.provisionaledits[this.user.id]['value'][key];
                 } else {

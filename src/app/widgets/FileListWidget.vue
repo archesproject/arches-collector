@@ -31,6 +31,15 @@
             </ons-list-item>
         </ons-list>
     </ons-row>
+    <span class="flex tile-data" v-else-if="context=='nav'">
+        <div class="flex">
+            <span style="display: inline;" v-for="(file, index) in value">
+                <span v-if="index < 2"><span v-if="index > 0 && index < 2">, </span>{{file.name}}</span>
+                <span v-else-if="index == 2">, ...</span>
+            </span>
+        </div>
+        <div class="widget-label">{{widget.label}}</div>
+    </span>
 </template>
 
 

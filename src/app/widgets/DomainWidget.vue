@@ -14,6 +14,10 @@
             <span class="report widget-value">{{conceptLabel.text}}</span>
         </ons-col>
     </ons-row>
+    <span class="flex tile-data" v-else-if="context=='nav'">
+        <div>{{conceptLabel.text}}</div>
+        <div class="widget-label">{{widget.label}}</div>
+    </span>
 </template>
 
 

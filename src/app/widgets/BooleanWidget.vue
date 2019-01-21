@@ -11,6 +11,10 @@
         <div class="report widget-label">{{widget.label}}</div>
         <div class="report widget-value">{{value}}</div>
     </div>
+    <span class="flex tile-data" v-else-if="context=='nav'">
+        <div>{{value}}</div>
+        <div class="widget-label">{{widget.label}}</div>
+    </span>
 </template>
 
 
