@@ -539,8 +539,8 @@ var store = new Vuex.Store({
                     if (store.getters.activeServer.projects[projectId]) {
                         delete store.getters.activeServer.projects[projectId];
                         var server = store.getters.activeServer;
-                        if (server.user_project_status[server.user.id]) {
-                            delete server.user_project_status[server.user.id];
+                        if (server.user_project_status[server.user.id] && server.user_project_status[server.user.id][projectId]) {
+                            delete server.user_project_status[server.user.id][projectId];
                         }
                         store.dispatch('saveServerInfoToPouch');
                     }
