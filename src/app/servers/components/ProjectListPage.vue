@@ -47,7 +47,7 @@
                         <v-ons-list-item tappable v-if="selectedProject && !selectedProject.deleted && selectedProject.joined === false" @click="function(){toggleProjectParticipation(1)}">
                             <v-ons-icon class="text-color-dark left menu-icon" icon="fa-toggle-off"></v-ons-icon>
                             <div class="menu-text">
-                                <span class="text-color-dark">Join project</span>
+                                <span class="text-color-dark">Re-join project</span>
                                 <span class="text-color-dark menu-subtext">Resume synching with this active project</span>
                             </div>
                         </v-ons-list-item @click="">
@@ -139,11 +139,12 @@ export default {
                 var activeProjects = filterObj('active', true);
                 var inActiveProjects = filterObj('active', false);
                 var projectList = [...activeProjects, ...inActiveProjects].filter(function(p){
-                    if (self.projectStatus) {
-                        if (self.projectStatus[p.id] && (self.projectStatus[p.id].joined || self.showUnjoinedProjects) ) {
-                            p.joined = self.userIsJoined(p.id)
+                    var projectStatus = self.getProjectStatus();
+                    if (projectStatus) {
+                        if (projectStatus[p.id] && (projectStatus[p.id].joined || self.showUnjoinedProjects) ) {
+                            p.joined = projectStatus[p.id].joined
                             return p;
-                        } else if (self.projectStatus[p.id] === undefined) {
+                        } else if (projectStatus[p.id] === undefined) {
                             return p;
                         }
                     } else {
@@ -154,15 +155,6 @@ export default {
             },
             set: function(arr) {
                 return arr;
-            }
-        },
-        projectStatus: {
-            get: function() {
-                var userProjectStatus;
-                if (this.server && this.server.user_project_status) {
-                    userProjectStatus = this.server.user_project_status[this.server.user.id]
-                }
-                return userProjectStatus;
             }
         }
     },
@@ -176,8 +168,12 @@ export default {
                 this.$router.push({'name': 'project', params: {project: project, tabIndex: 0}});
             }
         },
-        userIsJoined: function(projectid) {
-            return this.projectStatus[projectid].joined;
+        getProjectStatus: function() {
+            var userProjectStatus;
+            if (this.server && this.server.user_project_status) {
+                userProjectStatus = this.$store.getters.activeServer.user_project_status[this.server.user.id]
+            }
+            return userProjectStatus;
         },
         toggleSideNav: function(project) {
             if (project && project.length) {
