@@ -92,8 +92,8 @@
 
             <v-ons-list>
                 <v-ons-progress-bar indeterminate v-if="syncing"></v-ons-progress-bar>
-                <v-ons-list-item class="list-item" tappable modifier="longdivider" v-for="project in projects" :key="project.id" v-bind:class="{ deleted: project.deleted, unjoined: project.joined === false }">
-                    <span style="line-height: 1.1em; border-style: 1px; background-color: light-blue; border-color: dark-blue;" @click="segueToProject(project);">
+                <v-ons-list-item class="list-item" tappable modifier="longdivider" v-for="project in projects" :key="project.id" v-bind:class="{ deleted: project.deleted, unjoined: project.joined === false }"  @click="segueToProject(project);">
+                    <span style="line-height: 1.1em; border-style: 1px; background-color: light-blue; border-color: dark-blue;">
                         <span class="project-name">{{project.name}}</span><span class="project-name" v-if="project.joined === false"> - You've left this project</span>
                         <span v-if="!project.deleted">
                             <span class="project-name deleted"></span><br>
