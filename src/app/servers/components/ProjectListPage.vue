@@ -22,6 +22,13 @@
                                 <span class="text-color-dark menu-subtext">Show only projects I'm able to sync</span>
                             </div>
                         </v-ons-list-item @click="">
+                        <v-ons-list-item tappable @click="$ons.notification.confirm({message: 'Deleting a project will remove all related data (synched and unsynched) from your device?. Are you sure you want to proceed?', callback: deleteAllInactiveProjects})">
+                            <v-ons-icon class="text-color-dark left menu-icon" icon="fa-trash"></v-ons-icon>
+                            <div class="menu-text">
+                                <span class="text-color-dark">Delete all inactive projects</span>
+                                <span class="text-color-dark menu-subtext">Remove all inactive projects from my device</span>
+                            </div>
+                        </v-ons-list-item @click="">
                     </v-ons-list>
 
                     <v-ons-list style="margin-top: 5px;" v-else>
@@ -44,7 +51,7 @@
                                 <span class="text-color-dark menu-subtext">Stop synching with this active project</span>
                             </div>
                         </v-ons-list-item @click="">
-                        <v-ons-list-item tappable v-if="selectedProject && !selectedProject.deleted && selectedProject.joined === false" @click="function(){toggleProjectParticipation(1)}">
+                        <v-ons-list-item tappable v-if="selectedProject && selectedProject.joined === false" @click="function(){toggleProjectParticipation(1)}">
                             <v-ons-icon class="text-color-dark left menu-icon" icon="fa-toggle-off"></v-ons-icon>
                             <div class="menu-text">
                                 <span class="text-color-dark">Re-join project</span>
@@ -72,7 +79,6 @@
                             <v-ons-icon class="text-color-dark project-name" icon="fa-ellipsis-v"></v-ons-icon>
                         </v-ons-toolbar-button>
                     </div>
-
                 </v-ons-toolbar>
 
                 <v-ons-pull-hook
@@ -217,6 +223,24 @@ export default {
                     });
             } else {
                 console.log('not deleting project');
+            }
+        },
+        deleteAllInactiveProjects: function(answer){
+            var self = this;
+            if (answer === 1) {
+                self.projects.forEach(function(p){
+                    if (p.deleted) {
+                        self.$store.dispatch('deleteProject', p.id)
+                        .catch(function() {
+                            console.log('delete failed');
+                        });
+                    }
+                    window.setTimeout(function() {
+                        self.toggleSideNav(undefined)
+                    }, 250);
+                });
+            } else {
+                console.log('user declined deletion')
             }
         },
         toggleProjectParticipation: function(answer) {
