@@ -1,5 +1,5 @@
 <template>
-    <div v-if="context=='editor'">
+    <div class="widget-panel" v-if="context=='editor'">
         <div class="editor widget-label">{{widget.label}}</div>
         <multi-select class="test"
             :selected-options="selectedOptions"
@@ -81,16 +81,22 @@ export default {
 </script>
 
 <style scoped>
-    .test > input.search{
-        height: 30px;
-    }
+.widget-panel {
+    padding-bottom: 25px;
+    background: #fbfbfb;
+    border-bottom: 1px solid #ddd;
+}
 
-    .widget-value {
-      padding-left: 5px;
-    }
+.test > input.search{
+    height: 30px;
+}
 
-    .widget-label {
-      font-weight: 600;
-      color: #271F4C;
-    }
+.widget-value {
+  padding-left: 5px;
+}
+
+.widget-label {
+  font-weight: 400;
+  color: #271F4C;
+}
 </style>

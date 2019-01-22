@@ -1,5 +1,5 @@
 <template>
-    <div class="string-widget-panel" v-if="context=='editor'">
+    <div class="widget-panel" v-if="context=='editor'">
         <div class="editor widget-label">{{widget.label}}</div>
         <input :value="value" :placeholder="placeholder" @input="$emit('update:value', $event.target.value);">
     </div>
@@ -33,7 +33,7 @@ export default {
 
 }
 
-.string-widget-panel {
+.widget-panel {
     padding-bottom: 25px;
     background: #fbfbfb;
     border-bottom: 1px solid #ddd;
