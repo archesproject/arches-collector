@@ -23,7 +23,8 @@
         </ons-col>
     </div>
     <span class="flex tile-data" v-else-if="context=='nav'">
-        <div>{{value}}</div>
+        <div v-if="!!value">{{value}}</div>
+        <div v-else>no data</div>
         <div class="widget-label">{{widget.label}}</div>
     </span>
 </div>
