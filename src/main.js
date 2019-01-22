@@ -110,6 +110,13 @@ window.archesvue = new Vue({
         }
     },
     template: '<router-view></router-view>',
+    beforeMount() {
+        const html = document.documentElement;
+        if (this.$ons.platform.isIPhoneX()) {
+            html.setAttribute('onsflag-iphonex-portrait', '');
+            html.setAttribute('onsflag-iphonex-landscape', '');
+        }
+    },
     mounted: function() {
         this.$nextTick(() => {
             // Code that will run only after the
