@@ -92,19 +92,20 @@
 
             <v-ons-list>
                 <v-ons-progress-bar indeterminate v-if="syncing"></v-ons-progress-bar>
-                <v-ons-list-item class="list-item" tappable modifier="longdivider" v-for="project in projects" :key="project.id" v-bind:class="{ deleted: project.deleted, unjoined: project.joined === false }"  @click="segueToProject(project);">
-                    <span style="line-height: 1.1em; border-style: 1px; background-color: light-blue; border-color: dark-blue;">
+                <v-ons-list-item tappable modifier="longdivider" v-for="project in projects" :key="project.id" v-bind:class="{ deleted: project.deleted, unjoined: project.joined === false }">
+                    <span class="left" style="display: flex; flex-direction: column; align-items: baseline; line-height: 1.1em; border-style: 1px; background-color: light-blue; border-color: dark-blue;" @click="segueToProject(project);">
                         <span class="project-name">{{project.name}}</span><span class="project-name" v-if="project.joined === false"> - You've left this project</span>
                         <span v-if="!project.deleted">
-                            <span class="project-name deleted"></span><br>
+                            <span class="project-name deleted"></span>
                             <span class="project-active">Active from:</span>
                             <span class="project-dates">{{project.startdate}} to {{project.enddate}}</span>
                         </span>
                         <span v-else>
-                            <span class="project-name deleted"></span><br>
+                            <span class="project-name deleted"></span>
                             <span class="project-active">Inactive</span>
                         </span>
                     </span>
+                    <span class="center" @click="segueToProject(project);"></span>
                     <v-ons-icon class="right" style="display: flex" icon="fa-ellipsis-v" v-if="project.joined !== undefined || project.deleted" @click="toggleSideNav(project)"></v-ons-icon>
                     <v-ons-icon class="right" style="display: flex" icon="fa-cloud-download-alt" v-if="project.joined === undefined && !project.deleted" @click="function(){selectedProject = project; sync()}"></v-ons-icon>
                 </v-ons-list-item>
@@ -296,12 +297,6 @@ export default {
     .project-name {
         color: #454545;
         font-size: 14px;
-    }
-
-    .project-name.deleted {
-        color: #454545;
-        font-size: 14px;
-        padding-left: 5px;
     }
 
     .project-active {
