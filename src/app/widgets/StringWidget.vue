@@ -39,7 +39,7 @@ export default {
     border-bottom: 1px solid #ddd;
 }
 
-.string-widget-panel input {
+.widget-panel input {
   color: steelblue;
 }
 

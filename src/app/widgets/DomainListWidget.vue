@@ -1,5 +1,5 @@
 <template>
-    <div v-if="context=='editor'">
+    <div class="report-widget" v-if="context=='editor'">
         <div class="editor widget-label">{{widget.label}}</div>
         <multi-select
             :selected-options="selectedOptions"
@@ -78,4 +78,9 @@ export default {
 </script>
 
 <style scoped>
+.widget-panel {
+    padding-bottom: 25px;
+    background: #fbfbfb;
+    border-bottom: 1px solid #ddd;
+}
 </style>
