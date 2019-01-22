@@ -1,7 +1,7 @@
 <template>
     <div v-if="context=='editor'">
         <div class="editor widget-label">{{widget.label}}</div>
-        <datetime v-model="date_value" @input="onChange"></datetime>
+        <datetime v-model="date_value" @input="onChange" value-zone="local"></datetime>
     </div>
     <ons-row class="report-widget" v-else-if="context=='report'">
         <ons-col
