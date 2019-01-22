@@ -33,9 +33,9 @@
     </ons-row>
     <span class="flex tile-data" v-else-if="context=='nav'">
         <div class="flex">
-            <template v-if="conceptLabels.length > 0">
+            <template v-if="value.length > 0">
                 <span style="display: inline;" v-for="(file, index) in value">
-                    <span v-if="index < 2"><span v-if="index > 0 && index < 2">, </span>{{file.text}}</span>
+                    <span v-if="index < 2"><span v-if="index > 0 && index < 2">, </span>{{file.name}}</span>
                     <span v-else-if="index == 2">, ...</span>
                 </span>
             </template>
