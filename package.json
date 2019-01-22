@@ -39,6 +39,7 @@
         "date-fns": "^1.29.0",
         "luxon": "^1.6.2",
         "mapbox-gl-cordova-offline": "archesproject/mapbox-gl-cordova-offline#master",
+        "moment": "^2.24.0",
         "onsenui": "~2.10.5",
         "pouchdb": "^6.4.3",
         "pouchdb-adapter-cordova-sqlite": "pouchdb-community/pouchdb-adapter-cordova-sqlite#master",

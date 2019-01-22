@@ -11,7 +11,7 @@
                             <span class='resource-model-title'>
                                 <span style="padding-left: 0; padding-right: 10px;">{{resource_instance.displayname.replace(/['"]+/g,'')}}</span>
                                 <span v-if="resource_instance.edited" class='resource-model-subtitle'>
-                                    Last edit: {{resource_instance.edited.day}} @ {{resource_instance.edited.time}}</span>
+                                    Last edit: {{resource_instance.datetime}}</span>
                                 <span v-else class='resource-model-subtitle'>Unedited</span>
                             </span>
                         </div>
@@ -21,6 +21,7 @@
                     </v-ons-page>
 </template>
 <script>
+import moment from 'moment';
 export default {
     name: 'SelectResourceInstancePage',
     props: ['project', 'lastsync'],
@@ -101,6 +102,12 @@ export default {
                 self.instances = [];
                 res['docs'].forEach(function(doc){
                     if (self.resource_types[doc.graph_id]) {
+                        if (doc.edited) {
+                            var datetime = moment(doc.edited.day + ' ' + doc.edited.time);
+                            if (datetime.isValid()) {
+                                doc.datetime = datetime.format('D MMMM YYYY @ h:mm:ss a');
+                            }
+                        }
                         self.instances.push(doc);
                     }
                 });
