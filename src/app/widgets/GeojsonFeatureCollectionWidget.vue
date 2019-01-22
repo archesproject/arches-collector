@@ -1,28 +1,33 @@
 <template>
-<div>
-    <div class="map-controls">
-        <div class="mapboxgl-ctrl mapboxgl-ctrl-group fullscreen-control">
-            <button class="mapboxgl-ctrl-icon" type="button" v-on:click="toggleFullscreen" v-bind:class="{
-                        'mapboxgl-ctrl-shrink': fullscreenActive,
-                        'mapboxgl-ctrl-fullscreen': !fullscreenActive
-                }"></button>
+    <div v-if="context == 'editor' || context == 'report'">
+        <div class="map-controls">
+            <div class="mapboxgl-ctrl mapboxgl-ctrl-group fullscreen-control">
+                <button class="mapboxgl-ctrl-icon" type="button" v-on:click="toggleFullscreen" v-bind:class="{
+                            'mapboxgl-ctrl-shrink': fullscreenActive,
+                            'mapboxgl-ctrl-fullscreen': !fullscreenActive
+                    }"></button>
+            </div>
         </div>
-    </div>
-    <div v-if="context=='editor'">
-        <div class="editor widget-label">{{widget.label}}</div>
-        <div class="map-wrapper" v-bind:class="{ fullscreen: fullscreenActive }">
-            <project-map v-on:map-init="mapInit" :extent="bounds"></project-map>
-        </div>
-    </div>
-    <div class="report-widget" v-else-if="context=='report'">
-        <ons-col class="report widget-label">{{widget.label}}</ons-col>
-        <ons-col class="report widget-value">
+        <div v-if="context=='editor'">
+            <div class="editor widget-label">{{widget.label}}</div>
             <div class="map-wrapper" v-bind:class="{ fullscreen: fullscreenActive }">
                 <project-map v-on:map-init="mapInit" :extent="bounds"></project-map>
             </div>
-        </ons-col>
+        </div>
+        <div class="report-widget" v-else-if="context=='report'">
+            <ons-col class="report widget-label">{{widget.label}}</ons-col>
+            <ons-col class="report widget-value">
+                <div class="map-wrapper" v-bind:class="{ fullscreen: fullscreenActive }">
+                    <project-map v-on:map-init="mapInit" :extent="bounds"></project-map>
+                </div>
+            </ons-col>
+        </div>
     </div>
-</div>
+    <span class="flex tile-data" v-else-if="context=='nav'">
+        <div v-if="!!displayValue">{{displayValue}}</div>
+        <div v-else>no data</div>
+        <div class="widget-label">{{widget.label}}</div>
+    </span>
 </template>
 
 <script>
@@ -50,6 +55,15 @@ export default {
             return this.featureCollection.features.length > 0 ?
                 this.featureCollection :
                 this.$store.getters.activeProject.bounds;
+        },
+        displayValue: function() {
+            var count = this.featureCollection.features.length;
+            var plural = this.featureCollection.features.length > 1;
+            if (count > 0) {
+                return count + ' feature' + (plural ? 's' : '') + ' in FeatureCollection'
+            } else {
+                return null;
+            }
         }
     },
     watch: {

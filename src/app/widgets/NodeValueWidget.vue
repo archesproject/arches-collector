@@ -14,6 +14,11 @@
             <span class="report widget-value">{{displayValue}}</span>
         </ons-col>
     </ons-row>
+    <span class="flex tile-data" v-else-if="context=='nav'">
+        <div v-if="!!displayValue">{{displayValue}}</div>
+        <div v-else>no data</div>
+        <div class="widget-label">{{widget.label}}</div>
+    </span>
 </template>
 
 <script>
