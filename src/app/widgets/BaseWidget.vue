@@ -60,18 +60,12 @@ export default {
                         return provisionaledit[this.widget.node_id];
                     }
                     return '';
-                    throw new Error('');
                 } catch (err) {
-                    // console.log('node id');
-                    // console.log(this.widget.node_id);
-                    return ' ';
+                    // I don't know why we can't return an empty string here, but if we do then
+                    // we end of having this problem 
+                    // https://github.com/archesproject/arches-mobile/issues/310
+                    return null;
                 }
-                // if (!!this.tile && !!this.tile.data) {
-                //     //console.log(this.tile.data[this.widget.node_id]);
-                //     return this.tile.data[this.widget.node_id];
-                // }else{
-                //     return '';
-                // }
             },
             set: function(newValue) {
                 this.tile.provisionaledits[this.user.id]['value'][this.widget.node_id] = newValue;
