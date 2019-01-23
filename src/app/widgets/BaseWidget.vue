@@ -59,11 +59,12 @@ export default {
                     if (provisionaledit.hasOwnProperty(this.widget.node_id)) {
                         return provisionaledit[this.widget.node_id];
                     }
+                    return '';
                     throw new Error('');
                 } catch (err) {
                     // console.log('node id');
                     // console.log(this.widget.node_id);
-                    return '';
+                    return ' ';
                 }
                 // if (!!this.tile && !!this.tile.data) {
                 //     //console.log(this.tile.data[this.widget.node_id]);

@@ -62,6 +62,7 @@
     </v-ons-page>
 </template>
 <script>
+import Vue from 'vue';
 export default {
     name: 'ResourceEditPage',
     props: ['goBack', 'resourceid', 'tiles', 'activeindex'],
@@ -269,6 +270,7 @@ export default {
             });
         },
         setTileContext: function(tile, showForm) {
+            var tt;
             if (showForm === undefined) {
                 if (this.hasChildCards() && !this.hasWidgets()) {
                     showForm = false;
@@ -277,14 +279,15 @@ export default {
                 }
             }
             if (tile === 'blank') {
-                tile = this.getBlankTile(this.card, this.tile);
+                tt = this.getBlankTile(this.card, this.tile);
+                Vue.set(this.card, 'tile', tt);
                 if (!this.hasWidgets(this.card)) {
-                    this.saveTile(tile);
+                    this.saveTile(tt);
                 }
             }
             this.$store.getters.activeServer.card_nav_stack.unshift({
                 'card': this.card,
-                'tile': tile,
+                'tile': tile === 'blank' ? this.card.tile : tile,
                 'showForm': !!showForm,
                 'activeObject': 'tile'
             });
@@ -349,7 +352,7 @@ export default {
                 data: {},
                 nodegroup_id: card.nodegroup_id,
                 parenttile_id: parentTile ? parentTile.tileid : null,
-                provisionaledits: '',
+                provisionaledits: {},
                 resourceinstance_id: this.resourceid,
                 sortorder: 0,
                 tileid: '',

@@ -1,7 +1,7 @@
 <template>
     <div class="widget-panel" v-if="context=='editor'">
         <div class="editor widget-label">{{widget.label}}</div>
-        <input :value="value" :placeholder="placeholder" @input="$emit('update:value', $event.target.value);">
+        <input :value="value" :placeholder="placeholder" @input="$emit('update:value', $event.target.value)">
     </div>
     <ons-row class="report-widget" v-else-if="context=='report'">
         <ons-col>
@@ -22,13 +22,25 @@ export default {
     name: 'EDTFWidget',
     props: ['value', 'widget', 'context'],
     data() {
+        //console.log("value:", this.value)
         return {
-            placeholder: this.widget.config.placeholder
+            placeholder: this.widget.config.placeholder,
+            local_value: this.value
         };
     },
     methods: {
+        onChange (ret) {
+            // var ret = [];
+            // selectedOptions.forEach(function(option){
+            //     ret.push(option.value);
+            // })
+            this.local_value = ret.target.value;
+            this.$emit('update:value', ret.target.value);
+            //this.$emit('update:value', $event.target.value);
+        }
     },
-    computed: {
+    beforeUpdate: function() {
+        console.log('beforeUpdate', this.local_value)
     }
 };
 </script>
