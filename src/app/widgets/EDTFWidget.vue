@@ -25,10 +25,6 @@ export default {
         return {
             placeholder: this.widget.config.placeholder
         };
-    },
-    methods: {
-    },
-    computed: {
     }
 };
 </script>

@@ -349,7 +349,7 @@ export default {
                 data: {},
                 nodegroup_id: card.nodegroup_id,
                 parenttile_id: parentTile ? parentTile.tileid : null,
-                provisionaledits: '',
+                provisionaledits: {},
                 resourceinstance_id: this.resourceid,
                 sortorder: 0,
                 tileid: '',
