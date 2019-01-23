@@ -147,10 +147,12 @@ export default {
     text-align: center;
     vertical-align: 5px;
     font-size: 14px;
-    margin: 10px;
+    margin: 10px auto;
+    width: 100%;
 }
 
 .icon-circle {
+    box-sizing: border-box;
     border: solid 1px #1B48DD;
     border-radius: 50%;
     height: 36px;
