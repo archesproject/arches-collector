@@ -76,9 +76,12 @@ export default {
 
 <style scoped>
 .widget-panel {
-    padding-bottom: 25px;
     background: #fbfbfb;
     border-bottom: 1px solid #ddd;
+}
+
+.widget-panel.widget {
+    padding-bottom: 25px;
 }
 
 .widget-value {
