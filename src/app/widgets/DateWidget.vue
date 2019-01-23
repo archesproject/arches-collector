@@ -1,5 +1,5 @@
 <template>
-    <div v-if="context=='editor'">
+    <div class="widget-panel" v-if="context=='editor'">
         <div class="editor widget-label">{{widget.label}}</div>
         <datetime v-model="date_value" @input="onChange" value-zone="local"></datetime>
     </div>
@@ -45,12 +45,18 @@ export default {
 </script>
 
 <style scoped>
+.widget-panel {
+    padding-bottom: 25px;
+    background: #fbfbfb;
+    border-bottom: 1px solid #ddd;
+}
+
 .widget-value {
   padding-left: 5px;
 }
 
 .widget-label {
-  font-weight: 600;
+  font-weight: 400;
   color: #271F4C;
 }
 

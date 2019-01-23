@@ -1,5 +1,5 @@
 <template>
-    <div v-if="context=='editor'">
+    <div class="widget-panel" v-if="context=='editor'">
         <div class="editor widget-label">{{widget.label}}</div>
         <model-select
             v-model="selectedOption"
@@ -80,12 +80,21 @@ export default {
 </script>
 
 <style scoped>
+.widget-panel {
+    background: #fbfbfb;
+    border-bottom: 1px solid #ddd;
+}
+
+.widget-panel.widget {
+    padding-bottom: 25px;
+}
+
 .widget-value {
   padding-left: 5px;
 }
 
 .widget-label {
-  font-weight: 600;
+  font-weight: 400;
   color: #271F4C;
 }
 

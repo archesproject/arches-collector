@@ -1,5 +1,5 @@
 <template>
-    <div v-if="context=='editor'">
+    <div class="widget-panel" v-if="context=='editor'">
         <span class="editor widget-label">{{widget.label}}</span>
         <toggle-button id="changed-font" style="float: right" :value="bool_value" :width="width"
                :labels="{'checked': node.config.trueLabel, 'unchecked': node.config.falseLabel}"
@@ -63,6 +63,13 @@ export default {
     width: auto;
     white-space: nowrap; /* Thanks to Herb Caudill comment */
 }
+
+.widget-panel {
+    padding-bottom: 25px;
+    background: #fbfbfb;
+    border-bottom: 1px solid #ddd;
+}
+
 .vue-js-switch {
     font-size: 12px;
 }
