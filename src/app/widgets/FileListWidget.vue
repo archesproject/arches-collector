@@ -242,18 +242,18 @@ export default {
 .file-button {
     float: right;
     height: 60px;
-    color: #8c8c8c;
+    color: #148E85;
     text-transform: capitalize;
     text-align: left;
     padding: 10px 20px;
-    background: #fff;
-    border-top: 1px solid #ddd;
+    background: #D8FBF8;
+    border-top: 1px solid #78D9D2;
     border-radius: 0px;
     box-shadow: none;
 }
 
 .file-button:last-child {
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #78D9D2;
 }
 
 .widget {
