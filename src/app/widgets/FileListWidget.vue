@@ -1,21 +1,23 @@
 <template>
     <div v-if="context=='editor'">
-        <div class="editor widget-label">{{widget.label}}</div>
-            <ons-col class="widget-value" v-if="!value">No images yet collected</ons-col>
+        <div class="editor-panel">
+            <div class="editor widget-label">{{widget.label}}</div>
+            <ons-col class="widget-value" v-if="!value">No images selected yet</ons-col>
             <ons-list class="photo-list">
                 <ons-list-item v-for="file in value">
-                  <div class="left">
-                    <img class="image-thumbnail-input" v-bind:src="thumbnails[file.file_id]"></img>
-                  </div>
-                  <div class="center">
-                      <v-ons-input class="photo-name" underbar placeholder="Photo name" v-on:keyup="updateImages" v-model="file.name"></v-ons-input>
-                  </div>
-                  <div class="right">
-                      <ons-col width="10%"><v-ons-button @click="removePhoto(file)" class="right warning"><v-ons-icon class="fa5 fa-trash" icon="fa-trash"></v-ons-icon></v-ons-button></ons-col>
-                  </div>
+                    <div class="left">
+                      <img class="image-thumbnail-input" v-bind:src="thumbnails[file.file_id]"></img>
+                    </div>
+                    <div class="center">
+                        <v-ons-input class="photo-name" underbar placeholder="Photo name" v-on:keyup="updateImages" v-model="file.name"></v-ons-input>
+                    </div>
+                    <div class="right">
+                        <ons-col width="10%"><v-ons-button @click="removePhoto(file)" class="right warning"><v-ons-icon class="fa5 fa-trash" icon="fa-trash"></v-ons-icon></v-ons-button></ons-col>
+                    </div>
                 </ons-list-item>
             </ons-list>
-        <ons-row class="file-widget">
+        </div>
+        <ons-row class="file-widget" style="display: none;">
             <ons-col class="button-column"><v-ons-button class="file-button btn-mint" @click="selectPhoto"><v-ons-icon class="folder-icon" icon="ion-folder"></v-ons-icon><span class="btn-text">Select Photo</span></v-ons-button></ons-col>
             <ons-col class="button-column"><v-ons-button class="file-button btn-mint" @click="takePhoto"><v-ons-icon class="camera-icon" icon="ion-camera"></v-ons-icon><span class="btn-text">Take Photo</span></v-ons-button></ons-col>
         </ons-row>
@@ -175,7 +177,7 @@ export default {
   color: #999;
 }
 .widget-label {
-  font-weight: 600;
+  font-weight: 400;
   color: #271F4C;
   padding-right: 5px;
 }
@@ -224,11 +226,17 @@ export default {
 
 
 
+.editor-panel {
+    margin-top: -15px;
+    padding: 20px 10px 30px 20px;
+    background: #fbfbfb;
+}
+
 .file-button {
     margin-left: -15px;
     float: right;
     height: 60px;
-    color: green;
+    color: #8c8c8c;
     text-transform: capitalize;
     text-align: left;
     padding: 10px 20px;
