@@ -23,12 +23,12 @@
         </ons-row>
 
         <div class="button-panel">
-            <v-ons-button class="file-button relative" @click="selectPhoto">
+            <v-ons-button class="file-button relative select-photo" @click="selectPhoto">
                 <div class="icon-circle"></div>
                 <v-ons-icon class="folder-icon" icon="ion-folder"></v-ons-icon>
                 <span class="btn-text">Select Photo</span>
             </v-ons-button>
-            <v-ons-button class="file-button" @click="takePhoto">
+            <v-ons-button class="file-button relative take-photo" @click="takePhoto">
                 <div class="icon-circle"></div>
                 <v-ons-icon class="camera-icon" icon="ion-camera"></v-ons-icon>
                 <span class="btn-text">Take Photo</span>
@@ -246,18 +246,18 @@ export default {
 .file-button {
     float: right;
     height: 60px;
-    color: #148E85;
+    color: #aeaeae;
     text-transform: capitalize;
     text-align: left;
     padding: 10px 20px;
-    background: #D8FBF8;
-    border-top: 1px solid #78D9D2;
+    background: #383838;
+    border-top: 1px solid #111;
     border-radius: 0px;
     box-shadow: none;
 }
 
 .file-button:last-child {
-    border-bottom: 1px solid #78D9D2;
+    border-bottom: 1px solid #111;
 }
 
 .widget {
@@ -277,7 +277,7 @@ export default {
 
 .camera-icon {
     position: absolute;
-    top: 17px;
+    top: 15px;
     left: 31px;
 }
 
@@ -289,11 +289,19 @@ export default {
 
 .icon-circle {
     box-sizing: border-box;
-    border: solid 1px #1B48DD;
+    border: solid 1px #111;
     border-radius: 50%;
     height: 40px;
     width: 40px;
-    background: #d7e0f8;
+    background: #494949;
+}
+
+.take-photo .icon-circle {
+    margin-top: -2px;
+}
+
+.take-photo .btn-text {
+    top: 10px;
 }
 
 
