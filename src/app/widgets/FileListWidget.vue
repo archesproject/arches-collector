@@ -247,7 +247,7 @@ export default {
     float: right;
     height: 60px;
     color: #2E9C94;
-    font-weight: 550;
+    font-weight: 500;
     text-transform: capitalize;
     text-align: left;
     padding: 10px 20px;
@@ -255,6 +255,10 @@ export default {
     border-top: 1px solid #78D9D2;
     border-radius: 0px;
     box-shadow: none;
+}
+
+.button--material .btn-text {
+    font-weight: 600;
 }
 
 .file-button:last-child {
