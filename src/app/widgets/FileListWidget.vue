@@ -23,8 +23,16 @@
         </ons-row>
 
         <div class="button-panel">
-            <v-ons-button class="file-button" @click="selectPhoto"><v-ons-icon class="folder-icon" icon="ion-folder"></v-ons-icon><span class="btn-text">Select Photo</span></v-ons-button>
-            <v-ons-button class="file-button" @click="takePhoto"><v-ons-icon class="camera-icon" icon="ion-camera"></v-ons-icon><span class="btn-text">Take Photo</span></v-ons-button>
+            <v-ons-button class="file-button relative" @click="selectPhoto">
+                <div class="icon-circle"></div>
+                <v-ons-icon class="folder-icon" icon="ion-folder"></v-ons-icon>
+                <span class="btn-text">Select Photo</span>
+            </v-ons-button>
+            <v-ons-button class="file-button" @click="takePhoto">
+                <div class="icon-circle"></div>
+                <v-ons-icon class="camera-icon" icon="ion-camera"></v-ons-icon>
+                <span class="btn-text">Take Photo</span>
+            </v-ons-button>
         </div>
     </div>
 
@@ -189,9 +197,7 @@ export default {
     width: 100%;
     text-align: center;
 }
-.folder-icon {
-    vertical-align: -15%;
-}
+
 .warning {
   background: red;
 }
@@ -202,9 +208,7 @@ export default {
     padding-top: 20px;
     padding-bottom: 5px;
 }
-.btn-text {
-    padding-left: 5px;
-}
+
 .photo-list {
     width: 100%;
     background: none;
@@ -261,12 +265,34 @@ export default {
     padding-right: 0px;
 }
 
+.relative {
+    position: relative;
+}
+
+.folder-icon {
+    position: absolute;
+    top: 17px;
+    left: 32px;
+}
+
+.camera-icon {
+    position: absolute;
+    top: 17px;
+    left: 31px;
+}
+
+.btn-text {
+    position: absolute;
+    top: 12px;;
+    left: 70px;
+}
+
 .icon-circle {
     box-sizing: border-box;
     border: solid 1px #1B48DD;
     border-radius: 50%;
-    height: 50px;
-    width: 50px;
+    height: 40px;
+    width: 40px;
     background: #d7e0f8;
 }
 
