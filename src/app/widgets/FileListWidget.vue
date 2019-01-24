@@ -23,16 +23,11 @@
         </ons-row>
 
         <div class="button-panel">
-            <v-ons-button class="file-button" @click="selectPhoto">
-                <span class="icon-circle">
-                    <v-ons-icon class="folder-icon" icon="ion-folder"></v-ons-icon>
-                </span>
-                <span class="btn-text">Select Photo</span>
-            </v-ons-button>
+            <v-ons-button class="file-button" @click="selectPhoto"><v-ons-icon class="folder-icon" icon="ion-folder"></v-ons-icon><span class="btn-text">Select Photo</span></v-ons-button>
             <v-ons-button class="file-button" @click="takePhoto"><v-ons-icon class="camera-icon" icon="ion-camera"></v-ons-icon><span class="btn-text">Take Photo</span></v-ons-button>
         </div>
-
     </div>
+
     <ons-row class="report-widget" v-else-if="context=='report'">
         <ons-list class="photo-list">
             <ons-list-item v-for="file in value">
@@ -245,7 +240,6 @@ export default {
 }
 
 .file-button {
-    margin-left: -15px;
     float: right;
     height: 60px;
     color: #8c8c8c;
@@ -265,6 +259,15 @@ export default {
 .widget {
     padding-left: 0px;
     padding-right: 0px;
+}
+
+.icon-circle {
+    box-sizing: border-box;
+    border: solid 1px #1B48DD;
+    border-radius: 50%;
+    height: 50px;
+    width: 50px;
+    background: #d7e0f8;
 }
 
 
