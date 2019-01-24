@@ -94,7 +94,10 @@ export default {
             });
             this.map.addControl(this.draw, 'top-left');
             this.draw.add(this.featureCollection);
-            this.map.on('draw.render', () => this.updateDrawings());
+            this.map.on('draw.delete', () => this.updateDrawings('delete'));
+            this.map.on('draw.create', () => this.updateDrawings('create'));
+            this.map.on('draw.update', () => this.updateDrawings('update'));
+            this.map.on('draw.selectionchange', () => this.updateDrawings('selectionchange'));
         },
         initReport() {
             let style = this.map.getStyle();
@@ -105,8 +108,14 @@ export default {
             style.layers.push(...reportLayers);
             this.map.setStyle(style);
         },
-        updateDrawings() {
-            this.$emit('update:value', this.draw.getAll());
+        updateDrawings(e) {
+            if (e === 'selectionchange') {
+                if (this.draw.getSelectedIds().length === 0) {
+                    this.$emit('update:value', this.draw.getAll());
+                }
+            } else {
+                this.map.on('draw.update', () => this.draw.getAll());
+            }
         },
         toggleFullscreen() {
             this.fullscreenActive = !this.fullscreenActive;
