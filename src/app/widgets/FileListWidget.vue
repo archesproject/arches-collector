@@ -246,18 +246,19 @@ export default {
 .file-button {
     float: right;
     height: 60px;
-    color: #aeaeae;
+    color: #2E9C94;
+    font-weight: 550;
     text-transform: capitalize;
     text-align: left;
     padding: 10px 20px;
-    background: #383838;
-    border-top: 1px solid #111;
+    background: #DEFBF9;
+    border-top: 1px solid #78D9D2;
     border-radius: 0px;
     box-shadow: none;
 }
 
 .file-button:last-child {
-    border-bottom: 1px solid #111;
+    border-bottom: 1px solid #78D9D2;
 }
 
 .widget {
@@ -289,11 +290,11 @@ export default {
 
 .icon-circle {
     box-sizing: border-box;
-    border: solid 1px #111;
+    border: solid 1px #78D9D2;
     border-radius: 50%;
     height: 40px;
     width: 40px;
-    background: #494949;
+    background: #A8EEE9;
 }
 
 .take-photo .icon-circle {
