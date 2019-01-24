@@ -9,11 +9,11 @@
         </multi-select>
     </div>
     <ons-row class="report-widget" v-else-if="context=='report'">
-        <ons-col class="report widget-label">{{widget.label}}</ons-col>
         <ons-col>
-            <div v-for="label in conceptLabels">
-                <div class="report widget-value">{{label.text}}</div>
-            </div>
+          <span class="report widget-label">{{widget.label}}</span>
+          <span v-for="label in conceptLabels">
+              <span class="report widget-value">{{label.text}}</span>
+          </span>
         </ons-col>
     </ons-row>
     <span class="flex tile-data" v-else-if="context=='nav'">
