@@ -73,4 +73,10 @@ export default {
 .vue-js-switch {
     font-size: 12px;
 }
+
+.widget-label {
+  font-weight: 400;
+  color: #271F4C;
+  padding-right: 5px;
+}
 </style>
