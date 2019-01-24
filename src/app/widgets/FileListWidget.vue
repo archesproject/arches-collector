@@ -267,9 +267,14 @@ export default {
     border-bottom: 1px solid #78D9D2;
 }
 
-.widget {
-    padding-left: 0px;
-    padding-right: 0px;
+.widget > .editor-panel {
+    margin-left: -15px;
+    margin-right: -15px;
+}
+
+.widget > .button-panel {
+    margin-left: -15px;
+    margin-right: -15px;
 }
 
 .relative {
