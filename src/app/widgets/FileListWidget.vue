@@ -22,8 +22,13 @@
             <ons-col class="button-column"><v-ons-button class="file-button btn-mint" @click="takePhoto"><v-ons-icon class="camera-icon" icon="ion-camera"></v-ons-icon><span class="btn-text">Take Photo</span></v-ons-button></ons-col>
         </ons-row>
 
-        <div class="">
-            <v-ons-button class="file-button" @click="selectPhoto"><v-ons-icon class="folder-icon" icon="ion-folder"></v-ons-icon><span class="btn-text">Select Photo</span></v-ons-button>
+        <div class="button-panel">
+            <v-ons-button class="file-button" @click="selectPhoto">
+                <span class="icon-circle">
+                    <v-ons-icon class="folder-icon" icon="ion-folder"></v-ons-icon>
+                </span>
+                <span class="btn-text">Select Photo</span>
+            </v-ons-button>
             <v-ons-button class="file-button" @click="takePhoto"><v-ons-icon class="camera-icon" icon="ion-camera"></v-ons-icon><span class="btn-text">Take Photo</span></v-ons-button>
         </div>
 
@@ -228,8 +233,15 @@ export default {
 
 .editor-panel {
     margin-top: -15px;
+    margin-left: -15px;
+    margin-right: -15px;
     padding: 20px 10px 30px 20px;
     background: #fbfbfb;
+}
+
+.button-panel {
+    margin-left: -15px;
+    margin-right: -15px;
 }
 
 .file-button {
@@ -254,4 +266,6 @@ export default {
     padding-left: 0px;
     padding-right: 0px;
 }
+
+
 </style>
