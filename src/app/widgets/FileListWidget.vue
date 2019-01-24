@@ -2,7 +2,7 @@
     <div v-if="context=='editor'">
         <div class="editor-panel">
             <div class="editor widget-label">{{widget.label}}</div>
-            <ons-col class="widget-value" v-if="!value">No images selected yet</ons-col>
+            <ons-col class="widget-value" v-if="!value">No image selected yet</ons-col>
             <ons-list class="photo-list">
                 <ons-list-item v-for="file in value">
                     <div class="left">
@@ -17,10 +17,11 @@
                 </ons-list-item>
             </ons-list>
         </div>
-        <ons-row class="file-widget" style="display: none;">
+
+        <!-- <ons-row class="file-widget" style="display: none;">
             <ons-col class="button-column"><v-ons-button class="file-button btn-mint" @click="selectPhoto"><v-ons-icon class="folder-icon" icon="ion-folder"></v-ons-icon><span class="btn-text">Select Photo</span></v-ons-button></ons-col>
             <ons-col class="button-column"><v-ons-button class="file-button btn-mint" @click="takePhoto"><v-ons-icon class="camera-icon" icon="ion-camera"></v-ons-icon><span class="btn-text">Take Photo</span></v-ons-button></ons-col>
-        </ons-row>
+        </ons-row> -->
 
         <div class="button-panel">
             <v-ons-button class="file-button relative select-photo" @click="selectPhoto">
@@ -232,15 +233,15 @@ export default {
 
 .editor-panel {
     margin-top: -15px;
-    margin-left: -15px;
-    margin-right: -15px;
+    /* margin-left: -15px;
+    margin-right: -15px; */
     padding: 20px 10px 30px 20px;
     background: #fbfbfb;
 }
 
 .button-panel {
-    margin-left: -15px;
-    margin-right: -15px;
+    margin-left: -5px;
+    /* margin-right: -15px; */
 }
 
 .file-button {
@@ -251,7 +252,8 @@ export default {
     text-transform: capitalize;
     text-align: left;
     padding: 10px 20px;
-    background: #DEFBF9;
+    /* background: #DEFBF9; */
+    background: #fff;
     border-top: 1px solid #78D9D2;
     border-radius: 0px;
     box-shadow: none;
@@ -288,6 +290,7 @@ export default {
 
 .btn-text {
     position: absolute;
+    font-size: 15px;
     top: 12px;;
     left: 70px;
 }
