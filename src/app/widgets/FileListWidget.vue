@@ -20,6 +20,11 @@
             <ons-col class="button-column"><v-ons-button class="file-button btn-mint" @click="takePhoto"><v-ons-icon class="camera-icon" icon="ion-camera"></v-ons-icon><span class="btn-text">Take Photo</span></v-ons-button></ons-col>
         </ons-row>
 
+        <div class="">
+            <v-ons-button class="file-button" @click="selectPhoto"><v-ons-icon class="folder-icon" icon="ion-folder"></v-ons-icon><span class="btn-text">Select Photo</span></v-ons-button>
+            <v-ons-button class="file-button" @click="takePhoto"><v-ons-icon class="camera-icon" icon="ion-camera"></v-ons-icon><span class="btn-text">Take Photo</span></v-ons-button>
+        </div>
+
     </div>
     <ons-row class="report-widget" v-else-if="context=='report'">
         <ons-list class="photo-list">
@@ -215,5 +220,30 @@ export default {
     width: auto;
     margin-left: -20px;
     padding: 5px 0 0 0;
+}
+
+
+
+.file-button {
+    margin-left: -15px;
+    float: right;
+    height: 60px;
+    color: green;
+    text-transform: capitalize;
+    text-align: left;
+    padding: 10px 20px;
+    background: #fff;
+    border-top: 1px solid #ddd;
+    border-radius: 0px;
+    box-shadow: none;
+}
+
+.file-button:last-child {
+    border-bottom: 1px solid #ddd;
+}
+
+.widget {
+    padding-left: 0px;
+    padding-right: 0px;
 }
 </style>
