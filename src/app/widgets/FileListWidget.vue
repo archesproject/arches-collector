@@ -1,26 +1,42 @@
 <template>
     <div v-if="context=='editor'">
-        <div class="editor widget-label">{{widget.label}}</div>
-            <ons-col class="widget-value" v-if="!value">No images yet collected</ons-col>
+        <div class="editor-panel">
+            <div class="editor widget-label">{{widget.label}}</div>
+            <ons-col class="widget-value" v-if="!value">No image selected yet</ons-col>
             <ons-list class="photo-list">
                 <ons-list-item v-for="file in value">
-                  <div class="left">
-                    <img class="image-thumbnail-input" v-bind:src="thumbnails[file.file_id]"></img>
-                  </div>
-                  <div class="center">
-                      <v-ons-input class="photo-name" underbar placeholder="Photo name" v-on:keyup="updateImages" v-model="file.name"></v-ons-input>
-                  </div>
-                  <div class="right">
-                      <ons-col width="10%"><v-ons-button @click="removePhoto(file)" class="right warning"><v-ons-icon class="fa5 fa-trash" icon="fa-trash"></v-ons-icon></v-ons-button></ons-col>
-                  </div>
+                    <div class="left">
+                      <img class="image-thumbnail-input" v-bind:src="thumbnails[file.file_id]"></img>
+                    </div>
+                    <div class="center">
+                        <v-ons-input class="photo-name" underbar placeholder="Photo name" v-on:keyup="updateImages" v-model="file.name"></v-ons-input>
+                    </div>
+                    <div class="right">
+                        <ons-col width="10%"><v-ons-button @click="removePhoto(file)" class="right warning"><v-ons-icon class="fa5 fa-trash" icon="fa-trash"></v-ons-icon></v-ons-button></ons-col>
+                    </div>
                 </ons-list-item>
             </ons-list>
-        <ons-row class="file-widget">
+        </div>
+
+        <!-- <ons-row class="file-widget" style="display: none;">
             <ons-col class="button-column"><v-ons-button class="file-button btn-mint" @click="selectPhoto"><v-ons-icon class="folder-icon" icon="ion-folder"></v-ons-icon><span class="btn-text">Select Photo</span></v-ons-button></ons-col>
             <ons-col class="button-column"><v-ons-button class="file-button btn-mint" @click="takePhoto"><v-ons-icon class="camera-icon" icon="ion-camera"></v-ons-icon><span class="btn-text">Take Photo</span></v-ons-button></ons-col>
-        </ons-row>
+        </ons-row> -->
 
+        <div class="button-panel">
+            <v-ons-button class="file-button relative select-photo" @click="selectPhoto">
+                <div class="icon-circle"></div>
+                <v-ons-icon class="folder-icon" icon="ion-folder"></v-ons-icon>
+                <span class="btn-text">Select Photo</span>
+            </v-ons-button>
+            <v-ons-button class="file-button relative take-photo" @click="takePhoto">
+                <div class="icon-circle"></div>
+                <v-ons-icon class="camera-icon" icon="ion-camera"></v-ons-icon>
+                <span class="btn-text">Take Photo</span>
+            </v-ons-button>
+        </div>
     </div>
+
     <ons-row class="report-widget" v-else-if="context=='report'">
         <ons-list class="photo-list">
             <ons-list-item v-for="file in value">
@@ -170,7 +186,7 @@ export default {
   color: #999;
 }
 .widget-label {
-  font-weight: 600;
+  font-weight: 400;
   color: #271F4C;
   padding-right: 5px;
 }
@@ -182,9 +198,7 @@ export default {
     width: 100%;
     text-align: center;
 }
-.folder-icon {
-    vertical-align: -15%;
-}
+
 .warning {
   background: red;
 }
@@ -195,9 +209,7 @@ export default {
     padding-top: 20px;
     padding-bottom: 5px;
 }
-.btn-text {
-    padding-left: 5px;
-}
+
 .photo-list {
     width: 100%;
     background: none;
@@ -216,4 +228,89 @@ export default {
     margin-left: -20px;
     padding: 5px 0 0 0;
 }
+
+
+
+.editor-panel {
+    margin-top: -15px;
+    /* margin-left: -15px;
+    margin-right: -15px; */
+    padding: 20px 10px 30px 20px;
+    background: #fbfbfb;
+}
+
+.button-panel {
+    margin-left: -5px;
+    /* margin-right: -15px; */
+}
+
+.file-button {
+    float: right;
+    height: 60px;
+    color: #2E9C94;
+    font-weight: 500;
+    text-transform: capitalize;
+    text-align: left;
+    padding: 10px 20px;
+    /* background: #DEFBF9; */
+    background: #fff;
+    border-top: 1px solid #78D9D2;
+    border-radius: 0px;
+    box-shadow: none;
+}
+
+.button--material .btn-text {
+    font-weight: 600;
+}
+
+.file-button:last-child {
+    border-bottom: 1px solid #78D9D2;
+}
+
+.widget {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.relative {
+    position: relative;
+}
+
+.folder-icon {
+    position: absolute;
+    top: 17px;
+    left: 32px;
+}
+
+.camera-icon {
+    position: absolute;
+    top: 15px;
+    left: 31px;
+}
+
+.btn-text {
+    position: absolute;
+    font-size: 15px;
+    top: 12px;;
+    left: 70px;
+}
+
+.icon-circle {
+    box-sizing: border-box;
+    border: solid 1px #78D9D2;
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+    background: #A8EEE9;
+}
+
+.take-photo .icon-circle {
+    margin-top: -2px;
+}
+
+.take-photo .btn-text {
+    top: 10px;
+}
+
+
 </style>
