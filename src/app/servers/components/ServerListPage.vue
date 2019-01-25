@@ -13,6 +13,8 @@
                     </div>
                 </v-ons-toolbar-button>
             </v-ons-toolbar> -->
+
+            <!-- Application List -->
             <div v-show="selectedServer === undefined || selectedServer === false" class="app-page-color">
                 <v-ons-list class="application-list">
                     <v-ons-list-item class="application-item-panel" tappable @click="goTo('servermanager');">
@@ -35,6 +37,8 @@
                     </v-ons-list-item>
                 </v-ons-list>
             </div>
+
+            <!-- Manage Selected App -->
             <div class="app-page-color" v-show="selectedServer">
                 <v-ons-row class="app-url-panel">
                     <v-ons-col>
@@ -64,29 +68,29 @@
 
                 <!-- App Buttons -->
                 <v-ons-row class="app-button-row">
-                        <!-- App save Button -->
-                        <v-ons-button class="app-button relative app-save" @click="login">
-                            <div class="icon-circle"></div>
-                            <v-ons-icon class="save-icon" icon="ion-checkmark-round"></v-ons-icon>
-                            <span class="btn-text">Save</span>
-                            <div class="btn-subtitle">Add this Arches application to your device</div>
-                        </v-ons-button>
+                    <!-- App save Button -->
+                    <v-ons-button class="app-button relative app-save" @click="login">
+                        <div class="icon-circle"></div>
+                        <v-ons-icon class="save-icon" icon="ion-checkmark-round"></v-ons-icon>
+                        <span class="btn-text">Save</span>
+                        <div class="btn-subtitle">Add this Arches application to your device</div>
+                    </v-ons-button>
 
-                        <!-- Cancel Button -->
-                        <v-ons-button class="app-button relative app-return" @click="cancel">
-                            <div class="icon-circle"></div>
-                            <v-ons-icon class="return-icon" icon="ion-arrow-left-a"></v-ons-icon>
-                            <span class="btn-text">Cancel</span>
-                            <div class="btn-subtitle">Return to the Applications listing page</div>
-                        </v-ons-button>
+                    <!-- Cancel Button -->
+                    <v-ons-button class="app-button relative app-return" @click="cancel">
+                        <div class="icon-circle"></div>
+                        <v-ons-icon class="return-icon" icon="ion-arrow-left-a"></v-ons-icon>
+                        <span class="btn-text">Cancel</span>
+                        <div class="btn-subtitle">Return to the Applications listing page</div>
+                    </v-ons-button>
 
-                        <!-- App Delete Button -->
-                        <v-ons-button class="app-button relative app-delete" @click="$ons.notification.confirm({message: 'Are you sure you want to delete this App? All unsynched data will be lost.', callback: deleteServer})">
-                            <div class="icon-circle"></div>
-                            <v-ons-icon class="delete-icon" icon="ion-trash-a"></v-ons-icon>
-                            <span class="btn-text">Delete App</span>
-                            <div class="btn-subtitle">Remove this Arches application from your device</div>
-                        </v-ons-button>
+                    <!-- App Delete Button -->
+                    <v-ons-button class="app-button relative app-delete" @click="$ons.notification.confirm({message: 'Are you sure you want to delete this App? All unsynched data will be lost.', callback: deleteServer})">
+                        <div class="icon-circle"></div>
+                        <v-ons-icon class="delete-icon" icon="ion-trash-a"></v-ons-icon>
+                        <span class="btn-text">Delete App</span>
+                        <div class="btn-subtitle">Remove this Arches application from your device</div>
+                    </v-ons-button>
                 </v-ons-row>
             </div>
         </v-ons-page>
