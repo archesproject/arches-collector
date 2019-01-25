@@ -94,7 +94,8 @@
                 <v-ons-progress-bar indeterminate v-if="syncing"></v-ons-progress-bar>
                 <v-ons-list-item tappable modifier="longdivider" v-for="project in projects" :key="project.id" v-bind:class="{ deleted: project.deleted, unjoined: project.joined === false }">
                     <span class="left" style="display: flex; flex-direction: column; align-items: baseline; line-height: 1.1em; border-style: 1px; background-color: light-blue; border-color: dark-blue;" @click="segueToProject(project);">
-                        <span class="project-name">{{project.name}}</span><span class="project-name" v-if="project.joined === false"> - You've left this project</span>
+                        <span class="left-project-text" v-if="project.joined === false">You've left this project</span>
+                        <span class="project-name">{{project.name}}</span>
                         <span v-if="!project.deleted">
                             <span class="project-name deleted"></span>
                             <span class="project-active">Active from:</span>
@@ -331,7 +332,20 @@ export default {
     }
 
     ons-list-item.unjoined {
-      background-color: #ddd;
+      background-color: #f0f0f0;
+    }
+
+    ons-list-item.unjoined .project-name {
+      color: #888;
+    }
+
+    ons-list-item.unjoined .project-dates {
+      color: #999;
+    }
+
+    .left-project-text{
+        color: #555;
+        font-size: 15px;
     }
 
     .project-list-toolbar {
@@ -349,8 +363,9 @@ export default {
     }
 
     .panel-header {
-        background: #9FD6B7;
-        border-bottom: 1px solid #116A38;
+      background: #F0FBF5;
+      border-top: 1px solid #9FD6B7;
+      margin-top: 1px;
     }
 
     .panel-header-text {
