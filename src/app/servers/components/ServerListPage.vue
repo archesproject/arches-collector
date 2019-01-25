@@ -36,7 +36,7 @@
                 </v-ons-list>
             </div>
             <div class="app-page-color" v-show="selectedServer">
-                <v-ons-row class="app-details">
+                <v-ons-row class="app-url-panel">
                     <v-ons-col>
                         <span v-if="selectedServer !== undefined">
                             <div class="server-url">{{selectedServer.url}}</div>
@@ -267,6 +267,13 @@ export default {
     color: #fff;
 }
 
+.app-url-panel {
+    background: #A8EEE9;
+    height: 60px;
+    padding: 17px 20px;
+    border-top: 1px solid #78D9D2;
+}
+
 .app-details {
     padding: 15px;
     background: #fafafa;
@@ -278,8 +285,9 @@ export default {
     height: 100%;
 }
 
-.app-details .server-url {
+.server-url {
     font-size: 20px;
+    color: #005A53;
 }
 
 .app-button-row {
