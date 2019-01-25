@@ -44,25 +44,16 @@
                     </v-ons-col>
                 </v-ons-row>
                 <v-ons-row class="app-details" v-if="selectedServer !== undefined">
-                    <div>
-                        <div>Application Nickname</div>
-                    </div>
-                    <input class="input" v-model="selectedServer.nickname">
-                    </input>
+                    <div class="input-label">Application Nickname</div>
+                    <input class="input input-placeholder" v-model="selectedServer.nickname"></input>
                 </v-ons-row>
                 <v-ons-row class="app-details" v-if="selectedServer !== undefined">
-                    <div>
-                        <div>Username</div>
-                    </div>
-                    <input class="input" v-model="selectedServer.username">
-                    </input>
+                    <div class="input-label">Username</div>
+                    <input class="input input-placeholder" v-model="selectedServer.username"></input>
                 </v-ons-row>
                 <v-ons-row class="app-details" v-if="selectedServer !== undefined">
-                    <div>
-                        <div>Password</div>
-                    </div>
-                    <input class="input" type="password" v-model="selectedServer.password">
-                    </input>
+                    <div class="input-label">Password</div>
+                    <input class="input input-placeholder" type="password" v-model="selectedServer.password"></input>
                 </v-ons-row>
                 <v-ons-row v-if="error">
                     <div class="left">
@@ -70,15 +61,9 @@
                     </div>
                     <div class="center">{{error_message}}</div>
                 </v-ons-row>
+
+                <!-- App Buttons -->
                 <v-ons-row class="app-button-row">
-
-                        <!-- <v-ons-row>
-                            <v-ons-col class="app-button-col"><v-ons-button class="left success" @click="login">Save</v-ons-button></v-ons-col>
-                            <v-ons-col class="app-button-col"><v-ons-button class="middle success" @click="cancel">Cancel</v-ons-button></v-ons-col>
-                            <v-ons-col class="app-button-col"><v-ons-button class="right danger" @click="$ons.notification.confirm({message: 'Are you sure you want to delete this App? All unsynched data will be lost.', callback: deleteServer})">Delete App</v-ons-button></v-ons-col>
-                        </v-ons-row> -->
-
-
                         <!-- App save Button -->
                         <v-ons-button class="app-button relative app-save" @click="login">
                             <div class="icon-circle"></div>
@@ -102,9 +87,6 @@
                             <span class="btn-text">Delete App</span>
                             <div class="btn-subtitle">Remove this Arches application from your device</div>
                         </v-ons-button>
-
-
-
                 </v-ons-row>
             </div>
         </v-ons-page>
@@ -216,8 +198,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
-
 .list-item .ons-icon {
     font-size: 30px;
 }
@@ -289,6 +269,8 @@ export default {
 
 .app-details {
     padding: 15px;
+    background: #fafafa;
+    border-top: 1px solid #ddd;
 }
 
 .app-page-color {
@@ -306,6 +288,19 @@ export default {
 
 .app-button-col {
     padding: 10px;
+}
+
+.input-label {
+    font-size: 15px;
+    font-weight: 400;
+    color: #271F4C;
+    padding-right: 5px;
+}
+
+.input-placeholder {
+    font-size: 14px;
+    font-weight: 400;
+    color: #777;
 }
 
 .manage-app-btn {
