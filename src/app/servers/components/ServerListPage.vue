@@ -22,15 +22,15 @@
                         <span class="application-list-item">Add Application</span>
                     </v-ons-list-item>
                     <v-ons-list-item class="application-item-panel" tappable modifier="longdivider" v-for="(server, key) in servers" :key="server.url" @click="setActiveServer(server.url);">
-                        <span class="application-list-item-prepanel">
-                            <v-ons-icon class="application-list-item-icon" icon="ion-checkmark-round"></v-ons-icon>
+                        <span class="application-app-item-prepanel">
+                            <v-ons-icon class="application-list-item-icon" style="margin-top: -1px;" icon="ion-checkmark-round"></v-ons-icon>
                         </span>
                         <span class="application-list-item">
                             {{server.nickname}}<br>
                             <span class="application-list-item-url">{{server.url}}</span>
                         </span>
                         <span class="right">
-                            <v-ons-icon v-if="selectedServer !== server" icon="fa-info-circle" @click="setSelectedServer($event, server);"></v-ons-icon>
+                            <v-ons-icon class="manage-app-btn" style="font-size: 19px;" v-if="selectedServer !== server" icon="fa-info-circle" @click="setSelectedServer($event, server);"></v-ons-icon>
                         </span>
                     </v-ons-list-item>
                 </v-ons-list>
@@ -220,7 +220,7 @@ export default {
 }
 
 .application-item-panel {
-    border-bottom: 1px solid #413040;
+    border-top: 1px solid #ddd;
 }
 
 .application-list-item {
@@ -230,6 +230,15 @@ export default {
 
 .application-list-item-prepanel {
     background: #392B39;
+    border-radius: 50%;
+    height: 36px;
+    width: 36px;
+}
+
+.application-app-item-prepanel {
+    background: #A8EEE9;
+    border-radius: 50%;
+    border: 1px solid #2E9C94;
     height: 36px;
     width: 36px;
 }
@@ -237,7 +246,7 @@ export default {
 .application-list-item-icon {
     padding-top: 6px;
     padding-left: 8px;
-    color: #A0B193;
+    color: #2E9C94;
 }
 
 .application-list-item-url {
@@ -247,7 +256,7 @@ export default {
 
 .add-application-icon {
     padding-top: 6px;
-    padding-left: 8px;
+    padding-left: 9px;
     color: #fff;
 }
 
@@ -270,6 +279,10 @@ export default {
 
 .app-button-col {
     padding: 10px;
+}
+
+.manage-app-btn {
+    color: #555;
 }
 
 </style>
