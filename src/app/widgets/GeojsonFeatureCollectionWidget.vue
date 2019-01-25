@@ -108,13 +108,34 @@ export default {
             style.layers.push(...reportLayers);
             this.map.setStyle(style);
         },
+        checkIfFeatureIsValid(fc) {
+            var valid;
+            var invalidFeatures = fc.features.filter(function(feature){
+                var geom = feature.geometry;
+                if (
+                    (geom.type === 'Point' && !geom.coordinates) ||
+                    (geom.type === 'Linestring' && geom.coordinates.length === 0) ||
+                    (geom.type === 'Polygon' && geom.coordinates[0].length === 1)
+                ) {
+                    return feature
+                }
+            });
+            valid = invalidFeatures.length === 0 ? true : false;
+            return valid;
+        },
         updateDrawings(e) {
-            if (e === 'selectionchange') {
-                if (this.draw.getSelectedIds().length === 0) {
-                    this.$emit('update:value', this.draw.getAll());
+            var fc = this.draw.getAll();
+            var featuresValid = this.checkIfFeatureIsValid(fc);
+            if (featuresValid===true) {
+                if (e === 'selectionchange') {
+                    if (this.draw.getSelectedIds().length === 0) {
+                        this.$emit('update:value', fc);
+                    }
+                } else {
+                    this.$emit('update:value', fc);
                 }
             } else {
-                this.map.on('draw.update', () => this.draw.getAll());
+                console.log(fc, e)
             }
         },
         toggleFullscreen() {
