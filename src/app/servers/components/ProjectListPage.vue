@@ -7,16 +7,16 @@
                 :open.sync="showSideNav" class="sidenav toolbar-header">
                 <v-ons-page>
 
-                    <v-ons-list style="margin-top: 5px;" v-if="showAllProjectsMenuContent">
-                        <v-ons-list-item>
-                            <span class="text-color-dark label right-panel-label">All Projects</span>
+                    <v-ons-list v-if="showAllProjectsMenuContent">
+                        <v-ons-list-item class="panel-header">
+                            <span class="panel-header-text label right-panel-label">All Projects</span>
                         </v-ons-list-item>
                         <v-ons-list-item tappable @click='toggleShowUnjoined'>
                             <v-ons-icon class="text-color-dark left menu-icon" icon="fa-toggle-on" v-if="showUnjoinedProjects === false"></v-ons-icon>
                             <v-ons-icon class="text-color-dark left menu-icon" icon="fa-toggle-off" v-else></v-ons-icon>
                             <div class="menu-text" v-if="showUnjoinedProjects === false">
                                 <span class="text-color-dark">Show projects I've left</span>
-                                <span class="text-color-dark menu-subtext">List all projects regardless of status</span>
+                                <span class="menu-subtext">List all projects regardless of status</span>
                             </div>
                             <div class="menu-text" v-else>
                                 <span class="text-color-dark">Show only projects I've joined</span>
@@ -32,15 +32,15 @@
                         </v-ons-list-item @click="">
                     </v-ons-list>
 
-                    <v-ons-list style="margin-top: 5px;" v-else>
-                        <v-ons-list-item tappable @click="sync">
-                            <span class="text-color-dark label right-panel-label" v-if="selectedProject">{{selectedProject.name}}</span>
+                    <v-ons-list v-else>
+                        <v-ons-list-item class="panel-header" tappable @click="sync">
+                            <span class="panel-header-text label right-panel-label" v-if="selectedProject">{{selectedProject.name}}</span>
                         </v-ons-list-item @click="">
                         <v-ons-list-item tappable @click="sync" v-if="selectedProject && !selectedProject.deleted && selectedProject.joined">
                             <v-ons-icon class="text-color-dark left menu-icon" icon="fa-cloud-download-alt"></v-ons-icon>
                             <div class="menu-text">
                                 <span class="text-color-dark">Refresh all records in this project</span>
-                                <span class="text-color-dark menu-subtext">Refresh all project data</span>
+                                <span class="menu-subtext">Refresh all project data</span>
                                 <span v-if="syncfailed" class="text-color-dark menu-subtext">Sync Failed... please try again.</span>
                             </div>
                         </v-ons-list-item @click="">
@@ -49,21 +49,21 @@
                             <v-ons-icon class="text-color-dark left menu-icon" icon="fa-toggle-off"></v-ons-icon>
                             <div class="menu-text">
                                 <span class="text-color-dark">Leave project</span>
-                                <span class="text-color-dark menu-subtext">Stop synching with this active project</span>
+                                <span class="menu-subtext">Stop synching with this active project</span>
                             </div>
                         </v-ons-list-item @click="">
                         <v-ons-list-item tappable v-if="selectedProject && selectedProject.joined === false" @click="function(){toggleProjectParticipation(1)}">
                             <v-ons-icon class="text-color-dark left menu-icon" icon="fa-toggle-on"></v-ons-icon>
                             <div class="menu-text">
                                 <span class="text-color-dark">Re-join project</span>
-                                <span class="text-color-dark menu-subtext">Resume synching with this active project</span>
+                                <span class="menu-subtext">Resume synching with this active project</span>
                             </div>
                         </v-ons-list-item @click="">
                         <v-ons-list-item tappable @click="$ons.notification.confirm({message: 'Are you sure you want to delete this Project? All unsynched data will be lost.', callback: deleteProject})">
                             <v-ons-icon class="text-color-dark left menu-icon" icon="fa-trash"></v-ons-icon>
                             <div class="menu-text">
                                 <span class="text-color-dark">Delete this project from my device</span>
-                                <span class="text-color-dark menu-subtext">Remove inactive project from my device</span>
+                                <span class="menu-subtext">Remove inactive project from my device</span>
                             </div>
                         </v-ons-list-item @click="">
                     </v-ons-list>
@@ -336,10 +336,20 @@ export default {
 
     .menu-subtext {
         font-size: 12px;
+        color: #888;
     }
 
     .list-item {
         border-bottom: 1px solid #eee;
+    }
+
+    .panel-header {
+        background: steelblue;
+        border-bottom: 1px solid blue;
+    }
+
+    .panel-header-text {
+        color: #fff;
     }
 
 </style>
