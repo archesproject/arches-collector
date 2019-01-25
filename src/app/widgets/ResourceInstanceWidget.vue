@@ -107,6 +107,7 @@ export default {
 .tile-data .widget-label {
     color: #271F4C;
     font-size: 13px;
+    padding-bottom: 10px;
 }
 
 </style>

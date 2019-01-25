@@ -451,8 +451,10 @@ ul {
 .widget-label {
     color: #999;
     font-size: 13px;
+    padding-bottom: 10px;
 }
 .tile-delete {
     padding: 20px;
+    border-left: 1px solid #ddd;
 }
 </style>
