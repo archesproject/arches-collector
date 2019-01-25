@@ -1,42 +1,51 @@
 <template>
     <v-ons-page>
-        <div class="body">
-            <v-ons-toolbar>
-                <div class="left">
-                    <span class="left-button-text">{{server.url}}</span>
-                </div>
-            </v-ons-toolbar>
+        <div class="app-input-panel">
+            <div class="form-header left">
+                <span class="left-button-text">Add Arches Application</span>
+            </div>
 
-            <v-ons-input class="input" placeholder="My Arches Application URL" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" float v-model="server.url">
-            </v-ons-input>
+            <v-ons-row class="app-details">
+                <div class="input-label">Application URL</div>
+                <input class="input input-placeholder" placeholder="My Arches Application URL" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" float v-model="server.url"></input>
+            </v-ons-row>
+            <v-ons-row class="app-details">
+                <div class="input-label">Application Nickname</div>
+                <input class="input input-placeholder" placeholder="Nickname" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" float v-model="server.nickname"></input>
+            </v-ons-row>
+            <v-ons-row class="app-details">
+                <div class="input-label">User Name</div>
+                <input class="input input-placeholder" placeholder="Username" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" float v-model="server.username"></input>
+            </v-ons-row>
+            <v-ons-row class="app-details">
+                <div class="input-label">Password</div>
+                <input class="input input-placeholder" placeholder="Password" type="password" v-model="server.password"></input>
+            </v-ons-row>
 
-            <v-ons-input class="input" placeholder="Nickname" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" float v-model="server.nickname">
-            </v-ons-input>
-
-            <v-ons-input class="input" placeholder="Username" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" float v-model="server.username">
-            </v-ons-input>
-
-            <v-ons-input class="input" placeholder="Password" type="password" float v-model="server.password">
-            </v-ons-input>
-
-            <v-ons-list-item v-if="error">
+            <v-ons-list-item class="error-panel" v-if="error">
                 <div class="left">
                     <v-ons-icon icon="exclamation-triangle" class="list-item__icon" style="color:#ea8a0b;"></v-ons-icon>
                 </div>
-                <div class="center">{{error_message}}</div>
+                <div class="error-text center">{{error_message}}</div>
             </v-ons-list-item>
 
+            <!-- App Buttons -->
             <v-ons-row class="app-button-row">
-                <v-ons-column>
-                    <v-ons-row>
-                        <v-ons-col class="app-button-col">
-                            <v-ons-button :disabled="disableSignIn" class="btn-success left" v-on:click="login">Sign In</v-ons-button>
-                        </v-ons-col>
-                        <v-ons-col class="app-button-col">
-                            <v-ons-button class="btn-danger right" v-on:click="cancel">Cancel</v-ons-button>
-                        </v-ons-col>
-                    </v-ons-row>
-                </v-ons-column>
+                <!-- App save Button -->
+                <v-ons-button :disabled="disableSignIn" class="app-button relative app-save" v-on:click="login">
+                    <div class="icon-circle"></div>
+                    <v-ons-icon class="save-icon" icon="ion-checkmark-round"></v-ons-icon>
+                    <span class="btn-text">Save</span>
+                    <div class="btn-subtitle">Add this Arches application to your device</div>
+                </v-ons-button>
+
+                <!-- App Cancel Button -->
+                <v-ons-button class="app-button relative app-delete" v-on:click="cancel">
+                    <div class="icon-circle"></div>
+                    <v-ons-icon class="delete-icon" icon="ion-trash-a"></v-ons-icon>
+                    <span class="btn-text">Cancel</span>
+                    <div class="btn-subtitle">Discard this application, return to Applications page</div>
+                </v-ons-button>
             </v-ons-row>
         </div>
     </v-ons-page>
@@ -94,7 +103,7 @@ export default {
                 self.server.client_id = response.clientid;
                 self.server.user = response.user;
                 return self.$store.dispatch('getToken', self.server)
-                
+
             })
             .then(function(response){
                 if (response.ok) {
@@ -131,22 +140,25 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
-.body{
-    padding: 80px 35px;
-    font-size: 16px;
-    color: dimgrey;
+.form-header {
+  background: #A8EEE9;
+  padding: 10px 0px;
+}
+
+.app-input-panel {
+    background: #A8EEE9;
 }
 
 .left-button-text {
     padding-left: 15px;
-    font-size: 22px;
+    font-size: 19px;
     color: dimgrey;
 }
 
-.input{
-    width: 80%;
-    padding: 4px 0;
-    margin: 20px 0;
+.input {
+    background-color: #fff;
+    padding-left: 10px;
+    margin: 10px 0;
 }
 
 .app-button-row {
@@ -155,6 +167,104 @@ export default {
 
 .app-button-col {
     padding: 10px;
+}
+
+.app-details {
+    padding: 15px;
+    background: #fafafa;
+    border-top: 1px solid #ddd;
+}
+
+.input-label {
+    font-size: 15px;
+    font-weight: 400;
+    color: #271F4C;
+    padding-right: 5px;
+}
+
+.input-placeholder {
+    font-size: 14px;
+    font-weight: 400;
+    color: #777;
+}
+
+.relative {
+    position: relative;
+}
+
+.app-button {
+    float: right;
+    height: 60px;
+    color: #2E9C94;
+    font-weight: 500;
+    text-transform: capitalize;
+    text-align: left;
+    padding: 10px 20px;
+    /* background: #DEFBF9; */
+    background: #fff;
+    border-top: 1px solid #78D9D2;
+    border-radius: 0px;
+    box-shadow: none;
+    width: 100%;
+}
+
+.app-button:last-child {
+    border-bottom: 1px solid #78D9D2;
+}
+
+.btn-text {
+    position: absolute;
+    font-size: 15px;
+    top: 6px;;
+    left: 70px;
+}
+
+.btn-subtitle {
+    position: absolute;
+    font-size: 13px;
+    font-weight: 400;
+    color: #aaa;
+    top: 23px;
+    left: 70px;
+}
+
+.save-icon {
+    position: absolute;
+    top: 17px;
+    left: 30px;
+}
+
+.icon-circle {
+    box-sizing: border-box;
+    border: solid 1px #78D9D2;
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+    background: #A8EEE9;
+}
+
+.delete-icon {
+    position: absolute;
+    top: 17px;
+    left: 32px;
+    color: #970B00;
+}
+
+.app-delete .icon-circle {
+    border: solid 1px #f22314;
+    background: #FF796F;
+}
+
+.error-panel {
+    min-height: 50px;
+    padding: 10px;
+    background: #f1f1f1;
+    color: #454545;
+}
+
+.error-text {
+    font-size: 14px;
+    color: #777;
 }
 
 </style>

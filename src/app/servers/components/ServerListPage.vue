@@ -17,7 +17,7 @@
             <!-- Application List -->
             <div v-show="selectedServer === undefined || selectedServer === false" class="app-page-color">
                 <v-ons-list class="application-list">
-                    <v-ons-list-item class="application-item-panel" tappable @click="goTo('servermanager');">
+                    <v-ons-list-item class="add-application-panel" tappable @click="goTo('servermanager');">
                         <span class="application-list-item-prepanel">
                             <v-ons-icon class="add-application-icon" icon="ion-plus-round"></v-ons-icon>
                         </span>
@@ -211,7 +211,7 @@ export default {
 }
 
 .input {
-    background-color: whitesmoke;
+    background-color: #fff;
     padding-left: 10px;
     margin: 10px 0;
 }
@@ -228,6 +228,11 @@ export default {
 
 .application-list {
     color: #fff;
+}
+
+.add-application-panel {
+    background: #f6f6f6;
+    border-top: 1px solid #ddd;
 }
 
 .application-item-panel {
