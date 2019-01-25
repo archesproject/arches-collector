@@ -51,6 +51,10 @@ export default {
     border-bottom: 1px solid #ddd;
 }
 
+.widget-panel.widget {
+    padding-bottom: 25px;
+}
+
 .widget-value {
   padding-left: 5px;
 }
@@ -58,6 +62,23 @@ export default {
 .widget-label {
   font-weight: 400;
   color: #271F4C;
+}
+
+.report-widget {
+    padding-bottom: 3px;
+}
+
+.tile-data {
+    background: #fafafa;
+    color: #888;
+    margin-left: -5px;
+    padding-left: 5px;
+}
+
+.tile-data .widget-label {
+    color: #271F4C;
+    font-size: 13px;
+    padding-bottom: 10px;
 }
 
 </style>

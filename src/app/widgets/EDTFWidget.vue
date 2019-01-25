@@ -1,6 +1,7 @@
 <template>
     <div class="widget-panel" v-if="context=='editor'">
         <div class="editor widget-label">{{widget.label}}</div>
+        <div class="edtf-message">(This is a fuzzy date value)</div>
         <input :value="value" :placeholder="placeholder" @input="$emit('update:value', $event.target.value);">
     </div>
     <ons-row class="report-widget" v-else-if="context=='report'">
@@ -34,5 +35,42 @@ export default {
     padding-bottom: 25px;
     background: #fbfbfb;
     border-bottom: 1px solid #ddd;
+}
+
+.widget-panel.widget {
+    padding-bottom: 25px;
+}
+
+.widget-label {
+    font-weight: 400;
+    color: #271F4C;
+    padding-right: 5px;
+}
+
+.widget-panel input {
+  color: steelblue;
+}
+
+.edtf-message {
+    color: #999;
+    font-size: 13px;
+    padding-bottom: 3px;
+}
+
+.report-widget {
+    padding-bottom: 3px;
+}
+
+.tile-data {
+    background: #fafafa;
+    color: #888;
+    margin-left: -5px;
+    padding-left: 5px;
+}
+
+.tile-data .widget-label {
+    color: #271F4C;
+    font-size: 13px;
+    padding-bottom: 10px;
 }
 </style>

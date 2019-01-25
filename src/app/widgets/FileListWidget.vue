@@ -229,8 +229,6 @@ export default {
     padding: 5px 0 0 0;
 }
 
-
-
 .editor-panel {
     margin-top: -15px;
     /* margin-left: -15px;
@@ -267,9 +265,14 @@ export default {
     border-bottom: 1px solid #78D9D2;
 }
 
-.widget {
-    padding-left: 0px;
-    padding-right: 0px;
+.widget > .editor-panel {
+    margin-left: -15px;
+    margin-right: -15px;
+}
+
+.widget > .button-panel {
+    margin-left: -15px;
+    margin-right: -15px;
 }
 
 .relative {
@@ -312,5 +315,16 @@ export default {
     top: 10px;
 }
 
+.tile-data {
+    background: #fafafa;
+    color: #888;
+    margin-left: -5px;
+    padding-left: 5px;
+}
 
+.tile-data .widget-label {
+    color: #271F4C;
+    font-size: 13px;
+    padding-bottom: 10px;
+}
 </style>
