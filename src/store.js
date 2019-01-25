@@ -93,6 +93,7 @@ var pouchDBs = (function() {
                 .on('complete', function() {
                 // yay, we're in sync!
                     console.log('yay, we\'re in sync!');
+
                 // viewModel.remote_data_updated(false);
                 // listDocs(projectId);
                 // $.get( "push_edits_to_db?projectId=" + projectId, function(data) {
@@ -167,9 +168,9 @@ var pouchDBs = (function() {
                     console.log(err);
                 });
         },
-        deleteTiles: function(projectId, tiles) {
-            var removedTiles = tiles.map(tile => this._projectDBs[projectId]['local'].remove(tile));
-            return Promise.all(removedTiles);
+        deleteDocs: function(projectId, docs) {
+            var removedDocs = docs.map(doc => this._projectDBs[projectId]['local'].remove(doc));
+            return Promise.all(removedDocs);
         },
         putResource: function(projectId, resource) {
             this._projectDBs[projectId]['local']
@@ -458,6 +459,9 @@ var store = new Vuex.Store({
         clearActiveResourceInstance: function(state) {
             store.getters.activeServer.active_resource = null;
         },
+        clearNewlyCreatedResources: function(state, projectId) {
+            store.getters.currentProjects[projectId].newly_created_resources = {};
+        },
         setActiveGraphId: function(state, value) {
             store.getters.activeServer.active_graph_id = value;
         },
@@ -623,6 +627,7 @@ var store = new Vuex.Store({
             return store.dispatch('saveServerInfoToPouch');
         },
         syncRemote: function({commit, state}, {projectId, syncAttempts}) {
+            store.commit('clearNewlyCreatedResources', projectId);
             return pouchDBs.syncProject(projectId)
                 .then(function() {
                     var server = store.getters.activeServer;
@@ -700,6 +705,7 @@ var store = new Vuex.Store({
                         };
                         project.resources_to_sync = {};
                         project.resources_with_conflicts = {};
+                        project.newly_created_resources = {};
                     });
                     store.dispatch('initServerStoreFromPouch')
                         .finally(function(doc) {
@@ -763,7 +769,9 @@ var store = new Vuex.Store({
                             commit('addTile', resource);
                             commit('setActiveResourceInstance', resource);
                             Vue.set(store.getters.currentProjects[project.id].resources_to_sync, tile.resourceinstance_id, false);
+                            Vue.set(store.getters.currentProjects[project.id].newly_created_resources, tile.resourceinstance_id, false);
                             store.dispatch('persistResource', resource);
+                            store.dispatch('saveServerInfoToPouch');
                         }
                     }
                     if (!newResource) {
@@ -771,6 +779,7 @@ var store = new Vuex.Store({
                         commit('updateResourceEditDateAndDescriptors', resource);
                         Vue.set(store.getters.currentProjects[project.id].resources_to_sync, tile.resourceinstance_id, false);
                         store.dispatch('persistResource', resource);
+                        store.dispatch('saveServerInfoToPouch');
                     }
 
                     return tile;
@@ -791,7 +800,7 @@ var store = new Vuex.Store({
             console.log('childTiles', childTiles);
 
             var project = store.getters.activeProject;
-            return pouchDBs.deleteTiles(project.id, childTiles)
+            return pouchDBs.deleteDocs(project.id, childTiles)
                 .then(function() {
                     return store.dispatch('getTiles', project.id)
                         .then(function(tiles) {
@@ -810,6 +819,17 @@ var store = new Vuex.Store({
                 .then(function(doc) {
                     return doc;
                 });
+        },
+        deleteResource: function({commit, state}, resource) {
+            var project = store.getters.activeProject;
+            var docs = state.tiles.filter(function(tile) {
+                return (tile.type === 'tile' && tile.resourceinstance_id === resource.resourceinstanceid);
+            });
+            docs.push(resource);
+            return pouchDBs.deleteDocs(project.id, docs)
+            .then(function(){
+                Vue.delete(project.newly_created_resources, resource.resourceinstanceid);
+            });
         },
         getProjectResourcesGeoJSON: function({commit, state}, projectId) {
             return pouchDBs.getResourcesGeoJSON(projectId);
