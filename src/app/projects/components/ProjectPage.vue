@@ -13,7 +13,7 @@
                 <div class="center"></div>
                 <div class="right">
                     <v-ons-toolbar-button @click="toggleSideNav">
-                        <v-ons-icon class="text-color-dark project-name" icon="fa-ellipsis-v"></v-ons-icon>
+                        <v-ons-icon class="text-color-dark project-name" icon="fa-cogs"></v-ons-icon>
                     </v-ons-toolbar-button>
                 </div>
             </v-ons-toolbar>
@@ -24,7 +24,7 @@
                     <v-ons-page>
                         <v-ons-list style="margin-top: 0px;">
                             <v-ons-list-item tappable @click="sync">
-                                <v-ons-icon class="text-color-dark icon" icon="fa-cloud-download-alt"></v-ons-icon>
+                                <v-ons-icon class="text-color-dark icon" icon="fa-comments"></v-ons-icon>
                                 <div class="menu-text">
                                     <span class="text-color-dark label right-panel-label">Synch survey data</span>
                                     <div class="menu-subtext">Send/get data from cloud</div>

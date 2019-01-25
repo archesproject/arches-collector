@@ -77,7 +77,7 @@
                     <div class="center"></div>
                     <div class="right">
                         <v-ons-toolbar-button @click="toggleSideNav(projects)">
-                            <v-ons-icon class="text-color-dark project-name" icon="fa-ellipsis-v"></v-ons-icon>
+                            <v-ons-icon class="text-color-dark project-name" icon="fa-wrench"></v-ons-icon>
                         </v-ons-toolbar-button>
                     </div>
                 </v-ons-toolbar>
