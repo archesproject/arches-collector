@@ -71,13 +71,40 @@
                     <div class="center">{{error_message}}</div>
                 </v-ons-row>
                 <v-ons-row class="app-button-row">
-                    <v-ons-column>
-                        <v-ons-row>
+
+                        <!-- <v-ons-row>
                             <v-ons-col class="app-button-col"><v-ons-button class="left success" @click="login">Save</v-ons-button></v-ons-col>
                             <v-ons-col class="app-button-col"><v-ons-button class="middle success" @click="cancel">Cancel</v-ons-button></v-ons-col>
                             <v-ons-col class="app-button-col"><v-ons-button class="right danger" @click="$ons.notification.confirm({message: 'Are you sure you want to delete this App? All unsynched data will be lost.', callback: deleteServer})">Delete App</v-ons-button></v-ons-col>
-                        </v-ons-row>
-                    </v-ons-column>
+                        </v-ons-row> -->
+
+
+                        <!-- App save Button -->
+                        <v-ons-button class="app-button relative app-save" @click="login">
+                            <div class="icon-circle"></div>
+                            <v-ons-icon class="save-icon" icon="ion-checkmark-round"></v-ons-icon>
+                            <span class="btn-text">Save</span>
+                            <div class="btn-subtitle">Add this Arches application to your device</div>
+                        </v-ons-button>
+
+                        <!-- Cancel Button -->
+                        <v-ons-button class="app-button relative app-return" @click="cancel">
+                            <div class="icon-circle"></div>
+                            <v-ons-icon class="return-icon" icon="ion-arrow-left-a"></v-ons-icon>
+                            <span class="btn-text">Cancel</span>
+                            <div class="btn-subtitle">Return to the Applications listing page</div>
+                        </v-ons-button>
+
+                        <!-- App Delete Button -->
+                        <v-ons-button class="app-button relative app-delete" @click="$ons.notification.confirm({message: 'Are you sure you want to delete this App? All unsynched data will be lost.', callback: deleteServer})">
+                            <div class="icon-circle"></div>
+                            <v-ons-icon class="delete-icon" icon="ion-trash-a"></v-ons-icon>
+                            <span class="btn-text">Delete App</span>
+                            <div class="btn-subtitle">Remove this Arches application from your device</div>
+                        </v-ons-button>
+
+
+
                 </v-ons-row>
             </div>
         </v-ons-page>
@@ -283,6 +310,85 @@ export default {
 
 .manage-app-btn {
     color: #555;
+}
+
+.relative {
+    position: relative;
+}
+
+.app-button {
+    float: right;
+    height: 60px;
+    color: #2E9C94;
+    font-weight: 500;
+    text-transform: capitalize;
+    text-align: left;
+    padding: 10px 20px;
+    /* background: #DEFBF9; */
+    background: #fff;
+    border-top: 1px solid #78D9D2;
+    border-radius: 0px;
+    box-shadow: none;
+    width: 100%;
+}
+
+.app-button:last-child {
+    border-bottom: 1px solid #78D9D2;
+}
+
+.btn-text {
+    position: absolute;
+    font-size: 15px;
+    top: 6px;;
+    left: 70px;
+}
+
+.btn-subtitle {
+    position: absolute;
+    font-size: 13px;
+    font-weight: 400;
+    color: #aaa;
+    top: 23px;
+    left: 70px;
+}
+
+.save-icon {
+    position: absolute;
+    top: 17px;
+    left: 30px;
+}
+
+.return-icon {
+    position: absolute;
+    top: 17px;
+    left: 31px;
+    color: #9E7100;
+}
+
+.delete-icon {
+    position: absolute;
+    top: 17px;
+    left: 32px;
+    color: #970B00;
+}
+
+.icon-circle {
+    box-sizing: border-box;
+    border: solid 1px #78D9D2;
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+    background: #A8EEE9;
+}
+
+.app-return .icon-circle {
+    border: solid 1px #FFB906;
+    background: #FFD466;
+}
+
+.app-delete .icon-circle {
+    border: solid 1px #f22314;
+    background: #FF796F;
 }
 
 </style>
