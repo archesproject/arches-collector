@@ -76,7 +76,24 @@ export default {
         },
         login: function() {
             var self = this;
-            this.$store.dispatch('getClientId', this.server)
+            this.$store.dispatch('getUserProfile', this.server)
+            .then(function(response){
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    if (response.status === 401) {
+                        self.error_message = 'The supplied username or password was not valid.';
+                    } else {
+                        self.error_message = self.default_error_message;
+                    }
+                }
+
+                throw new Error('Network response was not ok.');
+            })
+            .then(function(response){
+                self.server.user = response;
+                return self.$store.dispatch('getClientId', self.server);
+            })
             .then(function(response){
                 if (response.ok) {
                     return response.json();
@@ -92,9 +109,7 @@ export default {
             })
             .then(function(response){
                 self.server.client_id = response.clientid;
-                self.server.user = response.user;
                 return self.$store.dispatch('getToken', self.server)
-                
             })
             .then(function(response){
                 if (response.ok) {
