@@ -151,7 +151,8 @@ export default {
 }
 
 .project-list-toolbar {
-    background: #f4f4f4;
+    background: #ddd;
+    border-bottom: 1px solid #aaa;
 }
 
 .project-header {

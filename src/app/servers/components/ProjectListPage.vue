@@ -72,7 +72,7 @@
 
         <v-ons-splitter-content class="project-list-panel">
             <v-ons-page>
-                <v-ons-toolbar class="project-list-toolbar" style="background-color: whitesmoke;" modifier="longdivider">
+                <v-ons-toolbar class="project-list-toolbar" modifier="longdivider">
                     <span class="left projects-title"><span>Projects</span></span>
                     <div class="center"></div>
                     <div class="right">
@@ -334,6 +334,11 @@ export default {
       background-color: #ddd;
     }
 
+    .project-list-toolbar {
+        background: #f4f4f4;
+        border-bottom: 1px solid #ddd;
+    }
+
     .menu-subtext {
         font-size: 12px;
         color: #888;
@@ -344,12 +349,12 @@ export default {
     }
 
     .panel-header {
-        background: steelblue;
-        border-bottom: 1px solid blue;
+        background: #9FD6B7;
+        border-bottom: 1px solid #116A38;
     }
 
     .panel-header-text {
-        color: #fff;
+        color: #116A38;
     }
 
 </style>
