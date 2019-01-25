@@ -102,6 +102,10 @@ export default {
     border-bottom: 1px solid #ddd;
 }
 
+.widget-panel.widget {
+    padding-bottom: 25px;
+}
+
 .widget-label {
   font-weight: 400;
   color: #271F4C;

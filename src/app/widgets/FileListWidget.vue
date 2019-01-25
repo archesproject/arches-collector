@@ -229,8 +229,6 @@ export default {
     padding: 5px 0 0 0;
 }
 
-
-
 .editor-panel {
     margin-top: -15px;
     /* margin-left: -15px;

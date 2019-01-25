@@ -51,6 +51,10 @@ export default {
     border-bottom: 1px solid #ddd;
 }
 
+.widget-panel.widget {
+    padding-bottom: 25px;
+}
+
 .widget-value {
   padding-left: 5px;
 }

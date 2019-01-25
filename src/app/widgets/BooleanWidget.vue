@@ -80,6 +80,10 @@ export default {
     border-bottom: 1px solid #ddd;
 }
 
+.widget-panel.widget {
+    padding-bottom: 25px;
+}
+
 .vue-js-switch {
     font-size: 12px;
 }
