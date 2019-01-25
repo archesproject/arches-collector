@@ -88,4 +88,20 @@ export default {
   color: #271F4C;
   padding-right: 5px;
 }
+
+.report-widget {
+    padding-bottom: 3px;
+}
+
+.tile-data {
+    background: #fafafa;
+    color: #888;
+    margin-left: -5px;
+    padding-left: 5px;
+}
+
+.tile-data .widget-label {
+    color: #271F4C;
+    font-size: 13px;
+}
 </style>

@@ -9,8 +9,10 @@
         </model-select>
     </div>
     <ons-row class="report-widget" v-else-if="context=='report'">
-        <ons-col class="report widget-label">{{widget.label}}</ons-col>
-        <ons-col class="report widget-value">{{conceptLabel.text}}</ons-col>
+        <ons-col>
+            <span class="report widget-label">{{widget.label}}</span>
+            <span class="report widget-value">{{conceptLabel.text}}</span>
+        </ons-col>
     </ons-row>
     <span class="flex tile-data" v-else-if="context=='nav'">
         <div v-if="!!conceptLabel">{{conceptLabel.text}}</div>
@@ -91,5 +93,20 @@ export default {
   padding-right: 5px;
 }
 
+.report-widget {
+    padding-bottom: 3px;
+}
+
+.tile-data {
+    background: #fafafa;
+    color: #888;
+    margin-left: -5px;
+    padding-left: 5px;
+}
+
+.tile-data .widget-label {
+    color: #271F4C;
+    font-size: 13px;
+}
 
 </style>

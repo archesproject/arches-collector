@@ -1,5 +1,5 @@
 <template>
-    <div class="report-widget" v-if="context=='editor'">
+    <div class="widget-panel" v-if="context=='editor'">
         <div class="editor widget-label">{{widget.label}}</div>
         <multi-select
             :selected-options="selectedOptions"
@@ -94,5 +94,27 @@ export default {
     padding-bottom: 25px;
     background: #fbfbfb;
     border-bottom: 1px solid #ddd;
+}
+
+.widget-label {
+  font-weight: 400;
+  color: #271F4C;
+  padding-right: 5px;
+}
+
+.report-widget {
+    padding-bottom: 3px;
+}
+
+.tile-data {
+    background: #fafafa;
+    color: #888;
+    margin-left: -5px;
+    padding-left: 5px;
+}
+
+.tile-data .widget-label {
+    color: #271F4C;
+    font-size: 13px;
 }
 </style>

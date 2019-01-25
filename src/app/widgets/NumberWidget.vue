@@ -1,12 +1,14 @@
 <template>
-    <div v-if="context=='editor'">
+    <div class="widget-panel" v-if="context=='editor'">
         <div class="editor widget-label">{{widget.label}}</div>
         <input :value="value" type=number placeholder="derive from configs" @input="$emit('update:value', $event.target.value);"/>
     </div>
 
     <ons-row class="report-widget" v-else-if="context=='report'">
-        <ons-col class="report widget-label">{{widget.label}}</ons-col>
-        <ons-col class="report widget-value">{{value}}</ons-col>
+      <ons-col>
+          <span class="report widget-label">{{widget.label}}</span>
+          <span class="report widget-value">{{value}}</span>
+      </ons-col>
     </ons-row>
     <span class="flex tile-data" v-else-if="context=='nav'">
         <div v-if="!!value">{{value}}</div>
@@ -31,4 +33,32 @@ export default {
 </script>
 
 <style scoped>
+
+.report-widget {
+    padding-bottom: 3px;
+}
+
+.widget-panel {
+    padding-bottom: 25px;
+    background: #fbfbfb;
+    border-bottom: 1px solid #ddd;
+}
+
+.widget-label {
+  font-weight: 400;
+  color: #271F4C;
+  padding-right: 5px;
+}
+
+.tile-data {
+    background: #fafafa;
+    color: #888;
+    margin-left: -5px;
+    padding-left: 5px;
+}
+
+.tile-data .widget-label {
+    color: #271F4C;
+    font-size: 13px;
+}
 </style scoped>
