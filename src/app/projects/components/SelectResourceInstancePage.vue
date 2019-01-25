@@ -1,24 +1,23 @@
 <template>
-            <v-ons-page>
+    <v-ons-page>
         <!-- Scrollable content here -->
-            <v-ons-list>
-                <v-ons-list-item class="resource-model-name-panel" tappable modifier="longdivider" v-for="resource_instance in resource_instances" :key="resource_instance.resourceinstanceid" @click="selectResourceInstance(resource_instance);">
-                    <span>
-                        <div class='resource-model-name'>
-                            <span class="icon-circle" v-bind:style="{ background: [resource_types[resource_instance.graph_id.color]], color: '#fff'}">
-                                <v-ons-icon class="resource-model-icon" v-bind:icon="resource_types[resource_instance.graph_id].iconclass.replace('fa ', '')" v-bind:style="{}"></v-ons-icon>
-                            </span>
-                            <span class='resource-model-title'>
-                                <span style="padding-left: 0; padding-right: 10px;">{{resource_instance.displayname.replace(/['"]+/g,'')}}</span>
-                                <span v-if="resource_instance.edited" class='resource-model-subtitle'>
-                                    Last edit: {{resource_instance.datetime}}</span>
-                                <span v-else class='resource-model-subtitle'>Unedited</span>
-                            </span>
-                        </div>
-                    </span>
-                </v-ons-list-item>
-            </v-ons-list>
-                    </v-ons-page>
+        <v-ons-list>
+            <v-ons-list-item class="resource-model-name-panel" tappable modifier="longdivider" v-for="resource_instance in resource_instances" :key="resource_instance.resourceinstanceid" @click="selectResourceInstance(resource_instance);">
+                <span class="icon-circle" v-bind:style="{ background: [resource_types[resource_instance.graph_id.color]], color: '#fff'}">
+                    <v-ons-icon class="resource-model-icon" v-bind:icon="resource_types[resource_instance.graph_id].iconclass.replace('fa ', '')" v-bind:style="{}"></v-ons-icon>
+                </span>
+                <span class='resource-model-title'>
+                    <span style="padding-left: 0; padding-right: 10px;">{{resource_instance.displayname.replace(/['"]+/g,'')}}</span>
+                    <span v-if="resource_instance.edited" class='resource-model-subtitle'>
+                        Last edit: {{resource_instance.datetime}}</span>
+                    <span v-else class='resource-model-subtitle'>Unedited</span>
+                </span>
+                <span v-if="resource_instance.resourceinstanceid in $store.getters.activeProject.newly_created_resources" class="resource-delete">
+                    <span class="fa5 fa-trash" @click="deleteTile(resource_instance, $event)"></span>
+                </span>
+            </v-ons-list-item>
+        </v-ons-list>
+    </v-ons-page>
 </template>
 <script>
 import moment from 'moment';
@@ -113,6 +112,21 @@ export default {
                 });
             });
         },
+        deleteTile: function(resource, e) {
+            var self = this;
+            e.stopPropagation();
+            this.$ons.notification.confirm({
+                message: 'Are you sure you want to delete this Resource?<br><br>All data related to this resource will be lost.',
+                callback: function(answer) {
+                    if (answer === 1) {
+                        self.$store.dispatch('deleteResource', resource);
+                        self.getResourceData();
+                    } else {
+                        //console.log('not deleting');
+                    }
+                }
+            })
+        },
         sortResources: function(passeddata) {}
     },
 };
@@ -125,12 +139,12 @@ export default {
 
 .resource-model-name {
     display: flex;
-    flex-direction: row;
 }
 
 .resource-model-title {
     display: flex;
     flex-direction: column;
+    flex-grow: 1;
     padding-left: 5px;
     color: #271F4C;
     font-size: 14px;
@@ -158,5 +172,11 @@ export default {
     height: 36px;
     width: 36px;
     background: #d7e0f8;
+}
+
+@media screen and (min-width: 350px){
+    .resource-delete {
+        width: 35px;
+    }
 }
 </style>
