@@ -389,7 +389,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .root-card {
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #eee;
 }
 
 .card-name {
@@ -435,7 +435,7 @@ ul {
     padding: 20px 10px 20px 10px;
     background-color: #e8e6e6;
     display: inline-block;
-    margin-right: 5px;
+    margin-right: 0px;
 }
 .flex {
     display: flex;
