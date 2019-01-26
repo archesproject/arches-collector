@@ -148,6 +148,7 @@ export default {
     padding-left: 5px;
     color: #271F4C;
     font-size: 14px;
+    width: 250px;
 }
 
 .resource-model-subtitle {
