@@ -1,6 +1,6 @@
 <template>
     <v-ons-page>
-      <div v-for="cardtile in cardTree.cards">
+      <div v-for="cardtile in cardTree.cards" v-if="canView(cardtile)">
           <card :card="cardtile" class="report-content" :tiles="tiles" :activeindex="activeindex" v-on:switch-tabs="updateActiveIndex"></card>
      </div>
     </v-ons-page>
@@ -14,11 +14,16 @@ export default {
     props: ['activeindex', 'resourceid', 'tiles'],
     mixins: [cardtreemixin],
     data() {
-        return {};
+        return {
+            user: this.$store.getters.activeServer.user
+        };
     },
     methods: {
         updateActiveIndex: function(event) {
             this.$emit('switch-tabs', 1);
+        },
+        canView: function(card) {
+            return (!!card ? this.user.viewable_nodegroups.includes(card.nodegroup_id) : false);
         }
     }
 };
