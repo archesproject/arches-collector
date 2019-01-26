@@ -13,30 +13,34 @@
                     </div>
                 </v-ons-toolbar-button>
             </v-ons-toolbar> -->
+
+            <!-- Application List -->
             <div v-show="selectedServer === undefined || selectedServer === false" class="app-page-color">
                 <v-ons-list class="application-list">
-                    <v-ons-list-item class="application-item-panel" tappable @click="goTo('servermanager');">
+                    <v-ons-list-item class="add-application-panel" tappable @click="goTo('servermanager');">
                         <span class="application-list-item-prepanel">
                             <v-ons-icon class="add-application-icon" icon="ion-plus-round"></v-ons-icon>
                         </span>
                         <span class="application-list-item">Add Application</span>
                     </v-ons-list-item>
                     <v-ons-list-item class="application-item-panel" tappable modifier="longdivider" v-for="(server, key) in servers" :key="server.url" @click="setActiveServer(server.url);">
-                        <span class="application-list-item-prepanel">
-                            <v-ons-icon class="application-list-item-icon" icon="ion-checkmark-round"></v-ons-icon>
+                        <span class="application-app-item-prepanel">
+                            <v-ons-icon class="application-list-item-icon" style="margin-top: -1px;" icon="ion-checkmark-round"></v-ons-icon>
                         </span>
                         <span class="application-list-item">
                             {{server.nickname}}<br>
                             <span class="application-list-item-url">{{server.url}}</span>
                         </span>
-                        <span class="right">
-                            <v-ons-icon v-if="selectedServer !== server" icon="fa-info-circle" @click="setSelectedServer($event, server);"></v-ons-icon>
+                        <span class="manage-app-btn-panel">
+                            <v-ons-icon class="manage-app-btn" style="font-size: 19px;" v-if="selectedServer !== server" icon="fa-info-circle" @click="setSelectedServer($event, server);"></v-ons-icon>
                         </span>
                     </v-ons-list-item>
                 </v-ons-list>
             </div>
+
+            <!-- Manage Selected App -->
             <div class="app-page-color" v-show="selectedServer">
-                <v-ons-row class="app-details">
+                <v-ons-row class="app-url-panel">
                     <v-ons-col>
                         <span v-if="selectedServer !== undefined">
                             <div class="server-url">{{selectedServer.url}}</div>
@@ -44,25 +48,16 @@
                     </v-ons-col>
                 </v-ons-row>
                 <v-ons-row class="app-details" v-if="selectedServer !== undefined">
-                    <div>
-                        <div>Application Nickname</div>
-                    </div>
-                    <input class="input" v-model="selectedServer.nickname">
-                    </input>
+                    <div class="input-label">Application Nickname</div>
+                    <input class="input input-placeholder" v-model="selectedServer.nickname"></input>
                 </v-ons-row>
                 <v-ons-row class="app-details" v-if="selectedServer !== undefined">
-                    <div>
-                        <div>Username</div>
-                    </div>
-                    <input class="input" v-model="selectedServer.username">
-                    </input>
+                    <div class="input-label">Username</div>
+                    <input class="input input-placeholder" v-model="selectedServer.username"></input>
                 </v-ons-row>
                 <v-ons-row class="app-details" v-if="selectedServer !== undefined">
-                    <div>
-                        <div>Password</div>
-                    </div>
-                    <input class="input" type="password" v-model="selectedServer.password">
-                    </input>
+                    <div class="input-label">Password</div>
+                    <input class="input input-placeholder" type="password" v-model="selectedServer.password"></input>
                 </v-ons-row>
                 <v-ons-row v-if="error">
                     <div class="left">
@@ -70,14 +65,32 @@
                     </div>
                     <div class="center">{{error_message}}</div>
                 </v-ons-row>
+
+                <!-- App Buttons -->
                 <v-ons-row class="app-button-row">
-                    <v-ons-column>
-                        <v-ons-row>
-                            <v-ons-col class="app-button-col"><v-ons-button class="left success" @click="login">Save</v-ons-button></v-ons-col>
-                            <v-ons-col class="app-button-col"><v-ons-button class="middle success" @click="cancel">Cancel</v-ons-button></v-ons-col>
-                            <v-ons-col class="app-button-col"><v-ons-button class="right danger" @click="$ons.notification.confirm({message: 'Are you sure you want to delete this App? All unsynched data will be lost.', callback: deleteServer})">Delete App</v-ons-button></v-ons-col>
-                        </v-ons-row>
-                    </v-ons-column>
+                    <!-- App save Button -->
+                    <v-ons-button class="app-button relative app-save" @click="login">
+                        <div class="icon-circle"></div>
+                        <v-ons-icon class="save-icon" icon="ion-checkmark-round"></v-ons-icon>
+                        <span class="btn-text">Save</span>
+                        <div class="btn-subtitle">Add this Arches application to your device</div>
+                    </v-ons-button>
+
+                    <!-- Cancel Button -->
+                    <v-ons-button class="app-button relative app-return" @click="cancel">
+                        <div class="icon-circle"></div>
+                        <v-ons-icon class="return-icon" icon="ion-arrow-left-a"></v-ons-icon>
+                        <span class="btn-text">Cancel</span>
+                        <div class="btn-subtitle">Return to the Applications listing page</div>
+                    </v-ons-button>
+
+                    <!-- App Delete Button -->
+                    <v-ons-button class="app-button relative app-delete" @click="$ons.notification.confirm({message: 'Are you sure you want to delete this App? All unsynched data will be lost.', callback: deleteServer})">
+                        <div class="icon-circle"></div>
+                        <v-ons-icon class="delete-icon" icon="ion-trash-a"></v-ons-icon>
+                        <span class="btn-text">Delete App</span>
+                        <div class="btn-subtitle">Remove this Arches application from your device</div>
+                    </v-ons-button>
                 </v-ons-row>
             </div>
         </v-ons-page>
@@ -205,8 +218,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
-
 .list-item .ons-icon {
     font-size: 30px;
 }
@@ -216,7 +227,7 @@ export default {
 }
 
 .input {
-    background-color: whitesmoke;
+    background-color: #fff;
     padding-left: 10px;
     margin: 10px 0;
 }
@@ -235,8 +246,13 @@ export default {
     color: #fff;
 }
 
+.add-application-panel {
+    background: #f6f6f6;
+    border-top: 1px solid #ddd;
+}
+
 .application-item-panel {
-    border-bottom: 1px solid #413040;
+    border-top: 1px solid #ddd;
 }
 
 .application-list-item {
@@ -246,6 +262,15 @@ export default {
 
 .application-list-item-prepanel {
     background: #392B39;
+    border-radius: 50%;
+    height: 36px;
+    width: 36px;
+}
+
+.application-app-item-prepanel {
+    background: #A8EEE9;
+    border-radius: 50%;
+    border: 1px solid #2E9C94;
     height: 36px;
     width: 36px;
 }
@@ -253,7 +278,7 @@ export default {
 .application-list-item-icon {
     padding-top: 6px;
     padding-left: 8px;
-    color: #A0B193;
+    color: #2E9C94;
 }
 
 .application-list-item-url {
@@ -263,12 +288,21 @@ export default {
 
 .add-application-icon {
     padding-top: 6px;
-    padding-left: 8px;
+    padding-left: 9px;
     color: #fff;
+}
+
+.app-url-panel {
+    background: #A8EEE9;
+    height: 60px;
+    padding: 17px 20px;
+    border-top: 1px solid #78D9D2;
 }
 
 .app-details {
     padding: 15px;
+    background: #fafafa;
+    border-top: 1px solid #ddd;
 }
 
 .app-page-color {
@@ -276,8 +310,9 @@ export default {
     height: 100%;
 }
 
-.app-details .server-url {
+.server-url {
     font-size: 20px;
+    color: #005A53;
 }
 
 .app-button-row {
@@ -286,6 +321,116 @@ export default {
 
 .app-button-col {
     padding: 10px;
+}
+
+.input-label {
+    font-size: 15px;
+    font-weight: 400;
+    color: #271F4C;
+    padding-right: 5px;
+}
+
+.input-placeholder {
+    font-size: 14px;
+    font-weight: 400;
+    color: #777;
+}
+
+.manage-app-btn-panel {
+    background: #f6f6f6;
+    padding-left: 15px;
+    padding-right: 15px;
+    width: 60px;
+    height: 60px;
+    border-left: 1px solid #ddd;
+    position: absolute;
+    right: 0px;
+    vertical-align: middle;
+}
+
+.manage-app-btn {
+    margin-top: 18px;
+    margin-left: 4px;
+    color: #555;
+}
+
+.relative {
+    position: relative;
+}
+
+.app-button {
+    float: right;
+    height: 60px;
+    color: #2E9C94;
+    font-weight: 500;
+    text-transform: capitalize;
+    text-align: left;
+    padding: 10px 20px;
+    /* background: #DEFBF9; */
+    background: #fff;
+    border-top: 1px solid #78D9D2;
+    border-radius: 0px;
+    box-shadow: none;
+    width: 100%;
+}
+
+.app-button:last-child {
+    border-bottom: 1px solid #78D9D2;
+}
+
+.btn-text {
+    position: absolute;
+    font-size: 15px;
+    top: 6px;;
+    left: 70px;
+}
+
+.btn-subtitle {
+    position: absolute;
+    font-size: 13px;
+    font-weight: 400;
+    color: #aaa;
+    top: 23px;
+    left: 70px;
+}
+
+.save-icon {
+    position: absolute;
+    top: 17px;
+    left: 30px;
+}
+
+.return-icon {
+    position: absolute;
+    top: 17px;
+    left: 31px;
+    color: #9E7100;
+}
+
+.delete-icon {
+    position: absolute;
+    top: 17px;
+    left: 32px;
+    color: #970B00;
+}
+
+.icon-circle {
+    box-sizing: border-box;
+    border: solid 1px #78D9D2;
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+    background: #A8EEE9;
+}
+
+.app-return .icon-circle {
+    border: solid 1px #FFB906;
+    background: #FFD466;
+}
+
+.app-delete .icon-circle {
+    border: solid 1px #f22314;
+    background: #FF796F;
 }
 
 </style>

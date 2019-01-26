@@ -1,10 +1,10 @@
 <template>
     <page-header-layout>
         <v-ons-page>
-            <v-ons-toolbar style="background-color: whitesmoke;">
+            <v-ons-toolbar class="instance-editor-header">
                 <div class="left">
                     <v-ons-toolbar-button class="flex">
-                        <v-ons-icon class="text-color-dark resource-header" icon="ion-android-arrow-dropleft-circle" @click="back"></v-ons-icon>
+                        <v-ons-icon class="resource-header instance-editor-back-btn" icon="ion-android-arrow-dropleft-circle" @click="back"></v-ons-icon>
                         <!-- <span v-if="headerName.label">
                             <span style="display: flex; flex-direction: column; line-height: 22px; padding-top: 6px; padding-left: 8px;"  class="flex text-color-dark resource-header">
                                 <span class="flex">
@@ -42,7 +42,7 @@
                         <span class="saving-popup" v-show="saving">saving...</span>
                     </transition>
                     <v-ons-toolbar-button @click="toggleSideNav">
-                        <v-ons-icon class="text-color-dark project-name" icon="md-home"></v-ons-icon>
+                        <v-ons-icon class="instance-editor-toolpanel-btn" icon="fa-sliders"></v-ons-icon>
                     </v-ons-toolbar-button>
                 </div>
             </v-ons-toolbar>
@@ -230,7 +230,7 @@ export default {
 .instance-name {
     font-size: 15px;
     padding-left: 8px;
-    color: #271F4C;
+    color: #f4f4f4;
 }
 
 .toolbar-button--material .resource-type {
@@ -242,7 +242,7 @@ export default {
 
 .resource-type {
     font-size: 11px;
-    color: rgba(83,74,122, 0.75);
+    color: #ddd;
     margin-top: -30px;
     padding-left: 8px;
 }
@@ -289,5 +289,18 @@ export default {
 
 .flex {
     display: flex;
+}
+
+.instance-editor-header {
+    background: #361B4A;
+}
+
+.instance-editor-back-btn {
+    margin-top: -5px;
+    color: #f4f4f4;
+}
+
+.instance-editor-toolpanel-btn {
+    color: #ddd;
 }
 </style>

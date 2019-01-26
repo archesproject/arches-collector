@@ -13,7 +13,7 @@
                 <div class="center"></div>
                 <div class="right">
                     <v-ons-toolbar-button @click="toggleSideNav">
-                        <v-ons-icon class="text-color-dark project-name" icon="fa-ellipsis-v"></v-ons-icon>
+                        <v-ons-icon class="text-color-dark project-name" icon="fa-cogs"></v-ons-icon>
                     </v-ons-toolbar-button>
                 </div>
             </v-ons-toolbar>
@@ -23,21 +23,27 @@
                     :open.sync="showSideNav" class="sidenav toolbar-header">
                     <v-ons-page>
                         <v-ons-list style="margin-top: 0px;">
-
                             <v-ons-list-item tappable @click="sync">
-                                <v-ons-icon class="text-color-dark icon" icon="fa-cloud-download-alt"></v-ons-icon>
+                                <v-ons-icon class="text-color-dark icon" icon="fa-comments"></v-ons-icon>
                                 <div class="menu-text">
-                                    <span class="text-color-dark label right-panel-label">Refresh project data</span>
+                                    <span class="text-color-dark label right-panel-label">Synch survey data</span>
+                                    <div class="menu-subtext">Send/get data from cloud</div>
                                 </div>
-                            </v-ons-list-item @click="">
+                            </v-ons-list-item>
                             <v-ons-progress-bar indeterminate v-if="syncing"></v-ons-progress-bar>
                             <v-ons-list-item tappable @click="sortByName">
                                 <v-ons-icon class="text-color-dark icon" icon="fa-sort-alpha-down"></v-ons-icon>
-                                <span class="text-color-dark label right-panel-label">Sort by name</span>
+                                <div class="menu-text">
+                                    <span class="text-color-dark label right-panel-label">Sort by name</span>
+                                    <div class="menu-subtext">Toggle order of resource list</div>
+                                </div>
                             </v-ons-list-item>
                             <v-ons-list-item tappable @click="sortByEditDate">
                                 <v-ons-icon class="text-color-dark icon" icon="fa-sort-amount-desc"></v-ons-icon>
-                                <span class="text-color-dark label right-panel-label">Most recent edit</span>
+                                <div class="menu-text">
+                                    <span class="text-color-dark label right-panel-label">Most recent edit</span>
+                                    <div class="menu-subtext">Toggle order of resource list</div>
+                                </div>
                             </v-ons-list-item>
                         </v-ons-list>
                     </v-ons-page>
@@ -145,7 +151,8 @@ export default {
 }
 
 .project-list-toolbar {
-    background: #f4f4f4;
+    background: #ececec;
+    border-bottom: 1px solid #ddd;
 }
 
 .project-header {
@@ -290,5 +297,10 @@ export default {
 
 .sidenav a:hover {
     color: #f1f1f1;
+}
+
+.menu-subtext {
+    font-size: 12px;
+    color: #888;
 }
 </style>
