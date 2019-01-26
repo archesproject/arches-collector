@@ -9,7 +9,7 @@
                       <img class="image-thumbnail-input" v-bind:src="thumbnails[file.file_id]"></img>
                     </div>
                     <div class="center">
-                        <v-ons-input class="photo-name" underbar placeholder="Photo name" v-on:keyup="updateImages" v-model="file.name"></v-ons-input>
+                        <input class="photo-name" underbar placeholder="Photo name" v-on:keyup="updateImages" v-model="file.name"></input>
                     </div>
                     <div class="right">
                         <ons-col width="10%"><v-ons-button @click="removePhoto(file)" class="right warning"><v-ons-icon class="fa5 fa-trash" icon="fa-trash"></v-ons-icon></v-ons-button></ons-col>
@@ -305,6 +305,15 @@ export default {
     height: 40px;
     width: 40px;
     background: #A8EEE9;
+}
+
+.select-photo .icon-circle {
+    background: #60CBF9;
+    border: solid 1px #0173A4;
+}
+
+.select-photo .folder-icon {
+    color: #0173A4;
 }
 
 .take-photo .icon-circle {
