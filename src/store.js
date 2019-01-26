@@ -551,6 +551,16 @@ var store = new Vuex.Store({
                 }
             });
         },
+        getUserProfile: function({commit, state}, {url, username, password}) {
+            var formData = new FormData();
+            formData.append('username', username);
+            formData.append('password', password);
+
+            return fetch(url.replace(/\/$/, '') + '/auth/user_profile', {
+                method: 'POST',
+                body: formData
+            });
+        },
         getClientId: function({commit, state}, {url, username, password}) {
             var self = this;
             self.error = false;
