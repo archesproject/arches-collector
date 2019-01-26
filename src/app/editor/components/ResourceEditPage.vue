@@ -39,7 +39,7 @@
                 </v-ons-list-item>
             </div>
             <div v-if="(activeObject === 'tile')">
-                <v-ons-list-item class="root-card" tappable modifier="longdivider" v-for="childCard in childCards" :key="childCard.resourceinstanceid" @click="navigateChildCard(childCard)">
+                <v-ons-list-item class="root-card" tappable modifier="longdivider" v-for="childCard in childCards" :key="childCard.resourceinstanceid" v-if="canEdit(childCard)" @click="navigateChildCard(childCard)">
                     <span style="display: flex; width: 100%">
                         <span style="width: 93%">
                             <div class="card-name">{{childCard.name}}</div>
@@ -323,6 +323,9 @@ export default {
         hasWidgetsAndSubCards: function(card) {
             return this.hasWidgets(card) && this.hasChildCards(card);
         },
+        canEdit: function(card) {
+            return (!!card ? this.user.editable_nodegroups.includes(card.nodegroup_id) : false);
+        },
         canAdd: function(card) {
             if (!!card) {
                 return this.getCardinality(card) === 'n' || this.hasTiles(card) === false;
@@ -331,7 +334,7 @@ export default {
         },
         canDelete: function(tile) {
             if (!!tile) {
-                return this.user.is_reviewer || (Object.keys(tile.data).length === 0 && Object.keys(tile.provisionaledits).length === 1 && Object.keys(tile.provisionaledits)[0] === String(this.user.id));
+                return this.user.deletable_nodegroups.includes(tile.nodegroup_id) && (this.user.is_reviewer || (Object.keys(tile.data).length === 0 && Object.keys(tile.provisionaledits).length === 1 && Object.keys(tile.provisionaledits)[0] === String(this.user.id)));
             }
             return false;
         },
