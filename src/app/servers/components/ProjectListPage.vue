@@ -293,6 +293,7 @@ export default {
 
     .projects-title {
         padding: 0 15px;
+        font-size: 17px;
     }
 
     .project-name {
@@ -363,13 +364,13 @@ export default {
     }
 
     .panel-header {
-      background: #F0FBF5;
-      border-top: 1px solid #9FD6B7;
+      background: #2d3c4b;
+      border-top: 1px solid #0E2031;
       margin-top: 1px;
     }
 
     .panel-header-text {
-        color: #116A38;
+        color: #f2f2f2;
     }
 
 </style>
