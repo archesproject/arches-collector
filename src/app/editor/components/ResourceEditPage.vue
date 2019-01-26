@@ -6,7 +6,7 @@
                     <div style="display:block; width: 100%">
                         <div class="card-name">Add</div>
                         <div class="widget-label">Create new record
-                            <span style="float:right; position:relative; top: -8px; left: -18px">
+                            <span style="float:right; position:relative; top: -8px; left: -12px">
                                 <div class="fa5 fa-plus-circle text-color-dark add-card"></div>
                             </span>
                         </div>
