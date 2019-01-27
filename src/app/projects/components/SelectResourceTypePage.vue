@@ -69,12 +69,13 @@ export default {
         padding-left: 5px;
         color: #271F4C;
         font-size: 14px;
+        margin-top: -1px;
     }
     .resource-model-subtitle {
         font-size: 12px;
         padding-top: 0px;
         color: #999;
-        margin-top: -1px;
+        margin-top: 2px;
     }
     .resource-model-icon {
         text-align: center;

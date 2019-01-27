@@ -34,14 +34,14 @@
                             <v-ons-list-item tappable @click="sortByName">
                                 <v-ons-icon class="text-color-dark icon" icon="fa-sort-alpha-down"></v-ons-icon>
                                 <div class="menu-text">
-                                    <span class="text-color-dark label right-panel-label">Sort by name</span>
+                                    <span class="text-color-dark label right-panel-label">Sort Review List by name</span>
                                     <div class="menu-subtext">Toggle order of resource list</div>
                                 </div>
                             </v-ons-list-item>
                             <v-ons-list-item tappable @click="sortByEditDate">
                                 <v-ons-icon class="text-color-dark icon" icon="fa-sort-amount-desc"></v-ons-icon>
                                 <div class="menu-text">
-                                    <span class="text-color-dark label right-panel-label">Most recent edit</span>
+                                    <span class="text-color-dark label right-panel-label">Sort Review List by most recent edit</span>
                                     <div class="menu-subtext">Toggle order of resource list</div>
                                 </div>
                             </v-ons-list-item>
