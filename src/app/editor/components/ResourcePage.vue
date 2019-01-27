@@ -224,7 +224,7 @@ export default {
 .toolbar-button--material .instance-name {
     font-size: 16px;
     padding-left: 8px;
-    color: #271F4C;
+    color: #f4f4f4;
 }
 
 .instance-name {
@@ -235,7 +235,7 @@ export default {
 
 .toolbar-button--material .resource-type {
     font-size: 13px;
-    color: rgba(83,74,122, 0.75);
+    color: #ddd;
     margin-top: -37px;
     padding-left: 8px;
 }
