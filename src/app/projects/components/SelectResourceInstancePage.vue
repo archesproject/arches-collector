@@ -155,13 +155,13 @@ export default {
     color: #271F4C;
     font-size: 14px;
     width: 250px;
-    margin-top: -2px;
+    margin-top: 2px;
 }
 
 .resource-model-subtitle {
     font-size: 12px;
     padding-top: 0px;
-    margin-top: 2px;
+    margin-top: -1px;
     color: #999;
 }
 
