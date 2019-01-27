@@ -30,6 +30,7 @@ export default {
 .report-content {
     border-bottom-style: solid 1px #ccc;
     padding: 5px;
+    margin-bottom: -5px;
 }
 
 </style>
