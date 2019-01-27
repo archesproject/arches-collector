@@ -338,8 +338,6 @@ export default {
 
 .manage-app-btn-panel {
     background: #f6f6f6;
-    padding-left: 15px;
-    padding-right: 15px;
     width: 60px;
     height: 60px;
     border-left: 1px solid #ddd;
@@ -350,7 +348,7 @@ export default {
 
 .manage-app-btn {
     margin-top: 18px;
-    margin-left: 4px;
+    margin-left: 20px;
     color: #555;
 }
 
