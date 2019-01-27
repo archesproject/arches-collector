@@ -189,7 +189,8 @@ export default {
 
 @media screen and (min-width: 350px){
     .resource-delete {
-        width: 35px;
+        color: rgb(81,74,116);
+        padding-right: 10px;
     }
 }
 </style>
