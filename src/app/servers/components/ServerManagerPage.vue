@@ -36,7 +36,7 @@
                     <div class="icon-circle"></div>
                     <v-ons-icon class="save-icon" icon="ion-checkmark-round"></v-ons-icon>
                     <span class="btn-text">Save</span>
-                    <div class="btn-subtitle">Add this Arches application to your device</div>
+                    <div class="btn-subtitle">Add this application to your device</div>
                 </v-ons-button>
 
                 <!-- App Cancel Button -->
@@ -44,7 +44,7 @@
                     <div class="icon-circle"></div>
                     <v-ons-icon class="delete-icon" icon="ion-trash-a"></v-ons-icon>
                     <span class="btn-text">Cancel</span>
-                    <div class="btn-subtitle">Discard this application, return to Applications page</div>
+                    <div class="btn-subtitle">Discard this application</div>
                 </v-ons-button>
             </v-ons-row>
         </div>
