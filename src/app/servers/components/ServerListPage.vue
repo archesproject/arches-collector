@@ -73,7 +73,7 @@
                         <div class="icon-circle"></div>
                         <v-ons-icon class="save-icon" icon="ion-checkmark-round"></v-ons-icon>
                         <span class="btn-text">Save</span>
-                        <div class="btn-subtitle">Add this Arches application to your device</div>
+                        <div class="btn-subtitle">Add this app to your device</div>
                     </v-ons-button>
 
                     <!-- Cancel Button -->
@@ -81,7 +81,7 @@
                         <div class="icon-circle"></div>
                         <v-ons-icon class="return-icon" icon="ion-arrow-left-a"></v-ons-icon>
                         <span class="btn-text">Cancel</span>
-                        <div class="btn-subtitle">Return to the Applications listing page</div>
+                        <div class="btn-subtitle">Return to the App listing page</div>
                     </v-ons-button>
 
                     <!-- App Delete Button -->
@@ -89,7 +89,7 @@
                         <div class="icon-circle"></div>
                         <v-ons-icon class="delete-icon" icon="ion-trash-a"></v-ons-icon>
                         <span class="btn-text">Delete App</span>
-                        <div class="btn-subtitle">Remove this Arches application from your device</div>
+                        <div class="btn-subtitle">Remove this app from your device</div>
                     </v-ons-button>
                 </v-ons-row>
             </div>
@@ -338,19 +338,18 @@ export default {
 
 .manage-app-btn-panel {
     background: #f6f6f6;
-    padding-left: 15px;
-    padding-right: 15px;
     width: 60px;
-    height: 60px;
     border-left: 1px solid #ddd;
     position: absolute;
     right: 0px;
+    top: 0px;
+    bottom: 0px;
     vertical-align: middle;
 }
 
 .manage-app-btn {
-    margin-top: 18px;
-    margin-left: 4px;
+    margin-top: 24px;
+    margin-left: 20px;
     color: #555;
 }
 
