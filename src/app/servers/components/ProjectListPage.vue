@@ -107,8 +107,8 @@
                         </span>
                     </span>
                     <span class="center" @click="segueToProject(project);"></span>
-                    <v-ons-icon class="right" style="display: flex" icon="fa-ellipsis-v" v-if="project.joined !== undefined || project.deleted" @click="toggleSideNav(project)"></v-ons-icon>
-                    <v-ons-icon class="right" style="display: flex" icon="fa-cloud-download-alt" v-if="project.joined === undefined && !project.deleted" @click="function(){selectedProject = project; sync()}"></v-ons-icon>
+                    <v-ons-icon class="right" style="display: flex; padding-left:10px" icon="fa-ellipsis-v" v-if="project.joined !== undefined || project.deleted" @click="toggleSideNav(project)"></v-ons-icon>
+                    <v-ons-icon class="right" style="display: flex; padding-left:10px" icon="fa-cloud-download-alt" v-if="project.joined === undefined && !project.deleted" @click="function(){selectedProject = project; sync()}"></v-ons-icon>
                 </v-ons-list-item>
             </v-ons-list>
         </v-ons-page>
