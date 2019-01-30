@@ -3,7 +3,7 @@
     <!-- Scrollable content here -->
     <v-ons-list>
         <v-ons-list-item class="resource-model-name-panel" v-bind:class="{ edited: resource_instance.edited }" tappable modifier="longdivider" v-for="resource_instance in resource_instances" :key="resource_instance.resourceinstanceid" @click="selectResourceInstance(resource_instance);">
-            <span class="icon-circle" v-bind:class="{ edited: resource_instance.edited }" v-bind:style="{ background: [resource_types[resource_instance.graph_id.color]], color: '#fff'}">
+            <span class="icon-circle" v-bind:class="{ edited: resource_instance.edited }" v-bind:style="{ background: [resource_types[resource_instance.graph_id].color], color: '#fff' }">
                 <v-ons-icon class="resource-model-icon" v-bind:icon="resource_types[resource_instance.graph_id].iconclass.replace('fa ', '')" v-bind:style="{}"></v-ons-icon>
             </span>
             <span class='resource-model-title'>
