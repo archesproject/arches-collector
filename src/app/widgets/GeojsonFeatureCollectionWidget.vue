@@ -1,4 +1,5 @@
 <template>
+    <div v-if="value !== null">
     <div v-if="context == 'editor' || context == 'report'">
         <div class="map-controls">
             <div class="mapboxgl-ctrl mapboxgl-ctrl-group fullscreen-control">
@@ -28,6 +29,7 @@
         <div v-else>no data</div>
         <div class="widget-label">{{widget.label}}</div>
     </span>
+    </div>
 </template>
 
 <script>
@@ -52,7 +54,8 @@ export default {
             };
         },
         bounds() {
-            return this.featureCollection.features.length > 0 ?
+            return this.featureCollection &&
+                this.featureCollection.features.length > 0 ?
                 this.featureCollection :
                 this.$store.getters.activeProject.bounds;
         },
