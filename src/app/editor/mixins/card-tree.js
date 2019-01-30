@@ -44,12 +44,24 @@ export default {
         deepcopy(obj) {
             return JSON.parse(JSON.stringify(obj));
         },
+        sortCards(prop) {
+            return function(a, b) {
+                if (a[prop] < b[prop]) {
+                    return -1;
+                }
+                if (a[prop] > b[prop]) {
+                    return 1;
+                }
+                return 0;
+            };
+        },
         getCards(nodegroups, tile) {
             /*
              * Build an array of nodegroups with its card and child nodegroups
              */
             var cards = [];
             var self = this;
+            var sortkey;
             nodegroups.forEach(function(nodegroup) {
                 var card;
                 var tiles;
@@ -72,6 +84,10 @@ export default {
                     cards.push(self.deepcopy(card));
                 }
             });
+            if (cards.length > 0) {
+                sortkey = !!cards[0].sortorder ? 'sortorder' : 'relative_position';
+                cards.sort(this.sortCards(sortkey));
+            }
             return cards;
         }
     },
