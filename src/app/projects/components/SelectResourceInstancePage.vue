@@ -1,24 +1,25 @@
 <template>
-    <v-ons-page>
-        <!-- Scrollable content here -->
-        <v-ons-list>
-            <v-ons-list-item class="resource-model-name-panel" v-bind:class="{ edited: resource_instance.edited }" tappable modifier="longdivider" v-for="resource_instance in resource_instances" :key="resource_instance.resourceinstanceid" @click="selectResourceInstance(resource_instance);">
-                <span class="icon-circle" v-bind:class="{ edited: resource_instance.edited }" v-bind:style="{ background: [resource_types[resource_instance.graph_id.color]], color: '#fff'}">
-                    <v-ons-icon class="resource-model-icon" v-bind:icon="resource_types[resource_instance.graph_id].iconclass.replace('fa ', '')" v-bind:style="{}"></v-ons-icon>
-                </span>
-                <span class='resource-model-title'>
-                    <span style="padding-left: 0; padding-right: 10px;">{{resource_instance.displayname.replace(/['"]+/g,'')}}</span>
-                    <span v-if="resource_instance.edited" class='resource-model-subtitle'>
-                        Last edit: {{resource_instance.datetime}}</span>
-                    <span v-else class='resource-model-subtitle'>Unedited</span>
-                </span>
-                <span v-if="resource_instance.resourceinstanceid in $store.getters.activeProject.newly_created_resources" class="resource-delete">
-                    <span class="fa5 fa-trash" @click="deleteTile(resource_instance, $event)"></span>
-                </span>
-            </v-ons-list-item>
-        </v-ons-list>
-    </v-ons-page>
+<v-ons-page>
+    <!-- Scrollable content here -->
+    <v-ons-list>
+        <v-ons-list-item class="resource-model-name-panel" v-bind:class="{ edited: resource_instance.edited }" tappable modifier="longdivider" v-for="resource_instance in resource_instances" :key="resource_instance.resourceinstanceid" @click="selectResourceInstance(resource_instance);">
+            <span class="icon-circle" v-bind:class="{ edited: resource_instance.edited }" v-bind:style="{ background: [resource_types[resource_instance.graph_id.color]], color: '#fff'}">
+                <v-ons-icon class="resource-model-icon" v-bind:icon="resource_types[resource_instance.graph_id].iconclass.replace('fa ', '')" v-bind:style="{}"></v-ons-icon>
+            </span>
+            <span class='resource-model-title'>
+                <span style="padding-left: 0; padding-right: 10px;">{{resource_instance.displayname.replace(/['"]+/g,'')}}</span>
+                <span v-if="resource_instance.edited" class='resource-model-subtitle'>
+                    Last edit: {{resource_instance.datetime}}</span>
+                <span v-else class='resource-model-subtitle'>Unedited</span>
+            </span>
+            <span v-if="resource_instance.resourceinstanceid in $store.getters.activeProject.newly_created_resources" class="resource-delete">
+                <span class="fa5 fa-trash" @click="deleteTile(resource_instance, $event)"></span>
+            </span>
+        </v-ons-list-item>
+    </v-ons-list>
+</v-ons-page>
 </template>
+
 <script>
 import moment from 'moment';
 export default {
@@ -131,22 +132,19 @@ export default {
     },
 };
 </script>
-<!-- Add "scoped" attribute to limit CSS to this component only -->
+
 <style scoped>
 .resource-model-name-panel {
     background: #f7f7f7;
     border-bottom: 1px solid #ddd;
     margin-top: 1px;
 }
-
 .resource-model-name-panel.edited {
     background: #fff;
 }
-
 .resource-model-name {
     display: flex;
 }
-
 .resource-model-title {
     display: flex;
     flex-direction: column;
@@ -157,14 +155,12 @@ export default {
     width: 250px;
     margin-top: 2px;
 }
-
 .resource-model-subtitle {
     font-size: 12px;
     padding-top: 0px;
     margin-top: -1px;
     color: #999;
 }
-
 .resource-model-icon {
     text-align: center;
     vertical-align: 5px;
@@ -172,7 +168,6 @@ export default {
     margin: 10px auto;
     width: 100%;
 }
-
 .icon-circle {
     box-sizing: border-box;
     border: solid 1px #1B48DD;
@@ -182,11 +177,9 @@ export default {
     background: #d7e0f8;
     opacity: .7;
 }
-
 .icon-circle.edited {
     opacity: 1;
 }
-
 @media screen and (min-width: 350px){
     .resource-delete {
         color: rgb(81,74,116);
