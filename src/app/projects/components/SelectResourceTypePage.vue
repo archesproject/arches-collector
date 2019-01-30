@@ -1,5 +1,5 @@
 <template>
-            <v-ons-page>
+<v-ons-page>
     <div>
         <v-ons-list>
             <v-ons-list-item class="resource-model-name-panel" tappable modifier="longdivider" v-for="resource_type in resource_types" :key="resource_type.graphid" @click="selectResourceType(resource_type);">
@@ -17,7 +17,7 @@
             </v-ons-list-item>
         </v-ons-list>
     </div>
-            </v-ons-page>
+</v-ons-page>
 </template>
 
 <script>
@@ -53,43 +53,41 @@ export default {
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .resource-model-name-panel {
-      border-bottom: 1px solid #eee;
-  }
-
-    .resource-model-name {
-        display: flex;
-        flex-direction: row;
-    }
-    .resource-model-title {
-        display: flex;
-        flex-direction: column;
-        padding-left: 5px;
-        color: #271F4C;
-        font-size: 14px;
-        margin-top: 2px;
-    }
-    .resource-model-subtitle {
-        font-size: 12px;
-        padding-top: 0px;
-        color: #999;
-        margin-top: -1px;
-    }
-    .resource-model-icon {
-        text-align: center;
-        vertical-align: 5px;
-        font-size: 14px;
-        margin: 10px auto;
-        width: 100%;
-    }
-    .icon-circle {
-        box-sizing: border-box;
-        border: solid 1px #1B48DD;
-        border-radius: 50%;
-        height: 36px;
-        width: 36px;
-        background: #d7e0f8;
-    }
+.resource-model-name-panel {
+    border-bottom: 1px solid #eee;
+}
+.resource-model-name {
+    display: flex;
+    flex-direction: row;
+}
+.resource-model-title {
+    display: flex;
+    flex-direction: column;
+    padding-left: 5px;
+    color: #271F4C;
+    font-size: 14px;
+    margin-top: 2px;
+}
+.resource-model-subtitle {
+    font-size: 12px;
+    padding-top: 0px;
+    color: #999;
+    margin-top: -1px;
+}
+.resource-model-icon {
+    text-align: center;
+    vertical-align: 5px;
+    font-size: 14px;
+    margin: 10px auto;
+    width: 100%;
+}
+.icon-circle {
+    box-sizing: border-box;
+    border: solid 1px #1B48DD;
+    border-radius: 50%;
+    height: 36px;
+    width: 36px;
+    background: #d7e0f8;
+}
 </style>
