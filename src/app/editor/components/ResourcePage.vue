@@ -5,13 +5,6 @@
                 <div class="left">
                     <v-ons-toolbar-button class="flex">
                         <v-ons-icon class="resource-header instance-editor-back-btn" icon="ion-android-arrow-dropleft-circle" @click="back"></v-ons-icon>
-                        <!-- <span v-if="headerName.label">
-                            <span style="display: flex; flex-direction: column; line-height: 22px; padding-top: 6px; padding-left: 8px;"  class="flex text-color-dark resource-header">
-                                <span class="flex">
-                                   {{headerName.value}}<br>{{headerName.label}}
-                                </span>
-                            </span>
-                        </span> -->
                         <span v-if="!!headerName.label" class="instance-name-position">
                             <span class="instance-name">{{headerName.label}}
                                 <div class="resource-type">{{headerName.value}}</div>
@@ -22,16 +15,6 @@
                                 <div class="resource-type">{{headerName.value}}</div>
                             </span>
                         </span>
-                        <!-- <span class="text-color-dark resource-header">{{headerName}}</span> -->
-
-
-                        <!-- <span style="display: flex; flex-direction: column; line-height: 22px;
-    padding-top: 6px;" class="text-color-dark resource-header">
-                            <span style="display: flex">
-                                {{headerName.value}}<br>{{headerName.label}}
-                            </span>
-                        </span>   -->
-
                     </v-ons-toolbar-button>
                 </div>
                 <div class="center">
@@ -89,7 +72,7 @@
                     <v-ons-tabbar swipeable animation="none" :index.sync="activeindex">
                       <template slot="pages">
                           <resource-report-page :resourceid="resourceid" :tiles="tiles" :project="project" :activeindex="activeindex" v-on:switch-tabs="updateActiveIndex"></resource-report-page>
-                          <resource-edit-page v-on:saving="saving = $event" :resourceid="resourceid" :tiles="tiles" :goBack="goBack" :activeindex="activeindex" ref="resource_edit_page"/>
+                          <resource-edit-page v-on:saving="saving = $event" :resourceid="resourceid" :tiles="tiles" :goBack="goBack" :activeindex="activeindex" v-on:switch-tabs="updateActiveIndex"/>
                       </template>
                           <v-ons-tab v-for="(tab, i) in tabs"
                             :icon="tabs[i].icon"
@@ -133,7 +116,6 @@ export default {
                 return this.$store.getters.activeServer.card_nav_stack[0];
             }
         },
-
         headerName: function() {
             var navItem = this.currentNavItem;
             var displayname = this.resourceid ? this.$store.getters.activeServer.active_resource.displayname : 'Unnamed Resource';

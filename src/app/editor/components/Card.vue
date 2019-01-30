@@ -1,26 +1,30 @@
 <template>
     <div>
-        <div class="card-container"><span class="card-label">{{card.name}}</span>
-
-        <!-- <div class="card-container" v-if="card.cards.length > 0" v-for="card in card.cards"> -->
-            <vue-touch class="done-btn" @doubletap="segueToForm(card)">
+        <div class="card-container">
+            <span class="card-label">
+                <span>{{card.name}}</span>
+                <span v-if="canEdit(card)" @click="segueToForm(card)" class="fa5 fa-pencil-alt edit-card"></span>
+            </span>
+            <div>
                 <div class="report widget-value" style="padding-left:5px" v-if="card.tile === null">No data yet added</div>
                 <div v-if="card.tile !== null">
-                <component v-for="widget in card.widgets" :allNodes="allNodes" class="widget" :tiles="tiles" :context="'report'" :tile="card.tile" :widget="widget" v-bind:is="'base-widget'"></component>
+                    <component v-for="widget in card.widgets" :allNodes="allNodes" class="widget" :tiles="tiles" :context="'report'" :tile="card.tile" :widget="widget" v-bind:is="'base-widget'"></component>
                 </div>
-            </vue-touch>
-        <!-- </div> -->
-        <div v-for="cardtile in card.cards">
-            <card :card="cardtile" class="report-content" v-on:switch-tabs="updateActiveIndex"></card>
-        </div>
+            </div>
+            <div v-for="cardtile in card.cards" v-if="canView(cardtile)">
+                <card :card="cardtile" class="report-content" v-on:switch-tabs="updateActiveIndex"></card>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
+import navlogicmixin from '../mixins/nav-logic';
+
 export default {
     name: 'Card',
     props: ['card', 'tiles'],
+    mixins: [navlogicmixin],
     data() {
         return {
             allNodes: this.$store.getters.activeGraph.nodes,
@@ -32,29 +36,18 @@ export default {
             this.$emit('switch-tabs', 1);
         },
         segueToForm: function(card) {
+            var dbtile = 'blank';
             if (card.tile !== null) {
-                var dbtile = this.$store.getters.tiles.find(function(t){
+                dbtile = this.$store.getters.tiles.find(function(t){
                     return t.tileid === card.tile.tileid;
                 });
-                this.$store.getters.activeServer.card_nav_stack.unshift({
-                    card: card,
-                    tile: dbtile,
-                    showForm: true,
-                    activeObject: 'tile'
-                });
-                this.$emit('switch-tabs', 1);
             }
-        },
-        segueToEditor: function(nodegroup, tile) {
-            // TODO This function is currently unused, but intended navigate
-            // users to the card in the editor where they manage sub cards/tiles
-            this.$store.getters.activeServer.card_nav_stack.unshift({
-                card: nodegroup.card,
-                tile: tile,
-                showForm: false,
-                activeObject: 'card',
-                tabIndex: 1
-            });
+            this.setTileContext(dbtile, undefined, 0);
+            // remove all of the stack except the last item and set the 
+            // editorTab value to take us back to the report
+            this.$store.getters.activeServer.card_nav_stack = [
+                this.$store.getters.activeServer.card_nav_stack[0]
+            ]
             this.$emit('switch-tabs', 1);
         }
     },
@@ -98,6 +91,12 @@ export default {
 .card-container .card-container {
   margin-bottom: 10px;
   margin-right: 5px;
+}
+
+.edit-card {
+    float: right;
+    padding-right: 18px;
+    color: #868686;
 }
 
 </style>
