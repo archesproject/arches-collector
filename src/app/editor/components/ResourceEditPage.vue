@@ -14,11 +14,14 @@
                 </v-ons-list-item>
             </div>
             <div v-show="hasTiles(card) || activeObject === 'card'">
-                <div tappable modifier="longdivider" v-for="tile in cardTiles" :key="tile.tileid" @click="setTileContext(tile)" class="tile-instance">
+                <div tappable modifier="longdivider" v-for="tile in cardTiles" v-if="canEdit(tile)" :key="tile.tileid" @click="setTileContext(tile)" class="tile-instance">
                     <div class="flex">
                         <span class="fa5 fa-ellipsis-v drag-bars"></span>
-                        <!-- <span class="flex tile-data"><div>{{getTileData(tile, card).value}}</div><div class="widget-label">{{getTileData(tile, card).label}}</div></span> -->
-                        <component v-if="card" class="widget" :allNodes="allNodes" :tile="tile" :tiles="tiles" :widget="displayWidget(card)" :context="'nav'" v-bind:is="'base-widget'"></component>
+                        <component v-if="displayWidget(card)" class="widget" :allNodes="allNodes" :tile="tile" :tiles="tiles" :widget="displayWidget(card)" :context="'nav'" v-bind:is="'base-widget'"></component>
+                        <span v-else class="flex tile-data">
+                            <div>{{card.name}}</div>
+                            <div class="widget-label">card</div>
+                        </span>
                         <span v-if="canDelete(tile)" class="tile-delete">
                             <span class="fa5 fa-trash" @click="deleteTile(tile, $event)"></span>
                         </span>
@@ -46,7 +49,7 @@
                             <div class="card-instance-count" v-if="(tileCount(childCard) > 0)">{{tileCount(childCard)}} record(s)</div>
                             <div class="card-instance-count" v-if="(tileCount(childCard) === 0)">No data entered</div>
                         </span>
-                        <span style="padding-top: 7px;" v-if="hasTiles(childCard) && getCardinality(childCard) === '1' && !hasChildCards(childCard)">
+                        <span style="padding-top: 7px;" v-if="canDelete(childCard) && hasTiles(childCard) && getCardinality(childCard) === '1' && !hasChildCards(childCard)">
                             <div class="fa5 fa-trash" @click="deleteTile(getCardTiles(childCard)[0], $event)"></div>
                         </span>
                         <span style="padding-top: 7px;" v-if="canAdd(childCard)">
@@ -449,6 +452,7 @@ ul {
 .tile-data {
     flex-direction: column;
     padding-top: 11px;
+    padding-left: 5px;
     flex-grow: 1;
 }
 .widget-label {

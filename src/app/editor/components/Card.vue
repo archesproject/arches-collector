@@ -1,18 +1,19 @@
 <template>
     <div>
-        <div class="card-container"><span class="card-label">{{card.name}}</span>
-
-        <!-- <div class="card-container" v-if="card.cards.length > 0" v-for="card in card.cards"> -->
-            <vue-touch class="done-btn" @doubletap="segueToForm(card)">
+        <div class="card-container">
+            <span class="card-label">
+                <span>{{card.name}}</span>
+                <span v-if="canEdit(card)" @click="segueToForm(card)" class="fa5 fa-pencil-alt edit-card"></span>
+            </span>
+            <vue-touch class="done-btn">
                 <div class="report widget-value" style="padding-left:5px" v-if="card.tile === null">No data yet added</div>
                 <div v-if="card.tile !== null">
-                <component v-for="widget in card.widgets" :allNodes="allNodes" class="widget" :tiles="tiles" :context="'report'" :tile="card.tile" :widget="widget" v-bind:is="'base-widget'"></component>
+                    <component v-for="widget in card.widgets" :allNodes="allNodes" class="widget" :tiles="tiles" :context="'report'" :tile="card.tile" :widget="widget" v-bind:is="'base-widget'"></component>
                 </div>
             </vue-touch>
-        <!-- </div> -->
-        <div v-for="cardtile in card.cards">
-            <card :card="cardtile" class="report-content" v-on:switch-tabs="updateActiveIndex"></card>
-        </div>
+            <div v-for="cardtile in card.cards" v-if="canView(cardtile)">
+                <card :card="cardtile" class="report-content" v-on:switch-tabs="updateActiveIndex"></card>
+            </div>
         </div>
     </div>
 </template>
@@ -56,6 +57,12 @@ export default {
                 tabIndex: 1
             });
             this.$emit('switch-tabs', 1);
+        },
+        canView: function(card) {
+            return (!!card ? this.user.viewable_nodegroups.includes(card.nodegroup_id) : false);
+        },
+        canEdit: function(card) {
+            return (!!card ? this.user.editable_nodegroups.includes(card.nodegroup_id) : false);
         }
     },
     computed: {
@@ -98,6 +105,12 @@ export default {
 .card-container .card-container {
   margin-bottom: 10px;
   margin-right: 5px;
+}
+
+.edit-card {
+    float: right;
+    padding-right: 18px;
+    color: #868686;
 }
 
 </style>
