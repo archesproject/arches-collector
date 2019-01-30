@@ -183,6 +183,8 @@ export default {
             } else if (this.$store.getters.activeServer.card_nav_stack.length === 1) {
                 if (this.$store.getters.activeServer.card_nav_stack[0].editorTab !== undefined) {
                     this.$emit('switch-tabs', this.$store.getters.activeServer.card_nav_stack[0].editorTab);
+                    this.$store.getters.activeServer.card_nav_stack = [];
+                    this.$store.getters.activeServer.card_nav_stack.unshift({card: null, tile: null, showForm: false, activeObject: 'tile'});
                 } else {
                     this.$router.push({
                         'name': 'project',
