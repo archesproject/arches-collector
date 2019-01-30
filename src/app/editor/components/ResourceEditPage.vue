@@ -65,9 +65,12 @@
     </v-ons-page>
 </template>
 <script>
+import navlogicmixin from '../mixins/nav-logic';
+
 export default {
     name: 'ResourceEditPage',
     props: ['goBack', 'resourceid', 'tiles', 'activeindex'],
+    mixins: [navlogicmixin],
     data() {
         return {
             project: this.$store.getters.activeProject,
@@ -178,13 +181,17 @@ export default {
                     }
                 });
             } else if (this.$store.getters.activeServer.card_nav_stack.length === 1) {
-                this.$router.push({
-                    'name': 'project',
-                    params: {
-                        'project': this.project,
-                        'tabIndex': this.$store.getters.activeServer.card_nav_stack[0].tabIndex
-                    }
-                });
+                if (this.$store.getters.activeServer.card_nav_stack[0].editorTab !== undefined) {
+                    this.$emit('switch-tabs', this.$store.getters.activeServer.card_nav_stack[0].editorTab);
+                } else {
+                    this.$router.push({
+                        'name': 'project',
+                        params: {
+                            'project': this.project,
+                            'tabIndex': this.$store.getters.activeServer.card_nav_stack[0].tabIndex
+                        }
+                    });
+                }
             } else {
                 var navItem = this.$store.getters.activeServer.card_nav_stack[0];
                 var previousNavItem = this.$store.getters.activeServer.card_nav_stack[1];
@@ -271,36 +278,6 @@ export default {
                 'activeObject': 'card'
             });
         },
-        setTileContext: function(tile, showForm) {
-            if (showForm === undefined) {
-                if (this.hasChildCards() && !this.hasWidgets()) {
-                    showForm = false;
-                } else {
-                    showForm = true;
-                }
-            }
-            if (tile === 'blank') {
-                tile = this.getBlankTile(this.card, this.tile);
-                if (!this.hasWidgets(this.card)) {
-                    this.saveTile(tile);
-                }
-            }
-            this.$store.getters.activeServer.card_nav_stack.unshift({
-                'card': this.card,
-                'tile': tile,
-                'showForm': !!showForm,
-                'activeObject': 'tile'
-            });
-        },
-        hasChildCards: function(card) {
-            if (!card) {
-                card = this.card;
-            }
-            var found = this.$underscore.find(this.allNodegroups, function(nodegroup) {
-                return nodegroup.parentnodegroup_id === (!!card ? card.nodegroup_id : null);
-            }, this);
-            return !!found;
-        },
         getCardTiles: function(card){
             var nodegroupid = card ? card.nodegroup_id : this.nodegroup_id;
             var tiles = this.$underscore.filter(this.tiles, function(tile) {
@@ -313,21 +290,6 @@ export default {
         },
         hasTiles: function(card) {
             return this.tileCount(card) > 0;
-        },
-        hasWidgets: function(card) {
-            if (!!card) {
-                var widgets = this.$underscore.filter(this.allWidgets, function(widget) {
-                    return widget.card_id === card.cardid;
-                }, this);
-                return widgets.length > 0;
-            }
-            return false;
-        },
-        hasWidgetsAndSubCards: function(card) {
-            return this.hasWidgets(card) && this.hasChildCards(card);
-        },
-        canEdit: function(card) {
-            return (!!card ? this.user.editable_nodegroups.includes(card.nodegroup_id) : false);
         },
         canAdd: function(card) {
             if (!!card) {
@@ -349,19 +311,6 @@ export default {
                 return found.cardinality;
             }
             return '1';
-        },
-        getBlankTile: function(card, parentTile) {
-            return {
-                data: {},
-                nodegroup_id: card.nodegroup_id,
-                parenttile_id: parentTile ? parentTile.tileid : null,
-                provisionaledits: {},
-                resourceinstance_id: this.resourceid,
-                sortorder: 0,
-                tileid: '',
-                type: 'tile',
-                _id: ''
-            };
         },
         saveTile: function(tile) {
             console.log('saving...');
