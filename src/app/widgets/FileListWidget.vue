@@ -18,11 +18,6 @@
             </ons-list>
         </div>
 
-        <!-- <ons-row class="file-widget" style="display: none;">
-            <ons-col class="button-column"><v-ons-button class="file-button btn-mint" @click="selectPhoto"><v-ons-icon class="folder-icon" icon="ion-folder"></v-ons-icon><span class="btn-text">Select Photo</span></v-ons-button></ons-col>
-            <ons-col class="button-column"><v-ons-button class="file-button btn-mint" @click="takePhoto"><v-ons-icon class="camera-icon" icon="ion-camera"></v-ons-icon><span class="btn-text">Take Photo</span></v-ons-button></ons-col>
-        </ons-row> -->
-
         <div class="button-panel">
             <v-ons-button class="file-button relative select-photo" @click="selectPhoto">
                 <div class="icon-circle"></div>
@@ -263,6 +258,7 @@ export default {
 
 .file-button:last-child {
     border-bottom: 1px solid #78D9D2;
+    margin-bottom: 20px;
 }
 
 .widget > .editor-panel {
