@@ -1,8 +1,8 @@
 <template>
-    <v-ons-toolbar>
+    <v-ons-toolbar class="app-header-toolbar">
         <div class="left">
             <v-ons-toolbar-button class="left-button-offset">
-                <img src="../../../assets/img/favicon.png" width="20"></img>
+                <img src="../../../assets/img/arches_logo_light.png" width="20"></img>
                 <span v-if="$route.name === 'serverlist' || $route.name === 'projectlist'" class="left-button-text" @click="goTo('serverlist');">
                     Arches Apps
                 </span>
@@ -25,7 +25,7 @@
         </div>
         <div class="center"></div>
         <div class="right">
-            <v-ons-toolbar-button>
+            <v-ons-toolbar-button class="app-right-button">
                 <v-ons-icon icon="ion-ios-search-strong"></v-ons-icon>
             </v-ons-toolbar-button>
         </div>
@@ -60,11 +60,17 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.app-header-toolbar {
+    background: #A10408;
+    color: #fff;
+}
+
 
 .left-button-text{
     position: relative;
     top: -3px;
     font-size: 19px;
+    color: #fff;
 }
 
 .left-button-offset{
@@ -73,6 +79,10 @@ export default {
 
 .toolbar-button--material{
     color: dimgrey;
+}
+
+.app-right-button {
+    color: #fff;
 }
 
 </style>

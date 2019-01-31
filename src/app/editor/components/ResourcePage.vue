@@ -274,7 +274,7 @@ export default {
 }
 
 .instance-editor-header {
-    background: #361B4A;
+    background: #E2383C;
 }
 
 .instance-editor-back-btn {
