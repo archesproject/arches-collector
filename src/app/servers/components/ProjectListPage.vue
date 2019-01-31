@@ -364,8 +364,8 @@ export default {
     }
 
     .panel-header {
-      background: #2d3c4b;
-      border-top: 1px solid #0E2031;
+      background: #F96468;
+      border-top: 1px solid #780003;
       margin-top: 1px;
     }
 

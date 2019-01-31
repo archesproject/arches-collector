@@ -16,20 +16,24 @@
                     </div>
                 </ons-list-item>
             </ons-list>
+
+
+            <div class="button-panel">
+                <v-ons-button class="file-button relative select-photo" @click="selectPhoto">
+                    <div class="icon-circle"></div>
+                    <v-ons-icon class="folder-icon" icon="ion-folder"></v-ons-icon>
+                    <span class="btn-text">Select Photo</span>
+                </v-ons-button>
+                <v-ons-button class="file-button relative take-photo" @click="takePhoto">
+                    <div class="icon-circle"></div>
+                    <v-ons-icon class="camera-icon" icon="ion-camera"></v-ons-icon>
+                    <span class="btn-text">Take Photo</span>
+                </v-ons-button>
+            </div>
+
         </div>
 
-        <div class="button-panel">
-            <v-ons-button class="file-button relative select-photo" @click="selectPhoto">
-                <div class="icon-circle"></div>
-                <v-ons-icon class="folder-icon" icon="ion-folder"></v-ons-icon>
-                <span class="btn-text">Select Photo</span>
-            </v-ons-button>
-            <v-ons-button class="file-button relative take-photo" @click="takePhoto">
-                <div class="icon-circle"></div>
-                <v-ons-icon class="camera-icon" icon="ion-camera"></v-ons-icon>
-                <span class="btn-text">Take Photo</span>
-            </v-ons-button>
-        </div>
+
     </div>
 
     <ons-row class="report-widget" v-else-if="context=='report'">
@@ -178,11 +182,11 @@ export default {
     width: calc(100% - 10px);
 }
 .widget-value {
-  color: #999;
+  color: #bbb;
 }
 .widget-label {
   font-weight: 400;
-  color: #271F4C;
+  color: #fbfbfb;
   padding-right: 5px;
 }
 .button-column {
@@ -229,12 +233,17 @@ export default {
     /* margin-left: -15px;
     margin-right: -15px; */
     padding: 20px 10px 30px 20px;
-    background: #fbfbfb;
+    background: #2d3c4b;
 }
 
 .button-panel {
-    margin-left: -5px;
+    /* margin-left: -5px; */
     /* margin-right: -15px; */
+    margin-left: -17px;
+    margin-right: -7px;
+    top: 86px;
+    min-height: 180px;
+    position: relative;
 }
 
 .file-button {
@@ -264,6 +273,7 @@ export default {
 .widget > .editor-panel {
     margin-left: -15px;
     margin-right: -15px;
+    margin-bottom: -15px;
 }
 
 .widget > .button-panel {
