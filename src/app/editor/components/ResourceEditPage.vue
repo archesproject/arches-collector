@@ -15,7 +15,7 @@
             </div>
             <div v-show="hasTiles(card) || activeObject === 'card'">
                 <div tappable modifier="longdivider" v-for="tile in cardTiles" v-if="canEdit(tile)" :key="tile.tileid" @click="setTileContext(tile)" class="tile-instance">
-                    <div class="flex">
+                    <div class="flex relative">
                         <span class="fa5 fa-ellipsis-v drag-bars"></span>
                         <component v-if="displayWidget(card)" class="widget" :allNodes="allNodes" :tile="tile" :tiles="tiles" :widget="displayWidget(card)" :context="'nav'" v-bind:is="'base-widget'"></component>
                         <span v-else class="flex tile-data">
@@ -392,7 +392,7 @@ ul {
     padding: 20px 15px 20px 10px;
     background-color: #e8e6e6;
     display: inline-block;
-    margin-right: 0px;
+    margin-right: 5px;
 }
 .flex {
     display: flex;
@@ -411,8 +411,18 @@ ul {
     font-size: 13px;
     padding-bottom: 0px;
 }
+.relative {
+    position: relative;
+}
 .tile-delete {
-    padding: 20px;
+    padding: 20px 22px;
     border-left: 1px solid #ddd;
+    background: #f2f2f2;
+    width: 60px;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    vertical-align: middle;
 }
 </style>

@@ -178,7 +178,6 @@ export default {
 }
 
 .tile-data {
-    background: #fafafa;
     color: #888;
     margin-left: -5px;
     padding-left: 5px;
@@ -187,6 +186,5 @@ export default {
 .tile-data .widget-label {
     color: #271F4C;
     font-size: 13px;
-    padding-bottom: 10px;
 }
 </style>
