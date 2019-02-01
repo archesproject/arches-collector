@@ -255,7 +255,7 @@ export default {
     text-align: left;
     padding: 10px 20px;
     /* background: #DEFBF9; */
-    background: #1C2F42;
+    background: rgba(28,47,66, .6);
     border-top: 1px solid #0E2031;
     border-radius: 0px;
     box-shadow: none;
@@ -307,7 +307,7 @@ export default {
 
 .icon-circle {
     box-sizing: border-box;
-    border: solid 1px #78D9D2;
+    border: solid 1px #0E2031;
     border-radius: 50%;
     height: 40px;
     width: 40px;
@@ -316,7 +316,7 @@ export default {
 
 .select-photo .icon-circle {
     background: #60CBF9;
-    border: solid 1px #0173A4;
+    border: solid 1px #0E2031;
 }
 
 .select-photo .folder-icon {
