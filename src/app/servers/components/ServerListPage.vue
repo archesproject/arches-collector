@@ -348,7 +348,7 @@ export default {
 }
 
 .manage-app-btn {
-    margin-top: 24px;
+    margin-top: 20px;
     margin-left: 20px;
     color: #555;
 }

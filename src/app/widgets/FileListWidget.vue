@@ -16,25 +16,24 @@
                     </div>
                 </ons-list-item>
             </ons-list>
+
+
+            <div class="button-panel">
+                <v-ons-button class="file-button relative select-photo" @click="selectPhoto">
+                    <div class="icon-circle"></div>
+                    <v-ons-icon class="folder-icon" icon="ion-folder"></v-ons-icon>
+                    <span class="btn-text">Select Photo</span>
+                </v-ons-button>
+                <v-ons-button class="file-button relative take-photo" @click="takePhoto">
+                    <div class="icon-circle"></div>
+                    <v-ons-icon class="camera-icon" icon="ion-camera"></v-ons-icon>
+                    <span class="btn-text">Take Photo</span>
+                </v-ons-button>
+            </div>
+
         </div>
 
-        <!-- <ons-row class="file-widget" style="display: none;">
-            <ons-col class="button-column"><v-ons-button class="file-button btn-mint" @click="selectPhoto"><v-ons-icon class="folder-icon" icon="ion-folder"></v-ons-icon><span class="btn-text">Select Photo</span></v-ons-button></ons-col>
-            <ons-col class="button-column"><v-ons-button class="file-button btn-mint" @click="takePhoto"><v-ons-icon class="camera-icon" icon="ion-camera"></v-ons-icon><span class="btn-text">Take Photo</span></v-ons-button></ons-col>
-        </ons-row> -->
 
-        <div class="button-panel">
-            <v-ons-button class="file-button relative select-photo" @click="selectPhoto">
-                <div class="icon-circle"></div>
-                <v-ons-icon class="folder-icon" icon="ion-folder"></v-ons-icon>
-                <span class="btn-text">Select Photo</span>
-            </v-ons-button>
-            <v-ons-button class="file-button relative take-photo" @click="takePhoto">
-                <div class="icon-circle"></div>
-                <v-ons-icon class="camera-icon" icon="ion-camera"></v-ons-icon>
-                <span class="btn-text">Take Photo</span>
-            </v-ons-button>
-        </div>
     </div>
 
     <ons-row class="report-widget" v-else-if="context=='report'">
@@ -183,11 +182,11 @@ export default {
     width: calc(100% - 10px);
 }
 .widget-value {
-  color: #999;
+  color: #bbb;
 }
 .widget-label {
   font-weight: 400;
-  color: #271F4C;
+  color: #fbfbfb;
   padding-right: 5px;
 }
 .button-column {
@@ -234,12 +233,17 @@ export default {
     /* margin-left: -15px;
     margin-right: -15px; */
     padding: 20px 10px 30px 20px;
-    background: #fbfbfb;
+    background: #2d3c4b;
 }
 
 .button-panel {
-    margin-left: -5px;
+    /* margin-left: -5px; */
     /* margin-right: -15px; */
+    margin-left: -17px;
+    margin-right: -7px;
+    top: 86px;
+    min-height: 180px;
+    position: relative;
 }
 
 .file-button {
@@ -251,8 +255,8 @@ export default {
     text-align: left;
     padding: 10px 20px;
     /* background: #DEFBF9; */
-    background: #fff;
-    border-top: 1px solid #78D9D2;
+    background: rgba(28,47,66, .6);
+    border-top: 1px solid #0E2031;
     border-radius: 0px;
     box-shadow: none;
 }
@@ -262,12 +266,14 @@ export default {
 }
 
 .file-button:last-child {
-    border-bottom: 1px solid #78D9D2;
+    border-bottom: 1px solid #0E2031;
+    margin-bottom: 20px;
 }
 
 .widget > .editor-panel {
     margin-left: -15px;
     margin-right: -15px;
+    margin-bottom: -15px;
 }
 
 .widget > .button-panel {
@@ -296,11 +302,12 @@ export default {
     font-size: 15px;
     top: 12px;;
     left: 70px;
+    color: #ddd;
 }
 
 .icon-circle {
     box-sizing: border-box;
-    border: solid 1px #78D9D2;
+    border: solid 1px #0E2031;
     border-radius: 50%;
     height: 40px;
     width: 40px;
@@ -309,7 +316,7 @@ export default {
 
 .select-photo .icon-circle {
     background: #60CBF9;
-    border: solid 1px #0173A4;
+    border: solid 1px #0E2031;
 }
 
 .select-photo .folder-icon {

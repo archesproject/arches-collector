@@ -15,7 +15,7 @@
                         </div>
                     </div>
                     <transition name="fade">
-                        <div class="saving-popup" v-show="saving">saving...</div>
+                        <span class="saving-popup" v-show="saving">Saving...</span>
                     </transition>
                     <div style="width: 50px; padding-top: 15px">
                         <v-ons-toolbar-button @click="toggleSideNav">
@@ -233,9 +233,11 @@ export default {
 }
 
 .saving-popup {
-    padding: 15px 0 0 15px;
-    font-size: 16px;
-    color: #359a35;
+    vertical-align: top;
+    font-size: 13px;
+    color: #ddd;
+    padding: 5px 10px;
+    background: #A10408;
 }
 
 .sidenav .label{
@@ -269,7 +271,7 @@ export default {
 }
 
 .instance-editor-header {
-    background: #361B4A;
+    background: #E2383C;
 }
 
 .instance-editor-back-btn {
