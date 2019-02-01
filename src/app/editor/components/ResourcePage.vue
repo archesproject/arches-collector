@@ -2,7 +2,7 @@
     <page-header-layout>
         <v-ons-page>
             <v-ons-toolbar class="instance-editor-header relative">
-                <div class="flex instance-name">
+                <div class="flex" style="width: 90%;">
                     <v-ons-icon class="resource-header instance-editor-back-btn" icon="ion-android-arrow-dropleft-circle" @click="back"></v-ons-icon>
                     <div v-if="!!headerName.label" class="instance-name-position">
                         <div class="instance-name">{{headerName.label}}
@@ -207,7 +207,6 @@ export default {
 
 .instance-name {
     font-size: 15px;
-    width: 93%;
     color: #f4f4f4;
     text-overflow: ellipsis;
     overflow: hidden;
