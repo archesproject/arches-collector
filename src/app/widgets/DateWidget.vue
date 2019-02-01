@@ -10,7 +10,7 @@
         </ons-col>
     </ons-row>
     <span class="flex tile-data" v-else-if="context=='nav'">
-        <div v-if="!!value">{{value}}</div>
+        <div v-if="!!formatted">{{formatted}}</div>
         <div v-else>no data</div>
         <div class="widget-label">{{widget.label}}</div>
     </span>
@@ -30,7 +30,7 @@ export default {
     computed: {
         formatted: {
             get: function() {
-                return moment(this.value).format('MMMM Do YYYY');
+                return moment(this.value).format('MMMM Do, YYYY');
             }
         }
     },
