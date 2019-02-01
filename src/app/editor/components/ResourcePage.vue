@@ -1,9 +1,9 @@
 <template>
     <page-header-layout>
         <v-ons-page>
-            <v-ons-toolbar class="instance-editor-header">
-                <div class="flex" style="width: 100%">
-                    <v-ons-icon style="padding: 15px;" class="resource-header instance-editor-back-btn" icon="ion-android-arrow-dropleft-circle" @click="back"></v-ons-icon>
+            <v-ons-toolbar class="instance-editor-header relative">
+                <div class="flex instance-name">
+                    <v-ons-icon class="resource-header instance-editor-back-btn" icon="ion-android-arrow-dropleft-circle" @click="back"></v-ons-icon>
                     <div v-if="!!headerName.label" class="instance-name-position">
                         <div class="instance-name">{{headerName.label}}
                             <div class="resource-type">{{headerName.value}}</div>
@@ -17,7 +17,7 @@
                     <transition name="fade">
                         <span class="saving-popup" v-show="saving">Saving...</span>
                     </transition>
-                    <div style="width: 50px; padding-top: 15px">
+                    <div class="instance-tool-btn">
                         <v-ons-toolbar-button @click="toggleSideNav">
                             <v-ons-icon class="instance-editor-toolpanel-btn" icon="fa-sliders"></v-ons-icon>
                         </v-ons-toolbar-button>
@@ -195,7 +195,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .instance-name-position {
-    padding-top: 10px;
+    padding-top: 5px;
     overflow: hidden;
 }
 
@@ -207,8 +207,9 @@ export default {
 
 .instance-name {
     font-size: 15px;
+    width: 93%;
     color: #f4f4f4;
-        text-overflow: ellipsis;
+    text-overflow: ellipsis;
     overflow: hidden;
 }
 
@@ -217,6 +218,18 @@ export default {
     color: #ddd;
     margin-top: -37px;
     padding-left: 8px;
+}
+
+.toolbar--material .instance-name-position {
+    padding-top: 13px;
+}
+
+.toolbar--material .instance-editor-back-btn {
+    padding-top: 15px;
+}
+
+.toolbar-button--material .instance-editor-toolpanel-btn {
+    margin-top: 5px;
 }
 
 .resource-type {
@@ -276,9 +289,19 @@ export default {
 
 .instance-editor-back-btn {
     color: #f4f4f4;
+    padding: 10px 10px 10px 15px;
 }
-
 .instance-editor-toolpanel-btn {
     color: #ddd;
+}
+
+.relative {
+    position: relative;
+}
+
+.instance-tool-btn {
+    position: absolute;
+    top: 10px;
+    right: 5px;
 }
 </style>

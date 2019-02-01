@@ -77,8 +77,12 @@ export default {
     color: #fff;
 }
 
-.left-button-offset{
+.left-button-offset {
     padding-top: 17px;
+}
+
+.left-button-offset.toolbar-button--material {
+    padding-top: 0px;
 }
 
 .toolbar-button--material{
