@@ -2,31 +2,26 @@
     <page-header-layout>
         <v-ons-page>
             <v-ons-toolbar class="instance-editor-header">
-                <div class="left">
-                    <v-ons-toolbar-button class="flex">
-                        <v-ons-icon class="resource-header instance-editor-back-btn" icon="ion-android-arrow-dropleft-circle" @click="back"></v-ons-icon>
-                        <span v-if="!!headerName.label" class="instance-name-position">
-                            <span class="instance-name">{{headerName.label}}
-                                <div class="resource-type">{{headerName.value}}</div>
-                            </span>
-                        </span>
-                        <span v-else class="instance-name-position">
-                            <span class="instance-name">
-                                <div class="resource-type">{{headerName.value}}</div>
-                            </span>
-                        </span>
-                    </v-ons-toolbar-button>
-                </div>
-                <div class="center">
-
-                </div>
-                <div class="right">
+                <div class="flex" style="width: 100%">
+                    <v-ons-icon style="padding: 15px;" class="resource-header instance-editor-back-btn" icon="ion-android-arrow-dropleft-circle" @click="back"></v-ons-icon>
+                    <div v-if="!!headerName.label" class="instance-name-position">
+                        <div class="instance-name">{{headerName.label}}
+                            <div class="resource-type">{{headerName.value}}</div>
+                        </div>
+                    </div>
+                    <div v-else class="instance-name-position">
+                        <div class="instance-name">
+                            <div class="resource-type">{{headerName.value}}</div>
+                        </div>
+                    </div>
                     <transition name="fade">
                         <span class="saving-popup" v-show="saving">Saving...</span>
                     </transition>
-                    <v-ons-toolbar-button @click="toggleSideNav">
-                        <v-ons-icon class="instance-editor-toolpanel-btn" icon="fa-sliders"></v-ons-icon>
-                    </v-ons-toolbar-button>
+                    <div style="width: 50px; padding-top: 15px">
+                        <v-ons-toolbar-button @click="toggleSideNav">
+                            <v-ons-icon class="instance-editor-toolpanel-btn" icon="fa-sliders"></v-ons-icon>
+                        </v-ons-toolbar-button>
+                    </div>
                 </div>
             </v-ons-toolbar>
             <v-ons-splitter>
@@ -200,7 +195,8 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .instance-name-position {
-    margin-top: -12px;
+    padding-top: 10px;
+    overflow: hidden;
 }
 
 .toolbar-button--material .instance-name {
@@ -211,8 +207,9 @@ export default {
 
 .instance-name {
     font-size: 15px;
-    padding-left: 8px;
     color: #f4f4f4;
+        text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 .toolbar-button--material .resource-type {
@@ -225,8 +222,6 @@ export default {
 .resource-type {
     font-size: 11px;
     color: #ddd;
-    margin-top: -30px;
-    padding-left: 8px;
 }
 
 .subtitle-text-color {
@@ -280,7 +275,6 @@ export default {
 }
 
 .instance-editor-back-btn {
-    margin-top: -5px;
     color: #f4f4f4;
 }
 

@@ -1,4 +1,5 @@
 <template>
+
     <v-ons-toolbar class="app-header-toolbar">
         <div class="left">
             <v-ons-toolbar-button class="left-button-offset">
@@ -20,7 +21,6 @@
                         {{active_project_name}}
                     </span>
                 </span>
-
             </v-ons-toolbar-button>
         </div>
         <div class="center"></div>
@@ -78,7 +78,7 @@ export default {
 }
 
 .left-button-offset{
-    padding-top:2px;
+    padding-top: 17px;
 }
 
 .toolbar-button--material{
