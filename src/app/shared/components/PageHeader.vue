@@ -26,7 +26,7 @@
         <div class="center"></div>
         <div class="right">
             <v-ons-toolbar-button class="app-right-button">
-                <v-ons-icon icon="ion-ios-search-strong"></v-ons-icon>
+                <v-ons-icon icon="ion-easel"></v-ons-icon>
             </v-ons-toolbar-button>
         </div>
     </v-ons-toolbar>

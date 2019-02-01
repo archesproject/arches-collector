@@ -255,8 +255,8 @@ export default {
     text-align: left;
     padding: 10px 20px;
     /* background: #DEFBF9; */
-    background: #fff;
-    border-top: 1px solid #78D9D2;
+    background: #1C2F42;
+    border-top: 1px solid #0E2031;
     border-radius: 0px;
     box-shadow: none;
 }
@@ -266,7 +266,7 @@ export default {
 }
 
 .file-button:last-child {
-    border-bottom: 1px solid #78D9D2;
+    border-bottom: 1px solid #0E2031;
     margin-bottom: 20px;
 }
 
@@ -302,6 +302,7 @@ export default {
     font-size: 15px;
     top: 12px;;
     left: 70px;
+    color: #ddd;
 }
 
 .icon-circle {
