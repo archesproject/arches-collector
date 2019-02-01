@@ -1,7 +1,7 @@
 <template>
     <v-ons-toolbar>
-        <div class="left">
-            <v-ons-toolbar-button class="left-button-offset">
+        <v-ons-toolbar-button class="left-button-offset">
+            <div class="flex" style="width: 100%">
                 <img src="../../../assets/img/favicon.png" width="20"></img>
                 <span v-if="$route.name === 'serverlist' || $route.name === 'projectlist'" class="left-button-text" @click="goTo('serverlist');">
                     Arches Apps
@@ -20,15 +20,8 @@
                         {{active_project_name}}
                     </span>
                 </span>
-
-            </v-ons-toolbar-button>
-        </div>
-        <div class="center"></div>
-        <div class="right">
-            <v-ons-toolbar-button>
-                <v-ons-icon icon="ion-ios-search-strong"></v-ons-icon>
-            </v-ons-toolbar-button>
-        </div>
+            </div>
+        </v-ons-toolbar-button>
     </v-ons-toolbar>
 </template>
 
@@ -68,7 +61,7 @@ export default {
 }
 
 .left-button-offset{
-    padding-top:2px;
+    padding-top: 17px;
 }
 
 .toolbar-button--material{

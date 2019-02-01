@@ -8,10 +8,9 @@
                         <span class="icon-circle" v-bind:style="{ background: [resource_type.color], color: '#fff'}">
                             <v-ons-icon class="resource-model-icon" v-bind:icon="resource_type.iconclass.replace('fa ', '')" v-bind:style="{}"></v-ons-icon>
                         </span>
-                    <span class='resource-model-title'>
-                        <span style="padding-left: 0"> New {{resource_type.name}}</span>
-                        <span class='resource-model-subtitle'>Currently x records</span>
-                    </span>
+                        <span class='resource-model-title'>
+                            New {{resource_type.name}}
+                        </span>
                     </div>
                 </span>
             </v-ons-list-item>
@@ -67,13 +66,7 @@ export default {
     padding-left: 5px;
     color: #271F4C;
     font-size: 14px;
-    margin-top: 2px;
-}
-.resource-model-subtitle {
-    font-size: 12px;
-    padding-top: 0px;
-    color: #999;
-    margin-top: -1px;
+    margin-top: 10px;
 }
 .resource-model-icon {
     text-align: center;
