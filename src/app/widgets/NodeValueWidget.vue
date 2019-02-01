@@ -89,6 +89,26 @@ export default {
                 return widget.node_id === self.node.config.nodeid;
             }, this);
             return widget[0].label;
+        },
+        resourceid: {
+            get: function() {
+                if (!!this.$store.getters.activeServer && this.$store.getters.activeServer.active_resource) {
+                    return this.$store.getters.activeServer.active_resource.resourceinstanceid;
+                } else {
+                    return null;
+                }
+            }
+        },
+        tiles: {
+            get: function() {
+                if (!!this.resourceid) {
+                    return this.$underscore.filter(this.$store.getters.tiles, function(tile) {
+                        return tile.resourceinstance_id === this.resourceid;
+                    }, this);
+                } else {
+                    return [];
+                }
+            }
         }
     },
     methods: {

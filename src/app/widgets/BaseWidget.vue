@@ -1,12 +1,12 @@
 <template>
-    <component :value.sync="value" :context.sync="context" v-bind:is="widgetComponent" :tile="tile" :tiles="tiles" :widget="widget" :node="node"></component>
+    <component :value.sync="value" :context.sync="context" v-bind:is="widgetComponent" :tile="tile" :widget="widget" :node="node"></component>
 </template>
 
 
 <script>
 export default {
     name: 'BaseWidget',
-    props: ['allNodes', 'widget', 'save', 'tile', 'tiles', 'context'],
+    props: ['allNodes', 'widget', 'save', 'tile', 'context'],
     data() {
         return {
             waiting: false,
@@ -62,7 +62,7 @@ export default {
                     return '';
                 } catch (err) {
                     // I don't know why we can't return an empty string here, but if we do then
-                    // we end of having this problem 
+                    // we end of having this problem
                     // https://github.com/archesproject/arches-mobile/issues/310
                     return null;
                 }
