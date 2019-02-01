@@ -418,7 +418,7 @@ ul {
     padding: 20px 22px;
     border-left: 1px solid #ddd;
     background: #f2f2f2;
-    width: 60px;
+    /* width: 60px; */
     position: absolute;
     right: 0px;
     top: 0px;

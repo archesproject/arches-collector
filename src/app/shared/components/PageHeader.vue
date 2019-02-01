@@ -7,14 +7,14 @@
                     Arches Apps
                 </span>
                 <span v-if="$route.name !== 'serverlist'">
-                    <span v-if="$route.name === 'projectlist'">
+                    <span class="app-path-divider" v-if="$route.name === 'projectlist'">
                         /
                     </span>
                     <span class="left-button-text" @click="goTo('projectlist');">
                         {{active_server_name}}
                     </span>
                 </span>
-                <span v-if="$route.name !== 'serverlist' && $route.name !== 'projectlist'">
+                <span class="app-path-divider" v-if="$route.name !== 'serverlist' && $route.name !== 'projectlist'">
                     /
                     <span class="left-button-text" @click="goToProject();">
                         {{active_project_name}}
@@ -65,11 +65,15 @@ export default {
     color: #fff;
 }
 
+.app-path-divider {
+    color: #fff;
+    font-size: 17px;
+}
 
 .left-button-text{
     position: relative;
     top: -3px;
-    font-size: 19px;
+    font-size: 17px;
     color: #fff;
 }
 
