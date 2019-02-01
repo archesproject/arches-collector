@@ -224,6 +224,7 @@ var pouchDBs = (function() {
                     for (const geom of doc.geometries) {
                         for (let feature of geom.geom.features) {
                             feature.properties.id = doc._id;
+                            feature.properties.graph_id = doc.graph_id;
                             feature.properties.displayname = doc.displayname;
                             feature.properties.displaydescription = doc.displaydescription;
                             features.push(feature);
@@ -847,8 +848,8 @@ var store = new Vuex.Store({
         getProjectResources: function({commit, state}, projectId) {
             return pouchDBs.getResources(projectId);
         },
-        getResource: function({commit, state}, ids) {
-            var resources = pouchDBs.getResources(ids.projectid, [ids.resourceid]);
+        getResource: function({commit, state}, {projectId, resourceinstanceid}) {
+            var resources = pouchDBs.getResources(projectId, [resourceinstanceid]);
             return resources;
         },
         getBasemapTarget: function() {

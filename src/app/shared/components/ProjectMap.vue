@@ -12,15 +12,33 @@
                     &copy; OpenStreetMap contributors
                 </a>
             </div>
-            <div ref="popup">
-                <div class="popup-content">
-                    <h4>{{ selectedResource.displayname }}</h4>
-                    <hr>
-                    <div class="description">
-                        {{ selectedResource.displaydescription }}
+        </div>
+        <div class="popup" v-if="selectedResource">
+            <div class="popup-content">
+                <div class="popup-header">
+                    <div class="icon-circle" v-bind:style="{ background: [resource_types[selectedResource.graph_id].color], color: '#fff' }">
+                        <v-ons-icon class="resource-model-icon" v-bind:icon="resource_types[selectedResource.graph_id].iconclass.replace('fa ', '')"></v-ons-icon>
                     </div>
+                    <span class='resource-model-title'>
+                        <span style="padding-left: 0; padding-right: 10px;">
+                            {{selectedResource.displayname.replace(/['"]+/g,'')}}
+                        </span>
+                        <span class="resource-model-subtitle">
+                            {{resource_types[selectedResource.graph_id].name}}
+                        </span>
+                    </span>
+                    <span @click="closePopup()">
+                        <div class="fa5 fa-times"></div>
+                    </span>
+                </div>
+                <hr>
+                <div class="description">
+                    {{ selectedResource.displaydescription.replace(/['"]+/g,'') }}
                 </div>
             </div>
+            <v-ons-button class="edit-button" v-on:click="selectResourceInstance(selectedResource)">
+                <span>Edit Resource</span>
+            </v-ons-button>
         </div>
     </div>
 </template>
@@ -51,16 +69,33 @@ export default {
                 type: 'FeatureCollection',
                 features: []
             },
-            selectedResource: {
-                id: null,
-                displayname: '',
-                displaydescription: ''
-            },
+            selectedResource: null,
             loading: true,
+            resource_types: {},
             onlinebasemap: project.onlinebasemaps ? project.onlinebasemaps.default : 'mapbox://styles/mapbox/satellite-v9'
         };
     },
     methods: {
+        closePopup: function() {
+            this.selectedResource = null;
+        },
+        selectResourceInstance: function(resource) {
+            return this.$store.dispatch(
+                'getResource',
+                {'projectId': this.project.id, 'resourceinstanceid': resource.id}
+            ).then((ret) => {
+                var resource = ret.docs[0];
+                this.$store.commit('setActiveResourceInstance', resource);
+                this.$store.commit('setActiveGraphId', resource.graph_id);
+                this.$router.push({
+                    'name': 'resource',
+                    params: {
+                        'nodegroupid': null,
+                        'tabIndex': 1
+                    }
+                });
+            });
+        },
         setupBasemaps: function() {
             return this.$store.dispatch(
                 'setupProjectBasemaps',
@@ -171,43 +206,8 @@ export default {
                     }
                 });
                 map.on('click', 'resource-markers', (e) => {
-                    const markerHeight = 28;
-                    const markerRadius = 12;
-                    const linearOffset = 5;
-                    const offset = {
-                        'top': [0, 0],
-                        'top-left': [0, 0],
-                        'top-right': [0, 0],
-                        'bottom': [0, -markerHeight],
-                        'bottom-left': [
-                            linearOffset,
-                            (markerHeight - markerRadius + linearOffset) * -1
-                        ],
-                        'bottom-right': [
-                            -linearOffset,
-                            (markerHeight - markerRadius + linearOffset) * -1
-                        ],
-                        'left': [
-                            markerRadius,
-                            (markerHeight - markerRadius) * -1
-                        ],
-                        'right': [
-                            -markerRadius,
-                            (markerHeight - markerRadius) * -1
-                        ]
-                    };
                     const feature = e.features[0];
-                    const coords = feature.geometry.coordinates.slice();
                     this.selectedResource = feature.properties;
-
-                    while (Math.abs(e.lngLat.lng - coords[0]) > 180) {
-                        coords[0] += e.lngLat.lng > coords[0] ? 360 : -360;
-                    }
-
-                    new mapboxgl.Popup({offset: offset})
-                        .setLngLat(coords)
-                        .setDOMContent(this.$refs.popup)
-                        .addTo(map);
                 });
             });
         },
@@ -251,6 +251,12 @@ export default {
                 self.mapOnlineInit
             );
         }
+
+        var resourceTypes = {};
+        self.$store.getters.activeProject.graphs.forEach(function(graph) {
+            resourceTypes[graph.graphid] = graph;
+        });
+        this.resource_types = resourceTypes;
     }
 };
 </script>
@@ -268,14 +274,74 @@ export default {
     .map-control-templates {
         display: none;
     }
-    .popup-content {
-        margin: 12px 6px 4px;
+    .popup {
+        position: absolute;
+        top: 0px;
+        width: 70%;
+        max-height: 320px;
+        background-color: white;
         color: dimgrey;
-        max-width: 170px;
+        overflow: hidden;
+        padding: 12px;
+    }
+    .popup-header {
+        display: flex;
+        min-height: 40px;
     }
     .popup-content .description {
-        font-size: 0.8em;
-        line-height: 1.2em;
-        margin: 2px;
+        font-size: 14px;
+        line-height: 18px;
+        max-height: 200px;
+        overflow: hidden
+    }
+    @media screen and (max-height: 550px){
+        .popup {
+            position: absolute;
+            top: 0px;
+            width: 70%;
+            max-height: 90%;
+            background-color: white;
+            color: dimgrey;
+            overflow: hidden;
+            padding: 12px;
+        }
+        .popup-content .description  {
+            font-size: 14px;
+            line-height: 18px;
+            max-height: 100px;
+            overflow: hidden
+        }
+    }
+    .resource-model-icon {
+        font-size: 14px;
+        padding: 10px;
+    }
+    .icon-circle {
+        box-sizing: border-box;
+        border: solid 1px #1B48DD;
+        border-radius: 50%;
+        height: 36px;
+        width: 36px;
+        background: #d7e0f8;
+        opacity: .7;
+    }
+    .resource-model-title {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        padding-left: 5px;
+        color: #271F4C;
+        font-size: 14px;
+        width: 250px;
+        margin-top: 2px;
+    }
+    .resource-model-subtitle {
+        font-size: 12px;
+        padding-top: 5px;
+        color: #999;
+    }
+    .edit-button {
+        width: 100%;
+        margin-top: 10px;
     }
 </style>
