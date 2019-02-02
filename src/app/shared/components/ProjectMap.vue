@@ -28,10 +28,9 @@
                         </span>
                     </span>
                     <span @click="closePopup()">
-                        <div class="fa5 fa-times"></div>
+                        <div class="popup-close fa fa-times"></div>
                     </span>
                 </div>
-                <hr>
                 <div class="description">
                     {{ selectedResource.displaydescription.replace(/['"]+/g,'') }}
                 </div>
@@ -276,23 +275,36 @@ export default {
     }
     .popup {
         position: absolute;
-        top: 0px;
-        width: 70%;
-        max-height: 320px;
-        background-color: white;
-        color: dimgrey;
+        bottom: 5px;
+        left: 5px;
+        width: 90%;
+        height: 190px;
+        background-color: #1C2F42;
+        border: 1px solid #0E2031;
+        color: #fafafa;
         overflow: hidden;
+        border-radius: 2px;
         padding: 12px;
+        z-index: 100;
     }
     .popup-header {
         display: flex;
         min-height: 40px;
     }
     .popup-content .description {
-        font-size: 14px;
+        font-size: 13px;
+        margin-top: 5px;
         line-height: 18px;
-        max-height: 200px;
-        overflow: hidden
+        height: 85px;
+        overflow-y: scroll;
+        color: #ddd;
+        background: #2D3C4B;
+        padding: 5px;
+        border-radius: 2px;
+        border: 1px solid #0E2031;
+    }
+    .popup-close {
+        margin-top: 2px;
     }
     @media screen and (max-height: 550px){
         .popup {
@@ -330,18 +342,24 @@ export default {
         flex-direction: column;
         flex-grow: 1;
         padding-left: 5px;
-        color: #271F4C;
+        color: #f4f4f4;
         font-size: 14px;
-        width: 250px;
+        width: 80%;
         margin-top: 2px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
     }
     .resource-model-subtitle {
         font-size: 12px;
-        padding-top: 5px;
-        color: #999;
+        padding-top: 0px;
+        margin-top: 2px;
+        color: #ddd;
     }
     .edit-button {
         width: 100%;
         margin-top: 10px;
+        font-size: 15px;
+        text-align: center;
     }
 </style>

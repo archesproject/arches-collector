@@ -2,7 +2,7 @@
     <page-header-layout>
         <v-ons-page>
             <v-ons-toolbar class="instance-editor-header relative">
-                <div class="flex instance-name">
+                <div class="flex" style="width: 90%;">
                     <v-ons-icon class="resource-header instance-editor-back-btn" icon="ion-android-arrow-dropleft-circle" @click="back"></v-ons-icon>
                     <div v-if="!!headerName.label" class="instance-name-position">
                         <div class="instance-name">{{headerName.label}}
@@ -207,7 +207,6 @@ export default {
 
 .instance-name {
     font-size: 15px;
-    width: 93%;
     color: #f4f4f4;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -249,8 +248,13 @@ export default {
     vertical-align: top;
     font-size: 13px;
     color: #ddd;
-    padding: 5px 10px;
-    background: #A10408;
+    padding: 10px 10px;
+    background: #7E0003;
+    margin-top: 3px;
+    margin-bottom: 5px;
+    margin-right: -30px;
+    z-index: 100;
+    border-radius: 2px;
 }
 
 .sidenav .label{
