@@ -276,23 +276,25 @@ export default {
     }
     .popup {
         position: absolute;
-        top: 0px;
-        width: 70%;
-        max-height: 320px;
+        bottom: 5px;
+        left: 5px;
+        width: 91%;
+        height: 190px;
         background-color: white;
         color: dimgrey;
         overflow: hidden;
         padding: 12px;
+        z-index: 100;
     }
     .popup-header {
         display: flex;
         min-height: 40px;
     }
     .popup-content .description {
-        font-size: 14px;
+        font-size: 13px;
         line-height: 18px;
-        max-height: 200px;
-        overflow: hidden
+        height: 75px;
+        overflow-y: scroll;
     }
     @media screen and (max-height: 550px){
         .popup {
@@ -332,16 +334,22 @@ export default {
         padding-left: 5px;
         color: #271F4C;
         font-size: 14px;
-        width: 250px;
+        width: 80%;
         margin-top: 2px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
     }
     .resource-model-subtitle {
         font-size: 12px;
-        padding-top: 5px;
+        padding-top: 0px;
+        margin-top: 0px;
         color: #999;
     }
     .edit-button {
         width: 100%;
-        margin-top: 10px;
+        margin-top: 15px;
+        font-size: 15px;
+        text-align: center;
     }
 </style>

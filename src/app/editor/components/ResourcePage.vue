@@ -248,8 +248,13 @@ export default {
     vertical-align: top;
     font-size: 13px;
     color: #ddd;
-    padding: 5px 10px;
-    background: #A10408;
+    padding: 10px 10px;
+    background: #7E0003;
+    margin-top: 3px;
+    margin-bottom: 5px;
+    margin-right: -30px;
+    z-index: 100;
+    border-radius: 2px;
 }
 
 .sidenav .label{
