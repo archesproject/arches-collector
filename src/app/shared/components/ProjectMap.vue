@@ -28,7 +28,7 @@
                         </span>
                     </span>
                     <span @click="closePopup()">
-                        <div class="fa5 fa-times"></div>
+                        <div class="popup-close fa fa-times"></div>
                     </span>
                 </div>
                 <hr>
@@ -296,6 +296,9 @@ export default {
         height: 75px;
         overflow-y: scroll;
     }
+    .popup-close {
+        margin-top: 2px;
+    }
     @media screen and (max-height: 550px){
         .popup {
             position: absolute;
@@ -343,7 +346,7 @@ export default {
     .resource-model-subtitle {
         font-size: 12px;
         padding-top: 0px;
-        margin-top: 0px;
+        margin-top: 2px;
         color: #999;
     }
     .edit-button {
