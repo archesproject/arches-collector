@@ -31,7 +31,6 @@
                         <div class="popup-close fa fa-times"></div>
                     </span>
                 </div>
-                <hr>
                 <div class="description">
                     {{ selectedResource.displaydescription.replace(/['"]+/g,'') }}
                 </div>
@@ -280,9 +279,11 @@ export default {
         left: 5px;
         width: 91%;
         height: 190px;
-        background-color: white;
-        color: dimgrey;
+        background-color: #1C2F42;
+        border: 1px solid #0E2031;
+        color: #fafafa;
         overflow: hidden;
+        border-radius: 2px;
         padding: 12px;
         z-index: 100;
     }
@@ -292,9 +293,15 @@ export default {
     }
     .popup-content .description {
         font-size: 13px;
+        margin-top: 5px;
         line-height: 18px;
-        height: 75px;
+        height: 85px;
         overflow-y: scroll;
+        color: #ddd;
+        background: #2D3C4B;
+        padding: 5px;
+        border-radius: 2px;
+        border: 1px solid #0E2031;
     }
     .popup-close {
         margin-top: 2px;
@@ -335,7 +342,7 @@ export default {
         flex-direction: column;
         flex-grow: 1;
         padding-left: 5px;
-        color: #271F4C;
+        color: #f4f4f4;
         font-size: 14px;
         width: 80%;
         margin-top: 2px;
@@ -347,11 +354,11 @@ export default {
         font-size: 12px;
         padding-top: 0px;
         margin-top: 2px;
-        color: #999;
+        color: #ddd;
     }
     .edit-button {
         width: 100%;
-        margin-top: 15px;
+        margin-top: 10px;
         font-size: 15px;
         text-align: center;
     }
