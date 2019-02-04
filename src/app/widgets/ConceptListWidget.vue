@@ -41,13 +41,9 @@ export default {
     props: ['value', 'widget', 'context'],
     mixins: [concept],
     data() {
-        var local_value = [];
-        if(Array.isArray(this.value)) {
-            local_value = this.value;
-        }
         return {
             placeholder: this.widget.config.placeholder,
-            local_value: local_value
+            local_value: null
         };
     },
     computed: {
@@ -65,7 +61,7 @@ export default {
         selectedOptions: {
             get: function() {
                 var ret = [];
-                var val = this.local_value;
+                var val = this.local_value || this.value;
                 this.options.forEach(function(option) {
                     if(val.includes(option.value)) {
                         ret.push(option);

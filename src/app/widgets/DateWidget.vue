@@ -1,7 +1,7 @@
 <template>
     <div class="widget-panel" v-if="context=='editor'">
         <div class="editor widget-label">{{widget.label}}</div>
-        <datetime v-model="date_value" @input="onChange" value-zone="local"></datetime>
+        <datetime v-model="localValue" value-zone="local"></datetime>
     </div>
     <ons-row class="report-widget" v-else-if="context=='report'">
         <ons-col
@@ -23,21 +23,20 @@ export default {
     name: 'DateWidget',
     props: ['value', 'widget', 'context'],
     data() {
-        return {
-            'date_value': this.value
-        };
+        return {};
     },
     computed: {
+        localValue: {
+            get: function() {
+                return !!this.value ? this.value : this.widget.config.defaultValue;
+            },
+            set: function(value) {
+                this.$emit('update:value', value);
+            }
+        },
         formatted: {
             get: function() {
                 return moment(this.value).format('MMMM Do, YYYY');
-            }
-        }
-    },
-    methods: {
-        onChange(value) {
-            if(value !== this.value){
-                this.$emit('update:value', value);
             }
         }
     }

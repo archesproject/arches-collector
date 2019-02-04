@@ -1,9 +1,8 @@
 <template>
     <div class="widget-panel" v-if="context=='editor'">
         <span class="editor widget-label">{{widget.label}}</span>
-        <toggle-button id="changed-font" style="float: right" :value="bool_value" :width="width"
-               :labels="{'checked': node.config.trueLabel, 'unchecked': node.config.falseLabel}"
-                 @input="onChange"/>
+        <toggle-button id="changed-font" style="float: right" :sync="true" v-model="localValue" :width="width"
+               :labels="{'checked': node.config.trueLabel, 'unchecked': node.config.falseLabel}"/>
 
         <div id="textWidthElement"></div>
     </div>
@@ -22,37 +21,43 @@
 
 
 <script>
-var getTextWidth = function(text, fontSize){
-    var el = document.getElementById("textWidthElement");
-    var textContent = document.createTextNode(text);
-    el.innerHTML = '';
-    el.appendChild(textContent);
-    var width = (el.clientWidth + 30);
-    return width;
-}
 export default {
     name: 'BooleanWidget',
     props: ['value', 'widget', 'context', 'node'],
     data() {
         return {
-            'bool_value': (this.value === true || this.value === false) ? this.value : this.widget.config.defaultValue,
             'width': 70
         };
     },
     computed: {
+        localValue: {
+            get: function() {
+                return (this.value === true || this.value === false) ? this.value : this.widget.config.defaultValue;
+            },
+            set: function(value) {
+                this.$emit('update:value', value);
+            }
+        },
     },
     methods: {
-        onChange(value) {
-            this.$emit('update:value', value);
+        getTextWidth: function(text, fontSize) {
+            var el = document.getElementById("textWidthElement");
+            var textContent = document.createTextNode(text);
+            el.innerHTML = '';
+            el.appendChild(textContent);
+            var width = ((text.length*8) + 30);
+            return width;
         },
         toggleButtonWidth() {
-            var f = getTextWidth(this.node.config.falseLabel, 12);
-            var t = getTextWidth(this.node.config.trueLabel, 12);
+            var f = this.getTextWidth(this.node.config.trueLabel, 12);
+            var t = this.getTextWidth(this.node.config.trueLabel, 12);
             return f > t ? f : t;
         }
     },
     mounted: function () {
-        this.width = this.toggleButtonWidth();
+        this.$nextTick(function() {
+            this.width = this.toggleButtonWidth();
+        }, this);
     }
 };
 </script>

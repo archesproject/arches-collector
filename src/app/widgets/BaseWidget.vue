@@ -68,9 +68,11 @@ export default {
                 }
             },
             set: function(newValue) {
-                this.tile.provisionaledits[this.user.id]['value'][this.widget.node_id] = newValue;
-                this.tile.provisionaledits[this.user.id]['timestamp'] = new Date().toJSON();
-                this.save();
+                if (this.tile) {
+                    this.tile.provisionaledits[this.user.id]['value'][this.widget.node_id] = newValue;
+                    this.tile.provisionaledits[this.user.id]['timestamp'] = new Date().toJSON();
+                    this.save();
+                }
             }
         }
     }

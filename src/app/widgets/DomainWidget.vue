@@ -32,7 +32,7 @@ export default {
     data() {
         return {
             placeholder: this.widget.config.placeholder,
-            local_value: this.value
+            local_value: null
         };
     },
     computed: {
@@ -49,10 +49,10 @@ export default {
         },
         selectedOption: {
             get: function() {
-                var self = this;
                 var ret = {};
+                var val = this.local_value || this.value;
                 this.options.forEach(function(option){
-                     if(option.value === self.local_value){
+                     if(option.value === val){
                         ret = option;
                     }
                 })
