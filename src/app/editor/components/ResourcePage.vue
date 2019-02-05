@@ -245,16 +245,21 @@ export default {
 }
 
 .saving-popup {
-    vertical-align: top;
-    font-size: 13px;
-    color: #ddd;
-    padding: 10px 10px;
-    background: #7E0003;
-    margin-top: 3px;
-    margin-bottom: 5px;
-    margin-right: -30px;
-    z-index: 100;
-    border-radius: 2px;
+  vertical-align: middle;
+  font-size: 13px;
+  color: #ddd;
+  padding: 7px 10px;
+  background: #7E0003;
+  position: absolute;
+  top: 5px;
+  bottom: 8px;
+  right: 5px;
+  z-index: 100;
+  border-radius: 2px;
+}
+
+.toolbar--material .saving-popup {
+  padding: 12px 10px;
 }
 
 .sidenav .label{
