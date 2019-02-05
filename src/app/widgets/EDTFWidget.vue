@@ -26,6 +26,15 @@ export default {
         return {
             placeholder: this.widget.config.placeholder
         };
+    },
+    computed: {
+        localValue: {
+            get: function() {
+                return this.value;
+            },
+            set: function(value) {
+            }
+        }
     }
 };
 </script>

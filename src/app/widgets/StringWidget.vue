@@ -1,7 +1,7 @@
 <template>
     <div class="widget-panel" v-if="context=='editor'">
         <div class="editor widget-label">{{widget.label}}</div>
-        <input :value="value" :placeholder="placeholder" @input="$emit('update:value', $event.target.value);">
+        <input :value="localValue" :placeholder="placeholder" @input="$emit('update:value', $event.target.value);">
     </div>
     <ons-row class="report-widget" v-else-if="context=='report'">
         <ons-col>
@@ -26,9 +26,14 @@ export default {
             placeholder: this.widget.config.placeholder
         };
     },
-    methods: {
-    },
     computed: {
+        localValue: {
+            get: function() {
+                return this.value;
+            },
+            set: function(value) {
+            }
+        }
     }
 };
 </script>

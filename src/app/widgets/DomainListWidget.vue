@@ -59,11 +59,13 @@ export default {
             get: function() {
                 var ret = [];
                 var val = this.local_value || this.value;
-                this.options.forEach(function(option) {
-                    if(val.includes(option.value)) {
-                        ret.push(option);
-                    }
-                })
+                if (!!val){
+                    this.options.forEach(function(option) {
+                        if(val.includes(option.value)) {
+                            ret.push(option);
+                        }
+                    })
+                }
                 return ret;
 
             },

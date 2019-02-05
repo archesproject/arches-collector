@@ -32,7 +32,7 @@ export default {
     computed: {
         localValue: {
             get: function() {
-                return (this.value === true || this.value === false) ? this.value : this.widget.config.defaultValue;
+                return !!this.value;
             },
             set: function(value) {
                 this.$emit('update:value', value);

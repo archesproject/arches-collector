@@ -269,10 +269,29 @@ export default {
             }
         },
         refreshProjectList(done) {
-            this.$store.dispatch('getRemoteProjects', this.$store.getters.activeServer)
+            var self = this;
+            this.$store.dispatch('getUserProfile', this.server)
+            .then(function(response){
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    if (response.status === 401) {
+                        self.error_message = 'The supplied username or password was not valid.';
+                    } else {
+                        self.error_message = self.default_error_message;
+                    }
+                }
+
+                throw new Error('Network response was not ok.');
+            })
+            .then(function(response){
+                self.server.user = response;
+                //return self.$store.dispatch('getClientId', self.server);
+                return self.$store.dispatch('getRemoteProjects', self.server)
                 .finally(function() {
                     done();
                 });
+            })
         }
     }
 };

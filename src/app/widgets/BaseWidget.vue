@@ -47,16 +47,18 @@ export default {
                     if (!this.tile.provisionaledits) {
                         this.tile.provisionaledits = {};
                     }
+                    
                     if (!!this.tile.provisionaledits[this.user.id]) {
                         provisionaledit = this.tile.provisionaledits[this.user.id]['value'];
                     } else {
                         this.tile.provisionaledits[this.user.id] = this.createNewProvisionalEdit();
                         provisionaledit = this.tile.provisionaledits[this.user.id]['value'];
-                        if (this.widget.config.defaultValue) {
-                            provisionaledit[this.widget.node_id] = this.widget.config.defaultValue;
-                        }
                     }
+
                     if (provisionaledit.hasOwnProperty(this.widget.node_id)) {
+                        return provisionaledit[this.widget.node_id];
+                    } else if (this.widget.config.defaultValue) {
+                        provisionaledit[this.widget.node_id] = this.widget.config.defaultValue;
                         return provisionaledit[this.widget.node_id];
                     }
                     return '';
