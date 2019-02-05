@@ -1,6 +1,10 @@
 <template>
     <page-header-layout>
         <v-ons-page>
+            <v-ons-toast class="arches" :visible.sync="toastVisible" animation="fall">
+              {{syncErrorMessage}}
+              <button @click="toastVisible = false">x</button>
+            </v-ons-toast>
             <v-ons-toolbar class="project-list-toolbar">
                 <div class="left">
                     <v-ons-toolbar-button>
@@ -103,7 +107,9 @@ export default {
                     label: 'Summary',
                     key: 'ProjectSummaryPage'
                 }
-            ]
+            ],
+            toastVisible: false,
+            syncErrorMessage: ''
         };
     },
     computed: {
@@ -120,8 +126,10 @@ export default {
             this.syncing = true;
             this.sync_failed = false;
             this.$store.dispatch('syncRemote', {'projectId': this.project.id})
-                .catch(function() {
-                    self.sync_failed = true;
+                .catch(function(err) {
+                    self.syncfailed = true;
+                    self.syncErrorMessage = err.notification ? err.notification : "Error. Unable to sync survey";
+                    self.toastVisible = true;
                 })
                 .finally(function(doc) {
                     self.syncing = false;

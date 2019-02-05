@@ -2,11 +2,14 @@
     <page-header-layout>
 
         <v-ons-splitter>
+            <v-ons-toast class="arches" :visible.sync="toastVisible" animation="fall">
+              {{syncErrorMessage}}
+              <button @click="toastVisible = false">x</button>
+            </v-ons-toast>
             <v-ons-splitter-side width="80%"
                 collapse="" side="right"
                 :open.sync="showSideNav" class="sidenav toolbar-header">
                 <v-ons-page>
-
                     <v-ons-list v-if="showAllProjectsMenuContent">
                         <v-ons-list-item class="panel-header">
                             <span class="panel-header-text label right-panel-label">All Projects</span>
@@ -130,7 +133,9 @@ export default {
             selectedProject: undefined,
             showUnjoinedProjects: false,
             showAllProjectsMenuContent: false,
-            server: this.$store.getters.activeServer
+            server: this.$store.getters.activeServer,
+            toastVisible: false,
+            syncErrorMessage: ''
         };
     },
     computed: {
@@ -207,8 +212,10 @@ export default {
             this.syncing = true;
             this.syncfailed = false;
             this.$store.dispatch('syncRemote', {'projectId': this.selectedProject.id})
-                .catch(function() {
+                .catch(function(err) {
                     self.syncfailed = true;
+                    self.syncErrorMessage = err.notification ? err.notification : "Error. Unable to sync survey";
+                    self.toastVisible = true;
                 })
                 .finally(function(doc) {
                     console.log('syncing done');
