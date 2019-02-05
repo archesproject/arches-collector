@@ -25,11 +25,11 @@
 
 export default {
     name: 'NodeValueWidget',
-    props: ['value', 'widget', 'node', 'tiles', 'context'],
+    props: ['value', 'widget', 'node', 'context'],
     data() {
         return {
             placeholder: this.widget.config.placeholder,
-            local_value: this.value,
+            local_value:  null,
             user: this.$store.getters.activeServer.user,
             allWidgets: this.$store.getters.activeGraph.widgets
         };
@@ -68,8 +68,9 @@ export default {
             get: function() {
                 var self = this;
                 var ret = {};
+                var val = this.local_value || this.value;
                 this.options.forEach(function(option){
-                     if(option.value === self.local_value){
+                     if(option.value === val){
                         ret = option;
                     }
                 })
