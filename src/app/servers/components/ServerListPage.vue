@@ -31,8 +31,8 @@
                             {{server.nickname}}<br>
                             <span class="application-list-item-url">{{server.url}}</span>
                         </span>
-                        <span class="manage-app-btn-panel">
-                            <v-ons-icon class="manage-app-btn" style="font-size: 19px;" v-if="selectedServer !== server" icon="fa-info-circle" @click="setSelectedServer($event, server);"></v-ons-icon>
+                        <span class="manage-app-btn-panel" @click="setSelectedServer($event, server);">
+                            <v-ons-icon class="manage-app-btn" style="font-size: 19px;" v-if="selectedServer !== server" icon="fa-info-circle"></v-ons-icon>
                         </span>
                     </v-ons-list-item>
                 </v-ons-list>
