@@ -109,10 +109,6 @@ export default {
             this.map.on('draw.update', () => this.updateDrawings('update'));
             this.map.on('draw.selectionchange', (e) => {
                 let mode = this.draw.getMode();
-                this.updateDrawings('selectionchange');
-                if (mode === 'simple_select' || mode === 'direct_select') {
-                    this.draw.changeMode('simple_select');
-                }
                 if (this.deleteActive) {
                     if (e.features) {
                         let fc = this.draw.getAll();
@@ -130,9 +126,15 @@ export default {
                     }
                     this.toggleDelete();
                 }
+                this.updateDrawings('selectionchange');
+                if (mode === 'simple_select' || mode === 'direct_select') {
+                    this.draw.changeMode('draw_point');
+                    this.draw.changeMode('simple_select');
+                }
             });
             this.map.on('draw.modechange', (e) => {
                 if (e.mode === 'simple_select' || e.mode === 'direct_select') {
+                    this.draw.changeMode('draw_point');
                     this.draw.changeMode('simple_select');
                 } else if (this.deleteActive) {
                     this.toggleDelete();
