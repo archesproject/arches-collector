@@ -479,6 +479,9 @@ var store = new Vuex.Store({
             }
             Vue.set(store.getters.currentProjects[projectId].lastsync, 'date', now.toISOString().split('T')[0].replace(/-/g, '/'));
             Vue.set(store.getters.currentProjects[projectId].lastsync, 'time', pad(now.getHours(), 2) + ':' + pad(now.getMinutes(), 2));
+            if (server.user_project_status[server.user.id] === undefined) {
+                server.user_project_status[server.user.id] = {};
+            }
             if (server.user_project_status[server.user.id][projectId] === undefined) {
                 server.user_project_status[server.user.id][projectId] = {joined: true};
             }
