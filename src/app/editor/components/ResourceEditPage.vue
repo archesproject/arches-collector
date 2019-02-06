@@ -288,7 +288,7 @@ export default {
             return tiles;
         },
         tileCount: function(card) {
-            return this.getCardTiles(card).length;
+            return !!card ? this.getCardTiles(card).length : 0;
         },
         hasTiles: function(card) {
             return this.tileCount(card) > 0;
@@ -300,8 +300,13 @@ export default {
             return false;
         },
         canDelete: function(tile) {
-            if (!!tile) {
-                return this.user.deletable_nodegroups.includes(tile.nodegroup_id) && (this.user.is_reviewer || (Object.keys(tile.data).length === 0 && Object.keys(tile.provisionaledits).length === 1 && Object.keys(tile.provisionaledits)[0] === String(this.user.id)));
+            if (!!tile && tile.provisionaledits) {
+                return this.user.deletable_nodegroups.includes(tile.nodegroup_id)
+                && (this.user.is_reviewer
+                    || (Object.keys(tile.data).length === 0
+                    && Object.keys(tile.provisionaledits).length === 1
+                    && Object.keys(tile.provisionaledits)[0] === String(this.user.id))
+                );
             }
             return false;
         },

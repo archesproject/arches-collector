@@ -213,6 +213,7 @@ export default {
             this.syncfailed = false;
             this.$store.dispatch('syncRemote', {'projectId': this.selectedProject.id})
                 .catch(function(err) {
+                    console.log(err);
                     self.syncfailed = true;
                     self.syncErrorMessage = err.notification ? err.notification : "Error. Unable to sync survey";
                     self.toastVisible = true;
