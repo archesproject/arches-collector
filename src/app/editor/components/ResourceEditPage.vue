@@ -69,7 +69,7 @@ import navlogicmixin from '../mixins/nav-logic';
 
 export default {
     name: 'ResourceEditPage',
-    props: ['goBack', 'resourceid', 'tiles', 'activeindex'],
+    props: ['goBack', 'tiles', 'activeindex'],
     mixins: [navlogicmixin],
     data() {
         return {

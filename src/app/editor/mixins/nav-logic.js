@@ -5,6 +5,17 @@ export default {
             allNodegroups: this.$store.getters.activeGraph.nodegroups
         };
     },
+    computed: {
+        resourceid: {
+            get: function() {
+                if (!!this.$store.getters.activeServer && this.$store.getters.activeServer.active_resource) {
+                    return this.$store.getters.activeServer.active_resource.resourceinstanceid;
+                } else {
+                    return null;
+                }
+            }
+        }
+    },
     methods: {
         setTileContext: function(tile, showForm, editorTab) {
             if (showForm === undefined) {

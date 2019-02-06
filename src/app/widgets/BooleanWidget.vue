@@ -41,15 +41,11 @@ export default {
     },
     methods: {
         getTextWidth: function(text, fontSize) {
-            var el = document.getElementById("textWidthElement");
-            var textContent = document.createTextNode(text);
-            el.innerHTML = '';
-            el.appendChild(textContent);
             var width = ((text.length*8) + 30);
             return width;
         },
         toggleButtonWidth() {
-            var f = this.getTextWidth(this.node.config.trueLabel, 12);
+            var f = this.getTextWidth(this.node.config.falseLabel, 12);
             var t = this.getTextWidth(this.node.config.trueLabel, 12);
             return f > t ? f : t;
         }
