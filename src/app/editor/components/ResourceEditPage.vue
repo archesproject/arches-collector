@@ -288,7 +288,7 @@ export default {
             return tiles;
         },
         tileCount: function(card) {
-            return !!card ? this.getCardTiles(card).length : 0
+            return !!card ? this.getCardTiles(card).length : 0;
         },
         hasTiles: function(card) {
             return this.tileCount(card) > 0;
