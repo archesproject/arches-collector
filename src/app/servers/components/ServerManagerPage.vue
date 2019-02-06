@@ -156,7 +156,8 @@ export default {
 <style scoped>
 
 .form-header {
-  background: #A8EEE9;
+  background: #A10408;
+  color: #fff;
   padding: 10px 0px;
 }
 
@@ -167,7 +168,6 @@ export default {
 .left-button-text {
     padding-left: 15px;
     font-size: 19px;
-    color: dimgrey;
 }
 
 .input {

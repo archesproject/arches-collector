@@ -277,8 +277,8 @@ export default {
         position: absolute;
         bottom: 5px;
         left: 5px;
-        width: 90%;
-        height: 190px;
+        right: 5px;
+        height: 205px;
         background-color: #1C2F42;
         border: 1px solid #0E2031;
         color: #fafafa;
@@ -304,7 +304,13 @@ export default {
         border: 1px solid #0E2031;
     }
     .popup-close {
-        margin-top: 2px;
+        height: 20px;
+        width: 20px;
+        padding: 5px;
+        margin-left: 8px;
+        /* background: #2D3C4B;
+        border: 1px solid #0E2031;
+        border-radius: 50%; */
     }
     @media screen and (max-height: 550px){
         .popup {
@@ -330,7 +336,7 @@ export default {
     }
     .icon-circle {
         box-sizing: border-box;
-        border: solid 1px #1B48DD;
+        border: solid 1px #0E2031;
         border-radius: 50%;
         height: 36px;
         width: 36px;
