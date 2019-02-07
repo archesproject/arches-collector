@@ -18,7 +18,7 @@
                             <v-ons-icon class="text-color-dark left menu-icon" icon="fa-toggle-on" v-if="showUnjoinedProjects === false"></v-ons-icon>
                             <v-ons-icon class="text-color-dark left menu-icon" icon="fa-toggle-off" v-else></v-ons-icon>
                             <div class="menu-text" v-if="showUnjoinedProjects === false">
-                                <span class="text-color-dark">Show projects I've left</span>
+                                <span class="text-color-dark">Show all projects</span>
                                 <span class="menu-subtext">List all projects regardless of status</span>
                             </div>
                             <div class="menu-text" v-else>
@@ -36,7 +36,7 @@
                     </v-ons-list>
 
                     <v-ons-list v-else>
-                        <v-ons-list-item class="panel-header" tappable @click="sync">
+                        <v-ons-list-item class="panel-header">
                             <span class="panel-header-text label right-panel-label" v-if="selectedProject">{{selectedProject.name}}</span>
                         </v-ons-list-item @click="">
                         <v-ons-list-item tappable @click="sync" v-if="selectedProject && !selectedProject.deleted && selectedProject.joined">
@@ -62,7 +62,7 @@
                                 <span class="menu-subtext">Resume synching with this active project</span>
                             </div>
                         </v-ons-list-item @click="">
-                        <v-ons-list-item tappable @click="$ons.notification.confirm({message: 'Are you sure you want to delete this Project? All unsynched data will be lost.', callback: deleteProject})">
+                        <v-ons-list-item tappable v-if="selectedProject && !selectedProject.deleted && selectedProject.joined" @click="$ons.notification.confirm({message: 'Are you sure you want to delete this Project? All unsynched data will be lost.', callback: deleteProject})">
                             <v-ons-icon class="text-color-dark left menu-icon" icon="fa-trash"></v-ons-icon>
                             <div class="menu-text">
                                 <span class="text-color-dark">Delete this project from my device</span>
@@ -79,7 +79,7 @@
                     <span class="left projects-title"><span>Projects</span></span>
                     <div class="center"></div>
                     <div class="right">
-                        <v-ons-toolbar-button @click="toggleSideNav(projects)">
+                        <v-ons-toolbar-button @click="toggleSideNav()">
                             <v-ons-icon class="text-color-dark project-name" icon="fa-wrench"></v-ons-icon>
                         </v-ons-toolbar-button>
                     </div>
@@ -132,7 +132,7 @@ export default {
             syncfailed: false,
             selectedProject: undefined,
             showUnjoinedProjects: false,
-            showAllProjectsMenuContent: false,
+            showAllProjectsMenuContent: true,
             server: this.$store.getters.activeServer,
             toastVisible: false,
             syncErrorMessage: ''
@@ -195,13 +195,8 @@ export default {
             return userProjectStatus;
         },
         toggleSideNav: function(project) {
-            if (project && project.length) {
-                this.selectedProject = undefined;
-                this.showAllProjectsMenuContent = true;
-            } else {
-                this.showAllProjectsMenuContent = false;
-                this.selectedProject = project;
-            }
+            this.showAllProjectsMenuContent = !project;
+            this.selectedProject = project;
             this.showSideNav = !this.showSideNav;
         },
         toggleShowUnjoined: function(project) {
@@ -233,7 +228,7 @@ export default {
                     .finally(function(doc) {
                         var index = self.$underscore.findIndex(self.projects, { id: self.selectedProject.id });
                         window.setTimeout(function() {
-                            self.toggleSideNav(undefined)
+                            self.toggleSideNav()
                             self.projects = self.projects.splice(index, 1)
                         }, 250);
                     });
@@ -252,7 +247,7 @@ export default {
                         });
                     }
                     window.setTimeout(function() {
-                        self.toggleSideNav(undefined)
+                        self.toggleSideNav()
                     }, 250);
                 });
             } else {
@@ -269,7 +264,7 @@ export default {
                     .finally(function(doc) {
                         var index = self.$underscore.findIndex(self.projects, { id: self.selectedProject.id });
                         window.setTimeout(function() {
-                            self.toggleSideNav(undefined)
+                            self.toggleSideNav()
                         }, 150);
                     }, this);
             } else {
