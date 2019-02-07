@@ -3,7 +3,7 @@
         <div class="card-container">
             <span class="card-label">
                 <span>{{card.name}}</span>
-                <span v-if="canEdit(card)" @click="segueToForm(card)" class="fa5 fa-pencil-alt edit-card"></span>
+                <span v-if="canEdit(card) && parentHasData" @click="segueToForm(card)" class="fa5 fa-pencil-alt edit-card"></span>
             </span>
             <div>
                 <div class="report widget-value" style="padding-left:5px" v-if="card.tile === null">No data yet added</div>
@@ -31,6 +31,25 @@ export default {
             user: this.$store.getters.activeServer.user
         };
     },
+    computed: {
+        tabIndex: {
+            get: function() {
+                return this.activeIndex;
+            },
+            set: function(val) {
+                this.activeIndex = val;
+            }
+        },
+        parentHasData: function() {
+            var parentCard = this.$parent.card;
+            if (!parentCard) {
+                return true;
+            } else {
+                console.log(this.$parent.card);
+                return parentCard.tile !== null;
+            }
+        }
+    },
     methods: {
         updateActiveIndex: function(event) {
             this.$emit('switch-tabs', 1);
@@ -42,23 +61,21 @@ export default {
                     return t.tileid === card.tile.tileid;
                 });
             }
-            this.setTileContext(dbtile, undefined, 0);
+
+            // we set this.tile so that if we have to create a blank tile
+            // we have a proper parent tile id  (see getBlankTile)
+            var parentCard = this.$parent.card;
+            if (parentCard) {
+                this.tile = parentCard.tile;
+            }
+
+            this.setTileContext(dbtile, true, 0);
             // remove all of the stack except the last item and set the 
             // editorTab value to take us back to the report
             this.$store.getters.activeServer.card_nav_stack = [
                 this.$store.getters.activeServer.card_nav_stack[0]
             ]
             this.$emit('switch-tabs', 1);
-        }
-    },
-    computed: {
-        tabIndex: {
-            get: function() {
-                return this.activeIndex;
-            },
-            set: function(val) {
-                this.activeIndex = val;
-            }
         }
     }
 };
