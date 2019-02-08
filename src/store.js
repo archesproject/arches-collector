@@ -431,6 +431,7 @@ var store = new Vuex.Store({
             store.dispatch('saveServerInfoToPouch');
         },
         updateProjects: function(state, serverDoc) {
+            console.log('updating projects');
             var server = store.getters.server(serverDoc.url);
             var remoteProjectIds = serverDoc.projects.map(function(p) { return p.id; });
             for (var projectid in server.projects) {
@@ -533,6 +534,11 @@ var store = new Vuex.Store({
             } else {
                 server.user_project_status[server.user.id][projectId].joined = !server.user_project_status[server.user.id][projectId].joined;
             }
+            store.dispatch('saveServerInfoToPouch');
+        },
+        toggleBasemapSource: function(state, project) {
+            var server = this.getters.activeServer;
+            Vue.set(server.projects[project.id], 'useonlinebasemaps', project.useonlinebasemaps);
             store.dispatch('saveServerInfoToPouch');
         },
         deleteProject: function(state, projectId) {
@@ -714,6 +720,9 @@ var store = new Vuex.Store({
                             date: '',
                             time: ''
                         };
+                        console.log('getting remote and setting up projects')
+                        project.useonlinebasemaps = (project.useonlinebasemaps === null || project.useonlinebasemaps === undefined) ? true : project.useonlinebasemaps;
+                        project.hasofflinebasemaps = !!project.tilecache;
                         project.resources_to_sync = {};
                         project.resources_with_conflicts = {};
                         project.newly_created_resources = {};

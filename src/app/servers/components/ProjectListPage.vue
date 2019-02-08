@@ -69,6 +69,15 @@
                                 <span class="menu-subtext">Remove inactive project from my device</span>
                             </div>
                         </v-ons-list-item @click="">
+                        <v-ons-list-item tappable v-if="selectedProject && !selectedProject.unavailable && selectedProject.joined" v-bind:disabled="selectedProject.hasofflinebasemaps === false" @click="toggleMapSource">
+                            <v-ons-icon class="text-color-dark left menu-icon" icon="fa-signal"></v-ons-icon>
+                            <div class="menu-text">
+                                <span class="text-color-dark"  v-if="selectedProject.useonlinebasemaps">Use offline maps</span>
+                                <span class="text-color-dark"  v-else>Use online maps</span>
+                                <span class="menu-subtext" v-if="selectedProject.hasofflinebasemaps">Use your projects offline basemap</span>
+                                <span class="menu-subtext" v-else>The project does not have an offline basemap</span>
+                            </div>
+                        </v-ons-list-item @click="">
                     </v-ons-list>
                 </v-ons-page>
             </v-ons-splitter-side>
@@ -235,6 +244,13 @@ export default {
             } else {
                 console.log('not deleting project');
             }
+        },
+        toggleMapSource: function() {
+            this.selectedProject.useonlinebasemaps = !this.selectedProject.useonlinebasemaps;
+            this.$store.dispatch('toggleBasemapSource', this.selectedProject)
+                .catch(function() {
+                    console.log('failed switch source');
+                });
         },
         deleteAllInactiveProjects: function(answer){
             var self = this;
