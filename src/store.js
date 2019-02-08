@@ -434,9 +434,9 @@ var store = new Vuex.Store({
             var server = store.getters.server(serverDoc.url);
             var remoteProjectIds = serverDoc.projects.map(function(p) { return p.id; });
             for (var projectid in server.projects) {
-                Vue.set(server.projects[projectid], 'deleted', false);
+                Vue.set(server.projects[projectid], 'unavailable', false);
                 if (remoteProjectIds.indexOf(projectid) < 0) {
-                    server.projects[projectid].deleted = true;
+                    server.projects[projectid].unavailable = true;
                 }
             };
 
@@ -465,9 +465,6 @@ var store = new Vuex.Store({
         },
         setActiveGraphId: function(state, value) {
             store.getters.activeServer.active_graph_id = value;
-        },
-        identifyDeletedProjects: function(state) {
-            this.currentProjects();
         },
         setLastProjectSync: function(state, projectId) {
             var now = new Date();
