@@ -84,7 +84,6 @@
                         </v-ons-toolbar-button>
                     </div>
                 </v-ons-toolbar>
-
                 <v-ons-pull-hook
                   :action="refreshProjectList"
                   @changestate="state = $event.state">
@@ -94,6 +93,7 @@
                 </v-ons-pull-hook>
 
                 <v-ons-list>
+                    <v-ons-progress-bar indeterminate v-if="updating"></v-ons-progress-bar>
                     <v-ons-progress-bar indeterminate v-if="syncing"></v-ons-progress-bar>
                     <v-ons-list-item tappable modifier="longdivider" v-for="project in projects" :key="project.id" v-bind:class="{ deleted: project.unavailable, unjoined: project.joined === false }">
                         <span class="left" style="display: flex; flex-direction: column; align-items: baseline; line-height: 1.1em; border-style: 1px; background-color: light-blue; border-color: dark-blue;" @click="segueToProject(project);">
@@ -129,6 +129,7 @@ export default {
             state: 'initial',
             showSideNav: false,
             syncing: false,
+            updating: false,
             syncfailed: false,
             selectedProject: undefined,
             showUnjoinedProjects: false,
@@ -264,7 +265,7 @@ export default {
                     .finally(function(doc) {
                         var index = self.$underscore.findIndex(self.projects, { id: self.selectedProject.id });
                         window.setTimeout(function() {
-                            self.toggleSideNav()
+                            self.toggleSideNav();
                         }, 150);
                     }, this);
             } else {
@@ -273,6 +274,7 @@ export default {
         },
         refreshProjectList(done) {
             var self = this;
+            this.updating = true;
             this.$store.dispatch('getUserProfile', this.server)
             .then(function(response){
                 if (response.ok) {
@@ -289,19 +291,18 @@ export default {
             })
             .then(function(response){
                 self.server.user = response;
-                return self.$store.dispatch('getRemoteProjects', self.server)
-                .finally(function() {
-                    done();
-                });
+                return self.$store.dispatch('getRemoteProjects', self.server);
             })
+            .finally(function(){
+                done();
+                window.setTimeout(function() {
+                    self.updating = false;
+                }, 1000);
+            });
         }
     },
     created: function() {
-        var self = this;
-        console.log('loading page');
-        this.state == 'action';
         this.refreshProjectList(function(){
-            self.state = undefined;
         });
     }
 };
