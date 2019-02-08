@@ -3,7 +3,7 @@
     <v-ons-toolbar class="app-header-toolbar">
         <div class="left">
             <v-ons-toolbar-button class="left-button-offset">
-                <img src="../../../assets/img/arches_logo_light.png" width="20"></img>
+                <img src="../../../assets/img/arches_logo_light.png" width="20" @click="goTo('serverlist');"></img>
                 <span v-if="$route.name === 'serverlist' || $route.name === 'projectlist'" class="left-button-text" @click="goTo('serverlist');">
                     Arches Apps
                 </span>
@@ -25,9 +25,6 @@
         </div>
         <div class="center"></div>
         <div class="right">
-            <v-ons-toolbar-button class="app-right-button">
-                <v-ons-icon icon="ion-easel"></v-ons-icon>
-            </v-ons-toolbar-button>
         </div>
     </v-ons-toolbar>
 </template>
