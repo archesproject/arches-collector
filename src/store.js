@@ -401,8 +401,9 @@ var store = new Vuex.Store({
             newServer.active_graph_id = '';
             newServer.active_resource = null;
             newServer.card_nav_stack = [];
-            newServer.user_project_status = {};
-            newServer.user_project_status[newServer.user.id] = {};
+            newServer.user_preferences = {};
+            newServer.user_preferences[newServer.user.id] = {};
+            newServer.user_preferences[newServer.user.id]['projects'] = {};
             if (typeof store.getters.server(newServer.url) === 'undefined') {
                 Vue.set(state.dbs.app_servers.servers, newServer.url, newServer);
             } else {
@@ -476,11 +477,12 @@ var store = new Vuex.Store({
             }
             Vue.set(store.getters.currentProjects[projectId].lastsync, 'date', now.toISOString().split('T')[0].replace(/-/g, '/'));
             Vue.set(store.getters.currentProjects[projectId].lastsync, 'time', pad(now.getHours(), 2) + ':' + pad(now.getMinutes(), 2));
-            if (server.user_project_status[server.user.id] === undefined) {
-                server.user_project_status[server.user.id] = {};
+            if (server.user_preferences[server.user.id] === undefined) {
+                server.user_preferences[server.user.id] = {};
+                server.user_preferences[server.user.id]['projects'] = {};
             }
-            if (server.user_project_status[server.user.id][projectId] === undefined) {
-                server.user_project_status[server.user.id][projectId] = {joined: true};
+            if (server.user_preferences[server.user.id]['projects'][projectId] === undefined) {
+                server.user_preferences[server.user.id]['projects'][projectId] = {joined: true};
             }
             store.dispatch('saveServerInfoToPouch');
         },
@@ -525,13 +527,14 @@ var store = new Vuex.Store({
         },
         toggleProjectParticipation: function(state, projectId) {
             var server = this.getters.activeServer;
-            if (server.user_project_status[server.user.id] === undefined) {
-                server.user_project_status[server.user.id] = {};
+            if (server.user_preferences[server.user.id] === undefined) {
+                server.user_preferences[server.user.id] = {};
+                server.user_preferences[server.user.id]['projects'] = {};
             }
-            if (server.user_project_status[server.user.id][projectId] === undefined) {
-                server.user_project_status[server.user.id][projectId] = {joined: false};
+            if (server.user_preferences[server.user.id]['projects'][projectId] === undefined) {
+                server.user_preferences[server.user.id]['projects'][projectId] = {joined: false};
             } else {
-                server.user_project_status[server.user.id][projectId].joined = !server.user_project_status[server.user.id][projectId].joined;
+                server.user_preferences[server.user.id]['projects'][projectId].joined = !server.user_preferences[server.user.id][projectId].joined;
             }
             store.dispatch('saveServerInfoToPouch');
         },
@@ -544,8 +547,8 @@ var store = new Vuex.Store({
                     if (store.getters.activeServer.projects[projectId]) {
                         delete store.getters.activeServer.projects[projectId];
                         var server = store.getters.activeServer;
-                        if (server.user_project_status[server.user.id] && server.user_project_status[server.user.id][projectId]) {
-                            delete server.user_project_status[server.user.id][projectId];
+                        if (server.user_preferences[server.user.id] && server.user_preferences[server.user.id]['projects'][projectId]) {
+                            delete server.user_preferences[server.user.id]['projects'][projectId];
                         }
                         store.dispatch('saveServerInfoToPouch');
                     }

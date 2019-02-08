@@ -190,8 +190,8 @@ export default {
         },
         getProjectStatus: function() {
             var userProjectStatus;
-            if (this.server && this.server.user_project_status) {
-                userProjectStatus = this.$store.getters.activeServer.user_project_status[this.server.user.id]
+            if (this.server && this.server.user_preferences && this.server.user_preferences[this.server.user.id]) {
+                userProjectStatus = this.server.user_preferences[this.server.user.id]['projects'];
             }
             return userProjectStatus;
         },
