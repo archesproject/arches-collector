@@ -838,9 +838,9 @@ var store = new Vuex.Store({
             });
             docs.push(resource);
             return pouchDBs.deleteDocs(project.id, docs)
-            .then(function(){
-                Vue.delete(project.newly_created_resources, resource.resourceinstanceid);
-            });
+                .then(function() {
+                    Vue.delete(project.newly_created_resources, resource.resourceinstanceid);
+                });
         },
         getProjectResourcesGeoJSON: function({commit, state}, projectId) {
             return pouchDBs.getResourcesGeoJSON(projectId);
