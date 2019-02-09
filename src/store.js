@@ -534,7 +534,7 @@ var store = new Vuex.Store({
             if (server.user_preferences[server.user.id]['projects'][projectId] === undefined) {
                 server.user_preferences[server.user.id]['projects'][projectId] = {joined: false};
             } else {
-                server.user_preferences[server.user.id]['projects'][projectId].joined = !server.user_preferences[server.user.id][projectId].joined;
+                server.user_preferences[server.user.id]['projects'][projectId].joined = !server.user_preferences[server.user.id]['projects'][projectId].joined;
             }
             store.dispatch('saveServerInfoToPouch');
         },
