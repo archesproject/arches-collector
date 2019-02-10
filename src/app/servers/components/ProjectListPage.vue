@@ -170,6 +170,9 @@ export default {
                 var projectList = [...activeProjects, ...inActiveProjects].filter(function(p){
                     var projectStatus = self.getProjectStatus();
                     if (projectStatus) {
+                        if (projectStatus[p.id]) {
+                            p.useonlinebasemaps = projectStatus[p.id].useonlinebasemaps;
+                        }
                         if (projectStatus[p.id] && (projectStatus[p.id].joined || self.showUnjoinedProjects) ) {
                             p.joined = projectStatus[p.id].joined
                             return p;
@@ -247,8 +250,7 @@ export default {
             }
         },
         toggleMapSource: function() {
-            this.selectedProject.useonlinebasemaps = !this.selectedProject.useonlinebasemaps;
-            this.$store.dispatch('toggleBasemapSource', this.selectedProject)
+            this.$store.dispatch('toggleBasemapSource', this.selectedProject.id)
                 .catch(function() {
                     console.log('failed switch source');
                 });

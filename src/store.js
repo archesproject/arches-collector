@@ -536,9 +536,16 @@ var store = new Vuex.Store({
             }
             store.dispatch('saveServerInfoToPouch');
         },
-        toggleBasemapSource: function(state, project) {
+        toggleBasemapSource: function(state, projectId) {
             var server = this.getters.activeServer;
-            Vue.set(server.projects[project.id], 'useonlinebasemaps', project.useonlinebasemaps);
+            if (server.user_preferences[server.user.id]['projects'] === undefined) {
+                server.user_preferences[server.user.id]['projects'] = {projects: {}};
+            }
+            if (server.user_preferences[server.user.id]['projects'][projectId] === undefined) {
+                server.user_preferences[server.user.id]['projects'][projectId] = {useonlinebasemaps: false};
+            } else {
+                server.user_preferences[server.user.id]['projects'][projectId].useonlinebasemaps = !server.user_preferences[server.user.id]['projects'][projectId].useonlinebasemaps;
+            }
             store.dispatch('saveServerInfoToPouch');
         },
         deleteProject: function(state, projectId) {
