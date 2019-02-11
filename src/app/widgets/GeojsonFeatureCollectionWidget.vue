@@ -128,13 +128,11 @@ export default {
                 }
                 this.updateDrawings('selectionchange');
                 if (mode === 'simple_select' || mode === 'direct_select') {
-                    this.draw.changeMode('draw_point');
                     this.draw.changeMode('simple_select');
                 }
             });
             this.map.on('draw.modechange', (e) => {
                 if (e.mode === 'simple_select' || e.mode === 'direct_select') {
-                    this.draw.changeMode('draw_point');
                     this.draw.changeMode('simple_select');
                 } else if (this.deleteActive) {
                     this.toggleDelete();
