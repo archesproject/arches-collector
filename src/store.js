@@ -411,14 +411,6 @@ var store = new Vuex.Store({
             store.commit('setActiveServer', newServer.url);
             store.dispatch('saveServerInfoToPouch');
         },
-        // updateServer: function(state, serverObj) {
-        //     if (typeof store.getters.server(serverObj.url) !== 'undefined') {
-        //         Object.keys(serverObj).forEach(function(serverProps) {
-        //             state.dbs.app_servers.servers[serverObj.url][serverProps] = serverObj[serverProps];
-        //         });
-        //         store.dispatch('saveServerInfoToPouch');
-        //     }
-        // },
         deleteServer: function(state, serverurl) {
             Object.keys(state.dbs.app_servers.servers[serverurl].projects).forEach(function(projectid) {
                 store.dispatch('deleteProject', projectid);
@@ -482,6 +474,11 @@ var store = new Vuex.Store({
             if (server.user_preferences[server.user.id]['projects'][projectId] === undefined) {
                 server.user_preferences[server.user.id]['projects'][projectId] = {joined: true, useonlinebasemaps: true};
             }
+            store.dispatch('saveServerInfoToPouch');
+        },
+        updateUserPrefByKey: function(state, {userPrefKey, userPref}) {
+            var server = store.getters.activeServer;
+            server.user_preferences[server.user.id][userPrefKey] = userPref;
             store.dispatch('saveServerInfoToPouch');
         },
         updateResourceEditDateAndDescriptors: function(state, resource) {
