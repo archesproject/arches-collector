@@ -69,6 +69,16 @@
                                 <span class="menu-subtext">Remove inactive project from my device</span>
                             </div>
                         </v-ons-list-item @click="">
+                        <v-ons-list-item tappable v-if="selectedProject && !selectedProject.unavailable && selectedProject.joined" v-bind:disabled="selectedProject.hasofflinebasemaps === false" @click="toggleMapSource">
+                            <v-ons-icon class="text-color-dark left menu-icon" v-if="selectedProject.useonlinebasemaps === true" icon="fa-toggle-off"></v-ons-icon>
+                            <v-ons-icon class="text-color-dark left menu-icon" v-if="selectedProject.useonlinebasemaps === false" icon="fa-toggle-on"></v-ons-icon>
+                            <v-ons-icon class="text-color-dark left menu-icon" v-if="selectedProject.useonlinebasemaps === undefined" icon="fa-globe"></v-ons-icon>
+                            <div class="menu-text">
+                                <span class="text-color-dark">Use offline maps</span>
+                                <span class="menu-subtext" v-if="selectedProject.hasofflinebasemaps">Use your projects offline basemap</span>
+                                <span class="menu-subtext" v-else>The project does not have an offline basemap</span>
+                            </div>
+                        </v-ons-list-item @click="">
                     </v-ons-list>
                 </v-ons-page>
             </v-ons-splitter-side>
@@ -161,6 +171,9 @@ export default {
                 var projectList = [...activeProjects, ...inActiveProjects].filter(function(p){
                     var projectStatus = self.getProjectStatus();
                     if (projectStatus) {
+                        if (projectStatus[p.id]) {
+                            p.useonlinebasemaps = projectStatus[p.id].useonlinebasemaps;
+                        }
                         if (projectStatus[p.id] && (projectStatus[p.id].joined || self.showUnjoinedProjects) ) {
                             p.joined = projectStatus[p.id].joined
                             return p;
@@ -236,6 +249,15 @@ export default {
             } else {
                 console.log('not deleting project');
             }
+        },
+        toggleMapSource: function() {
+            this.getProjectStatus();
+            this.$store.dispatch('toggleBasemapSource', this.selectedProject.id)
+                .catch(function() {
+                    console.log('failed switch source');
+                });
+            this.selectedProject.useonlinebasemaps = this.$store.getters.activeServer.user_preferences[this.server.user.id].projects[this.selectedProject.id].useonlinebasemaps
+            console.log(this.selectedProject.useonlinebasemaps);
         },
         deleteAllInactiveProjects: function(answer){
             var self = this;

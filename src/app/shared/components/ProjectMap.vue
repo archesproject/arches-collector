@@ -56,6 +56,7 @@ export default {
     props: ['extent'],
     data() {
         var project = this.$store.getters.activeProject;
+        console.log(project);
         return {
             project: project,
             mapId: `project-map-${uuidv4()}`,
@@ -222,33 +223,19 @@ export default {
                 self.changes = doc;
             });
 
-        var isOffline = 'onLine' in navigator && !navigator.onLine && window.device;
-
-        var useOfflineMaps = function() {
-            var useoffline = false;
-            if (self.project.tilecache) {
-                if (!self.project.onlinebasemaps) {
-                    useoffline = true;
-                } else if (self.project.onlinebasemaps && !self.project.onlinebasemaps.default) {
-                    useoffline = true;
-                }
-            }
-            return useoffline;
-        };
-
-        if (isOffline || useOfflineMaps()) {
-            this.setupBasemaps()
-                .then(this.getResourceData)
-                .then(this.mapOfflineInit)
-                .then(() => {
-                    this.loading = false;
-                }).catch(function(err) {
-                    console.log('Unable to initialize offline basemap', err);
-                });
-        } else {
+        if (this.project.useonlinebasemaps) {
             self.getResourceData().then(
                 self.mapOnlineInit
             );
+        } else {
+            this.setupBasemaps()
+            .then(this.getResourceData)
+            .then(this.mapOfflineInit)
+            .then(() => {
+                this.loading = false;
+            }).catch(function(err) {
+                console.log('Unable to initialize offline basemap', err);
+            });
         }
 
         var resourceTypes = {};
