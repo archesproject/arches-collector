@@ -142,7 +142,7 @@ export default {
             updating: false,
             syncfailed: false,
             selectedProject: undefined,
-            showUnjoinedProjects: false,
+            showUnjoinedProjects: true,
             showAllProjectsMenuContent: true,
             server: this.$store.getters.activeServer,
             toastVisible: false,
@@ -215,6 +215,7 @@ export default {
         },
         toggleShowUnjoined: function(project) {
             this.showUnjoinedProjects = !this.showUnjoinedProjects;
+            this.$store.commit('updateUserPrefByKey', {'userPrefKey': 'showUnjoinedProjects', 'userPref': this.showUnjoinedProjects});
         },
         sync: function() {
             var self = this;
@@ -324,6 +325,7 @@ export default {
         }
     },
     created: function() {
+        this.showUnjoinedProjects = this.server.user_preferences[this.server.user.id]['showUnjoinedProjects'];
         this.refreshProjectList(function(){
         });
     }
