@@ -916,7 +916,6 @@ var store = new Vuex.Store({
                     target.getFile(mbtilesFile, {}, resolve, reject);
                 }).catch(() => {
                     return new Promise((resolve, reject) => {
-                        console.log('downloading mbtiles file');
                         new window.FileTransfer().download(
                             encodeURI(project.tilecache),
                             target.toURL() + mbtilesFile,
