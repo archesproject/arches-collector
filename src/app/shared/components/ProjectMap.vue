@@ -228,8 +228,7 @@ export default {
                 self.mapOnlineInit
             );
         } else {
-            this.setupBasemaps()
-            .then(this.getResourceData)
+            this.getResourceData()
             .then(this.mapOfflineInit)
             .then(() => {
                 this.loading = false;
