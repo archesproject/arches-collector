@@ -190,9 +190,9 @@ export default {
             var circleColorExpression = ["match", ["get", "graph_id"]];
             this.project.graphs.forEach(function(graph) {
                 circleColorExpression.push(graph.graphid);
-                circleColorExpression.push(graph.color || '#ffffff');
+                circleColorExpression.push(graph.color || '#d7e0f8');
             });
-            circleColorExpression.push('#123456');
+            circleColorExpression.push('#d7e0f8');
 
             map.addLayer({
                 id: "resource-point",
@@ -200,7 +200,7 @@ export default {
                 source: "resources",
                 paint: {
                     "circle-color": circleColorExpression,
-                    "circle-radius": 4,
+                    "circle-radius": 5,
                     "circle-stroke-width": 1,
                     "circle-stroke-color": "#cccccc"
                     }
