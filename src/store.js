@@ -722,6 +722,12 @@ var store = new Vuex.Store({
                         project.joined = undefined;
                         project.useonlinebasemaps = server.user_preferences[server.user.id].projects[project.id];
                         project.hasofflinebasemaps = !!project.tilecache;
+                        if (project.hasofflinebasemaps) {
+                            store.dispatch(
+                                'setupProjectBasemaps',
+                                project
+                            );
+                        };
                         project.resources_to_sync = {};
                         project.resources_with_conflicts = {};
                         project.newly_created_resources = {};
@@ -916,6 +922,8 @@ var store = new Vuex.Store({
                         );
                     }).catch(error => { console.log(error.message, 'Be sure your project has an mbtiles file url'); });
                 });
+            }).finally(function(response) {
+                console.log('download finished');
             });
         }
     }

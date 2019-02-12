@@ -319,7 +319,9 @@ export default {
             .finally(function(){
                 done();
                 window.setTimeout(function() {
-                    self.updating = false;
+                    if (!!self.updating) {
+                        self.updating = false;
+                    }
                 }, 1000);
             });
         }
