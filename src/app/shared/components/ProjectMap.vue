@@ -187,28 +187,28 @@ export default {
             });
         },
         addResourceMarkers: function(map) {
-            map.loadImage('static/map/marker.png', (err, img) => {
-                if (err) throw err;
-                const markerName = 'marker-pin';
-                map.addImage(markerName, img);
-                map.addLayer({
-                    id: 'resource-markers',
-                    type: 'symbol',
-                    source: 'resources',
-                    layout: {
-                        'icon-image': markerName,
-                        'icon-allow-overlap': true,
-                        'icon-offset': [
-                            0,
-                            -86
-                        ],
-                        'icon-size': 0.15
+            var circleColorExpression = ["match", ["get", "graph_id"]];
+            this.project.graphs.forEach(function(graph) {
+                circleColorExpression.push(graph.graphid);
+                circleColorExpression.push(graph.color || '#ffffff');
+            });
+            circleColorExpression.push('#123456');
+
+            map.addLayer({
+                id: "resource-point",
+                type: "circle",
+                source: "resources",
+                paint: {
+                    "circle-color": circleColorExpression,
+                    "circle-radius": 4,
+                    "circle-stroke-width": 1,
+                    "circle-stroke-color": "#cccccc"
                     }
-                });
-                map.on('click', 'resource-markers', (e) => {
-                    const feature = e.features[0];
-                    this.selectedResource = feature.properties;
-                });
+            });
+
+            map.on('click', 'resource-point', (e) => {
+                const feature = e.features[0];
+                this.selectedResource = feature.properties;
             });
         },
         stopPropagation: function(e) {
