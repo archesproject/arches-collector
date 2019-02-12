@@ -112,6 +112,11 @@ window.archesvue = new Vue({
     template: '<router-view></router-view>',
     beforeMount() {
         const html = document.documentElement;
+        this.$ons._ons.ready(() => {
+            if (this.$ons._ons.fastClick) {
+                this.$ons._ons.fastClick.destroy();
+            }
+        });
         if (this.$ons.platform.isIPhoneX()) {
             html.setAttribute('onsflag-iphonex-portrait', '');
             html.setAttribute('onsflag-iphonex-landscape', '');

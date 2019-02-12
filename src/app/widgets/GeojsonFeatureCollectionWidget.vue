@@ -8,6 +8,9 @@
                             'mapboxgl-ctrl-fullscreen': !fullscreenActive
                     }"></button>
             </div>
+            <div class="mapboxgl-ctrl-group mapboxgl-ctrl delete-control">
+                <button class="mapbox-gl-draw_ctrl-draw-btn mapbox-gl-draw_trash" title="Delete" v-on:click="toggleDelete"></button>
+            </div>
         </div>
         <div v-if="context=='editor'">
             <div class="editor widget-label">{{widget.label}}</div>
@@ -43,7 +46,8 @@ export default {
     props: ['value', 'widget', 'context'],
     data() {
         return {
-            fullscreenActive: false
+            fullscreenActive: false,
+            deleteActive: false
         };
     },
     computed: {
@@ -89,18 +93,51 @@ export default {
             else this.initReport();
         },
         initDraw() {
+            const deleteEl = this.$el.querySelector('.delete-control');
             this.draw = new MapboxDraw({
                 controls: {
                     'combine_features': false,
-                    'uncombine_features': false
+                    'uncombine_features': false,
+                    'trash': false
                 }
             });
             this.map.addControl(this.draw, 'top-left');
             this.draw.add(this.featureCollection);
+            this.map.addControl(new GenericControl(deleteEl), 'top-left');
             this.map.on('draw.delete', () => this.updateDrawings('delete'));
             this.map.on('draw.create', () => this.updateDrawings('create'));
             this.map.on('draw.update', () => this.updateDrawings('update'));
-            this.map.on('draw.selectionchange', () => this.updateDrawings('selectionchange'));
+            this.map.on('draw.selectionchange', (e) => {
+                let mode = this.draw.getMode();
+                if (this.deleteActive) {
+                    if (e.features) {
+                        let fc = this.draw.getAll();
+                        let features = [];
+                        let featureIds = e.features.map((feature) => {
+                            return feature.id;
+                        });
+                        fc.features.forEach((feature) => {
+                            if (featureIds.indexOf(feature.id) < 0) {
+                                features.push(feature);
+                            }
+                        });
+                        fc.features = features;
+                        this.draw.set(fc);
+                    }
+                    this.toggleDelete();
+                }
+                this.updateDrawings('selectionchange');
+                if (mode === 'simple_select' || mode === 'direct_select') {
+                    this.draw.changeMode('simple_select');
+                }
+            });
+            this.map.on('draw.modechange', (e) => {
+                if (e.mode === 'simple_select' || e.mode === 'direct_select') {
+                    this.draw.changeMode('simple_select');
+                } else if (this.deleteActive) {
+                    this.toggleDelete();
+                }
+            });
         },
         initReport() {
             let style = this.map.getStyle();
@@ -143,6 +180,9 @@ export default {
         },
         toggleFullscreen() {
             this.fullscreenActive = !this.fullscreenActive;
+        },
+        toggleDelete() {
+            this.deleteActive = !this.deleteActive;
         }
     },
     destroyed() {
