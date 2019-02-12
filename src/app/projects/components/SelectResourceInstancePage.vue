@@ -9,12 +9,13 @@
             <span class='resource-model-title'>
                 <span style="padding-left: 0; padding-right: 10px;">{{resource_instance.displayname.replace(/['"]+/g,'')}}</span>
                 <span v-if="resource_instance.edited" class='resource-model-subtitle'>
-                    Last edit: {{resource_instance.datetime}}</span>
+                    Edit: {{resource_instance.datetime}}</span>
                 <span v-else class='resource-model-subtitle'>Unedited</span>
             </span>
-            <span v-if="resource_instance.resourceinstanceid in $store.getters.activeProject.newly_created_resources" class="resource-delete">
-                <span class="fa5 fa-trash" @click="deleteTile(resource_instance, $event)"></span>
+            <span v-if="resource_instance.resourceinstanceid in $store.getters.activeProject.newly_created_resources" @click="deleteTile(resource_instance, $event)" class="resource-delete">
+                <span class="fa5 fa-trash"></span>
             </span>
+
         </v-ons-list-item>
     </v-ons-list>
 </v-ons-page>
@@ -160,6 +161,7 @@ export default {
     padding-top: 0px;
     margin-top: -1px;
     color: #999;
+    letter-spacing: -0.01em;
 }
 .resource-model-icon {
     text-align: center;
@@ -177,13 +179,20 @@ export default {
     background: #d7e0f8;
     opacity: .7;
 }
+
 .icon-circle.edited {
     opacity: 1;
 }
-@media screen and (min-width: 350px){
-    .resource-delete {
-        color: rgb(81,74,116);
-        padding-right: 10px;
-    }
+
+.resource-delete {
+    padding: 22px 22px;
+    border-left: 1px solid #ddd;
+    background: rgba(225,225,225,0.50);
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    vertical-align: middle;
 }
+
 </style>
