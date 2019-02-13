@@ -102,9 +102,9 @@ window.archesvue = new Vue({
                     if (store.getters.activeServer) {
                     // go to the last active server and project
                         self.$router.push({'name': 'projectlist'});
-                    } else {
-                    // if there is no servers listed, then jump to the ServerManagerPage
-                        self.$router.push({'name': 'servermanager'});
+                    } else if (Object.keys(store.getters.servers).length > 0) {
+                    // if there is no active servers then let the user select the server
+                        self.$router.push({'name': 'serverlist'});
                     }
                 });
         }
