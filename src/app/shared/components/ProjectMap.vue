@@ -112,7 +112,7 @@ export default {
         },
         mapOnlineInit: function() {
             var self = this;
-            mapboxgl.accessToken = 'pk.eyJ1IjoiY2hpYXR0IiwiYSI6ImZRLTZDbVkifQ.2ZLLC1kInvxJ7isk_0_OMw';
+            mapboxgl.accessToken = self.project.mapboxkey;
             var map = new mapboxgl.Map(this.getMapConfig(false));
             map.on('load', function() {
                 map.addControl(new mapboxgl.NavigationControl());
