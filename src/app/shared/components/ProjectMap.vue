@@ -189,9 +189,9 @@ export default {
             var circleColorExpression = ["match", ["get", "graph_id"]];
             this.project.graphs.forEach(function(graph) {
                 circleColorExpression.push(graph.graphid);
-                circleColorExpression.push(graph.color || '#d7e0f8');
+                circleColorExpression.push(graph.color || '#a30000');
             });
-            circleColorExpression.push('#d7e0f8');
+            circleColorExpression.push('#a30000');
 
             map.addLayer({
                 id: "resource-point",
