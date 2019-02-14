@@ -77,6 +77,10 @@ export default {
     methods: {
         closePopup: function() {
             this.selectedResource = null;
+            var colorExpression = this.getColorExpression(null);
+            this.map.setPaintProperty('resource-point', 'circle-color', colorExpression);
+            this.map.setPaintProperty('resource-polygon', 'fill-color', colorExpression);
+            this.map.setPaintProperty('resource-line', 'line-color', colorExpression);
         },
         selectResourceInstance: function(resource) {
             return this.$store.dispatch(
@@ -124,7 +128,7 @@ export default {
                 self.setMapExtent(map);
                 var resources = JSON.parse(JSON.stringify(self.resourceGeoJSON));
                 map.addSource('resources', {type: 'geojson', data: resources});
-                self.addResourceMarkers(map);
+                self.addResourceFeatures(map);
                 self.$emit('map-init', map);
                 self.loading = false;
             });
@@ -140,7 +144,7 @@ export default {
                         trackUserLocation: true
                     }));
                     this.setMapExtent(map);
-                    this.addResourceMarkers(map);
+                    this.addResourceFeatures(map);
                     this.$emit('map-init', map);
                 }).catch(error => {
                     console.log('map init error:', error.message);
@@ -185,21 +189,29 @@ export default {
                 zoom: tr.scaleZoom(tr.scale * Math.min(scaleX, scaleY))
             });
         },
-        addResourceMarkers: function(map) {
-            var circleColorExpression = ["match", ["get", "graph_id"]];
+        getColorExpression: function(resourceid){
+            var colorExpression = ["case"];
+            var selectedResourceId = resourceid || null;
+            colorExpression.push(["==", ["get", "id"], selectedResourceId])
+            colorExpression.push('#1F90F8');
             this.project.graphs.forEach(function(graph) {
-                circleColorExpression.push(graph.graphid);
-                circleColorExpression.push(graph.color || '#d7e0f8');
+                colorExpression.push(["==", ["get", "graph_id"], graph.graphid])
+                colorExpression.push(graph.color || '#a30000');
             });
-            circleColorExpression.push('#d7e0f8');
+            colorExpression.push('#a30000');
+            return colorExpression;
+        },
+        addResourceFeatures: function(map) {
+            var colorExpression = this.getColorExpression();
+            console.log(this.colorExpression)
 
             map.addLayer({
                 id: "resource-point",
                 type: "circle",
                 source: "resources",
                 paint: {
-                    "circle-color": circleColorExpression,
-                    "circle-radius": 5,
+                    "circle-color": colorExpression,
+                    "circle-radius": 7,
                     "circle-stroke-width": 1,
                     "circle-stroke-color": "#cccccc"
                 },
@@ -212,7 +224,7 @@ export default {
                 source: "resources",
                 layout: {},
                 paint: {
-                    "fill-color": circleColorExpression,
+                    "fill-color": colorExpression,
                     "fill-opacity": 0.5,
                     "fill-outline-color": "#fff"
                 },
@@ -228,8 +240,8 @@ export default {
                     "line-cap": "round"
                 },
                 paint: {
-                    "line-color": circleColorExpression,
-                    "line-width": 2
+                    "line-color": colorExpression,
+                    "line-width": 3
                 },
                 filter: ["==", "$type", "LineString"]
             });
@@ -238,9 +250,14 @@ export default {
                 map.on('click', layer, (e) => {
                     const feature = e.features[0];
                     this.selectedResource = feature.properties;
+                    var colorExpression = this.getColorExpression(this.selectedResource.id);
+                    map.setPaintProperty('resource-point', 'circle-color', colorExpression);
+                    map.setPaintProperty('resource-polygon', 'fill-color', colorExpression);
+                    map.setPaintProperty('resource-line', 'line-color', colorExpression);
                 });
             }, this);
 
+            this.map = map;
         },
         stopPropagation: function(e) {
             e.stopPropagation();
