@@ -77,6 +77,10 @@ export default {
     methods: {
         closePopup: function() {
             this.selectedResource = null;
+            var colorExpression = this.getColorExpression(null);
+            this.map.setPaintProperty('resource-point', 'circle-color', colorExpression);
+            this.map.setPaintProperty('resource-polygon', 'fill-color', colorExpression);
+            this.map.setPaintProperty('resource-line', 'line-color', colorExpression);
         },
         selectResourceInstance: function(resource) {
             return this.$store.dispatch(
@@ -207,7 +211,7 @@ export default {
                 source: "resources",
                 paint: {
                     "circle-color": colorExpression,
-                    "circle-radius": 5,
+                    "circle-radius": 7,
                     "circle-stroke-width": 1,
                     "circle-stroke-color": "#cccccc"
                 },
@@ -237,7 +241,7 @@ export default {
                 },
                 paint: {
                     "line-color": colorExpression,
-                    "line-width": 2
+                    "line-width": 3
                 },
                 filter: ["==", "$type", "LineString"]
             });
@@ -253,6 +257,7 @@ export default {
                 });
             }, this);
 
+            this.map = map;
         },
         stopPropagation: function(e) {
             e.stopPropagation();
