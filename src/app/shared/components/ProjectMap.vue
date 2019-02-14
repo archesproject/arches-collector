@@ -56,7 +56,6 @@ export default {
     props: ['extent'],
     data() {
         var project = this.$store.getters.activeProject;
-        console.log(project);
         return {
             project: project,
             mapId: `project-map-${uuidv4()}`,
@@ -203,13 +202,45 @@ export default {
                     "circle-radius": 5,
                     "circle-stroke-width": 1,
                     "circle-stroke-color": "#cccccc"
-                    }
+                },
+                filter: ["==", "$type", "Point"]
             });
 
-            map.on('click', 'resource-point', (e) => {
-                const feature = e.features[0];
-                this.selectedResource = feature.properties;
+            map.addLayer({
+                id: "resource-polygon",
+                type: "fill",
+                source: "resources",
+                layout: {},
+                paint: {
+                    "fill-color": circleColorExpression,
+                    "fill-opacity": 0.5,
+                    "fill-outline-color": "#fff"
+                },
+                filter: ["==", "$type", "Polygon"]
             });
+
+            map.addLayer({
+                id: "resource-line",
+                type: "line",
+                source: "resources",
+                layout: {
+                    "line-join": "round",
+                    "line-cap": "round"
+                },
+                paint: {
+                    "line-color": circleColorExpression,
+                    "line-width": 2
+                },
+                filter: ["==", "$type", "LineString"]
+            });
+
+            ['resource-point', 'resource-polygon', 'resource-line'].forEach(function(layer){
+                map.on('click', layer, (e) => {
+                    const feature = e.features[0];
+                    this.selectedResource = feature.properties;
+                });
+            }, this);
+
         },
         stopPropagation: function(e) {
             e.stopPropagation();
