@@ -36,14 +36,14 @@
 </template>
 
 <script>
-import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
+import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import GenericControl from '../../assets/map/GenericControl';
 import reportLayers from '../../assets/map/report_layers.json';
 
 export default {
     name: 'GeojsonFeatureCollectionWidget',
-    props: ['value', 'widget', 'context'],
+    props: ['value', 'widget', 'context', 'tile'],
     data() {
         return {
             fullscreenActive: false,
@@ -65,9 +65,8 @@ export default {
         },
         displayValue: function() {
             var count = this.featureCollection.features.length;
-            var plural = this.featureCollection.features.length > 1;
             if (count > 0) {
-                return count + ' feature' + (plural ? 's' : '') + ' in FeatureCollection'
+                return `${count} feature${count > 1 ? 's' : ''} in FeatureCollection`;
             } else {
                 return null;
             }
@@ -87,7 +86,11 @@ export default {
     methods: {
         mapInit(map) {
             const fullscreenEl = this.$el.querySelector('.fullscreen-control');
+            const resourceFilter = ['!=', 'resourceinstanceid', this.tile.resourceinstance_id];
             this.map = map;
+            map.setFilter('resource-point', ['all', ['==', '$type', 'Point'], resourceFilter]);
+            map.setFilter('resource-polygon', ['all', ['==', '$type', 'Polygon'], resourceFilter]);
+            map.setFilter('resource-line', ['all', ['==', '$type', 'LineString'], resourceFilter]);
             map.addControl(new GenericControl(fullscreenEl));
             if (this.context === 'editor') this.initDraw();
             else this.initReport();
@@ -150,23 +153,23 @@ export default {
         },
         checkIfFeatureIsValid(fc) {
             var valid;
-            var invalidFeatures = fc.features.filter(function(feature){
+            var invalidFeatures = fc.features.filter(function(feature) {
                 var geom = feature.geometry;
                 if (
                     (geom.type === 'Point' && !geom.coordinates) ||
                     (geom.type === 'Linestring' && geom.coordinates.length === 0) ||
                     (geom.type === 'Polygon' && geom.coordinates[0].length === 1)
                 ) {
-                    return feature
+                    return feature;
                 }
             });
-            valid = invalidFeatures.length === 0 ? true : false;
+            valid = invalidFeatures.length === 0;
             return valid;
         },
         updateDrawings(e) {
             var fc = this.draw.getAll();
             var featuresValid = this.checkIfFeatureIsValid(fc);
-            if (featuresValid===true) {
+            if (featuresValid === true) {
                 if (e === 'selectionchange') {
                     if (this.draw.getSelectedIds().length === 0) {
                         this.$emit('update:value', fc);
@@ -175,7 +178,7 @@ export default {
                     this.$emit('update:value', fc);
                 }
             } else {
-                console.log(fc, e)
+                console.log(fc, e);
             }
         },
         toggleFullscreen() {

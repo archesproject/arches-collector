@@ -154,3 +154,11 @@ input {
 .editor.widget-value {
     color: #777;
 }
+
+.mapboxgl-ctrl-group.mapboxgl-ctrl button {
+    padding: 18px;
+}
+
+.mapboxgl-control-container .mapboxgl-ctrl-icon.mapboxgl-ctrl-compass > .mapboxgl-ctrl-compass-arrow{
+    margin: -10px 0 0 -10px;
+}
