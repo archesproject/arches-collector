@@ -224,6 +224,7 @@ var pouchDBs = (function() {
                     for (const geom of doc.geometries) {
                         for (let feature of geom.geom.features) {
                             feature.properties.id = doc._id;
+                            feature.properties.resourceinstanceid = doc.resourceinstanceid;
                             feature.properties.graph_id = doc.graph_id;
                             feature.properties.displayname = doc.displayname;
                             feature.properties.displaydescription = doc.displaydescription;
