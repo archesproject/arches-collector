@@ -241,8 +241,7 @@ export default {
                 paint: {
                     "line-color": colorExpression,
                     "line-width": 3
-                },
-                filter: ["==", "$type", "LineString"]
+                }
             });
 
             ['resource-point', 'resource-polygon', 'resource-line'].forEach(function(layer){
