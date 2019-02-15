@@ -202,7 +202,7 @@ export default {
                 return self.$store.dispatch('updateToken', self.selectedServer);
             })
             .then(function(response) {
-                return self.$store.dispatch('getRemoteProjects', self.$store.getters.activeServer);
+                return self.$store.dispatch('getRemoteProjects', {'server': self.$store.getters.activeServer});
             })
             .then(function() {
                 self.selectedServer = false;

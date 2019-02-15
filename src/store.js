@@ -403,7 +403,6 @@ var store = new Vuex.Store({
             newServer.active_resource = null;
             newServer.card_nav_stack = [];
             newServer.user_preferences = {};
-            newServer.user_preferences[newServer.user.id] = {projects: {}};
             if (typeof store.getters.server(newServer.url) === 'undefined') {
                 Vue.set(state.dbs.app_servers.servers, newServer.url, newServer);
             } else {
@@ -421,23 +420,6 @@ var store = new Vuex.Store({
         },
         setActiveServer: function(state, value) {
             state.dbs.app_servers.active = value;
-            store.dispatch('saveServerInfoToPouch');
-        },
-        updateProjects: function(state, serverDoc) {
-            var server = store.getters.server(serverDoc.url);
-            var remoteProjectIds = serverDoc.projects.map(function(p) { return p.id; });
-            for (var projectid in server.projects) {
-                Vue.set(server.projects[projectid], 'unavailable', false);
-                if (remoteProjectIds.indexOf(projectid) < 0) {
-                    server.projects[projectid].unavailable = true;
-                }
-            };
-
-            serverDoc.projects.forEach(function(project) {
-                // if (server.projects.hasOwnProperty(project.id) === false) {
-                Vue.set(server.projects, project.id, project);
-                // }
-            });
             store.dispatch('saveServerInfoToPouch');
         },
         setActiveProject: function(state, value) {
@@ -467,14 +449,11 @@ var store = new Vuex.Store({
                 n = n + '';
                 return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
             }
+            
             Vue.set(store.getters.currentProjects[projectId].lastsync, 'date', now.toISOString().split('T')[0].replace(/-/g, '/'));
             Vue.set(store.getters.currentProjects[projectId].lastsync, 'time', pad(now.getHours(), 2) + ':' + pad(now.getMinutes(), 2));
-            if (server.user_preferences[server.user.id]['projects'] === undefined) {
-                server.user_preferences[server.user.id]['projects'] = {projects: {}};
-            }
-            if (server.user_preferences[server.user.id]['projects'][projectId] === undefined) {
-                server.user_preferences[server.user.id]['projects'][projectId] = {joined: true, useonlinebasemaps: true};
-            }
+            
+            server.user_preferences[server.user.id]['projects'][projectId].joined = true;
             store.dispatch('saveServerInfoToPouch');
         },
         updateUserPrefByKey: function(state, {userPrefKey, userPref}) {
@@ -523,14 +502,7 @@ var store = new Vuex.Store({
         },
         toggleProjectParticipation: function(state, projectId) {
             var server = this.getters.activeServer;
-            if (server.user_preferences[server.user.id]['projects'] === undefined) {
-                server.user_preferences[server.user.id]['projects'] = {projects: {}};
-            }
-            if (server.user_preferences[server.user.id]['projects'][projectId] === undefined) {
-                server.user_preferences[server.user.id]['projects'][projectId] = {joined: false};
-            } else {
-                server.user_preferences[server.user.id]['projects'][projectId].joined = !server.user_preferences[server.user.id]['projects'][projectId].joined;
-            }
+            server.user_preferences[server.user.id]['projects'][projectId].joined = !server.user_preferences[server.user.id]['projects'][projectId].joined;
             store.dispatch('saveServerInfoToPouch');
         },
         toggleBasemapSource: function(state, projectId) {
@@ -693,9 +665,13 @@ var store = new Vuex.Store({
                         });
                 });
         },
-        getRemoteProjects: function({commit, state}, server) {
+        getRemoteProjects: function({commit, state}, {server, surveyid}) {
             var self = this;
-            return fetch(server.url + '/surveys', {
+            var url = server.url + '/surveys';
+            if (!!surveyid) {
+                url = url + '/' + surveyid;
+            }
+            return fetch(url, {
                 method: 'GET',
                 headers: new Headers({
                     'Authorization': 'Bearer ' + server.token
@@ -712,16 +688,18 @@ var store = new Vuex.Store({
                     // return the response object or throw an error
                     json.forEach(function(project) {
                         pouchDBs.setupProject(server, project.id);
-                        // pouchDBs.syncProject(project.id);
                         project.lastsync = {
                             date: '',
                             time: ''
                         };
-                        if (server.user_preferences[server.user.id].projects[project.id] === undefined) {
-                            server.user_preferences[server.user.id].projects[project.id] = {useonlinebasemaps: true};
+                        if (server.user_preferences[server.user.id] === undefined) {
+                            server.user_preferences[server.user.id] = {'projects': {}};
                         }
-                        project.joined = undefined;
-                        project.useonlinebasemaps = server.user_preferences[server.user.id].projects[project.id];
+                        if (server.user_preferences[server.user.id].projects[project.id] === undefined) {
+                            server.user_preferences[server.user.id].projects[project.id] = {joined: undefined, useonlinebasemaps: true};
+                        }
+                        project.joined = server.user_preferences[server.user.id].projects[project.id].joined;
+                        project.useonlinebasemaps = server.user_preferences[server.user.id].projects[project.id].useonlinebasemaps;
                         project.hasofflinebasemaps = !!project.tilecache;
                         if (project.hasofflinebasemaps) {
                             store.dispatch(
@@ -732,15 +710,48 @@ var store = new Vuex.Store({
                         project.resources_to_sync = {};
                         project.resources_with_conflicts = {};
                         project.newly_created_resources = {};
+
+                        Vue.set(server.projects, project.id, project);
                     });
-                    store.dispatch('initServerStoreFromPouch')
-                        .finally(function(doc) {
-                            commit('updateProjects', {
-                                url: server.url,
-                                projects: json
-                            });
-                        });
-                    return json;
+                    return store.dispatch('saveServerInfoToPouch');
+                })
+                .catch(function(error) {
+                    console.log('Error:', error);
+                    self.error = true;
+                });
+        },
+        updateRemoteProjectsStatus: function({commit, state}, server) {
+            var self = this;
+            return fetch(server.url + '/surveys?status', {
+                method: 'GET',
+                headers: new Headers({
+                    'Authorization': 'Bearer ' + server.token
+                })
+            })
+                .then(function(response) {
+                    // return the response object or throw an error;
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    throw new Error('Network response was not ok.');
+                })
+                .then(function(json) {
+                    // return the response object or throw an error
+                    Object.keys(json).forEach(function(projectId) {
+                        if (projectId in server.projects) {
+                            server.projects[projectId].active = json[projectId].active;
+                        } else {
+                            // get remote project that's now available
+                            store.dispatch('getRemoteProjects', {'server': server, 'surveyid': projectId});
+                        }
+                    });
+                    for (var projectid in server.projects) {
+                        Vue.set(server.projects[projectid], 'unavailable', false);
+                        if (Object.keys(json).indexOf(projectid) < 0) {
+                            server.projects[projectid].unavailable = true;
+                        }
+                    };
+                    return store.dispatch('saveServerInfoToPouch');
                 })
                 .catch(function(error) {
                     console.log('Error:', error);

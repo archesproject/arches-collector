@@ -137,11 +137,13 @@ export default {
                 self.server.token = response.access_token;
                 self.server.refresh_token = response.refresh_token;
                 self.$store.commit('addNewServer', self.server);
-                self.$router.push({'name': 'projectlist'});
                 return self.server;
             })
             .then(function(response) {
-                return self.$store.dispatch('getRemoteProjects', self.$store.getters.activeServer);
+                return self.$store.dispatch('getRemoteProjects', {'server': self.$store.getters.activeServer});
+            })
+            .finally(function(response) {
+                self.$router.push({'name': 'projectlist'});
             })
             .catch(function(error) {
                 // console.log('Error:', error);
