@@ -89,7 +89,7 @@
                     <span class="left projects-title"><span>Projects</span></span>
                     <div class="center"></div>
                     <div class="right">
-                        <v-ons-toolbar-button @click="toggleSideNav()">
+                        <v-ons-toolbar-button @click="toggleSideNav()" v-if="projects.length > 0" >
                             <v-ons-icon class="text-color-dark project-name" icon="fa-wrench"></v-ons-icon>
                         </v-ons-toolbar-button>
                     </div>
