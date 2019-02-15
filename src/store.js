@@ -844,7 +844,7 @@ var store = new Vuex.Store({
                 var geojson;
                 Object.entries(tiledata).forEach(
                     ([key, value]) => {
-                        if (value.type === 'FeatureCollection') {
+                        if (value && value.type === 'FeatureCollection') {
                             value.features.forEach(function(feature) {
                                 pouchDBs.getResources(server.active_project, [tile.resourceinstance_id])
                                     .then(function(resourcedocs) {
