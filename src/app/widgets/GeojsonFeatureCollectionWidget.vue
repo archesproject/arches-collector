@@ -86,11 +86,11 @@ export default {
     methods: {
         mapInit(map) {
             const fullscreenEl = this.$el.querySelector('.fullscreen-control');
-            const resourceFilter = ['!=', 'resourceinstanceid', this.tile.resourceinstance_id];
+            const tileFilter = ['!=', 'tileid', this.tile.tileid];
             this.map = map;
-            map.setFilter('resource-point', ['all', ['==', '$type', 'Point'], resourceFilter]);
-            map.setFilter('resource-polygon', ['all', ['==', '$type', 'Polygon'], resourceFilter]);
-            map.setFilter('resource-line', ['all', ['==', '$type', 'LineString'], resourceFilter]);
+            map.setFilter('resource-point', ['all', ['==', '$type', 'Point'], tileFilter]);
+            map.setFilter('resource-polygon', ['all', ['==', '$type', 'Polygon'], tileFilter]);
+            map.setFilter('resource-line', ['all', ['==', '$type', 'LineString'], tileFilter]);
             map.addControl(new GenericControl(fullscreenEl));
             if (this.context === 'editor') this.initDraw();
             else this.initReport();
