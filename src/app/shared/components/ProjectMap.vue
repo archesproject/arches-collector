@@ -68,9 +68,12 @@ export default {
                 type: 'FeatureCollection',
                 features: []
             },
+            instances: [],
+            tiles: [],
             selectedResource: null,
             loading: true,
             resource_types: {},
+            user: this.$store.getters.activeServer.user.id,
             onlinebasemap: project.onlinebasemaps ? project.onlinebasemaps.default : 'mapbox://styles/mapbox/satellite-v9'
         };
     },
@@ -106,15 +109,24 @@ export default {
             );
         },
         getResourceData: function() {
+            var self = this;
             return this.$store.dispatch(
-                'getProjectTileGeoJSON',
-                this.project.id
-            ).then((resourceGeoJSON) => {
-                this.resourceGeoJSON = resourceGeoJSON;
-            });
+                'getProjectResources',
+                this.$store.getters.activeProject.id
+            ).then((res) => {
+                self.instances = res['docs'];
+            }).then(() => {
+                return this.$store.dispatch(
+                        'getOnlyTiles',
+                        this.$store.getters.activeProject.id
+                    )
+            }).then((res) => {
+                self.tiles = res['docs'];
+            })
         },
         mapOnlineInit: function() {
             var self = this;
+            var resources;
             mapboxgl.accessToken = self.project.mapboxkey;
             var map = new mapboxgl.Map(this.getMapConfig(false));
             map.on('load', function() {
@@ -126,14 +138,15 @@ export default {
                     trackUserLocation: true
                 }));
                 self.setMapExtent(map);
-                var resources = JSON.parse(JSON.stringify(self.resourceGeoJSON));
-                map.addSource('resources', {type: 'geojson', data: resources});
+                map.addSource('resources', {type: 'geojson', data: self.resourceGeoJSON});
                 self.addResourceFeatures(map);
                 self.$emit('map-init', map);
                 self.loading = false;
             });
         },
         mapOfflineInit: function() {
+            var self = this;
+            var resources;
             return new mapboxgl.OfflineMap(this.getMapConfig(true))
                 .then((map) => {
                     map.addControl(new mapboxgl.NavigationControl());
@@ -151,6 +164,8 @@ export default {
                 }, self);
         },
         getMapConfig: function(offline) {
+            console.log('getting geojson')
+            this.resourceGeoJSON = this.getResourceGeoJson();
             var offlineStyle = {
                 version: 8,
                 sources: {
@@ -201,9 +216,41 @@ export default {
             colorExpression.push('#a30000');
             return colorExpression;
         },
+        getResourceGeoJson: function() {
+            var features = [];
+            var self = this;
+            this.tiles.forEach(function(tile) {
+                var geojson;
+                var tiledata;
+                if (tile.provisionaledits && tile.provisionaledits[this.user]) {
+                    tiledata = tile.provisionaledits[this.user].value;
+                } else if (tile.data) {
+                    tiledata = tile.data;
+                }
+                Object.entries(tiledata).forEach(
+                    ([key, value]) => {
+                        var instance = this.instances.find(function(resource){return resource.resourceinstanceid === tile.resourceinstance_id})
+                        if (value && value.type === 'FeatureCollection') {
+                            value.features.forEach(function(feature) {
+                                feature.properties.id = tile.resourceinstance_id;
+                                feature.properties.tileid = tile.tileid;
+                                feature.properties.graph_id = instance.graph_id;
+                                feature.properties.displayname = instance.displayname;
+                                feature.properties.displaydescription = instance.displaydescription;
+                            });
+                            value.features.forEach(function(f){
+                                features.push(f);
+                            });
+                        }
+                    }, this);
+            }, this);
+            return {
+                type: 'FeatureCollection',
+                features: features
+            };
+        },
         addResourceFeatures: function(map) {
             var colorExpression = this.getColorExpression();
-
             map.addLayer({
                 id: "resource-point",
                 type: "circle",
@@ -270,12 +317,13 @@ export default {
                 self.changes = doc;
             });
 
+        console.log(this.project.useonlinebasemaps)
         if (this.project.useonlinebasemaps) {
-            self.getResourceData().then(
+            self.getResourceData()
+            .then(
                 self.mapOnlineInit
             );
         } else {
-            console.log('what are we doing here');
             this.getResourceData()
             .then(this.mapOfflineInit)
             .then(() => {
