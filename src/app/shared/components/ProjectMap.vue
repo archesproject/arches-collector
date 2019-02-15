@@ -107,7 +107,7 @@ export default {
         },
         getResourceData: function() {
             return this.$store.dispatch(
-                'getProjectResourcesGeoJSON',
+                'getProjectTileGeoJSON',
                 this.project.id
             ).then((resourceGeoJSON) => {
                 this.resourceGeoJSON = resourceGeoJSON;

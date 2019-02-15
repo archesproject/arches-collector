@@ -807,7 +807,6 @@ var store = new Vuex.Store({
                         store.dispatch('persistResource', resource);
                         store.dispatch('saveServerInfoToPouch');
                     }
-
                     return tile;
                 });
         },
@@ -866,6 +865,58 @@ var store = new Vuex.Store({
         getResource: function({commit, state}, {projectId, resourceinstanceid}) {
             var resources = pouchDBs.getResources(projectId, [resourceinstanceid]);
             return resources;
+        },
+        getProjectTileGeoJSON: function({commit, state}) {
+            var server = store.getters.activeServer;
+            var checkIfValueIsGeojson = function(tiledata, tile) {
+                var geojson;
+                Object.entries(tiledata).forEach(
+                    ([key, value]) => {
+                        if (value.type === 'FeatureCollection') {
+                            value.features.forEach(function(feature) {
+                                pouchDBs.getResources(server.active_project, [tile.resourceinstance_id])
+                                    .then(function(resourcedocs) {
+                                        if (resourcedocs.docs.length > 0) {
+                                            var doc = resourcedocs.docs[0];
+                                            feature.properties.id = doc._id;
+                                            feature.properties.resourceinstanceid = tile.resourceinstance_id;
+                                            feature.properties.tileid = tile.tileid;
+                                            feature.properties.graph_id = doc.graph_id;
+                                            feature.properties.displayname = doc.displayname;
+                                            feature.properties.displaydescription = doc.displaydescription;
+                                        }
+                                    });
+                            });
+                            geojson = value;
+                        }
+                    }
+                );
+                return geojson;
+            };
+
+            return store.dispatch('getTiles', server.active_project)
+                .then((tiles) => {
+                    var features = [];
+                    tiles.forEach(function(tile) {
+                        var geojson;
+                        if (tile.provisionaledits && tile.provisionaledits[server.user.id]) {
+                            var tilevalue = tile.provisionaledits[server.user.id].value;
+                            geojson = checkIfValueIsGeojson(tilevalue, tile);
+                        } else if (tile.data) {
+                            geojson = checkIfValueIsGeojson(tile.data, tile);
+                        }
+                        if (geojson) {
+                            geojson.features.forEach(function(feature) {
+                                features.push(feature);
+                            });
+                        }
+                    });
+                    var res = {
+                        type: 'FeatureCollection',
+                        features: features
+                    };
+                    return res;
+                });
         },
         getBasemapTarget: function() {
             return new Promise((resolve, reject) => {
