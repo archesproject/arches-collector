@@ -128,8 +128,14 @@
                         <v-ons-icon class="right" style="display: flex; padding-left:10px" icon="fa-cloud-download-alt" v-if="project.joined === undefined && project.active" @click="function(){selectedProject = project; sync()}"></v-ons-icon>
                     </v-ons-list-item>
                     <v-ons-list-item v-if="projects.length === 0">
-                        <div>
-                            No projects currently active for this Arches app.
+                        <div class="summary-panel relative">
+                            <div class="icon-circle">
+                              <v-ons-icon class="pull-icon" icon="fa-cloud-download"></v-ons-icon>
+                            </div>
+                            <div class="">
+                                No projects currently active for this Arches app.<br>
+                                Pull down to sync...
+                            </div>
                         </div>
                     </v-ons-list-item>
                 </v-ons-list>
@@ -436,5 +442,38 @@ export default {
     .panel-header-text {
         color: #f2f2f2;
     }
+
+    .relative {
+        position: relative;
+    }
+
+    .summary-panel {
+      margin: 5px;
+      min-height: 100px;
+      width: 100%;
+      text-align: center;
+      padding: 20px 10px;
+      font-size: 13px;
+      color: #888;
+    }
+
+    .icon-circle {
+        margin-left: 40%;
+        margin-bottom: 20px;
+        box-sizing: border-box;
+        border: solid 1px steelblue;
+        border-radius: 50%;
+        height: 60px;
+        width: 60px;
+        background: #F5FAFE;
+    }
+
+    .pull-icon {
+        color: steelblue;
+        padding-top: 15px;
+        padding-left: 3px;
+        font-size: 24px;
+    }
+
 
 </style>
