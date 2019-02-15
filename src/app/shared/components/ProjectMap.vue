@@ -203,7 +203,6 @@ export default {
         },
         addResourceFeatures: function(map) {
             var colorExpression = this.getColorExpression();
-            console.log(this.colorExpression)
 
             map.addLayer({
                 id: "resource-point",
@@ -276,6 +275,7 @@ export default {
                 self.mapOnlineInit
             );
         } else {
+            console.log('what are we doing here');
             this.getResourceData()
             .then(this.mapOfflineInit)
             .then(() => {

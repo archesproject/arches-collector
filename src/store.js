@@ -212,33 +212,6 @@ var pouchDBs = (function() {
             }).catch(function(err) {
                 console.log(err);
             });
-        },
-        getResourcesGeoJSON: function(projectId) {
-            return this._projectDBs[projectId]['local'].find({
-                selector: {
-                    type: 'resource'
-                }
-            }).then(function(docs) {
-                let features = [];
-                for (const doc of docs.docs) {
-                    for (const geom of doc.geometries) {
-                        for (let feature of geom.geom.features) {
-                            feature.properties.id = doc._id;
-                            feature.properties.resourceinstanceid = doc.resourceinstanceid;
-                            feature.properties.graph_id = doc.graph_id;
-                            feature.properties.displayname = doc.displayname;
-                            feature.properties.displaydescription = doc.displaydescription;
-                            features.push(feature);
-                        }
-                    }
-                }
-                return {
-                    type: 'FeatureCollection',
-                    features: features
-                };
-            }).catch(function(err) {
-                console.log(err);
-            });
         }
     };
 }());
@@ -543,7 +516,9 @@ var store = new Vuex.Store({
                 if (err) {
                     return console.log(err);
                 } else {
-                    store.dispatch('deleteProjectBasemaps', projectId);
+                    if (store.getters.activeProject.hasofflinebasemaps) {
+                        store.dispatch('deleteProjectBasemaps', projectId);
+                    }
                     if (store.getters.activeServer.projects[projectId]) {
                         delete store.getters.activeServer.projects[projectId];
                         var server = store.getters.activeServer;
@@ -855,9 +830,6 @@ var store = new Vuex.Store({
                 .then(function() {
                     Vue.delete(project.newly_created_resources, resource.resourceinstanceid);
                 });
-        },
-        getProjectResourcesGeoJSON: function({commit, state}, projectId) {
-            return pouchDBs.getResourcesGeoJSON(projectId);
         },
         getProjectResources: function({commit, state}, projectId) {
             return pouchDBs.getResources(projectId);
