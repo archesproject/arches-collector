@@ -124,8 +124,13 @@
                             </span>
                         </span>
                         <span class="center" @click="segueToProject(project);"></span>
-                        <v-ons-icon class="right" style="display: flex; padding-left:10px" icon="fa-ellipsis-v" v-if="project.joined !== undefined || project.unavailable" @click="toggleSideNav(project)"></v-ons-icon>
+                        <v-ons-icon class="right" style="display: flex; padding-left:10px" icon="fa-ellipsis-v" v-if="project.joined !== undefined || !project.active" @click="toggleSideNav(project)"></v-ons-icon>
                         <v-ons-icon class="right" style="display: flex; padding-left:10px" icon="fa-cloud-download-alt" v-if="project.joined === undefined && project.active" @click="function(){selectedProject = project; sync()}"></v-ons-icon>
+                    </v-ons-list-item>
+                    <v-ons-list-item v-if="projects.length === 0">
+                        <div>
+                            No projects currently active for this Arches app.
+                        </div>
                     </v-ons-list-item>
                 </v-ons-list>
             </v-ons-page>
@@ -267,9 +272,9 @@ export default {
         deleteAllInactiveProjects: function(answer){
             var self = this;
             if (answer === 1) {
-                self.projects.forEach(function(p){
-                    if (p.unavailable) {
-                        self.$store.dispatch('deleteProject', p.id)
+                self.projects.forEach(function(project){
+                    if (!project.active) {
+                        self.$store.dispatch('deleteProject', project.id)
                         .catch(function() {
                             console.log('delete failed');
                         });
