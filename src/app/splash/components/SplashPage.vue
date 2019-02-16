@@ -5,6 +5,9 @@
                 :index.sync="carouselIndex"
             >
                 <v-ons-carousel-item v-for="item in items" :key="item.title">
+                    <div class="icon-circle">
+                        <v-ons-icon class="pull-icon" v-bind:icon="item.icon" v-bind:style="{}"></v-ons-icon>
+                    </div>
                     <div class="splash-text">
                         <div class="title">{{item.title}}</div>
                         <div class="text">{{item.text}}</div>
@@ -34,6 +37,7 @@ export default {
             carouselIndex: 0,
             items: [
                 {
+                    'icon': 'fa-clone',
                     'title': '',
                     'text': ''
                 },
@@ -52,10 +56,10 @@ export default {
             ],
             dots: {
                 textAlign: 'center',
-                fontSize: '30px',
-                color: '#3e3e3e',
+                fontSize: '28px',
+                color: '#999',
                 position: 'absolute',
-                bottom: '2%',
+                bottom: '5%',
                 left: 0,
                 right: 0
             }
@@ -74,8 +78,8 @@ export default {
 
 /* Portrait layout (default) */
 .splash-background {
-        background:url(../../../assets/img/arches_logo.png) no-repeat center top; /* 170px x 200px */
-        background-size: 200px;
+        /* background:url(../../../assets/img/arches_logo.png) no-repeat center top; /* 170px x 200px */ */
+        /* background-size: 200px; */
         background-position-y:28%;
         text-align: center;
         height: 100%;
@@ -131,6 +135,25 @@ export default {
 .blink {
         animation:fade 3000ms infinite;
         -webkit-animation:fade 3000ms infinite;
+}
+
+.icon-circle {
+    margin-top: 30%;
+    margin-left: 40%;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+    border: solid 1px steelblue;
+    border-radius: 50%;
+    height: 80px;
+    width: 80px;
+    background: #F5FAFE;
+}
+
+.pull-icon {
+    color: steelblue;
+    padding-top: 20px;
+    padding-left: 3px;
+    font-size: 36px;
 }
 
 </style>

@@ -133,7 +133,7 @@
                               <v-ons-icon class="pull-icon" icon="fa-cloud-download"></v-ons-icon>
                             </div>
                             <div class="">
-                                No projects currently active for this Arches app.<br>
+                                No projects downloaded from this Arches app.<br>
                                 Pull down to sync...
                             </div>
                         </div>
