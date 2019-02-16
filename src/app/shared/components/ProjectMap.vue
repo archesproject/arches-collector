@@ -259,7 +259,7 @@ export default {
                     "circle-color": colorExpression,
                     "circle-radius": 7,
                     "circle-stroke-width": 1,
-                    "circle-stroke-color": "#cccccc"
+                    "circle-stroke-color": "#888"
                 },
                 filter: ["==", "$type", "Point"]
             });
