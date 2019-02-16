@@ -300,10 +300,13 @@ export default {
 .instance-editor-back-btn {
     color: #FEB0B2;
     padding: 9px 10px 10px 13px;
-    font-size: 22px;
     margin-right: 8px;
     background: #C2171B;
     border-right: 1px solid #9A0509;
+}
+
+.toolbar--material .instance-editor-back-btn {
+    margin-right: 10px;
 }
 
 .instance-editor-toolpanel-btn {
