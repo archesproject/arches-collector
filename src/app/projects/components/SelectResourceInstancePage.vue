@@ -13,7 +13,7 @@
                 <span v-else class='resource-model-subtitle'>Unedited</span>
             </span>
             <span v-if="resource_instance.resourceinstanceid in $store.getters.activeProject.newly_created_resources" @click="deleteTile(resource_instance, $event)" class="resource-delete">
-                <span class="fa5 fa-trash"></span>
+                <span class="resource-delete-icon fa5 fa-trash"></span>
             </span>
 
         </v-ons-list-item>
@@ -185,14 +185,24 @@ export default {
 }
 
 .resource-delete {
-    padding: 22px 22px;
-    border-left: 1px solid #ddd;
-    background: rgba(225,225,225,0.50);
+    padding: 7px 10px;
+    font-size: 12px;
+    color: #454545;
+    height: 32px;
+    width: 32px;
+    box-sizing: border-box;
+    border-left: 1px solid #bbb;
+    background: #ddd;
     position: absolute;
-    right: 0px;
-    top: 0px;
+    border-radius: 50%;
+    right: 16px;
+    top: 16px;
     bottom: 0px;
-    vertical-align: middle;
+    opacity: .75;
+}
+
+.resource-delete-icon {
+
 }
 
 </style>
