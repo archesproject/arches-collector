@@ -444,6 +444,11 @@ export default {
         font-size: 15px;
     }
 
+    .list-item--material .panel-header-text {
+        font-weight: 600;
+        padding: 5px;
+    }
+
     .relative {
         position: relative;
     }
