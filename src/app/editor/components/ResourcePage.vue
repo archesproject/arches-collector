@@ -229,6 +229,7 @@ export default {
 
 .toolbar-button--material .instance-editor-toolpanel-btn {
     margin-top: 5px;
+    margin-right: -5px;
 }
 
 .resource-type {
@@ -297,9 +298,14 @@ export default {
 }
 
 .instance-editor-back-btn {
-    color: #f4f4f4;
-    padding: 10px 10px 10px 15px;
+    color: #FEB0B2;
+    padding: 9px 10px 10px 13px;
+    font-size: 22px;
+    margin-right: 8px;
+    background: #C2171B;
+    border-right: 1px solid #9A0509;
 }
+
 .instance-editor-toolpanel-btn {
     color: #ddd;
 }

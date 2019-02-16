@@ -9,7 +9,7 @@
                 <div class="left">
                     <v-ons-toolbar-button>
                         <router-link :to="{ name: 'projectlist' }">
-                            <v-ons-icon class="text-color-dark project-header" style="vertical-align: -2px;" icon="ion-android-arrow-dropleft-circle"></v-ons-icon>
+                            <v-ons-icon class="project-header" style="vertical-align: -1px;" icon="ion-android-arrow-dropleft-circle"></v-ons-icon>
                         </router-link>
                         <span class="text-color-dark project-name">{{project.name}}</span>
                     </v-ons-toolbar-button>
@@ -159,17 +159,19 @@ export default {
 }
 
 .project-list-toolbar {
-    background: #ecf0f5;
-    border-bottom: 1px solid #ddd;
+    background: #F96468;
+    border-bottom: 1px solid #E96568;
 }
 
 .project-header {
     font-size: 22px !important;
+    color: #FFF4F4;
 }
 
 .project-name {
     font-size: 17px;
-    vertical-align: 1px;
+    vertical-align: 2px;
+    color: #FFF4F4;
 }
 
 .page-background {
@@ -310,5 +312,18 @@ export default {
 .menu-subtext {
     font-size: 12px;
     color: #888;
+}
+
+.instance-editor-back-btn {
+    color: #FEB0B2;
+    padding: 10px 10px 10px 13px;
+    margin-left: -10px;
+    height: 45px;
+    background: #C2171B;
+    border-right: 1px solid #9A0509;
+}
+
+.toolbar-button--material > .instance-editor-back-btn {
+    margin-left: -20px;
 }
 </style>
