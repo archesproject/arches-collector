@@ -58,10 +58,10 @@ export default {
     data() {
         return {
             server: {
-                url: 'http://localhost:8000',
-                nickname: 'test',
-                username: 'admin',
-                password: 'admin',
+                url: '',
+                nickname: '',
+                username: '',
+                password: '',
                 token: '',
                 refresh_token: '',
                 client_id: '',
