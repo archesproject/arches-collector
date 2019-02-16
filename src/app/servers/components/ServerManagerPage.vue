@@ -5,6 +5,7 @@
                 <span class="left-button-text">Add Arches Application</span>
             </div>
 
+            <v-ons-progress-bar indeterminate v-if="authenticating"></v-ons-progress-bar>
             <v-ons-row class="app-details">
                 <div class="input-label">Application URL</div>
                 <input class="input input-placeholder" placeholder="My Arches Application URL" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" float v-model="server.url"></input>
@@ -67,8 +68,9 @@ export default {
                 client_id: '',
                 active_project: '',
                 projects: {},
-                user: {}
+                user: {},
             },
+            authenticating: false,
             error: false,
             error_message: '',
             default_error_message: 'Oops, something happened, maybe you\re offline?'
@@ -85,6 +87,7 @@ export default {
         },
         login: function() {
             var self = this;
+            self.authenticating = true;
             this.$store.dispatch('getUserProfile', this.server)
             .then(function(response){
                 if (response.ok) {
@@ -143,6 +146,7 @@ export default {
                 return self.$store.dispatch('getRemoteProjects', {'server': self.$store.getters.activeServer});
             })
             .finally(function(response) {
+                self.authenticating = false;
                 self.$router.push({'name': 'projectlist'});
             })
             .catch(function(error) {
