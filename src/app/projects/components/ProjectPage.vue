@@ -9,7 +9,7 @@
                 <div class="left">
                     <v-ons-toolbar-button>
                         <router-link :to="{ name: 'projectlist' }">
-                            <v-ons-icon class="project-header instance-list-back-btn" style="vertical-align: -1px;" icon="ion-android-arrow-dropleft-circle"></v-ons-icon>
+                            <v-ons-icon class="project-header instance-list-back-btn" style="vertical-align: -1px;" icon="ion-arrow-left-b"></v-ons-icon>
                         </router-link>
                         <span class="text-color-dark project-name">{{project.name}}</span>
                     </v-ons-toolbar-button>
@@ -317,16 +317,14 @@ export default {
 .instance-list-back-btn {
     color: #FEB0B2;
     font-size: 24px;
-    padding: 10px 12px 20px 18px;
-    margin-left: -15px;
+    padding: 5px 11px;
+    border-radius: 50%;
+    margin-left: -5px;
     background: #C2171B;
     border-right: 1px solid #9A0509;
-    margin-top: -12px;
 }
 
 .toolbar-button--material > a .instance-list-back-btn {
-    padding: 18px 12px 20px 12px;
-    margin-left: -15px;
     margin-top: -12px;
 }
 
