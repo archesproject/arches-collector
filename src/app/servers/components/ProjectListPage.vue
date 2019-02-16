@@ -434,13 +434,14 @@ export default {
     }
 
     .panel-header {
-      background: #F96468;
-      border-top: 1px solid #780003;
+      background: #efeff4;
       margin-top: 1px;
     }
 
     .panel-header-text {
-        color: #f2f2f2;
+        color: #2E4172;
+        font-weight: 500;
+        font-size: 15px;
     }
 
     .relative {
