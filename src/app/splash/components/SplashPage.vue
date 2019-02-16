@@ -9,8 +9,8 @@
                         <v-ons-icon class="pull-icon" v-bind:icon="item.icon" v-bind:style="{}"></v-ons-icon>
                     </div>
                     <div class="splash-text">
-                        <div class="title">{{item.title}}</div>
                         <div class="text">{{item.text}}</div>
+                        <div class="title">{{item.title}}</div>
                     </div>
                 </v-ons-carousel-item>
             </v-ons-carousel>
@@ -21,7 +21,7 @@
                 {{ carouselIndex === dotIndex - 1 ? '\u25CF' : '\u25CB' }}
             </span>
             <h4 style="color:black;">
-                <router-link :to="{ name: 'servermanager' }">Skip</router-link>
+                <router-link class="skip-link" :to="{ name: 'servermanager' }">Skip</router-link>
             </h4>
         </div>
     </v-ons-page>
@@ -37,21 +37,24 @@ export default {
             carouselIndex: 0,
             items: [
                 {
-                    'icon': 'fa-clone',
-                    'title': '',
-                    'text': ''
+                    'icon': 'fa-comment',
+                    'title': 'Welcome to Arches',
+                    'text': "Welcome and salutations! Its Arches time.  Here's a long list of text just to see how it can be rendered using nothing but css"
                 },
                 {
+                    'icon': 'fa-globe',
                     'title': 'Map Locations',
-                    'text': 'blah blah blah'
+                    'text': 'Use Arches to map the location of important assets, events, or activities.  You can create new records, or update existing information from your Arches database.'
                 },
                 {
-                    'title': 'Manage Projects',
-                    'text': 'blah blah blah'
+                    'icon': 'fa-code-fork',
+                    'title': 'Many Projects, Multiple Surveys',
+                    'text': "You can participate in many field surveys, even if they're being hosted from different Arches applications."
                 },
                 {
+                    'icon': 'fa-signal',
                     'title': 'Work Offline',
-                    'text': 'blah blah blah'
+                    'text': "Don't worry if you lose connection to a cell or WiFi network while you work.  Arches will store your information safely until you can reconnect to a network."
                 }
             ],
             dots: {
@@ -93,14 +96,17 @@ export default {
 }
 
 .splash-text > .title {
-    font-size: 20px;
+    font-size: 28px;
     font-weight: 600;
     color: #484848;
+    padding-top: 0px;
 }
 
 .splash-text > .text {
-    font-size: 10px;
-    color: #616161;
+    margin-bottom: 15px;
+    font-size: 14px;
+    padding: 10px 15%;
+    color: #aaa;
 }
 
 .event {
@@ -138,7 +144,7 @@ export default {
 }
 
 .icon-circle {
-    margin-top: 30%;
+    margin-top: 33%;
     margin-left: 40%;
     margin-bottom: 20px;
     box-sizing: border-box;
@@ -154,6 +160,11 @@ export default {
     padding-top: 20px;
     padding-left: 3px;
     font-size: 36px;
+}
+
+.skip-link {
+    font-weight: 600;
+    text-decoration: none;
 }
 
 </style>
