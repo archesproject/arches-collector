@@ -9,7 +9,7 @@
                 <div class="left">
                     <v-ons-toolbar-button>
                         <router-link :to="{ name: 'projectlist' }">
-                            <v-ons-icon class="text-color-dark project-header" style="vertical-align: -2px;" icon="ion-android-arrow-dropleft-circle"></v-ons-icon>
+                            <v-ons-icon class="project-header instance-list-back-btn" style="vertical-align: -1px;" icon="ion-arrow-left-b"></v-ons-icon>
                         </router-link>
                         <span class="text-color-dark project-name">{{project.name}}</span>
                     </v-ons-toolbar-button>
@@ -30,7 +30,7 @@
                             <v-ons-list-item tappable @click="sync">
                                 <v-ons-icon class="text-color-dark icon" icon="fa-comments"></v-ons-icon>
                                 <div class="menu-text">
-                                    <span class="text-color-dark label right-panel-label">Synch survey data</span>
+                                    <span class="text-color-dark label right-panel-label">Refresh survey data</span>
                                     <div class="menu-subtext">Send/get data from cloud</div>
                                 </div>
                             </v-ons-list-item>
@@ -159,17 +159,19 @@ export default {
 }
 
 .project-list-toolbar {
-    background: #ecf0f5;
-    border-bottom: 1px solid #ddd;
+    background: #9CDBD9;
+    border-bottom: 1px solid #65BAB7;
 }
 
 .project-header {
     font-size: 22px !important;
+    color: #FFF4F4;
 }
 
 .project-name {
     font-size: 17px;
-    vertical-align: 1px;
+    /* vertical-align: 2px; */
+    color: #12726E;
 }
 
 .page-background {
@@ -310,5 +312,23 @@ export default {
 .menu-subtext {
     font-size: 12px;
     color: #888;
+}
+
+.instance-list-back-btn {
+    color: #FEB0B2;
+    font-size: 24px;
+    padding: 5px 11px;
+    border-radius: 50%;
+    margin-left: -5px;
+    background: #268884;
+    border-right: 1px solid #12726E;
+}
+
+.toolbar-button--material > a .instance-list-back-btn {
+    margin-top: -12px;
+}
+
+.toolbar-button--material > .instance-editor-back-btn {
+    margin-left: -20px;
 }
 </style>

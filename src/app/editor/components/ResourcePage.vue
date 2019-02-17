@@ -3,7 +3,9 @@
         <v-ons-page>
             <v-ons-toolbar class="instance-editor-header relative">
                 <div class="flex" style="width: 90%;">
-                    <v-ons-icon class="resource-header instance-editor-back-btn" icon="ion-android-arrow-dropleft-circle" @click="back"></v-ons-icon>
+                    <div class="instance-editor-back-btn">
+                        <v-ons-icon class="resource-header instance-editor-back-icon" style="" icon="ion-arrow-left-b" @click="back"></v-ons-icon>
+                    </div>
                     <div v-if="!!headerName.label" class="instance-name-position">
                         <div class="instance-name">{{headerName.label}}
                             <div class="resource-type">{{headerName.value}}</div>
@@ -229,6 +231,7 @@ export default {
 
 .toolbar-button--material .instance-editor-toolpanel-btn {
     margin-top: 5px;
+    margin-right: -5px;
 }
 
 .resource-type {
@@ -297,9 +300,37 @@ export default {
 }
 
 .instance-editor-back-btn {
-    color: #f4f4f4;
-    padding: 10px 10px 10px 15px;
+    color: #FEB0B2;
+    padding: 6px;
+    height: 32px;
+    width: 32px;
+    box-sizing: border-box;
+    border-radius: 50%;
+    margin-top: 5px;
+    margin-left: 5px;
+    margin-right: 8px;
+    background: #C2171B;
+    border-right: 1px solid #4C0002;
 }
+
+.instance-editor-back-icon {
+    margin-top: -5px;
+    margin-left: 5px;
+}
+
+.toolbar--material .instance-editor-back-btn {
+    margin-right: 10px;
+    margin-left: 10px;
+    padding: 8px;
+    margin-top: 12px;
+}
+
+.toolbar--material .instance-editor-back-btn .instance-editor-back-icon {
+    margin-top: -4px;
+    margin-left: 3px;
+    vertical-align: middle;
+}
+
 .instance-editor-toolpanel-btn {
     color: #ddd;
 }

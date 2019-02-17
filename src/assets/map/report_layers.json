@@ -21,7 +21,7 @@
     "source": "report-data",
     "paint": {
         "circle-color": "#3bb2d0",
-        "circle-radius": 3,
+        "circle-radius": 6,
         "circle-stroke-width": 2,
         "circle-stroke-color": "white"
     },

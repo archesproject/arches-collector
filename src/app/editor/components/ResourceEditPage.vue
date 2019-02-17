@@ -429,5 +429,6 @@ ul {
     top: 0px;
     bottom: 0px;
     vertical-align: middle;
+    opacity: .7;
 }
 </style>

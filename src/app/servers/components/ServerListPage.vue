@@ -32,7 +32,7 @@
                             <span class="application-list-item-url">{{server.url}}</span>
                         </span>
                         <span class="manage-app-btn-panel" @click="setSelectedServer($event, server);">
-                            <v-ons-icon class="manage-app-btn" style="font-size: 19px;" v-if="selectedServer !== server" icon="fa-info-circle"></v-ons-icon>
+                            <v-ons-icon class="manage-app-btn" style="font-size: 13px;" v-if="selectedServer !== server" icon="fa-info"></v-ons-icon>
                         </span>
                     </v-ons-list-item>
                 </v-ons-list>
@@ -337,20 +337,22 @@ export default {
 }
 
 .manage-app-btn-panel {
-    background: #f6f6f6;
-    width: 60px;
-    border-left: 1px solid #ddd;
+    background: #eee;
+    border: 1px solid #ddd;
+    height: 32px;
+    width: 32px;
     position: absolute;
-    right: 0px;
-    top: 0px;
+    right: 10px;
+    top: 15px;
+    border-radius: 50%;
     bottom: 0px;
-    vertical-align: middle;
+    padding: 1px;
 }
 
 .manage-app-btn {
-    margin-top: 20px;
-    margin-left: 20px;
-    color: #555;
+    margin-top: 9px;
+    margin-left: 13px;
+    color: #777;
 }
 
 .relative {

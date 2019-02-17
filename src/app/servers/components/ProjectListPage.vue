@@ -124,7 +124,7 @@
                             </span>
                         </span>
                         <span class="center" @click="segueToProject(project);"></span>
-                        <v-ons-icon class="right" style="display: flex; padding-left:10px" icon="fa-ellipsis-v" v-if="project.joined !== undefined || !project.active" @click="toggleSideNav(project)"></v-ons-icon>
+                        <v-ons-icon class="right" style="display: flex; padding-left:10px; padding-right: 18px;" icon="fa-ellipsis-v" v-if="project.joined !== undefined || !project.active" @click="toggleSideNav(project)"></v-ons-icon>
                         <v-ons-icon class="right" style="display: flex; padding-left:10px" icon="fa-cloud-download-alt" v-if="project.joined === undefined && project.active" @click="function(){selectedProject = project; sync()}"></v-ons-icon>
                     </v-ons-list-item>
                     <v-ons-list-item v-if="projects.length === 0">
@@ -434,13 +434,19 @@ export default {
     }
 
     .panel-header {
-      background: #F96468;
-      border-top: 1px solid #780003;
+      background: #efeff4;
       margin-top: 1px;
     }
 
     .panel-header-text {
-        color: #f2f2f2;
+        color: #2E4172;
+        font-weight: 500;
+        font-size: 15px;
+    }
+
+    .list-item--material .panel-header-text {
+        font-weight: 600;
+        padding: 5px;
     }
 
     .relative {
