@@ -3,24 +3,28 @@
     <v-ons-toolbar class="app-header-toolbar">
         <div class="left">
             <v-ons-toolbar-button class="left-button-offset">
-                <img src="../../../assets/img/arches_logo_light.png" width="20" @click="goTo('serverlist');"></img>
-                <span v-if="$route.name === 'serverlist' || $route.name === 'projectlist'" class="left-button-text" @click="goTo('serverlist');">
+                <div class="nav-header">
+                <img src="../../../assets/img/arches_logo_light.png" style="padding-right: 5px" width="25" height="25" @click="goTo('serverlist');"></img>
+                <div v-if="$route.name === 'serverlist' || $route.name === 'projectlist'" @click="goTo('serverlist');">
                     Arches Apps
-                </span>
-                <span v-if="$route.name !== 'serverlist'">
-                    <span class="app-path-divider" v-if="$route.name === 'projectlist'">
+                </div>
+                <div class="app-path-divider" v-if="$route.name !== 'serverlist'">
+                    <div v-if="$route.name === 'projectlist'">
                         /
-                    </span>
-                    <span class="left-button-text" @click="goTo('projectlist');">
+                    </div>
+                    <div @click="goTo('projectlist');">
                         {{active_server_name}}
-                    </span>
-                </span>
-                <span class="app-path-divider" v-if="$route.name !== 'serverlist' && $route.name !== 'projectlist'">
-                    /
-                    <span class="left-button-text" @click="goToProject();">
+                    </div>
+                </div>
+                <div class="app-path-divider" v-if="$route.name !== 'serverlist' && $route.name !== 'projectlist'">
+                    <div>
+                        /
+                    </div>
+                    <div class="left-button-text" @click="goToProject();">
                         {{active_project_name}}
-                    </span>
-                </span>
+                    </div>
+                </div>
+            </div>
             </v-ons-toolbar-button>
         </div>
         <div class="center"></div>
@@ -63,15 +67,23 @@ export default {
 }
 
 .app-path-divider {
-    color: #fff;
-    font-size: 17px;
+    display: inherit;
 }
 
-.left-button-text{
-    position: relative;
-    top: -3px;
-    font-size: 17px;
+.left-button-text {
+    width: 65%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.nav-header {
+    display: inline-flex;
+    height: 25px;
+    align-items: center;
+    padding-top: 14px;
     color: #fff;
+    font-size: 17px;
 }
 
 .left-button-offset {
@@ -82,7 +94,7 @@ export default {
     padding-top: 0px;
 }
 
-.toolbar-button--material{
+.toolbar-button--material {
     color: dimgrey;
 }
 
