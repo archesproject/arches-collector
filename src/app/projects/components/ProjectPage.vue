@@ -159,7 +159,7 @@ export default {
 }
 
 .project-list-toolbar {
-    background: #9CDBD9;
+    background: #CDF2F1;
     border-bottom: 1px solid #65BAB7;
 }
 
@@ -315,17 +315,17 @@ export default {
 }
 
 .instance-list-back-btn {
-    color: #FEB0B2;
+    color: #CDF2F1;
     font-size: 24px;
-    padding: 5px 11px;
+    padding: 5px 12px;
     border-radius: 50%;
-    margin-left: -5px;
-    background: #268884;
-    border-right: 1px solid #12726E;
+    margin-left: -4px;
+    background: #6BBBB8;
+
 }
 
 .toolbar-button--material > a .instance-list-back-btn {
-    margin-top: -12px;
+    margin-top: -11px;
 }
 
 .toolbar-button--material > .instance-editor-back-btn {
