@@ -30,7 +30,7 @@
                             <v-ons-list-item tappable @click="sync">
                                 <v-ons-icon class="text-color-dark icon" icon="fa-comments"></v-ons-icon>
                                 <div class="menu-text">
-                                    <span class="text-color-dark label right-panel-label">Synch survey data</span>
+                                    <span class="text-color-dark label right-panel-label">Refresh survey data</span>
                                     <div class="menu-subtext">Send/get data from cloud</div>
                                 </div>
                             </v-ons-list-item>
@@ -159,8 +159,8 @@ export default {
 }
 
 .project-list-toolbar {
-    background: #F96468;
-    border-bottom: 1px solid #E96568;
+    background: #9CDBD9;
+    border-bottom: 1px solid #65BAB7;
 }
 
 .project-header {
@@ -171,7 +171,7 @@ export default {
 .project-name {
     font-size: 17px;
     /* vertical-align: 2px; */
-    color: #FFF4F4;
+    color: #12726E;
 }
 
 .page-background {
@@ -320,8 +320,8 @@ export default {
     padding: 5px 11px;
     border-radius: 50%;
     margin-left: -5px;
-    background: #C2171B;
-    border-right: 1px solid #9A0509;
+    background: #268884;
+    border-right: 1px solid #12726E;
 }
 
 .toolbar-button--material > a .instance-list-back-btn {
