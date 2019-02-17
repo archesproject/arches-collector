@@ -40,6 +40,7 @@
 
             <!-- Manage Selected App -->
             <div class="app-page-color" v-show="selectedServer">
+                <v-ons-progress-bar indeterminate v-if="authenticating"></v-ons-progress-bar>
                 <v-ons-row class="app-url-panel">
                     <v-ons-col>
                         <span v-if="selectedServer !== undefined">
@@ -108,7 +109,8 @@ export default {
             selectedServerCopy: undefined,
             error: false,
             error_message: '',
-            default_error_message: 'Oops, something happened, maybe you\re offline?'
+            default_error_message: 'Oops, something happened, maybe you\re offline?',
+            authenticating: false
         };
     },
     computed: {
@@ -148,6 +150,7 @@ export default {
         login: function() {
             var self = this;
             this.error = false;
+            this.authenticating = true;
             this.$store.dispatch('getUserProfile', this.selectedServer)
             .then(function(response){
                 if (response.ok) {
@@ -206,6 +209,9 @@ export default {
             })
             .then(function() {
                 self.selectedServer = false;
+            })
+            .finally(function(response) {
+                self.authenticating = false;
             })
             .catch(function(error) {
                 // console.log('Error:', error);
