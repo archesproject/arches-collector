@@ -317,7 +317,7 @@ export default {
 .instance-list-back-btn {
     color: #CDF2F1;
     font-size: 24px;
-    padding: 5px 12px;
+    padding: 3px 10px;
     border-radius: 50%;
     margin-left: -4px;
     background: #6BBBB8;
