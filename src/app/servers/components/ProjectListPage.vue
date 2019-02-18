@@ -419,6 +419,11 @@ export default {
         font-size: 15px;
     }
 
+    .left-project-text + .project-name {
+        font-size: 12px;
+        padding-top: 2px;
+    }
+
     .project-list-toolbar {
         background: #f4f4f4;
         border-bottom: 1px solid #ddd;
