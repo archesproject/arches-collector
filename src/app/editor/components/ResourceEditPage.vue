@@ -23,7 +23,7 @@
                             <div class="widget-label">card</div>
                         </span>
                         <span v-if="canDelete(tile)" class="tile-delete">
-                            <span class="fa5 fa-trash" @click="deleteTile(tile, $event)"></span>
+                            <span class="tile-delete-icon fa5 fa-trash" @click="deleteTile(tile, $event)"></span>
                         </span>
                     </div>
                 </div>
@@ -394,7 +394,7 @@ ul {
     border-bottom: solid 1px #ccc;
 }
 .drag-bars {
-    padding: 20px 15px 20px 10px;
+    padding: 20px 10px 20px 10px;
     background-color: #e8e6e6;
     display: inline-block;
     margin-right: 5px;
@@ -420,15 +420,16 @@ ul {
     position: relative;
 }
 .tile-delete {
-    padding: 20px 22px;
-    border-left: 1px solid #ddd;
-    background: #f2f2f2;
-    /* width: 60px; */
     position: absolute;
-    right: 0px;
-    top: 0px;
-    bottom: 0px;
-    vertical-align: middle;
+    right: 10px;
+    top: 18px;
     opacity: .7;
+}
+
+.tile-delete-icon {
+    padding: 10px 11px;
+    background: #eee;
+    border: 1px solid #bbb;
+    border-radius: 50%;
 }
 </style>

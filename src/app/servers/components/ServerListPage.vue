@@ -356,9 +356,14 @@ export default {
 }
 
 .manage-app-btn {
-    margin-top: 9px;
-    margin-left: 13px;
+    margin-top: 8px;
+    margin-left: 14px;
     color: #777;
+}
+
+.list-item--material__center .manage-app-btn {
+  margin-top: 9px;
+  margin-left: 13px;
 }
 
 .relative {
