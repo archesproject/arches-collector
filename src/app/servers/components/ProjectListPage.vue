@@ -90,7 +90,7 @@
                     <div class="center"></div>
                     <div class="right">
                         <v-ons-toolbar-button @click="toggleSideNav()" v-if="projects.length > 0" >
-                            <v-ons-icon class="text-color-dark project-name" icon="fa-wrench"></v-ons-icon>
+                            <v-ons-icon class="text-color-dark project-name" style="font-size: 17px;" icon="ion-easel"></v-ons-icon>
                         </v-ons-toolbar-button>
                     </div>
                 </v-ons-toolbar>
@@ -416,6 +416,7 @@ export default {
 
     .left-project-text{
         color: #555;
+        font-weight: 500;
         font-size: 15px;
     }
 

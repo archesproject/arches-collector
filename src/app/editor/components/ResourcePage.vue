@@ -21,7 +21,7 @@
                     </transition>
                     <div class="instance-tool-btn">
                         <v-ons-toolbar-button @click="toggleSideNav">
-                            <v-ons-icon class="instance-editor-toolpanel-btn" icon="fa-sliders"></v-ons-icon>
+                            <v-ons-icon class="instance-editor-toolpanel-btn" icon="ion-easel"></v-ons-icon>
                         </v-ons-toolbar-button>
                     </div>
                 </div>
@@ -308,14 +308,14 @@ export default {
     color: #FEB0B2;
     background: #C2171B;
     border-radius: 50%;
-    border-right: 1px solid #4C0002;
+    border: 1px solid #4C0002;
     margin-top: 6px;
     margin-left: 5px;
     margin-right: 5px;
 }
 
 .toolbar--material .instance-editor-back-btn {
-    margin-right: 5px;
+    margin-right: 1px;
     margin-left: 5px;
     margin-top: 2px;
 }
@@ -328,6 +328,7 @@ export default {
 
 .instance-editor-toolpanel-btn {
     color: #ddd;
+    margin-top: -3px;
 }
 
 .relative {

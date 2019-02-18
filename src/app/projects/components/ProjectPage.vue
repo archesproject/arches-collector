@@ -17,7 +17,7 @@
                 <div class="center"></div>
                 <div class="right">
                     <v-ons-toolbar-button @click="toggleSideNav">
-                        <v-ons-icon class="text-color-dark project-name" icon="fa-cogs"></v-ons-icon>
+                        <v-ons-icon class="text-color-dark project-name" icon="ion-easel"></v-ons-icon>
                     </v-ons-toolbar-button>
                 </div>
             </v-ons-toolbar>
@@ -319,6 +319,7 @@ export default {
     font-size: 24px;
     padding: 3px 10px;
     border-radius: 50%;
+    border: 1px solid #429895;
     margin-left: -4px;
     background: #6BBBB8;
 
