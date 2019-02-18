@@ -309,15 +309,15 @@ export default {
     background: #C2171B;
     border-radius: 50%;
     border: 1px solid #4C0002;
-    margin-top: 6px;
-    margin-left: 5px;
-    margin-right: 5px;
+    margin-top: 5px;
+    margin-left: 8px;
+    margin-right: 6px;
 }
 
 .toolbar--material .instance-editor-back-btn {
     margin-right: 1px;
     margin-left: 5px;
-    margin-top: 2px;
+    margin-top: 0px;
 }
 
 .toolbar--material .instance-editor-back-btn .instance-editor-back-icon {
