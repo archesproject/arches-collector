@@ -304,7 +304,7 @@ export default {
 }
 
 .instance-editor-back-icon {
-    padding: 3px 10px;
+    padding: 3px 11px;
     color: #FEB0B2;
     background: #C2171B;
     border-radius: 50%;

@@ -394,7 +394,7 @@ ul {
     border-bottom: solid 1px #ccc;
 }
 .drag-bars {
-    padding: 20px 15px 20px 10px;
+    padding: 20px 10px 20px 10px;
     background-color: #e8e6e6;
     display: inline-block;
     margin-right: 5px;
