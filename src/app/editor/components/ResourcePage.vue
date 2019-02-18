@@ -300,29 +300,24 @@ export default {
 }
 
 .instance-editor-back-btn {
-    color: #FEB0B2;
-    padding: 6px;
-    height: 32px;
-    width: 32px;
-    box-sizing: border-box;
-    border-radius: 50%;
-    margin-top: 5px;
-    margin-left: 5px;
-    margin-right: 8px;
-    background: #C2171B;
-    border-right: 1px solid #4C0002;
+
 }
 
 .instance-editor-back-icon {
-    margin-top: -5px;
+    padding: 3px 10px;
+    color: #FEB0B2;
+    background: #C2171B;
+    border-radius: 50%;
+    border-right: 1px solid #4C0002;
+    margin-top: 6px;
     margin-left: 5px;
+    margin-right: 5px;
 }
 
 .toolbar--material .instance-editor-back-btn {
-    margin-right: 10px;
-    margin-left: 10px;
-    padding: 8px;
-    margin-top: 12px;
+    margin-right: 5px;
+    margin-left: 5px;
+    margin-top: 2px;
 }
 
 .toolbar--material .instance-editor-back-btn .instance-editor-back-icon {
