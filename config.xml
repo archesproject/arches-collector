@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="org.archesproject.archesmobile" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>Arches Collector</name>
+    <name>Arches</name>
     <description>
       A mobile app to manage Arches resources
     </description>
