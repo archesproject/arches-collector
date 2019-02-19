@@ -702,6 +702,11 @@ var store = new Vuex.Store({
                     });
                     return store.dispatch('saveServerInfoToPouch');
                 })
+                .then(function(){
+                    // need to init the server store here or you can't 
+                    // navigate cards in the form
+                    return store.dispatch('initServerStoreFromPouch');
+                })
                 .catch(function(error) {
                     console.log('Error:', error);
                     self.error = true;
