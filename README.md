@@ -1,4 +1,4 @@
-# arches_mobile
+# Arches Collector
 
 > A mobile app to manage Arches resources
 
