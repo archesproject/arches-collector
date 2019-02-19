@@ -4,7 +4,7 @@
         <div class="left">
             <v-ons-toolbar-button class="left-button-offset">
                 <div class="nav-header">
-                <img src="../../../assets/img/arches_logo_light.png" style="padding-right: 5px" width="25" height="25" @click="goTo('serverlist');"></img>
+                <img src="../../../assets/img/arches_logo_light.png" style="padding-right: 5px;" height="25" @click="goTo('serverlist');"></img>
                 <div v-if="$route.name === 'serverlist' || $route.name === 'projectlist'" @click="goTo('serverlist');">
                     Arches Apps
                 </div>
@@ -71,7 +71,7 @@ export default {
 }
 
 .left-button-text {
-    width: 65%;
+    width: 195%;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
