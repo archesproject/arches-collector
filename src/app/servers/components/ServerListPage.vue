@@ -109,7 +109,7 @@ export default {
             selectedServerCopy: undefined,
             error: false,
             error_message: '',
-            default_error_message: 'Oops, something happened, maybe you\re offline?',
+            default_error_message: 'Oops, something happened. Maybe you are offline?',
             authenticating: false
         };
     },
