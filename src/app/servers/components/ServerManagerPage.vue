@@ -73,7 +73,7 @@ export default {
             authenticating: false,
             error: false,
             error_message: '',
-            default_error_message: 'Oops, something happened, maybe you\re offline?'
+            default_error_message: 'Oops, something happened. Maybe you are offline?'
         };
     },
     computed: {
