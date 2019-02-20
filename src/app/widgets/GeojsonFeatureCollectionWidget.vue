@@ -40,6 +40,7 @@ import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import GenericControl from '../../assets/map/GenericControl';
 import reportLayers from '../../assets/map/report_layers.json';
+import drawLayers from '../../assets/map/draw_layers.json'
 
 export default {
     name: 'GeojsonFeatureCollectionWidget',
@@ -102,7 +103,8 @@ export default {
                     'combine_features': false,
                     'uncombine_features': false,
                     'trash': false
-                }
+                },
+                styles: drawLayers
             });
             this.map.addControl(this.draw, 'top-left');
             this.draw.add(this.featureCollection);
