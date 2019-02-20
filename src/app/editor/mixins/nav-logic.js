@@ -35,7 +35,7 @@ export default {
                 'card': this.card,
                 'tile': tile,
                 'showForm': !!showForm,
-                'activeObject': 'tile', 
+                'activeObject': 'tile',
                 'editorTab': editorTab
             });
         },
