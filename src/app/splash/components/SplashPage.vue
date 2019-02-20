@@ -9,8 +9,8 @@
                         <v-ons-icon class="pull-icon" v-bind:icon="item.icon" v-bind:style="{}"></v-ons-icon>
                     </div>
                     <div class="splash-text">
-                        <div class="text">{{item.text}}</div>
                         <div class="title">{{item.title}}</div>
+                        <div class="text">{{item.text}}</div>
                     </div>
                 </v-ons-carousel-item>
             </v-ons-carousel>
@@ -21,7 +21,7 @@
                 {{ carouselIndex === dotIndex - 1 ? '\u25CF' : '\u25CB' }}
             </span>
             <h4 style="color:black;">
-                <router-link class="skip-link" :to="{ name: 'servermanager' }">Skip</router-link>
+                <router-link class="skip-link" :to="{ name: 'servermanager' }">Sign In</router-link>
             </h4>
         </div>
     </v-ons-page>
@@ -38,8 +38,8 @@ export default {
             items: [
                 {
                     'icon': 'fa-comment',
-                    'title': 'Welcome to Arches',
-                    'text': "Welcome and salutations! Its Arches time.  Here's a long list of text just to see how it can be rendered using nothing but css"
+                    'title': 'Arches Collector',
+                    'text': "Arches Collector let's you access, create and update Arches data while you're on-the-go.  Log on to Arches Collector with your normal account to get started."
                 },
                 {
                     'icon': 'fa-globe',
@@ -48,8 +48,8 @@ export default {
                 },
                 {
                     'icon': 'fa-code-fork',
-                    'title': 'Many Projects, Multiple Surveys',
-                    'text': "You can participate in many field surveys, even if they're being hosted from different Arches applications."
+                    'title': 'Many Projects',
+                    'text': "You can work in many field projects at the same time.  You can even participate in field projects hosted by from different Arches applications."
                 },
                 {
                     'icon': 'fa-signal',
@@ -81,9 +81,9 @@ export default {
 
 /* Portrait layout (default) */
 .splash-background {
-        /* background:url(../../../assets/img/arches_logo.png) no-repeat center top; /* 170px x 200px */ */
-        /* background-size: 200px; */
-        background-position-y:28%;
+        background:url(../../../assets/img/arches_logo.png) no-repeat center top; /* 170px x 200px */
+        background-size: 200px;
+        background-position-y:20%;
         text-align: center;
         height: 100%;
 }
@@ -92,19 +92,19 @@ export default {
     position: absolute;
     left: 0;
     right: 0;
-    bottom: 25%;
+    bottom: 22%;
 }
 
 .splash-text > .title {
     font-size: 28px;
     font-weight: 600;
     color: #484848;
-    padding-top: 0px;
+    margin-top: 20px;
 }
 
 .splash-text > .text {
     margin-bottom: 15px;
-    font-size: 14px;
+    font-size: 13px;
     padding: 10px 15%;
     color: #aaa;
 }
@@ -144,7 +144,7 @@ export default {
 }
 
 .icon-circle {
-    margin-top: 33%;
+    margin-top: 85%;
     margin-left: 40%;
     margin-bottom: 20px;
     box-sizing: border-box;
