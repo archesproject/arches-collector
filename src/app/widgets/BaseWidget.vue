@@ -16,13 +16,29 @@ export default {
     },
     methods: {
         createNewProvisionalEdit: function() {
+            var self = this;
+            var tileData = !!this.tile && Object.keys(this.tile.data).length > 0 ? JSON.parse(JSON.stringify(this.tile.data)) : undefined;
+
+            if (!!this.tile && !tileData) {
+                Object.keys(this.tile.provisionaledits).forEach(function(key) {
+                    if (!tileData) {
+                        tileData = self.tile.provisionaledits[key];
+                    } else {
+                        if (new Date(tileData.timestamp) < new Date(self.tile.provisionaledits[key].timestamp)) {
+                            tileData = self.tile.provisionaledits[key];
+                        }
+                    }
+                });
+
+                tileData = JSON.parse(JSON.stringify(tileData.value));
+            }
             return {
                 action: 'create',
                 reviewer: null,
                 reviewtimestamp: null,
                 status: 'review',
                 timestamp: '',
-                value: !!this.tile ? JSON.parse(JSON.stringify(this.tile.data)) : undefined
+                value: tileData
             };
         }
     },
