@@ -190,7 +190,7 @@ export default {
                 container: this.mapId,
                 style: style,
                 hash: true,
-                maxZoom: 17
+                maxZoom: 19
             };
         },
         setMapExtent: function(map) {
