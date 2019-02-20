@@ -1,6 +1,6 @@
 <template>
     <v-ons-page>
-        <div class="splash-background">
+        <div class="splash-background" style="background-color: #fff;">
             <v-ons-carousel fullscreen swipeable auto-scroll overscrollable
                 :index.sync="carouselIndex"
             >
@@ -88,6 +88,10 @@ export default {
         height: 100%;
 }
 
+.page--material__background {
+    background-color: #fff;
+}
+
 .splash-text {
     position: absolute;
     left: 0;
@@ -144,7 +148,7 @@ export default {
 }
 
 .icon-circle {
-    margin-top: 85%;
+    margin-top: 80%;
     margin-left: 40%;
     margin-bottom: 20px;
     box-sizing: border-box;
