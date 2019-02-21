@@ -256,7 +256,8 @@ export default {
                         console.log('delete failed');
                     })
                     .finally(function(doc) {
-                        var index = self.$underscore.findIndex(self.projects, { id: self.selectedProject.id });
+                        var index;
+                        self.projects.forEach((p, i) => { if (self.selectedProject.id === p.id) index = i });
                         window.setTimeout(function() {
                             self.toggleSideNav()
                             self.projects = self.projects.splice(index, 1)
@@ -301,7 +302,6 @@ export default {
                         console.log('failed to leave project');
                     })
                     .finally(function(doc) {
-                        var index = self.$underscore.findIndex(self.projects, { id: self.selectedProject.id });
                         window.setTimeout(function() {
                             self.toggleSideNav();
                         }, 150);
