@@ -655,7 +655,7 @@ var store = new Vuex.Store({
         },
         getRemoteProjects: function({commit, state}, {server, surveyid}) {
             var self = this;
-            var url = server.url + '/surveys';
+            var url = server.url + '/mobileprojects';
             if (!!surveyid) {
                 url = url + '/' + surveyid;
             }
@@ -704,7 +704,7 @@ var store = new Vuex.Store({
                     });
                     return store.dispatch('saveServerInfoToPouch');
                 })
-                .then(function(){
+                .then(function() {
                     // need to init the server store here or you can't
                     // navigate cards in the form
                     return store.dispatch('initServerStoreFromPouch');
@@ -716,7 +716,7 @@ var store = new Vuex.Store({
         },
         updateRemoteProjectsStatus: function({commit, state}, server) {
             var self = this;
-            return fetch(server.url + '/surveys?status', {
+            return fetch(server.url + '/mobileprojects?status', {
                 method: 'GET',
                 headers: new Headers({
                     'Authorization': 'Bearer ' + server.token
