@@ -71,7 +71,7 @@ export default {
 }
 
 .left-button-text {
-    width: 195%;
+    width: 190%;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
