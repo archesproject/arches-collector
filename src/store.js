@@ -733,7 +733,9 @@ var store = new Vuex.Store({
                     // return the response object or throw an error
                     Object.keys(json).forEach(function(projectId) {
                         if (projectId in server.projects) {
-                            server.projects[projectId].active = json[projectId].active;
+                            Object.keys(json[projectId]).forEach(function(key) {
+                                server.projects[projectId][key] = json[projectId][key];
+                            });
                         } else {
                             // get remote project that's now available
                             store.dispatch('getRemoteProjects', {'server': server, 'surveyid': projectId});
