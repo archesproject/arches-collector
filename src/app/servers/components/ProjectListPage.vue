@@ -15,18 +15,18 @@
                             <span class="panel-header-text label right-panel-label">All Projects</span>
                         </v-ons-list-item>
                         <v-ons-list-item tappable @click='toggleShowUnjoined'>
-                            <v-ons-icon class="text-color-dark left menu-icon" icon="fa-toggle-on" v-if="showUnjoinedProjects === false"></v-ons-icon>
-                            <v-ons-icon class="text-color-dark left menu-icon" icon="fa-toggle-off" v-else></v-ons-icon>
+                            <v-ons-icon class="text-color-dark left menu-icon" icon="fa-eye" v-if="showUnjoinedProjects === false"></v-ons-icon>
+                            <v-ons-icon class="text-color-dark left menu-icon" icon="fa-eye-slash" v-else></v-ons-icon>
                             <div class="menu-text" v-if="showUnjoinedProjects === false">
                                 <span class="text-color-dark">Show all projects</span>
                                 <span class="menu-subtext">List all projects regardless of status</span>
                             </div>
                             <div class="menu-text" v-else>
                                 <span class="text-color-dark">Show only projects I've joined</span>
-                                <span class="text-color-dark menu-subtext">Show only projects I'm able to sync</span>
+                                <span class="text-color-dark menu-subtext">Show only projects in which I'm participating</span>
                             </div>
                         </v-ons-list-item @click="">
-                        <v-ons-list-item tappable @click="$ons.notification.confirm({message: 'Deleting a project will remove all related data (synched and unsynched) from your device?. Are you sure you want to proceed?', callback: deleteAllInactiveProjects})">
+                        <v-ons-list-item tappable @click="$ons.notification.confirm({message: 'Deleting a project will remove all related data (synced and unsynced) from your device?. Are you sure you want to proceed?', callback: deleteAllInactiveProjects})">
                             <v-ons-icon class="text-color-dark left menu-icon" icon="fa-trash"></v-ons-icon>
                             <div class="menu-text">
                                 <span class="text-color-dark">Delete all inactive projects</span>
@@ -52,17 +52,17 @@
                             <v-ons-icon class="text-color-dark left menu-icon" icon="fa-toggle-off"></v-ons-icon>
                             <div class="menu-text">
                                 <span class="text-color-dark">Leave project</span>
-                                <span class="menu-subtext">Stop synching with this active project</span>
+                                <span class="menu-subtext">Stop participating in this active project</span>
                             </div>
                         </v-ons-list-item @click="">
                         <v-ons-list-item tappable v-if="selectedProject && !selectedProject.joined && selectedProject.active" @click="function(){toggleProjectParticipation(1)}">
-                            <v-ons-icon class="text-color-dark left menu-icon" icon="fa-toggle-on"></v-ons-icon>
+                            <v-ons-icon class="text-color-dark left menu-icon" icon="fa-toggle-off"></v-ons-icon>
                             <div class="menu-text">
                                 <span class="text-color-dark">Re-join project</span>
-                                <span class="menu-subtext">Resume synching with this active project</span>
+                                <span class="menu-subtext">Resume participating in this active project</span>
                             </div>
                         </v-ons-list-item @click="">
-                        <v-ons-list-item tappable v-if="selectedProject && (selectedProject.unavailable || !selectedProject.active)" @click="$ons.notification.confirm({message: 'Are you sure you want to delete this Project? All unsynched data will be lost.', callback: deleteProject})">
+                        <v-ons-list-item tappable v-if="selectedProject && (selectedProject.unavailable || !selectedProject.active)" @click="$ons.notification.confirm({message: 'Are you sure you want to delete this Project? All unsynced data will be lost.', callback: deleteProject})">
                             <v-ons-icon class="text-color-dark left menu-icon" icon="fa-trash"></v-ons-icon>
                             <div class="menu-text">
                                 <span class="text-color-dark">Delete this project from my device</span>
@@ -89,7 +89,7 @@
                     <span class="left projects-title"><span>Projects</span></span>
                     <div class="center"></div>
                     <div class="right">
-                        <v-ons-toolbar-button @click="toggleSideNav()" v-if="projects.length > 0" >
+                        <v-ons-toolbar-button @click="toggleSideNav()">
                             <v-ons-icon class="text-color-dark project-name" style="font-size: 17px;" icon="ion-easel"></v-ons-icon>
                         </v-ons-toolbar-button>
                     </div>
