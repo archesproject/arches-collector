@@ -16,13 +16,29 @@ export default {
     },
     methods: {
         createNewProvisionalEdit: function() {
+            var self = this;
+            var tileData = !!this.tile && Object.keys(this.tile.data).length > 0 ? JSON.parse(JSON.stringify(this.tile.data)) : {};
+
+            if (!!this.tile && !tileData) {
+                Object.keys(this.tile.provisionaledits).forEach(function(key) {
+                    if (!tileData) {
+                        tileData = self.tile.provisionaledits[key];
+                    } else {
+                        if (new Date(tileData.timestamp) < new Date(self.tile.provisionaledits[key].timestamp)) {
+                            tileData = self.tile.provisionaledits[key];
+                        }
+                    }
+                });
+
+                tileData = !!tileData && !!tileData.value ? JSON.parse(JSON.stringify(tileData.value)) : tileData;
+            }
             return {
                 action: 'create',
                 reviewer: null,
                 reviewtimestamp: null,
                 status: 'review',
                 timestamp: '',
-                value: !!this.tile ? JSON.parse(JSON.stringify(this.tile.data)) : undefined
+                value: tileData
             };
         }
     },
@@ -55,13 +71,14 @@ export default {
                         provisionaledit = this.tile.provisionaledits[this.user.id]['value'];
                     }
 
-                    if (provisionaledit.hasOwnProperty(this.widget.node_id)) {
-                        return provisionaledit[this.widget.node_id];
-                    } else if (this.widget.config.defaultValue) {
-                        provisionaledit[this.widget.node_id] = this.widget.config.defaultValue;
-                        return provisionaledit[this.widget.node_id];
+                    if (!provisionaledit.hasOwnProperty(this.widget.node_id)) {
+                        if (this.widget.config.defaultValue) {
+                            provisionaledit[this.widget.node_id] = this.widget.config.defaultValue;
+                        } else {
+                            provisionaledit[this.widget.node_id] = '';
+                        }
                     }
-                    return '';
+                    return provisionaledit[this.widget.node_id];
                 } catch (err) {
                     // I don't know why we can't return an empty string here, but if we do then
                     // we end of having this problem

@@ -86,7 +86,7 @@
                     </v-ons-button>
 
                     <!-- App Delete Button -->
-                    <v-ons-button class="app-button relative app-delete" @click="$ons.notification.confirm({message: 'Are you sure you want to delete this App? All unsynched data will be lost.', callback: deleteServer})">
+                    <v-ons-button class="app-button relative app-delete" @click="$ons.notification.confirm({message: 'Are you sure you want to delete this App? All unsynced data will be lost.', callback: deleteServer})">
                         <div class="icon-circle"></div>
                         <v-ons-icon class="delete-icon" icon="ion-trash-a"></v-ons-icon>
                         <span class="btn-text">Delete App</span>

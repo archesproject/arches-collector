@@ -54,6 +54,23 @@ export default {
         updateActiveIndex: function(event) {
             this.$emit('switch-tabs', 1);
         },
+        saveTile: function(tile) {
+            console.log('saving...');
+            console.log(tile);
+            this.$emit('saving', true);
+            var self = this;
+
+            this.$store.dispatch('persistTile', tile)
+                .then(function(savedTile) {
+                    return savedTile;
+                })
+                .finally(function() {
+                    console.log('tile save finished...');
+                    window.setTimeout(function() {
+                        self.$emit('saving', false);
+                    }, 2000);
+                });
+        },
         segueToForm: function(card) {
             var dbtile = 'blank';
             if (card.tile !== null) {
@@ -69,8 +86,8 @@ export default {
                 this.tile = parentCard.tile;
             }
 
-            this.setTileContext(dbtile, true, 0);
-            // remove all of the stack except the last item and set the 
+            this.setTileContext(dbtile, undefined, 0);
+            // remove all of the stack except the last item and set the
             // editorTab value to take us back to the report
             this.$store.getters.activeServer.card_nav_stack = [
                 this.$store.getters.activeServer.card_nav_stack[0]

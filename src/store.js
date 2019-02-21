@@ -420,8 +420,9 @@ var store = new Vuex.Store({
         clearActiveResourceInstance: function(state) {
             store.getters.activeServer.active_resource = null;
         },
-        clearNewlyCreatedResources: function(state, projectId) {
+        clearNewlyCreatedResourcesAndTiles: function(state, projectId) {
             store.getters.currentProjects[projectId].newly_created_resources = {};
+            store.getters.currentProjects[projectId].newly_created_tiles = {};
         },
         setActiveGraphId: function(state, value) {
             store.getters.activeServer.active_graph_id = value;
@@ -600,7 +601,7 @@ var store = new Vuex.Store({
             return store.dispatch('saveServerInfoToPouch');
         },
         syncRemote: function({commit, state}, {projectId, syncAttempts}) {
-            store.commit('clearNewlyCreatedResources', projectId);
+            store.commit('clearNewlyCreatedResourcesAndTiles', projectId);
             return pouchDBs.syncProject(projectId)
                 .then(function() {
                     var server = store.getters.activeServer;
@@ -697,13 +698,14 @@ var store = new Vuex.Store({
                         project.resources_to_sync = {};
                         project.resources_with_conflicts = {};
                         project.newly_created_resources = {};
+                        project.newly_created_tiles = {};
 
                         Vue.set(server.projects, project.id, project);
                     });
                     return store.dispatch('saveServerInfoToPouch');
                 })
                 .then(function(){
-                    // need to init the server store here or you can't 
+                    // need to init the server store here or you can't
                     // navigate cards in the form
                     return store.dispatch('initServerStoreFromPouch');
                 })
@@ -731,7 +733,9 @@ var store = new Vuex.Store({
                     // return the response object or throw an error
                     Object.keys(json).forEach(function(projectId) {
                         if (projectId in server.projects) {
-                            server.projects[projectId].active = json[projectId].active;
+                            Object.keys(json[projectId]).forEach(function(key) {
+                                server.projects[projectId][key] = json[projectId][key];
+                            });
                         } else {
                             // get remote project that's now available
                             store.dispatch('getRemoteProjects', {'server': server, 'surveyid': projectId});
@@ -805,6 +809,7 @@ var store = new Vuex.Store({
                             store.dispatch('persistResource', resource);
                             store.dispatch('saveServerInfoToPouch');
                         }
+                        Vue.set(store.getters.currentProjects[project.id].newly_created_tiles, tile.tileid, false);
                     }
                     if (!newResource) {
                         resource = store.getters.activeServer.active_resource;
@@ -833,6 +838,7 @@ var store = new Vuex.Store({
             var project = store.getters.activeProject;
             return pouchDBs.deleteDocs(project.id, childTiles)
                 .then(function() {
+                    Vue.delete(project.newly_created_tiles, tile.tileid);
                     return store.dispatch('getTiles', project.id)
                         .then(function(tiles) {
                             var resource = store.getters.activeServer.active_resource;

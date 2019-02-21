@@ -300,15 +300,7 @@ export default {
             return false;
         },
         canDelete: function(tile) {
-            if (!!tile && tile.provisionaledits) {
-                return this.user.deletable_nodegroups.includes(tile.nodegroup_id)
-                && (this.user.is_reviewer
-                    || (Object.keys(tile.data).length === 0
-                    && Object.keys(tile.provisionaledits).length === 1
-                    && Object.keys(tile.provisionaledits)[0] === String(this.user.id))
-                );
-            }
-            return false;
+            return tile.tileid && tile.tileid in this.$store.getters.activeProject.newly_created_tiles;
         },
         getCardinality: function(card) {
             var found = this.$underscore.find(this.allNodegroups, function(nodegroup) {
