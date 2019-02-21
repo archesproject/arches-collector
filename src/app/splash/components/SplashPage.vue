@@ -148,6 +148,7 @@ export default {
 }
 
 .icon-circle {
+    display: none;
     margin-top: 65%;
     margin-left: 40%;
     margin-bottom: 20px;
