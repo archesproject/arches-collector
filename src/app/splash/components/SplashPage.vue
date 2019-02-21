@@ -148,7 +148,7 @@ export default {
 }
 
 .icon-circle {
-    margin-top: 80%;
+    margin-top: 65%;
     margin-left: 40%;
     margin-bottom: 20px;
     box-sizing: border-box;
