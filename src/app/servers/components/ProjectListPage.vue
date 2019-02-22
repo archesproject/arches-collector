@@ -280,7 +280,7 @@ export default {
             var self = this;
             if (answer === 1) {
                 self.projects.forEach(function(project){
-                    if (!project.active) {
+                    if (project.unavailable) {
                         self.$store.dispatch('deleteProject', project.id)
                         .catch(function() {
                             console.log('delete failed');
