@@ -730,24 +730,42 @@ var store = new Vuex.Store({
                     throw new Error('Network response was not ok.');
                 })
                 .then(function(json) {
-                    // return the response object or throw an error
+                    var projectsToGet = [];
                     Object.keys(json).forEach(function(projectId) {
                         if (projectId in server.projects) {
                             Object.keys(json[projectId]).forEach(function(key) {
                                 server.projects[projectId][key] = json[projectId][key];
                             });
                         } else {
-                            // get remote project that's now available
-                            store.dispatch('getRemoteProjects', {'server': server, 'surveyid': projectId});
-                        }
+                            // get a list of remote project that are now available
+                            projectsToGet.push(projectId);
+                         }
                     });
                     for (var projectid in server.projects) {
                         Vue.set(server.projects[projectid], 'unavailable', false);
                         if (Object.keys(json).indexOf(projectid) < 0) {
                             server.projects[projectid].unavailable = true;
+                            if (server.projects[projectid].joined === undefined) {
+                                store.dispatch('deleteProject', projectid);
+                            }
                         }
-                    };
+                    }
+                    return projectsToGet;
+                })
+                .then(function(projectIds){
+                    var projectsToGet = [];
+                    projectIds.forEach(function(projectId){
+                       projectsToGet.push(store.dispatch('getRemoteProjects', {'server': server, 'surveyid': projectId}));
+                    });
+                    return Promise.all(projectsToGet);
+                })
+                .then(function(){
                     return store.dispatch('saveServerInfoToPouch');
+                })
+                .then(function(){
+                    // need to init the server store here or you can't
+                    // navigate cards in the form
+                    return store.dispatch('initServerStoreFromPouch');
                 })
                 .catch(function(error) {
                     console.log('Error:', error);
