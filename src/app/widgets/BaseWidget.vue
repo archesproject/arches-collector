@@ -17,11 +17,15 @@ export default {
     methods: {
         createNewProvisionalEdit: function() {
             var self = this;
-            var tileData = !!this.tile && Object.keys(this.tile.data).length > 0 ? JSON.parse(JSON.stringify(this.tile.data)) : {};
+            var tileData = {};
 
-            if (!!this.tile && !tileData) {
-                Object.keys(this.tile.provisionaledits).forEach(function(key) {
-                    if (!tileData) {
+            // use athoritative edits if possible
+            // else try and get the latest provistional edit to show
+            if (!!this.tile && Object.keys(this.tile.data).length > 0) {
+                tileData = JSON.parse(JSON.stringify(this.tile.data));
+            } else {
+                Object.keys(this.tile.provisionaledits).forEach(function(key, index) {
+                    if (index === 0) {
                         tileData = self.tile.provisionaledits[key];
                     } else {
                         if (new Date(tileData.timestamp) < new Date(self.tile.provisionaledits[key].timestamp)) {
