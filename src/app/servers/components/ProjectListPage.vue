@@ -157,14 +157,24 @@ export default {
             updating: false,
             syncfailed: false,
             selectedProject: undefined,
-            showUnjoinedProjects: true,
             showAllProjectsMenuContent: true,
-            server: this.$store.getters.activeServer,
             toastVisible: false,
             syncErrorMessage: ''
         };
     },
     computed: {
+        server() {
+            return this.$store.getters.activeServer;
+        },
+        showUnjoinedProjects: {
+            get: function() {
+                if ('showUnjoinedProjects' in this.server.user_preferences[this.server.user.id]){
+                    return !!this.server.user_preferences[this.server.user.id]['showUnjoinedProjects'];
+                } else {
+                    return true;
+                }
+            }
+        },
         projects: {
             cache: false,
             get: function() {
@@ -229,8 +239,7 @@ export default {
             this.showSideNav = !this.showSideNav;
         },
         toggleShowUnjoined: function(project) {
-            this.showUnjoinedProjects = !this.showUnjoinedProjects;
-            this.$store.commit('updateUserPrefByKey', {'userPrefKey': 'showUnjoinedProjects', 'userPref': this.showUnjoinedProjects});
+            this.$store.commit('updateUserPrefByKey', {'userPrefKey': 'showUnjoinedProjects', 'userPref': !this.showUnjoinedProjects});
         },
         sync: function() {
             var self = this;
@@ -280,7 +289,7 @@ export default {
             var self = this;
             if (answer === 1) {
                 self.projects.forEach(function(project){
-                    if (!project.active) {
+                    if (project.unavailable) {
                         self.$store.dispatch('deleteProject', project.id)
                         .catch(function() {
                             console.log('delete failed');
@@ -342,7 +351,6 @@ export default {
         }
     },
     created: function() {
-        this.showUnjoinedProjects = this.server.user_preferences[this.server.user.id]['showUnjoinedProjects'] || this.showUnjoinedProjects;
         this.refreshProjectList(function(){});
     }
 };
