@@ -497,23 +497,25 @@ var store = new Vuex.Store({
             store.dispatch('saveServerInfoToPouch');
         },
         deleteProject: function(state, projectId) {
-            pouchDBs._projectDBs[projectId]['local'].destroy(function(err, response) {
-                if (err) {
-                    return console.log(err);
-                } else {
-                    if (store.getters.activeProject.hasofflinebasemaps) {
-                        store.dispatch('deleteProjectBasemaps', projectId);
-                    }
-                    if (store.getters.activeServer.projects[projectId]) {
-                        delete store.getters.activeServer.projects[projectId];
-                        var server = store.getters.activeServer;
-                        if (server.user_preferences[server.user.id]['projects'] && server.user_preferences[server.user.id]['projects'][projectId]) {
-                            delete server.user_preferences[server.user.id]['projects'][projectId];
-                        }
-                        store.dispatch('saveServerInfoToPouch');
-                    }
+            return pouchDBs._projectDBs[projectId]['local'].destroy()
+            .then(function(){
+                if (store.getters.activeProject.hasofflinebasemaps) {
+                    return store.dispatch('deleteProjectBasemaps', projectId);
                 }
-            });
+            })
+            .then(function(){
+                if (store.getters.activeServer.projects[projectId]) {
+                    delete store.getters.activeServer.projects[projectId];
+                    var server = store.getters.activeServer;
+                    if (server.user_preferences[server.user.id]['projects'] && server.user_preferences[server.user.id]['projects'][projectId]) {
+                        delete server.user_preferences[server.user.id]['projects'][projectId];
+                    }
+                    return store.dispatch('saveServerInfoToPouch');
+                }
+            })
+            .catch(function(err){
+                console.log(err);
+            })
         },
         getUserProfile: function({commit, state}, {url, username, password}) {
             var formData = new FormData();
@@ -731,6 +733,7 @@ var store = new Vuex.Store({
                 })
                 .then(function(json) {
                     var projectsToGet = [];
+                    var projectsToDelete = [];
                     Object.keys(json).forEach(function(projectId) {
                         if (projectId in server.projects) {
                             Object.keys(json[projectId]).forEach(function(key) {
@@ -738,7 +741,9 @@ var store = new Vuex.Store({
                             });
                         } else {
                             // get a list of remote project that are now available
-                            projectsToGet.push(projectId);
+                            if (json[projectId].active) {
+                                projectsToGet.push(projectId);
+                            }
                          }
                     });
                     for (var projectid in server.projects) {
@@ -746,18 +751,24 @@ var store = new Vuex.Store({
                         if (Object.keys(json).indexOf(projectid) < 0) {
                             server.projects[projectid].unavailable = true;
                             if (server.projects[projectid].joined === undefined) {
-                                store.dispatch('deleteProject', projectid);
+                                // get a list of projects that should be deleted
+                                projectsToDelete.push(projectid);
                             }
                         }
                     }
-                    return projectsToGet;
+                    return [projectsToGet, projectsToDelete];
                 })
-                .then(function(projectIds){
-                    var projectsToGet = [];
-                    projectIds.forEach(function(projectId){
-                       projectsToGet.push(store.dispatch('getRemoteProjects', {'server': server, 'surveyid': projectId}));
+                .then(function(result){
+                    var projectsToUpdate = [];
+                    var projectIdsToGet = result[0];
+                    var projectIdsToDelete = result[1];
+                    projectIdsToGet.forEach(function(projectId){
+                       projectsToUpdate.push(store.dispatch('getRemoteProjects', {'server': server, 'surveyid': projectId}));
                     });
-                    return Promise.all(projectsToGet);
+                    projectIdsToDelete.forEach(function(projectId){
+                       projectsToUpdate.push(store.dispatch('deleteProject', projectId));
+                    });
+                    return Promise.all(projectsToUpdate);
                 })
                 .then(function(){
                     return store.dispatch('saveServerInfoToPouch');
