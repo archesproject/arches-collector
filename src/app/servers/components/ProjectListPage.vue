@@ -125,7 +125,9 @@
                         </span>
                         <span class="center" @click="segueToProject(project);"></span>
                         <v-ons-icon class="right" style="display: flex; padding-left:10px; padding-right: 18px;" icon="fa-ellipsis-v" v-if="project.joined !== undefined || !project.active" @click="toggleSideNav(project)"></v-ons-icon>
-                        <v-ons-icon class="right" style="display: flex; padding-left:10px" icon="fa-cloud-download-alt" v-if="project.joined === undefined && project.active" @click="function(){selectedProject = project; sync()}"></v-ons-icon>
+                        
+                        <v-ons-icon class="right" style="display: flex; padding-left:10px" icon="fa-cloud-download-alt" v-if="project.joined === undefined && project.active && !project.unavailable" @click="function(){selectedProject = project; sync()}"></v-ons-icon>
+                        <v-ons-icon class="right" style="display: flex; padding-left:10px" icon="fa-trash" v-if="project.unavailable" @click="function(){selectedProject = project; deleteProject(1); refreshProjectList()}"></v-ons-icon>
                     </v-ons-list-item>
                     <v-ons-list-item v-if="projects.length === 0">
                         <div class="summary-panel relative">
@@ -159,21 +161,13 @@ export default {
             selectedProject: undefined,
             showAllProjectsMenuContent: true,
             toastVisible: false,
-            syncErrorMessage: ''
+            syncErrorMessage: '',
+            showUnjoinedProjects: true
         };
     },
     computed: {
         server() {
             return this.$store.getters.activeServer;
-        },
-        showUnjoinedProjects: {
-            get: function() {
-                if ('showUnjoinedProjects' in this.server.user_preferences[this.server.user.id]){
-                    return !!this.server.user_preferences[this.server.user.id]['showUnjoinedProjects'];
-                } else {
-                    return true;
-                }
-            }
         },
         projects: {
             cache: false,
@@ -233,13 +227,14 @@ export default {
             }
             return userProjectStatus;
         },
-        toggleSideNav: function(project) {
+        toggleSideNav: function(project, showSideNavOverride) {
             this.showAllProjectsMenuContent = !project;
             this.selectedProject = project;
-            this.showSideNav = !this.showSideNav;
+            this.showSideNav = showSideNavOverride !== undefined ? showSideNavOverride : !this.showSideNav;
         },
         toggleShowUnjoined: function(project) {
-            this.$store.commit('updateUserPrefByKey', {'userPrefKey': 'showUnjoinedProjects', 'userPref': !this.showUnjoinedProjects});
+            this.showUnjoinedProjects = !this.showUnjoinedProjects;
+            this.$store.commit('updateUserPrefByKey', {'userPrefKey': 'showUnjoinedProjects', 'userPref': this.showUnjoinedProjects});
         },
         sync: function() {
             var self = this;
@@ -268,7 +263,7 @@ export default {
                         var index;
                         self.projects.forEach((p, i) => { if (self.selectedProject.id === p.id) index = i });
                         window.setTimeout(function() {
-                            self.toggleSideNav()
+                            self.toggleSideNav(undefined, false)
                             self.projects = self.projects.splice(index, 1)
                         }, 250);
                     });
@@ -289,7 +284,7 @@ export default {
             var self = this;
             if (answer === 1) {
                 self.projects.forEach(function(project){
-                    if (project.unavailable) {
+                    if (!project.active) {
                         self.$store.dispatch('deleteProject', project.id)
                         .catch(function() {
                             console.log('delete failed');
@@ -341,7 +336,11 @@ export default {
                 return self.$store.dispatch('updateRemoteProjectsStatus', self.server);
             })
             .finally(function(){
-                done();
+                try {
+                    done();
+                } catch(err) {
+                    // do nothing
+                }
                 window.setTimeout(function() {
                     if (!!self.updating) {
                         self.updating = false;
@@ -351,7 +350,12 @@ export default {
         }
     },
     created: function() {
-        this.refreshProjectList(function(){});
+        if ('showUnjoinedProjects' in this.server.user_preferences[this.server.user.id]){
+            this.showUnjoinedProjects = this.server.user_preferences[this.server.user.id]['showUnjoinedProjects'];
+        } else {
+            this.showUnjoinedProjects = true;
+        }
+        this.refreshProjectList();
     }
 };
 </script>

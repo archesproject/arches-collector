@@ -499,8 +499,12 @@ var store = new Vuex.Store({
         deleteProject: function(state, projectId) {
             return pouchDBs._projectDBs[projectId]['local'].destroy()
             .then(function(){
-                if (store.getters.activeProject.hasofflinebasemaps) {
-                    return store.dispatch('deleteProjectBasemaps', projectId);
+                try {
+                    if (store.getters.activeServer.projects[projectId].hasofflinebasemaps) {
+                        return store.dispatch('deleteProjectBasemaps', projectId);
+                    }
+                } catch(err) {
+                    console.log(err)
                 }
             })
             .then(function(){
@@ -515,7 +519,7 @@ var store = new Vuex.Store({
             })
             .catch(function(err){
                 console.log(err);
-            })
+            });
         },
         getUserProfile: function({commit, state}, {url, username, password}) {
             var formData = new FormData();
