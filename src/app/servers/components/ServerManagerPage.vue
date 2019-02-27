@@ -2,16 +2,16 @@
     <v-ons-page>
         <div class="app-input-panel">
             <div class="form-header left">
-                <span class="left-button-text">Add Arches Application</span>
+                <span class="left-button-text">Add Arches Instance</span>
             </div>
 
             <v-ons-progress-bar indeterminate v-if="authenticating"></v-ons-progress-bar>
             <v-ons-row class="app-details">
-                <div class="input-label">Application URL</div>
-                <input class="input input-placeholder" placeholder="My Arches Application URL" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" float v-model="server.url"></input>
+                <div class="input-label">Instance URL</div>
+                <input class="input input-placeholder" placeholder="My Arches Instance URL" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" float v-model="server.url"></input>
             </v-ons-row>
             <v-ons-row class="app-details">
-                <div class="input-label">Application Nickname</div>
+                <div class="input-label">Instance Nickname</div>
                 <input class="input input-placeholder" placeholder="Nickname" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" float v-model="server.nickname"></input>
             </v-ons-row>
             <v-ons-row class="app-details">
@@ -37,7 +37,7 @@
                     <div class="icon-circle"></div>
                     <v-ons-icon class="save-icon" icon="ion-checkmark-round"></v-ons-icon>
                     <span class="btn-text">Save</span>
-                    <div class="btn-subtitle">Add this application to your device</div>
+                    <div class="btn-subtitle">Add this instance to your device</div>
                 </v-ons-button>
 
                 <!-- App Cancel Button -->
@@ -45,7 +45,7 @@
                     <div class="icon-circle"></div>
                     <v-ons-icon class="delete-icon" icon="ion-trash-a"></v-ons-icon>
                     <span class="btn-text">Cancel</span>
-                    <div class="btn-subtitle">Discard this application</div>
+                    <div class="btn-subtitle">Discard this instance</div>
                 </v-ons-button>
             </v-ons-row>
         </div>
