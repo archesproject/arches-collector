@@ -5,7 +5,7 @@
                 <v-ons-toolbar-button class="left left-button-text" @click="toggleOpen">
                     <div v-if="!selectedServer">
                         <v-ons-icon class="toolbar-header-icon" icon="fa-question-circle" @click="setSelectedServer($event, false)"></v-ons-icon>
-                        <span class="left-button-text">Arches Applications</span>
+                        <span class="left-button-text">Arches Instance</span>
                     </div>
                     <div v-if="selectedServer">
                         <v-ons-icon class="toolbar-header-icon"icon="ion-android-arrow-dropleft-circle" @click="setSelectedServer($event, false)"></v-ons-icon>
@@ -14,14 +14,14 @@
                 </v-ons-toolbar-button>
             </v-ons-toolbar> -->
 
-            <!-- Application List -->
+            <!-- Instance List -->
             <div v-show="selectedServer === undefined || selectedServer === false" class="app-page-color">
                 <v-ons-list class="application-list">
                     <v-ons-list-item class="add-application-panel" tappable @click="goTo('servermanager');">
                         <span class="application-list-item-prepanel">
                             <v-ons-icon class="add-application-icon" icon="ion-plus-round"></v-ons-icon>
                         </span>
-                        <span class="application-list-item">Add Application</span>
+                        <span class="application-list-item">Add Instance</span>
                     </v-ons-list-item>
                     <v-ons-list-item class="application-item-panel" tappable modifier="longdivider" v-for="(server, key) in servers" :key="server.url" @click="setActiveServer(server.url);">
                         <span class="application-app-item-prepanel">
@@ -49,7 +49,7 @@
                     </v-ons-col>
                 </v-ons-row>
                 <v-ons-row class="app-details" v-if="selectedServer !== undefined">
-                    <div class="input-label">Application Nickname</div>
+                    <div class="input-label">Instance Nickname</div>
                     <input class="input input-placeholder" v-model="selectedServer.nickname"></input>
                 </v-ons-row>
                 <v-ons-row class="app-details" v-if="selectedServer !== undefined">
@@ -74,7 +74,7 @@
                         <div class="icon-circle"></div>
                         <v-ons-icon class="save-icon" icon="ion-checkmark-round"></v-ons-icon>
                         <span class="btn-text">Save</span>
-                        <div class="btn-subtitle">Add this app to your device</div>
+                        <div class="btn-subtitle">Add this instance to your device</div>
                     </v-ons-button>
 
                     <!-- Cancel Button -->
@@ -82,15 +82,15 @@
                         <div class="icon-circle"></div>
                         <v-ons-icon class="return-icon" icon="ion-arrow-left-a"></v-ons-icon>
                         <span class="btn-text">Cancel</span>
-                        <div class="btn-subtitle">Return to the App listing page</div>
+                        <div class="btn-subtitle">Return to the Instance listing page</div>
                     </v-ons-button>
 
                     <!-- App Delete Button -->
-                    <v-ons-button class="app-button relative app-delete" @click="$ons.notification.confirm({message: 'Are you sure you want to delete this App? All unsynced data will be lost.', callback: deleteServer})">
+                    <v-ons-button class="app-button relative app-delete" @click="$ons.notification.confirm({message: 'Are you sure you want to delete this instance? All unsynced data will be lost.', callback: deleteServer})">
                         <div class="icon-circle"></div>
                         <v-ons-icon class="delete-icon" icon="ion-trash-a"></v-ons-icon>
-                        <span class="btn-text">Delete App</span>
-                        <div class="btn-subtitle">Remove this app from your device</div>
+                        <span class="btn-text">Delete Instance</span>
+                        <div class="btn-subtitle">Remove this instance from your device</div>
                     </v-ons-button>
                 </v-ons-row>
             </div>

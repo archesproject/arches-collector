@@ -6,7 +6,7 @@
                 <div class="nav-header">
                 <img src="../../../assets/img/arches_logo_light.png" style="padding-right: 5px;" height="25" @click="goTo('serverlist');"></img>
                 <div v-if="$route.name === 'serverlist' || $route.name === 'projectlist'" @click="goTo('serverlist');">
-                    Arches Apps
+                    Arches Instances
                 </div>
                 <div class="app-path-divider" v-if="$route.name !== 'serverlist'">
                     <div v-if="$route.name === 'projectlist'">
