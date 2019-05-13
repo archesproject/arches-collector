@@ -39,22 +39,22 @@ export default {
                 {
                     'icon': 'fa-comment',
                     'title': 'Arches Collector',
-                    'text': "Arches Collector let's you access, create and update Arches data while you're on-the-go.  Log on to Arches Collector with your normal account to get started."
+                    'text': "Arches Collector allows you to access, create and update data in your Arches instance from your mobile device. Link to your Arches instance using your current account."
                 },
                 {
                     'icon': 'fa-globe',
                     'title': 'Map Locations',
-                    'text': 'Use Arches to map the location of important assets, events, or activities.  You can create new records, or update existing information from your Arches database.'
+                    'text': 'Use Arches to map the location of important resources, events, or activities. You can create new resources, or update existing information from your Arches instance.'
                 },
                 {
                     'icon': 'fa-code-fork',
-                    'title': 'Many Projects',
-                    'text': "You can work in many field projects at the same time.  You can even participate in field projects hosted by from different Arches applications."
+                    'title': 'Multiple Projects',
+                    'text': "You can work on multiple data collection projects at the same time. You can even participate in projects hosted by different Arches instances."
                 },
                 {
                     'icon': 'fa-signal',
                     'title': 'Work Offline',
-                    'text': "Don't worry if you lose connection to a cell or WiFi network while you work.  Arches will store your information safely until you can reconnect to a network."
+                    'text': "You can collect data even when you are not connected to a mobile or WiFi network. Arches Collector will store your information until you can reconnect to a network."
                 }
             ],
             dots: {

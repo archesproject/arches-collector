@@ -19,11 +19,11 @@
             <v-ons-row>
                 <v-ons-col class="stats">
                     <div class="record-text">{{records_downloaded}}</div>
-                    <span class="status-type-text">Records download</span>
+                    <span class="status-type-text">Resources downloaded</span>
                 </v-ons-col>
                 <v-ons-col class="stats">
                     <div class="record-text">{{records_to_sync}}</div>
-                    <span class="status-type-text">Records Edited</span>
+                    <span class="status-type-text">Resources Edited</span>
                 </v-ons-col>
             </v-ons-row>
         </div>

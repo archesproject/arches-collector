@@ -22,8 +22,8 @@
                                 <span class="menu-subtext">List all projects regardless of status</span>
                             </div>
                             <div class="menu-text" v-else>
-                                <span class="text-color-dark">Show only projects I've joined</span>
-                                <span class="text-color-dark menu-subtext">Show only projects in which I'm participating</span>
+                                <span class="text-color-dark">Show only projects I've downloaded</span>
+                                <span class="text-color-dark menu-subtext">List all projects ready for data collection</span>
                             </div>
                         </v-ons-list-item @click="">
                         <v-ons-list-item tappable @click="$ons.notification.confirm({message: 'Deleting a project will remove all related data (synced and unsynced) from your device?. Are you sure you want to proceed?', callback: deleteAllInactiveProjects})">
@@ -42,8 +42,8 @@
                         <v-ons-list-item tappable @click="sync" v-if="selectedProject && !selectedProject.unavailable && selectedProject.joined && selectedProject.active">
                             <v-ons-icon class="text-color-dark left menu-icon" icon="fa-cloud-download-alt"></v-ons-icon>
                             <div class="menu-text">
-                                <span class="text-color-dark">Refresh all records in this project</span>
-                                <span class="menu-subtext">Refresh all project data</span>
+                                <span class="text-color-dark">Sync all records in this project</span>
+                                <span class="menu-subtext">Sync all project data</span>
                                 <span v-if="syncfailed" class="text-color-dark menu-subtext">Sync Failed... please try again.</span>
                             </div>
                         </v-ons-list-item @click="">
@@ -90,7 +90,7 @@
                     <div class="center"></div>
                     <div class="right">
                         <v-ons-toolbar-button @click="toggleSideNav()">
-                            <v-ons-icon class="text-color-dark project-name" style="font-size: 17px;" icon="ion-easel"></v-ons-icon>
+                            <v-ons-icon class="text-color-dark project-name" style="font-size: 17px;" icon="fa-bars"></v-ons-icon>
                         </v-ons-toolbar-button>
                     </div>
                 </v-ons-toolbar>
