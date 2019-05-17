@@ -331,11 +331,19 @@ export default {
         deleteTile: function(tile, e) {
             console.log('in deleteTile');
             console.log('tile: ', tile)
+            var self = this;
             e.stopPropagation();
-            this.$store.dispatch('deleteTile', tile)
-                .finally(function() {
-                    console.log('tile delete finished...');
-                });
+            this.$ons.notification.confirm({
+                message:  'Delete this Data? This can\'t be undone.',
+                callback: function(answer){
+                    if (!!answer) {
+                        self.$store.dispatch('deleteTile', tile)
+                        .finally(function() {
+                            console.log('tile delete finished...');
+                        });
+                    }
+                }
+            });
         }
     }
 };
