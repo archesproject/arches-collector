@@ -12,7 +12,7 @@
                     Edit: {{resource_instance.datetime}}</span>
                 <span v-else class='resource-model-subtitle'>Unedited</span>
             </span>
-            <span v-if="resource_instance.resourceinstanceid in $store.getters.activeProject.newly_created_resources" @click="deleteTile(resource_instance, $event)" class="resource-delete">
+            <span v-if="resource_instance.resourceinstanceid in $store.getters.activeProject.newly_created_resources" @click="deleteResource(resource_instance, $event)" class="resource-delete">
                 <span class="resource-delete-icon fa5 fa-trash"></span>
             </span>
 
@@ -114,7 +114,7 @@ export default {
                 });
             });
         },
-        deleteTile: function(resource, e) {
+        deleteResource: function(resource, e) {
             var self = this;
             e.stopPropagation();
             this.$ons.notification.confirm({

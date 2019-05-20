@@ -1,13 +1,17 @@
 <template>
     <div>
-        <component v-for="widget in cardWidgets" class="widget" :allNodes="allNodes" :tile="tile" :tiles="tiles" :widget="widget" :context="'editor'" :save="throttle(save, tile, saveDelay)" v-bind:is="'base-widget'"></component>
+        <component v-for="widget in cardWidgets" class="widget" :allNodes="allNodes" :tile="tile" :tiles="tiles" :widget="widget" :context="'editor'" :save="throttle(saveTile, tile, saveDelay)" v-bind:is="'base-widget'"></component>
         <div class="done-btn"><v-ons-button @click="back"><v-ons-icon class="done-btn-icon resource-header" icon="ion-android-arrow-dropleft-circle"></v-ons-icon>Done</v-ons-button></div>
+        <div class="done-btn" v-if="allowDelete"><v-ons-button @click="deleteTile(tile, $event, back)" class="warning"><v-ons-icon class="done-btn-icon resource-header" icon="ion-trash-b"></v-ons-icon>Delete this Record</v-ons-button></div>
     </div>
 </template>
 <script>
+import navlogicmixin from '../mixins/nav-logic';
+
 export default {
     name: 'ResourceEditForm',
-    props: ['formContext', 'card', 'tile', 'tiles', 'save', 'back'],
+    props: ['formContext', 'card', 'tile', 'tiles', 'back'],
+    mixins: [navlogicmixin],
     data() {
         return {
             allWidgets: this.$store.getters.activeGraph.widgets,
@@ -33,6 +37,15 @@ export default {
                     return this.$underscore.sortBy(widgets, 'sortorder');
                 } else {
                     return [];
+                }
+            }
+        },
+        allowDelete: {
+            get: function() {
+                if(this.tile) {
+                    return this.canDelete(this.tile) && this.getCardinality(this.tile) === 'n';
+                } else {
+                    return false;
                 }
             }
         }
