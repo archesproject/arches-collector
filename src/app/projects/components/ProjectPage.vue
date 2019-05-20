@@ -17,7 +17,7 @@
                 <div class="center"></div>
                 <div class="right">
                     <v-ons-toolbar-button @click="toggleSideNav">
-                        <v-ons-icon class="text-color-dark project-name" icon="ion-easel"></v-ons-icon>
+                        <v-ons-icon class="text-color-dark project-name" icon="fa-bars"></v-ons-icon>
                     </v-ons-toolbar-button>
                 </div>
             </v-ons-toolbar>
@@ -30,23 +30,23 @@
                             <v-ons-list-item tappable @click="sync">
                                 <v-ons-icon class="text-color-dark icon" icon="fa-comments"></v-ons-icon>
                                 <div class="menu-text">
-                                    <span class="text-color-dark label right-panel-label">Refresh survey data</span>
-                                    <div class="menu-subtext">Send/get data from cloud</div>
+                                    <span class="text-color-dark label right-panel-label">Sync project data</span>
+                                    <div class="menu-subtext">Send/get data from Arches instance</div>
                                 </div>
                             </v-ons-list-item>
                             <v-ons-progress-bar indeterminate v-if="syncing"></v-ons-progress-bar>
                             <v-ons-list-item tappable @click="sortByName">
                                 <v-ons-icon class="text-color-dark icon" icon="fa-sort-alpha-down"></v-ons-icon>
                                 <div class="menu-text">
-                                    <span class="text-color-dark label right-panel-label">Sort Review List by name</span>
-                                    <div class="menu-subtext">Toggle order of resource list</div>
+                                    <span class="text-color-dark label right-panel-label">Sort resources by name</span>
+                                    <div class="menu-subtext">To reverse order, tap again</div>
                                 </div>
                             </v-ons-list-item>
                             <v-ons-list-item tappable @click="sortByEditDate">
                                 <v-ons-icon class="text-color-dark icon" icon="fa-sort-amount-desc"></v-ons-icon>
                                 <div class="menu-text">
-                                    <span class="text-color-dark label right-panel-label">Sort Review List by most recent edit</span>
-                                    <div class="menu-subtext">Toggle order of resource list</div>
+                                    <span class="text-color-dark label right-panel-label">Sort resources by most recent edit</span>
+                                    <div class="menu-subtext">To reverse order, tap again</div>
                                 </div>
                             </v-ons-list-item>
                         </v-ons-list>
@@ -94,7 +94,7 @@ export default {
                 },
                 {
                     icon: 'fa-edit',
-                    label: 'Review',
+                    label: 'Resources',
                     key: 'SelectResourceInstancePage'
                 },
                 {

@@ -21,7 +21,7 @@
                     </transition>
                     <div class="instance-tool-btn">
                         <v-ons-toolbar-button @click="toggleSideNav">
-                            <v-ons-icon class="instance-editor-toolpanel-btn" icon="ion-easel"></v-ons-icon>
+                            <v-ons-icon class="instance-editor-toolpanel-btn" icon="fa-bars"></v-ons-icon>
                         </v-ons-toolbar-button>
                     </div>
                 </div>
@@ -35,7 +35,7 @@
                             <v-ons-list-item tappable @click="createNewRecord">
                                 <div class="fa5 fa-plus-circle text-color-dark"></div>
                                 <span class="text-color-dark label right-panel-label">New {{this.$store.getters.activeGraph.name}}
-                                    <div class="subtitle-text-color subtitle-font-size">Create a new record</div>
+                                    <div class="subtitle-text-color subtitle-font-size">Create a new resource</div>
                                 </span>
                             </v-ons-list-item>
                             <v-ons-list-item tappable @click="showResourceList">
@@ -46,8 +46,8 @@
                             </v-ons-list-item>
                             <v-ons-list-item tappable @click="showResourceModels">
                                 <div class="fa5 fa-external-link-alt text-color-dark"></div>
-                                <span class="text-color-dark label right-panel-label">Select a New Resource Model
-                                    <div class="subtitle-text-color subtitle-font-size">Pick a model and create a new resource</div>
+                                <span class="text-color-dark label right-panel-label">Select a Different Resource Type
+                                    <div class="subtitle-text-color subtitle-font-size">Create a new resource</div>
                                 </span>
                             </v-ons-list-item>
                             <v-ons-list-item tappable @click="showProjectMap">
