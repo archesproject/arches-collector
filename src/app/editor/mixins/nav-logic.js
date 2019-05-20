@@ -57,6 +57,15 @@ export default {
             }
             return false;
         },
+        getCardinality: function(card) {
+            var found = this.$underscore.find(this.allNodegroups, function(nodegroup) {
+                return nodegroup.nodegroupid === card.nodegroup_id;
+            }, this);
+            if (!!found) {
+                return found.cardinality;
+            }
+            return '1';
+        },
         hasWidgetsAndSubCards: function(card) {
             return this.hasWidgets(card) && this.hasChildCards(card);
         },
@@ -65,6 +74,9 @@ export default {
         },
         canEdit: function(card) {
             return (!!card ? this.user.editable_nodegroups.includes(card.nodegroup_id) : false);
+        },
+        canDelete: function(tile) {
+            return tile.tileid && tile.tileid in this.$store.getters.activeProject.newly_created_tiles;
         },
         getBlankTile: function(card, parentTile) {
             return {
@@ -78,6 +90,43 @@ export default {
                 type: 'tile',
                 _id: ''
             };
+        },
+        saveTile: function(tile) {
+            console.log('saving...');
+            console.log(tile);
+            this.$emit('saving', true);
+            var self = this;
+
+            this.$store.dispatch('persistTile', tile)
+                .then(function(savedTile) {
+                    return savedTile;
+                })
+                .finally(function() {
+                    console.log('tile save finished...');
+                    window.setTimeout(function() {
+                        self.$emit('saving', false);
+                    }, 2000);
+                });
+        },
+        deleteTile: function(tile, e, callback) {
+            console.log('in deleteTile');
+            console.log('tile: ', tile)
+            var self = this;
+            e.stopPropagation();
+            this.$ons.notification.confirm({
+                message:  'Delete this Data? This can\'t be undone.',
+                callback: function(answer){
+                    if (!!answer) {
+                        self.$store.dispatch('deleteTile', tile)
+                        .finally(function() {
+                            console.log('tile delete finished...');
+                            if(!!callback) {
+                                callback();
+                            }
+                        });
+                    }
+                }
+            });
         }
     }
 }
