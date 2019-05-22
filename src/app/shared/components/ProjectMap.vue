@@ -204,6 +204,18 @@ export default {
                 center: tr.unproject(nw.add(se).div(2)),
                 zoom: tr.scaleZoom(tr.scale * Math.min(scaleX, scaleY))
             });
+            map.addSource('extent', {type: 'geojson', data: this.extent});
+            map.addLayer({
+                id: "project-extent",
+                type: "fill",
+                source: "extent",
+                layout: {},
+                paint: {
+                    "fill-color": "#0000ff",
+                    "fill-opacity": 0.3,
+                    "fill-outline-color": "#0000ff"
+                }
+            });
         },
         getColorExpression: function(resourceid){
             var colorExpression = ["case"];
