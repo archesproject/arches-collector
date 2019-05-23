@@ -80,10 +80,12 @@ export default {
     methods: {
         closePopup: function() {
             this.selectedResource = null;
-            var colorExpression = this.getColorExpression(null);
-            this.map.setPaintProperty('resource-point', 'circle-color', colorExpression);
-            this.map.setPaintProperty('resource-polygon', 'fill-color', colorExpression);
-            this.map.setPaintProperty('resource-line', 'line-color', colorExpression);
+            ['resource-point', 'resource-polygon', 'resource-line'].forEach(function(layer) {
+                var paintProperties = this.getPaintProperties(layer);
+                Object.keys(paintProperties).forEach(function(paintProperty) {
+                    this.map.setPaintProperty(layer, paintProperty, paintProperties[paintProperty]);
+                }, this);
+            }, this);
         },
         selectResourceInstance: function(resource) {
             return this.$store.dispatch(
@@ -217,17 +219,46 @@ export default {
                 }
             });
         },
-        getColorExpression: function(resourceid){
-            var colorExpression = ["case"];
+        getPaintStyle: function(resourceid, selectedStyle, defaultStyle){
+            var propertyExpression = ["case"];
             var selectedResourceId = resourceid || null;
-            colorExpression.push(["==", ["get", "id"], selectedResourceId])
-            colorExpression.push('#1F90F8');
+            propertyExpression.push(["==", ["get", "id"], selectedResourceId])
+            propertyExpression = propertyExpression.concat(selectedStyle);
+            propertyExpression = propertyExpression.concat(defaultStyle);
+            return propertyExpression;
+        },
+        getPaintProperties: function(layerId, resourceid){
+            // the assumption here is if you pass a resourceid then 
+            // you want to render that feature as "selected"
+
+            var colorExpression = [];
             this.project.graphs.forEach(function(graph) {
                 colorExpression.push(["==", ["get", "graph_id"], graph.graphid])
                 colorExpression.push(graph.color || '#a30000');
             });
-            colorExpression.push('#a30000');
-            return colorExpression;
+            colorExpression.push("#a30000")
+            colorExpression = this.getPaintStyle(resourceid, "#1F90F8", colorExpression);
+
+            switch(layerId){
+                case 'resource-point':  
+                    return {
+                        "circle-color": colorExpression,
+                        "circle-radius": this.getPaintStyle(resourceid, 8, 7),
+                        "circle-stroke-width": this.getPaintStyle(resourceid, 3, 1),
+                        "circle-stroke-color": this.getPaintStyle(resourceid, "#a30000", "#888")
+                    }
+                case 'resource-line': 
+                    return {
+                        "line-color": colorExpression,
+                        "line-width": this.getPaintStyle(resourceid, 5, 3),
+                    }
+                case 'resource-polygon': 
+                    return {
+                        "fill-color": colorExpression,
+                        "fill-opacity": this.getPaintStyle(resourceid, 0.5, 0.5),
+                        "fill-outline-color": this.getPaintStyle(resourceid, "#a30000", "#fff")
+                    }
+            }
         },
         getResourceGeoJson: function() {
             var features = [];
@@ -263,17 +294,11 @@ export default {
             };
         },
         addResourceFeatures: function(map) {
-            var colorExpression = this.getColorExpression();
             map.addLayer({
                 id: "resource-point",
                 type: "circle",
                 source: "resources",
-                paint: {
-                    "circle-color": colorExpression,
-                    "circle-radius": 7,
-                    "circle-stroke-width": 1,
-                    "circle-stroke-color": "#888"
-                },
+                paint: this.getPaintProperties('resource-point'),
                 filter: ["==", "$type", "Point"]
             });
 
@@ -282,11 +307,7 @@ export default {
                 type: "fill",
                 source: "resources",
                 layout: {},
-                paint: {
-                    "fill-color": colorExpression,
-                    "fill-opacity": 0.5,
-                    "fill-outline-color": "#fff"
-                },
+                paint: this.getPaintProperties('resource-polygon'),
                 filter: ["==", "$type", "Polygon"]
             });
 
@@ -298,20 +319,19 @@ export default {
                     "line-join": "round",
                     "line-cap": "round"
                 },
-                paint: {
-                    "line-color": colorExpression,
-                    "line-width": 3
-                }
+                paint: this.getPaintProperties('resource-line')
             });
 
             ['resource-point', 'resource-polygon', 'resource-line'].forEach(function(layer){
                 map.on('click', layer, (e) => {
                     const feature = e.features[0];
                     this.selectedResource = feature.properties;
-                    var colorExpression = this.getColorExpression(this.selectedResource.id);
-                    map.setPaintProperty('resource-point', 'circle-color', colorExpression);
-                    map.setPaintProperty('resource-polygon', 'fill-color', colorExpression);
-                    map.setPaintProperty('resource-line', 'line-color', colorExpression);
+                    ['resource-point', 'resource-polygon', 'resource-line'].forEach(function(layer){
+                        var paintProperties = this.getPaintProperties(layer, this.selectedResource.id);
+                        Object.keys(paintProperties).forEach(function(paintProperty) {
+                            this.map.setPaintProperty(layer, paintProperty, paintProperties[paintProperty]);
+                        }, this);
+                    }, this);
                 });
             }, this);
 
