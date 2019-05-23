@@ -219,66 +219,45 @@ export default {
                 }
             });
         },
-        getColorExpression: function(resourceid){
-            var colorExpression = ["case"];
+        getPaintStyle: function(resourceid, selectedStyle, defaultStyle){
+            var propertyExpression = ["case"];
             var selectedResourceId = resourceid || null;
-            colorExpression.push(["==", ["get", "id"], selectedResourceId])
-            colorExpression.push('#1F90F8');
-            this.project.graphs.forEach(function(graph) {
-                colorExpression.push(["==", ["get", "graph_id"], graph.graphid])
-                colorExpression.push(graph.color || '#a30000');
-            });
-            colorExpression.push('#a30000');
-            return colorExpression;
+            propertyExpression.push(["==", ["get", "id"], selectedResourceId])
+            propertyExpression = propertyExpression.concat(selectedStyle);
+            propertyExpression = propertyExpression.concat(defaultStyle);
+            return propertyExpression;
         },
         getPaintProperties: function(layerId, resourceid){
             // the assumption here is if you pass a resourceid then 
             // you want to render that feature as "selected"
-            var colorExpression = this.getColorExpression(resourceid);
+
+            var colorExpression = [];
+            this.project.graphs.forEach(function(graph) {
+                colorExpression.push(["==", ["get", "graph_id"], graph.graphid])
+                colorExpression.push(graph.color || '#a30000');
+            });
+            colorExpression.push("#a30000")
+            colorExpression = this.getPaintStyle(resourceid, "#1F90F8", colorExpression);
+
             switch(layerId){
                 case 'resource-point':  
-                    if (!!resourceid) {
-                        return {
-                            "circle-color": colorExpression,
-                            "circle-radius": 8,
-                            "circle-stroke-width": 3,
-                            "circle-stroke-color": "#a30000"
-                        }
-                    } else {
-                        return {
-                            "circle-color": colorExpression,
-                            "circle-radius": 7,
-                            "circle-stroke-width": 1,
-                            "circle-stroke-color": "#888"
-                        }
+                    return {
+                        "circle-color": colorExpression,
+                        "circle-radius": this.getPaintStyle(resourceid, 8, 7),
+                        "circle-stroke-width": this.getPaintStyle(resourceid, 3, 1),
+                        "circle-stroke-color": this.getPaintStyle(resourceid, "#a30000", "#888")
                     }
                 case 'resource-line': 
-                    if (!!resourceid) {
-                        return {
-                            "line-color": colorExpression,
-                            "line-width": 5
-                        }
-                    } else { 
-                        return {
-                            "line-color": colorExpression,
-                            "line-width": 3
-                        }
+                    return {
+                        "line-color": colorExpression,
+                        "line-width": this.getPaintStyle(resourceid, 5, 3),
                     }
                 case 'resource-polygon': 
-                    if (!!resourceid) {
-                        return {
-                            "fill-color": colorExpression,
-                            "fill-opacity": 0.5,
-                            "fill-outline-color": "#a30000"
-                        }
-                    } else { 
-                        return {
-                            "fill-color": colorExpression,
-                            "fill-opacity": 0.5,
-                            "fill-outline-color": "#fff"
-                        }
+                    return {
+                        "fill-color": colorExpression,
+                        "fill-opacity": this.getPaintStyle(resourceid, 0.5, 0.5),
+                        "fill-outline-color": this.getPaintStyle(resourceid, "#a30000", "#fff")
                     }
-
             }
         },
         getResourceGeoJson: function() {
@@ -347,9 +326,11 @@ export default {
                 map.on('click', layer, (e) => {
                     const feature = e.features[0];
                     this.selectedResource = feature.properties;
-                    var paintProperties = this.getPaintProperties(layer, this.selectedResource.id);
-                    Object.keys(paintProperties).forEach(function(paintProperty) {
-                        this.map.setPaintProperty(layer, paintProperty, paintProperties[paintProperty]);
+                    ['resource-point', 'resource-polygon', 'resource-line'].forEach(function(layer){
+                        var paintProperties = this.getPaintProperties(layer, this.selectedResource.id);
+                        Object.keys(paintProperties).forEach(function(paintProperty) {
+                            this.map.setPaintProperty(layer, paintProperty, paintProperties[paintProperty]);
+                        }, this);
                     }, this);
                 });
             }, this);
