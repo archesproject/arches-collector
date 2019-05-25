@@ -59,6 +59,7 @@
                 </v-ons-list-item>
             </div>
         </v-ons-list>
+        <div class="done-btn btn-delete" v-show="(!showForm && activeObject === 'tile' && !!tile && canDelete(tile))"><v-ons-button @click="deleteTile(tile, $event, back)" class="warning"><v-ons-icon class="done-btn-icon resource-header" icon="ion-trash-b"></v-ons-icon> Delete this Record</v-ons-button></div>
         <div v-show="showForm">
             <resource-edit-form :back="back" :tile="tile" :tiles="tiles" :card="card" />
         </div>
@@ -153,6 +154,15 @@ export default {
         cardinality: {
             get: function() {
                 return this.getCardinality(this);
+            }
+        },
+        allowDelete: {
+            get: function() {
+                if(this.tile) {
+                    return this.canDelete(this.tile) && this.getCardinality(this.tile) === 'n';
+                } else {
+                    return false;
+                }
             }
         }
     },
@@ -378,6 +388,11 @@ ul {
     right: 10px;
     top: 18px;
     opacity: .7;
+}
+
+.btn-delete {
+    padding: 20px;
+    float: right;
 }
 
 .tile-delete-icon {
