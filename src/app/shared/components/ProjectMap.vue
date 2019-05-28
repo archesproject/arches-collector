@@ -214,7 +214,8 @@ export default {
                 layout: {},
                 paint: {
                     "line-color": "#fff",
-                    "line-width": 5
+                    "line-width": 5,
+                    "line-opacity": 0.8
                 }
             });
             map.addLayer({
@@ -224,7 +225,8 @@ export default {
                 layout: {},
                 paint: {
                     "line-color": "#010195",
-                    "line-width": 1
+                    "line-width": 1,
+                    "line-opacity": 0.8
                 }
             });
         },
