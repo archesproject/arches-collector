@@ -43,7 +43,7 @@ export default {
         allowDelete: {
             get: function() {
                 if(this.tile) {
-                    return this.canDelete(this.tile) && this.getCardinality(this.tile) === 'n';
+                    return this.canDelete(this.tile) && !this.hasChildCards(this.tile);
                 } else {
                     return false;
                 }
