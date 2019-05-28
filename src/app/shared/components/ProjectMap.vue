@@ -208,14 +208,23 @@ export default {
             });
             map.addSource('extent', {type: 'geojson', data: this.extent});
             map.addLayer({
-                id: "project-extent",
-                type: "fill",
+                id: "project-extent-casing",
+                type: "line",
                 source: "extent",
                 layout: {},
                 paint: {
-                    "fill-color": "#0000ff",
-                    "fill-opacity": 0.3,
-                    "fill-outline-color": "#0000ff"
+                    "line-color": "#fff",
+                    "line-width": 5
+                }
+            });
+            map.addLayer({
+                id: "project-extent",
+                type: "line",
+                source: "extent",
+                layout: {},
+                paint: {
+                    "line-color": "#010195",
+                    "line-width": 1
                 }
             });
         },
@@ -228,7 +237,7 @@ export default {
             return propertyExpression;
         },
         getPaintProperties: function(layerId, resourceid){
-            // the assumption here is if you pass a resourceid then 
+            // the assumption here is if you pass a resourceid then
             // you want to render that feature as "selected"
 
             var colorExpression = [];
@@ -240,19 +249,19 @@ export default {
             colorExpression = this.getPaintStyle(resourceid, "#1F90F8", colorExpression);
 
             switch(layerId){
-                case 'resource-point':  
+                case 'resource-point':
                     return {
                         "circle-color": colorExpression,
                         "circle-radius": this.getPaintStyle(resourceid, 8, 7),
                         "circle-stroke-width": this.getPaintStyle(resourceid, 3, 1),
                         "circle-stroke-color": this.getPaintStyle(resourceid, "#a30000", "#888")
                     }
-                case 'resource-line': 
+                case 'resource-line':
                     return {
                         "line-color": colorExpression,
                         "line-width": this.getPaintStyle(resourceid, 5, 3),
                     }
-                case 'resource-polygon': 
+                case 'resource-polygon':
                     return {
                         "fill-color": colorExpression,
                         "fill-opacity": this.getPaintStyle(resourceid, 0.5, 0.5),
