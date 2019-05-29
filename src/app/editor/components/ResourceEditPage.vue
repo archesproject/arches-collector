@@ -22,8 +22,8 @@
                             <div>{{card.name}}</div>
                             <div class="widget-label">card</div>
                         </span>
-                        <span v-if="canDelete(tile)" class="tile-delete">
-                            <span class="tile-delete-icon fa5 fa-trash" @click="deleteTile(tile, $event)"></span>
+                        <span v-if="canDeleteTile(tile)" class="tile-delete">
+                            <span class="tile-delete-icon fa5 fa-trash" @click="deleteTiles(tile, $event)"></span>
                         </span>
                     </div>
                 </div>
@@ -49,16 +49,21 @@
                             <div class="card-instance-count" v-if="(tileCount(childCard) > 0)">{{tileCount(childCard)}} record(s)</div>
                             <div class="card-instance-count" v-if="(tileCount(childCard) === 0)">No data entered</div>
                         </span>
-                        <span style="padding-top: 7px;" v-if="canDelete(childCard) && hasTiles(childCard) && getCardinality(childCard) === '1' && !hasChildCards(childCard)">
-                            <div class="fa5 fa-trash" @click="deleteTile(getCardTiles(childCard)[0], $event)"></div>
-                        </span>
-                        <span style="padding-top: 7px;" v-if="canAdd(childCard)">
+                        <span style="padding-top: 12px;" v-if="canAdd(childCard)">
                             <div class="fa5 fa-plus-circle text-color-dark add-card"></div>
+                        </span>
+                        <span style="padding-left: 10px;" v-if="canDeleteTiles(getCardTiles(childCard))">
+                            <div class="tile-delete-icon fa5 fa-trash" @click="deleteTiles(getCardTiles(childCard), $event)"></div>
                         </span>
                     </span>
                 </v-ons-list-item>
             </div>
         </v-ons-list>
+        <div class="done-btn btn-delete" v-show="(!showForm && activeObject === 'tile' && !!tile && canDeleteTile(tile))">
+            <v-ons-button @click="deleteTiles(tile, $event, back)" class="warning">
+                <v-ons-icon class="done-btn-icon resource-header" icon="ion-trash-b"></v-ons-icon> Delete this Record
+            </v-ons-button>
+        </div>
         <div v-show="showForm">
             <resource-edit-form :back="back" :tile="tile" :tiles="tiles" :card="card" />
         </div>
@@ -378,6 +383,11 @@ ul {
     right: 10px;
     top: 18px;
     opacity: .7;
+}
+
+.btn-delete {
+    padding: 20px;
+    float: right;
 }
 
 .tile-delete-icon {
