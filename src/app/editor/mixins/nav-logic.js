@@ -75,8 +75,21 @@ export default {
         canEdit: function(card) {
             return (!!card ? this.user.editable_nodegroups.includes(card.nodegroup_id) : false);
         },
-        canDelete: function(tile) {
-            return tile.tileid && tile.tileid in this.$store.getters.activeProject.newly_created_tiles;
+        canDeleteTile: function(tile) {
+            if (!!tile) {
+                return tile.tileid && tile.tileid in this.$store.getters.activeProject.newly_created_tiles;
+            } else {
+                return false;
+            }
+        },
+        canDeleteTiles: function(tiles) {
+            if (tiles.length === 0) {
+                return false;
+            }
+            return tiles.every(function(tile) {
+                return this.canDeleteTile(tile);
+            }, this);
+
         },
         getBlankTile: function(card, parentTile) {
             return {
@@ -108,16 +121,17 @@ export default {
                     }, 2000);
                 });
         },
-        deleteTile: function(tile, e, callback) {
-            console.log('in deleteTile');
-            console.log('tile: ', tile)
+        deleteTiles: function(tile, e, callback) {
+            // you can either pass a single tile, or an array of tiles
+            console.log('in deleteTiles');
+            console.log('tile: ', tile);
             var self = this;
             e.stopPropagation();
             this.$ons.notification.confirm({
                 message:  'Delete this Data? This can\'t be undone.',
                 callback: function(answer){
                     if (!!answer) {
-                        self.$store.dispatch('deleteTile', tile)
+                        self.$store.dispatch('deleteTiles', tile)
                         .finally(function() {
                             console.log('tile delete finished...');
                             if(!!callback) {

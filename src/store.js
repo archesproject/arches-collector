@@ -854,8 +854,8 @@ var store = new Vuex.Store({
                     return tile;
                 });
         },
-        deleteTile: function({commit, state}, tile) {
-            var childTiles = [tile];
+        deleteTiles: function({commit, state}, tile) {
+            var childTiles = [].concat(tile);
             var getChildTiles = function(parentTile) {
                 state.tiles.forEach(function(tile) {
                     if (tile.type === 'tile' && tile.parenttile_id === parentTile.tileid) {
