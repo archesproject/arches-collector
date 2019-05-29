@@ -50,15 +50,15 @@
                 </v-ons-row>
                 <v-ons-row class="app-details" v-if="selectedServer !== undefined">
                     <div class="input-label">Instance Nickname</div>
-                    <input class="input input-placeholder" v-model="selectedServer.nickname"></input>
+                    <input class="input input-placeholder" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" v-model="selectedServer.nickname"></input>
                 </v-ons-row>
                 <v-ons-row class="app-details" v-if="selectedServer !== undefined">
                     <div class="input-label">Username</div>
-                    <input class="input input-placeholder" v-model="selectedServer.username"></input>
+                    <input class="input input-placeholder" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" v-model="selectedServer.username"></input>
                 </v-ons-row>
                 <v-ons-row class="app-details" v-if="selectedServer !== undefined">
                     <div class="input-label">Password</div>
-                    <input class="input input-placeholder" type="password" v-model="selectedServer.password"></input>
+                    <input class="input input-placeholder" type="password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" v-model="selectedServer.password"></input>
                 </v-ons-row>
                 <v-ons-row v-if="error">
                     <div class="left">
