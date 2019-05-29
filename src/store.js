@@ -498,28 +498,28 @@ var store = new Vuex.Store({
         },
         deleteProject: function(state, projectId) {
             return pouchDBs._projectDBs[projectId]['local'].destroy()
-            .then(function(){
-                try {
-                    if (store.getters.activeServer.projects[projectId].hasofflinebasemaps) {
-                        return store.dispatch('deleteProjectBasemaps', projectId);
+                .then(function() {
+                    try {
+                        if (store.getters.activeServer.projects[projectId].hasofflinebasemaps) {
+                            return store.dispatch('deleteProjectBasemaps', projectId);
+                        }
+                    } catch (err) {
+                        console.log(err);
                     }
-                } catch(err) {
-                    console.log(err)
-                }
-            })
-            .then(function(){
-                if (store.getters.activeServer.projects[projectId]) {
-                    delete store.getters.activeServer.projects[projectId];
-                    var server = store.getters.activeServer;
-                    if (server.user_preferences[server.user.id]['projects'] && server.user_preferences[server.user.id]['projects'][projectId]) {
-                        delete server.user_preferences[server.user.id]['projects'][projectId];
+                })
+                .then(function() {
+                    if (store.getters.activeServer.projects[projectId]) {
+                        delete store.getters.activeServer.projects[projectId];
+                        var server = store.getters.activeServer;
+                        if (server.user_preferences[server.user.id]['projects'] && server.user_preferences[server.user.id]['projects'][projectId]) {
+                            delete server.user_preferences[server.user.id]['projects'][projectId];
+                        }
+                        return store.dispatch('saveServerInfoToPouch');
                     }
-                    return store.dispatch('saveServerInfoToPouch');
-                }
-            })
-            .catch(function(err){
-                console.log(err);
-            });
+                })
+                .catch(function(err) {
+                    console.log(err);
+                });
         },
         getUserProfile: function({commit, state}, {url, username, password}) {
             var formData = new FormData();
