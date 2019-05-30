@@ -148,6 +148,12 @@ var pouchDBs = (function() {
                 console.log(err);
             });
         },
+        getAttachments: function(projectId, tile) {
+            var db = this._projectDBs[projectId]['local'];
+            var attachments = Object.keys(tile._attachments).map(attachmentid => db.getAttachment(tile.tileid, attachmentid)
+                .then(function(att) { return [attachmentid, att]; }));
+            return Promise.all(attachments);
+        },
         getTiles: function(projectId, resourceId) {
             return this._projectDBs[projectId]['local']
                 .allDocs({include_docs: true, descending: true})
@@ -799,6 +805,10 @@ var store = new Vuex.Store({
         },
         getOnlyTiles: function({commit, state}, projectId) {
             return pouchDBs.getOnlyTiles(projectId);
+        },
+        getAttachments: function({commit, state}, tile) {
+            var projectid = this.getters.activeProject.id;
+            return pouchDBs.getAttachments(projectid, tile);
         },
         persistTile: function({commit, state}, tile) {
             var tileid = uuidv4();

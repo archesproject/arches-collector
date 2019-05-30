@@ -6,7 +6,7 @@
             <ons-list class="photo-list">
                 <ons-list-item v-for="file in value">
                     <div class="left">
-                      <img class="image-thumbnail-input" v-bind:src="thumbnails[file.file_id]"></img>
+                      <img class="image-thumbnail" v-bind:alt="file.name" v-bind:src="images[file.file_id]"></img>
                     </div>
                     <div class="center">
                         <input class="photo-name" underbar placeholder="Photo name" v-on:keyup="updateImages" v-model="file.name"></input>
@@ -40,7 +40,7 @@
         <ons-list class="photo-list">
             <ons-list-item v-for="file in value">
               <ons-col>
-                <img class="image-thumbnail" v-bind:src="thumbnails[file.file_id]"></img>
+                <img class="image-thumbnail" alt="star" v-bind:src="images[file.file_id]"></img>
               </ons-col>
               <ons-col class="" style="margin-left: -40px; padding-right: 10px; color: #777;">{{file.name}}</ons-col>
             </ons-list-item>
@@ -63,20 +63,40 @@
 
 <script>
 import uuidv4 from 'uuid/v4';
+import * as blobUtil from 'blob-util';
 export default {
     name: 'FileListWidget',
     props: ['value', 'widget', 'context', 'tile'],
     data() {
         return {
-            activeServer: this.$store.getters.activeServer
+            activeServer: this.$store.getters.activeServer,
+            images: {}
         };
     },
     mounted() {
-        this.init()
+        this.init();
+        setTimeout(function(){if (self.value.length > 0) {
+                    self.value[0].name = self.value[0].name + ' ';
+                    self.value[0].name = self.value[0].name.trimRight()
+                }}, self.value.length * 175);
     },
     methods: {
         init: function(){
-            console.log(this.value);
+            self = this;
+            self.$store.dispatch('getAttachments', self.tile).then(function(attachments){
+                var cachedAttachments = {};
+                attachments.forEach(function(attachment){
+                    cachedAttachments[attachment[0]] = attachment[1];
+                });
+                self.value.forEach(function(photo){
+                    var blob = cachedAttachments[photo.file_id];
+                    blobUtil.blobToBase64String(blob).then(function (base64String) {
+                        self.images[photo.file_id] = "data:image/jpeg;base64," + base64String;
+                    }).catch(function (err) {
+                        console.log(err)
+                    });
+                })
+            });
         },
         updateList: function() {
             this.$emit('update:value', ret);
@@ -155,18 +175,14 @@ export default {
             this.$emit('update:value', this.value);
         }
     },
-    computed: {
-        thumbnails: function(){
-            var res = {}
+    watch: {
+        value: function (val) {
             var self = this;
-            this.value.forEach(function(photo){
+            self.value.forEach(function(photo){
                 if (self.tile._attachments && self.tile._attachments[photo.file_id] && self.tile._attachments[photo.file_id].data) {
-                    res[photo.file_id] = "data:image/png;base64," + self.tile._attachments[photo.file_id].data
-                } else {
-                    res[photo.file_id] = self.activeServer.url + photo.url;
+                    self.images[photo.file_id] = "data:image/jpeg;base64," + self.tile._attachments[photo.file_id].data
                 }
             })
-            return res
         }
     }
 };
