@@ -674,7 +674,7 @@ var store = new Vuex.Store({
             return fetch(url, {
                 method: 'GET',
                 headers: new Headers({
-                    'Authorization': 'Bearer ' + server.token
+                    'X-Authorization': 'Bearer ' + server.token
                 })
             })
                 .then(function(response) {
@@ -731,7 +731,7 @@ var store = new Vuex.Store({
             return fetch(server.url + '/mobileprojects?status', {
                 method: 'GET',
                 headers: new Headers({
-                    'Authorization': 'Bearer ' + server.token
+                    'X-Authorization': 'Bearer ' + server.token
                 })
             })
                 .then(function(response) {
