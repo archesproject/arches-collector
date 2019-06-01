@@ -148,6 +148,12 @@ var pouchDBs = (function() {
                 console.log(err);
             });
         },
+        getAttachments: function(projectId, tile) {
+            var db = this._projectDBs[projectId]['local'];
+            var attachments = Object.keys(tile._attachments).map(attachmentid => db.getAttachment(tile.tileid, attachmentid)
+                .then(function(att) { return [attachmentid, att]; }));
+            return Promise.all(attachments);
+        },
         getTiles: function(projectId, resourceId) {
             return this._projectDBs[projectId]['local']
                 .allDocs({include_docs: true, descending: true})
@@ -498,28 +504,28 @@ var store = new Vuex.Store({
         },
         deleteProject: function(state, projectId) {
             return pouchDBs._projectDBs[projectId]['local'].destroy()
-            .then(function(){
-                try {
-                    if (store.getters.activeServer.projects[projectId].hasofflinebasemaps) {
-                        return store.dispatch('deleteProjectBasemaps', projectId);
+                .then(function() {
+                    try {
+                        if (store.getters.activeServer.projects[projectId].hasofflinebasemaps) {
+                            return store.dispatch('deleteProjectBasemaps', projectId);
+                        }
+                    } catch (err) {
+                        console.log(err);
                     }
-                } catch(err) {
-                    console.log(err)
-                }
-            })
-            .then(function(){
-                if (store.getters.activeServer.projects[projectId]) {
-                    delete store.getters.activeServer.projects[projectId];
-                    var server = store.getters.activeServer;
-                    if (server.user_preferences[server.user.id]['projects'] && server.user_preferences[server.user.id]['projects'][projectId]) {
-                        delete server.user_preferences[server.user.id]['projects'][projectId];
+                })
+                .then(function() {
+                    if (store.getters.activeServer.projects[projectId]) {
+                        delete store.getters.activeServer.projects[projectId];
+                        var server = store.getters.activeServer;
+                        if (server.user_preferences[server.user.id]['projects'] && server.user_preferences[server.user.id]['projects'][projectId]) {
+                            delete server.user_preferences[server.user.id]['projects'][projectId];
+                        }
+                        return store.dispatch('saveServerInfoToPouch');
                     }
-                    return store.dispatch('saveServerInfoToPouch');
-                }
-            })
-            .catch(function(err){
-                console.log(err);
-            });
+                })
+                .catch(function(err) {
+                    console.log(err);
+                });
         },
         getUserProfile: function({commit, state}, {url, username, password}) {
             var formData = new FormData();
@@ -668,7 +674,7 @@ var store = new Vuex.Store({
             return fetch(url, {
                 method: 'GET',
                 headers: new Headers({
-                    'Authorization': 'Bearer ' + server.token
+                    'X-Authorization': 'Bearer ' + server.token
                 })
             })
                 .then(function(response) {
@@ -725,7 +731,7 @@ var store = new Vuex.Store({
             return fetch(server.url + '/mobileprojects?status', {
                 method: 'GET',
                 headers: new Headers({
-                    'Authorization': 'Bearer ' + server.token
+                    'X-Authorization': 'Bearer ' + server.token
                 })
             })
                 .then(function(response) {
@@ -799,6 +805,10 @@ var store = new Vuex.Store({
         },
         getOnlyTiles: function({commit, state}, projectId) {
             return pouchDBs.getOnlyTiles(projectId);
+        },
+        getAttachments: function({commit, state}, tile) {
+            var projectid = this.getters.activeProject.id;
+            return pouchDBs.getAttachments(projectid, tile);
         },
         persistTile: function({commit, state}, tile) {
             var tileid = uuidv4();
