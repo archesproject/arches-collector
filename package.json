@@ -37,7 +37,7 @@
         "cordova-plugin-whitelist": "^1.3.3",
         "cordova-sqlite-ext": "^2.2.0",
         "date-fns": "^1.29.0",
-        "luxon": "^1.6.2",
+        "luxon": "^1.15.0",
         "mapbox-gl-cordova-offline": "archesproject/mapbox-gl-cordova-offline#master",
         "moment": "^2.24.0",
         "onsenui": "~2.10.5",
