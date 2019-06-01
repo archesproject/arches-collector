@@ -2617,10 +2617,10 @@ cordova-sqlite-ext-deps@0.4.1:
   resolved "https://registry.yarnpkg.com/cordova-sqlite-ext-deps/-/cordova-sqlite-ext-deps-0.4.1.tgz#1c6dc1a478287aebfee94dc4b3cbdc0dc5d03193"
   integrity sha1-HG3BpHgoeuv+6U3Es8vcDcXQMZM=
 
-cordova-sqlite-ext-deps@1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/cordova-sqlite-ext-deps/-/cordova-sqlite-ext-deps-1.1.0.tgz#b016bc90c41ecaa84f01716c7fbccaa67a2d40b4"
-  integrity sha512-1ofnG/pVjKYNexe4oSMoulZzqgeo5rCJ2YvRhA2pcqvfkmt5qRaTL5srUi/WollhaCqW0MAbZsonfHqY1ITLsg==
+cordova-sqlite-ext-deps@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/cordova-sqlite-ext-deps/-/cordova-sqlite-ext-deps-2.0.0.tgz#4e60cda3efe2d4bfb304726a7bed5195d8b1697c"
+  integrity sha512-CobaAeEoofDcGp5rHBSfVjN+AWZ9dMxobWBxkORS9Wodi04dc8mSwLCs8o6Cy1NLt/LvdSf/kNMzlobSajqYPQ==
 
 cordova-sqlite-ext@0.10.5:
   version "0.10.5"
@@ -2629,12 +2629,12 @@ cordova-sqlite-ext@0.10.5:
   dependencies:
     cordova-sqlite-ext-deps "0.4.1"
 
-cordova-sqlite-ext@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/cordova-sqlite-ext/-/cordova-sqlite-ext-2.2.0.tgz#a11b8915f5b69fce3fe59f837c737ea8f2a8ab40"
-  integrity sha512-Nsqeuzma5X1dw2NhSI6jy0Wawyd4WowIzctMP43VXXd+AnzG7kpDJ7HKBA8a9uoe2xv0JVix/iFIUf8TBx9Ttg==
+cordova-sqlite-ext@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/cordova-sqlite-ext/-/cordova-sqlite-ext-3.0.0.tgz#0bc7d157b5f954d38e686fdffa004363246038e6"
+  integrity sha512-hGwIUH5zDyop96BILcLqplqzi4LK8AkBF733QYEAOWyU36uMmTvtF8h7Xr2gAlxKMv5JHsyr/sM/RQQh0kYpHQ==
   dependencies:
-    cordova-sqlite-ext-deps "1.1.0"
+    cordova-sqlite-ext-deps "2.0.0"
 
 core-js@^2.2.0, core-js@^2.4.0, core-js@^2.5.0, core-js@^2.5.1:
   version "2.6.0"
