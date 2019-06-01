@@ -36,6 +36,13 @@
                         </span>
                     </v-ons-list-item>
                 </v-ons-list>
+                <v-ons-row style="position: absolute; bottom: 0px; padding: 10px; color: #ccc">
+                    <v-ons-col><v-ons-icon icon="fa-info-circle" @click="appInfoVisible = !appInfoVisible"></v-ons-icon></v-ons-col>
+                </v-ons-row>
+                <v-ons-toast :visible.sync="appInfoVisible" animation="ascend">
+                  Arches Collector Version 0.2.0
+                  <button @click="appInfoVisible = false">X</button>
+                </v-ons-toast>
             </div>
 
             <!-- Manage Selected App -->
@@ -110,7 +117,8 @@ export default {
             error: false,
             error_message: '',
             default_error_message: 'Oops, something happened. Maybe you are offline?',
-            authenticating: false
+            authenticating: false,
+            appInfoVisible: false
         };
     },
     computed: {
