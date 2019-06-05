@@ -75,28 +75,30 @@ export default {
     },
     mounted() {
         this.init();
-        setTimeout(function(){if (self.value.length > 0) {
-                    self.value[0].name = self.value[0].name + ' ';
-                    self.value[0].name = self.value[0].name.trimRight()
-                }}, self.value.length * 175);
     },
     methods: {
         init: function(){
             self = this;
-            self.$store.dispatch('getAttachments', self.tile).then(function(attachments){
-                var cachedAttachments = {};
-                attachments.forEach(function(attachment){
-                    cachedAttachments[attachment[0]] = attachment[1];
-                });
-                self.value.forEach(function(photo){
-                    var blob = cachedAttachments[photo.file_id];
-                    blobUtil.blobToBase64String(blob).then(function (base64String) {
-                        self.images[photo.file_id] = "data:image/jpeg;base64," + base64String;
-                    }).catch(function (err) {
-                        console.log(err)
+            if (self.tile._attachments) {
+                self.$store.dispatch('getAttachments', self.tile).then(function(attachments){
+                    var cachedAttachments = {};
+                    attachments.forEach(function(attachment){
+                        cachedAttachments[attachment[0]] = attachment[1];
                     });
-                })
-            });
+                    self.value.forEach(function(photo){
+                        var blob = cachedAttachments[photo.file_id];
+                        blobUtil.blobToBase64String(blob).then(function (base64String) {
+                            self.images[photo.file_id] = "data:image/jpeg;base64," + base64String;
+                            setTimeout(function(){if (self.value.length > 0) {
+                                self.value[0].name = self.value[0].name + ' ';
+                                self.value[0].name = self.value[0].name.trimRight()
+                            }}, self.value.length * 100);
+                        }).catch(function (err) {
+                            console.log(err)
+                        });
+                    })
+                });
+            }
         },
         updateList: function() {
             this.$emit('update:value', ret);
