@@ -40,7 +40,7 @@
                     <v-ons-col><v-ons-icon icon="fa-info-circle" @click="appInfoVisible = !appInfoVisible"></v-ons-icon></v-ons-col>
                 </v-ons-row>
                 <v-ons-toast :visible.sync="appInfoVisible" animation="ascend">
-                  Arches Collector Version 0.2.0
+                  Arches Collector Version 0.2.1
                   <button @click="appInfoVisible = false">X</button>
                 </v-ons-toast>
             </div>
