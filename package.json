@@ -52,7 +52,7 @@
         "vue-js-toggle-button": "^1.3.0",
         "vue-onsenui": "~2.6.1",
         "vue-router": "^3.0.1",
-        "vue-search-select": "archesproject/vue-search-select",
+        "vue-search-select": "archesproject/vue-search-select#master",
         "vue-touch": "^2.0.0-beta.4",
         "vuex": "^3.0.0",
         "weekstart": "^1.0.0"
