@@ -1081,5 +1081,88 @@
             "text-halo-width": 2,
             "text-halo-blur": 0
         }
-    }
+    },
+		{
+				"id": "background",
+				"type": "background",
+				"paint": {"background-color": "rgba(0,0,0,0)"}
+		},
+		{
+				"id": "sf-planning-buildings-less-attributes",
+				"type": "line",
+				"source": "openmaptiles",
+				"source-layer": "sf_planning_buildings_less_attributes",
+				"layout": {},
+				"paint": {"line-color": "#6e6e6e"}
+		},
+		{
+				"id": "sf-planning-parcels-less-attributes",
+				"type": "line",
+				"source": "openmaptiles",
+				"source-layer": "sf_planning_parcels_less_attributes",
+				"layout": {},
+				"paint": {"line-color": "#e6e6e6", "line-width": 1}
+		},
+		{
+				"id": "sf-planning-parks",
+				"type": "fill",
+				"source": "openmaptiles",
+				"source-layer": "sf_planning_parks",
+				"layout": {},
+				"paint": {"fill-color": "#cde2cd"}
+		},
+		{
+				"id": "sf-planning-streets-less-attributes",
+				"type": "symbol",
+				"source": "openmaptiles",
+				"source-layer": "sf_planning_streets_less_attributes",
+				"layout": {
+						"text-field": ["to-string", ["get", "streetname"]],
+						"text-size": 10,
+						"text-font": [
+							"Klokantech Noto Sans Bold"
+						],
+						"text-rotate": 0,
+						"symbol-placement": "line"
+				},
+				"paint": {}
+		},
+		{
+				"id": "sf-planning-survey-boundary",
+				"type": "line",
+				"source": "openmaptiles",
+				"source-layer": "sf_planning_survey_boundary",
+				"layout": {},
+				"paint": {
+						"line-color": "hsl(30, 100%, 44%)",
+						"line-width": 5,
+						"line-opacity": 0.7
+				}
+		},
+		{
+				"id": "sf-planning-parcels-less-attributes (1)",
+				"type": "symbol",
+				"source": "openmaptiles",
+				"source-layer": "sf_planning_parcels_less_attributes",
+				"layout": {
+						"text-field": [
+								"concat",
+								["get", "from_addre"],
+								" - ",
+								["get", "to_address"]
+						],
+						"text-size": 13,
+						"text-font": [
+							"Klokantech Noto Sans Bold"
+						],
+						"symbol-placement": [
+								"step",
+								["zoom"],
+								"line",
+								15,
+								"point"
+						]
+				},
+				"paint": {}
+		}
 ]
