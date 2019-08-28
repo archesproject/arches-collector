@@ -53,7 +53,7 @@
                     </v-ons-page>
                 </v-ons-splitter-side>
 
-                <v-ons-splitter-content class="project-list-panel">
+                <v-ons-splitter-content>
 
                       <v-ons-tabbar swipeable animation="none" :index.sync="activeIndex">
                         <template slot="pages">
@@ -176,10 +176,6 @@ export default {
 
 .page-background {
     background-color: white;
-}
-
-.project-list-panel {
-    margin-top: 1px;
 }
 
 .right-panel-label {
