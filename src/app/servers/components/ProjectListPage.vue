@@ -83,7 +83,7 @@
                 </v-ons-page>
             </v-ons-splitter-side>
 
-        <v-ons-splitter-content class="project-list-panel">
+        <v-ons-splitter-content>
             <v-ons-page>
                 <v-ons-toolbar class="project-list-toolbar" modifier="longdivider">
                     <span class="left projects-title"><span>Projects</span></span>
@@ -125,7 +125,7 @@
                         </span>
                         <span class="center" @click="segueToProject(project);"></span>
                         <v-ons-icon class="right" style="display: flex; padding-left:10px; padding-right: 18px;" icon="fa-ellipsis-v" v-if="project.joined !== undefined || !project.active" @click="toggleSideNav(project)"></v-ons-icon>
-                        
+
                         <v-ons-icon class="right" style="display: flex; padding-left:10px" icon="fa-cloud-download-alt" v-if="project.joined === undefined && project.active && !project.unavailable" @click="function(){selectedProject = project; sync()}"></v-ons-icon>
                         <v-ons-icon class="right" style="display: flex; padding-left:10px" icon="fa-trash" v-if="project.unavailable" @click="function(){selectedProject = project; deleteProject(1); refreshProjectList()}"></v-ons-icon>
                     </v-ons-list-item>
