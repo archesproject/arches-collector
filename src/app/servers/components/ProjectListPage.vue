@@ -221,9 +221,14 @@ export default {
             }
         },
         getProjectStatus: function() {
-            var userProjectStatus;
-            if (this.server && this.server.user_preferences && this.server.user_preferences[this.server.user.id]) {
-                userProjectStatus = this.$store.getters.activeServer.user_preferences[this.server.user.id].projects
+            var userProjectStatus = false;
+            if (this.server) {
+                if (this.server.user_preferences) {
+                    if (this.server.user_preferences[this.server.user.id]) {
+                        userProjectStatus = this.$store.getters.activeServer.user_preferences[this.server.user.id].projects;
+                    }
+                }
+                // userProjectStatus = this.$store.getters.activeServer.user_preferences[this.server.user.id].projects;
             }
             return userProjectStatus;
         },
@@ -315,9 +320,9 @@ export default {
             }
         },
         refreshProjectList(done) {
-            var self = this;
+            var self = this, server = this.server || "";
             this.updating = true;
-            this.$store.dispatch('getUserProfile', this.server)
+            this.$store.dispatch('getUserProfile', server)
             .then(function(response){
                 if (response.ok) {
                     return response.json();
@@ -350,12 +355,15 @@ export default {
         }
     },
     created: function() {
-        if ('showUnjoinedProjects' in this.server.user_preferences[this.server.user.id]){
+        if (this.server) {
+            if ('showUnjoinedProjects' in this.server.user_preferences[this.server.user.id]){
             this.showUnjoinedProjects = this.server.user_preferences[this.server.user.id]['showUnjoinedProjects'];
-        } else {
-            this.showUnjoinedProjects = true;
+            } else {
+                this.showUnjoinedProjects = true;
+            }
+            this.refreshProjectList();
         }
-        this.refreshProjectList();
+        // this.refreshProjectList();
     }
 };
 </script>
