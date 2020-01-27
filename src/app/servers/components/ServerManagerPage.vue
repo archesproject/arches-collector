@@ -112,6 +112,8 @@ export default {
                 } else {
                     if (response.status === 401) {
                         self.error_message = 'The supplied username or password was not valid.';
+                    } else if (response.status === 500) {
+                        self.error_message = 'The instance you are trying to access does not have a registered application. Contact your Administrator to register an application with arches.';
                     } else {
                         self.error_message = self.default_error_message;
                     }
@@ -120,15 +122,17 @@ export default {
                 throw new Error('Network response was not ok.');
             })
             .then(function(response){
-                self.server.client_id = response.clientid;
-                return self.$store.dispatch('getToken', self.server)
+                if (response) {
+                    self.server.client_id = response.clientid;
+                    return self.$store.dispatch('getToken', self.server)
+                }
             })
             .then(function(response){
                 if (response.ok) {
                     return response.json();
                 } else {
                     if (response.status === 401) {
-                        self.error_message = 'The supplied username or password was not valid.';
+                        self.error_message = 'Access Token denied. Contact your Administrator to check for ClientId match between project and registered application, or else this user may not permitted to access the arches collector project.';
                     } else {
                         self.error_message = self.default_error_message;
                     }
@@ -137,13 +141,15 @@ export default {
                 throw new Error('Network response was not ok.');
             })
             .then(function(response) {
-                self.server.token = response.access_token;
-                self.server.refresh_token = response.refresh_token;
-                self.$store.commit('addNewServer', self.server);
-                return self.server;
+                if (response) {
+                    self.server.token = response.access_token;
+                    self.server.refresh_token = response.refresh_token;
+                    self.$store.commit('addNewServer', self.server);
+                    return self.server;
+                }
             })
             .then(function(response) {
-                return self.$store.dispatch('getRemoteProjects', {'server': self.$store.getters.activeServer});
+                if (response) { return self.$store.dispatch('getRemoteProjects', {'server': self.$store.getters.activeServer}); }
             })
             .finally(function(response) {
                 self.authenticating = false;
@@ -151,6 +157,7 @@ export default {
             })
             .catch(function(error) {
                 // console.log('Error:', error);
+                if (self.error_message == "" || !self.error_message) { self.error_message = self.default_error_message; }
                 self.error = true;
             });
         }
