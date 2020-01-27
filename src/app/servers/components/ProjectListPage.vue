@@ -328,6 +328,8 @@ export default {
                 } else {
                     if (response.status === 401) {
                         self.error_message = 'The supplied username or password was not valid.';
+                    } else if (response.status === 500) {
+                        self.error_message = 'Unable to connect to server. Restart app or contact your System Administrator.';
                     } else {
                         self.error_message = self.default_error_message;
                     }
@@ -361,6 +363,8 @@ export default {
                 this.showUnjoinedProjects = true;
             }
             this.refreshProjectList();
+        } else {
+            self.error_message = "Error: Server not connected."
         }
     }
 };
