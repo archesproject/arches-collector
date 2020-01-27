@@ -221,9 +221,11 @@ export default {
             }
         },
         getProjectStatus: function() {
-            var userProjectStatus;
-            if (this.server && this.server.user_preferences && this.server.user_preferences[this.server.user.id]) {
-                userProjectStatus = this.$store.getters.activeServer.user_preferences[this.server.user.id].projects
+            var userProjectStatus = false;
+            if (this.server) {
+                if (this.server.user_preferences[this.server.user.id]) {
+                    userProjectStatus = this.$store.getters.activeServer.user_preferences[this.server.user.id].projects;
+                }
             }
             return userProjectStatus;
         },
@@ -258,6 +260,7 @@ export default {
                 this.$store.dispatch('deleteProject', this.selectedProject.id)
                     .catch(function() {
                         console.log('delete failed');
+                        self.syncErrorMessage = "Delete failed.";
                     })
                     .finally(function(doc) {
                         var index;
@@ -288,6 +291,7 @@ export default {
                         self.$store.dispatch('deleteProject', project.id)
                         .catch(function() {
                             console.log('delete failed');
+                            self.syncErrorMessage = "Delete failed.";
                         });
                     }
                     window.setTimeout(function() {
@@ -315,15 +319,17 @@ export default {
             }
         },
         refreshProjectList(done) {
-            var self = this;
+            var self = this, server = this.server || "";
             this.updating = true;
-            this.$store.dispatch('getUserProfile', this.server)
+            this.$store.dispatch('getUserProfile', server)
             .then(function(response){
                 if (response.ok) {
                     return response.json();
                 } else {
                     if (response.status === 401) {
                         self.error_message = 'The supplied username or password was not valid.';
+                    } else if (response.status === 500) {
+                        self.error_message = 'Unable to connect to server. Restart app or contact your System Administrator.';
                     } else {
                         self.error_message = self.default_error_message;
                     }
@@ -350,12 +356,16 @@ export default {
         }
     },
     created: function() {
-        if ('showUnjoinedProjects' in this.server.user_preferences[this.server.user.id]){
-            this.showUnjoinedProjects = this.server.user_preferences[this.server.user.id]['showUnjoinedProjects'];
+        if (this.server) {
+            if ('showUnjoinedProjects' in this.server.user_preferences[this.server.user.id]){
+                this.showUnjoinedProjects = this.server.user_preferences[this.server.user.id]['showUnjoinedProjects'];
+            } else {
+                this.showUnjoinedProjects = true;
+            }
+            this.refreshProjectList();
         } else {
-            this.showUnjoinedProjects = true;
+            self.error_message = "Error: Server not connected."
         }
-        this.refreshProjectList();
     }
 };
 </script>
