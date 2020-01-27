@@ -260,6 +260,7 @@ export default {
                 this.$store.dispatch('deleteProject', this.selectedProject.id)
                     .catch(function() {
                         console.log('delete failed');
+                        self.syncErrorMessage = "Delete failed.";
                     })
                     .finally(function(doc) {
                         var index;
@@ -290,6 +291,7 @@ export default {
                         self.$store.dispatch('deleteProject', project.id)
                         .catch(function() {
                             console.log('delete failed');
+                            self.syncErrorMessage = "Delete failed.";
                         });
                     }
                     window.setTimeout(function() {
