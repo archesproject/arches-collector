@@ -274,7 +274,8 @@ var store = new Vuex.Store({
                 servers: {}
             }
         },
-        tiles: []
+        tiles: [],
+        alerts: []
     },
     getters: {
         activeServer: function(state, getters) {
@@ -386,6 +387,9 @@ var store = new Vuex.Store({
                 }
                 return ret;
             };
+        },
+        getAlertMessage: function(state) {
+            return state.alerts.length > 0 ? state.alerts.shift() : false;
         }
     },
     mutations: {
@@ -470,6 +474,9 @@ var store = new Vuex.Store({
         },
         addTile: function(state, value) {
             state.tiles.push(value);
+        },
+        handleAlert: function(state, alertMessage) {
+            state.alerts.push(alertMessage);
         }
     },
     modules: {
