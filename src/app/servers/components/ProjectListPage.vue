@@ -222,7 +222,7 @@ export default {
         },
         getProjectStatus: function() {
             var userProjectStatus = false;
-            if (this.server) {
+            if (this.server && this.server.user) {
                 if (this.server.user_preferences[this.server.user.id]) {
                     userProjectStatus = this.$store.getters.activeServer.user_preferences[this.server.user.id].projects;
                 }
@@ -356,7 +356,7 @@ export default {
         }
     },
     created: function() {
-        if (this.server) {
+        if (this.server && this.server.user) {
             if ('showUnjoinedProjects' in this.server.user_preferences[this.server.user.id]){
                 this.showUnjoinedProjects = this.server.user_preferences[this.server.user.id]['showUnjoinedProjects'];
             } else {
