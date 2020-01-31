@@ -307,7 +307,7 @@ var store = new Vuex.Store({
             return state.tiles.filter(tile => tile.type === 'tile');
         },
         activeGraph: function(state, getters) {
-            if (!getters.activeServer) {
+            if (!getters.activeServer || !getters.activeProject) {
                 return {};
             }
             var activeGraph = null;
@@ -321,13 +321,14 @@ var store = new Vuex.Store({
         },
         resourcesToSync: function(state, getters) {
             var project = getters.activeProject;
+            if (!project) { return 0; }
             if ('resources_to_sync' in project) {
                 return Object.keys(project.resources_to_sync).length;
             }
             return 0;
         },
         currentGraphs: function(state, getters) {
-            if (!getters.activeServer) {
+            if (!getters.activeServer || !getters.activeProject) {
                 return {};
             }
             var graphs = {};
