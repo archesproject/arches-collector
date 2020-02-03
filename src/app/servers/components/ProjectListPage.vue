@@ -2,10 +2,6 @@
     <page-header-layout>
 
         <v-ons-splitter>
-            <!-- <v-ons-toast class="arches" :visible.sync="toastVisible" animation="fall">
-              {{syncErrorMessage}}
-              <button @click="toastVisible = false">x</button>
-            </v-ons-toast> -->
             <v-ons-splitter-side width="80%"
                 collapse="" side="right"
                 :open.sync="showSideNav" class="sidenav toolbar-header">
@@ -44,7 +40,6 @@
                             <div class="menu-text">
                                 <span class="text-color-dark">Sync all records in this project</span>
                                 <span class="menu-subtext">Sync all project data</span>
-                                <span v-if="syncfailed" class="text-color-dark menu-subtext">Sync Failed... please try again.</span>
                             </div>
                         </v-ons-list-item @click="">
                         <v-ons-progress-bar indeterminate v-if="syncing"></v-ons-progress-bar>
@@ -157,10 +152,8 @@ export default {
             showSideNav: false,
             syncing: false,
             updating: false,
-            syncfailed: false,
             selectedProject: undefined,
             showAllProjectsMenuContent: true,
-            toastVisible: false,
             syncErrorMessage: '',
             showUnjoinedProjects: true
         };
@@ -241,12 +234,10 @@ export default {
         sync: function() {
             var self = this;
             this.syncing = true;
-            this.syncfailed = false;
             this.$store.dispatch('syncRemote', {'projectId': this.selectedProject.id})
                 .catch(function(err) {
                     console.log(err);
-                    self.syncfailed = true;
-                    self.syncErrorMessage = err.notification ? err.notification : "Error. Unable to sync survey";
+                    self.syncErrorMessage = err.notification ? err.notification : "Error. Unable to sync project";
                     self.handleAlert(self.syncErrorMessage);
                 })
                 .finally(function(doc) {

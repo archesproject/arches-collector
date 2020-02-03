@@ -104,7 +104,6 @@ export default {
                     key: 'ProjectSummaryPage'
                 }
             ],
-            toastVisible: false,
             syncErrorMessage: ''
         };
     },
