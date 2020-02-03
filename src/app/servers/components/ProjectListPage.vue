@@ -332,6 +332,9 @@ export default {
                 self.server.user = response;
                 return self.$store.dispatch('updateRemoteProjectsStatus', self.server);
             })
+            .catch(function(err) {
+                self.handleAlert(err.message);
+            })
             .finally(function(){
                 try {
                     done();
