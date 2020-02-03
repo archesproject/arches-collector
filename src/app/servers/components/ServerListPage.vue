@@ -67,12 +67,6 @@
                     <div class="input-label">Password</div>
                     <input class="input input-placeholder" type="password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" v-model="selectedServer.password"></input>
                 </v-ons-row>
-                <v-ons-row v-if="error">
-                    <div class="left">
-                        <v-ons-icon icon="exclamation-triangle" class="list-item__icon" style="color:#ea8a0b;"></v-ons-icon>
-                    </div>
-                    <div class="center">{{error_message}}</div>
-                </v-ons-row>
 
                 <!-- App Buttons -->
                 <v-ons-row class="app-button-row">
@@ -116,7 +110,7 @@ export default {
             selectedServerCopy: undefined,
             error: false,
             error_message: '',
-            default_error_message: 'Oops, something happened. Maybe you are offline?',
+            default_error_message: 'Network response was not ok.',
             authenticating: false,
             appInfoVisible: false
         };
@@ -165,13 +159,11 @@ export default {
                     return response.json();
                 } else {
                     if (response.status === 401) {
-                        self.error_message = 'The supplied username or password was not valid.';
+                        throw new Error('The supplied username or password was not valid.');
                     } else {
-                        self.error_message = self.default_error_message;
+                        throw new Error(self.default_error_message);
                     }
                 }
-
-                throw new Error('Network response was not ok.');
             })
             .then(function(response){
                 self.selectedServer.user = response;
@@ -182,30 +174,29 @@ export default {
                     return response.json();
                 } else {
                     if (response.status === 401) {
-                        self.error_message = 'The supplied username or password was not valid.';
+                        throw new Error('The supplied username or password was not valid.');
                     } else {
-                        self.error_message = self.default_error_message;
+                        throw new Error(self.default_error_message);
                     }
                 }
-
-                throw new Error('Network response was not ok.');
             })
             .then(function(response){
-                self.selectedServer.client_id = response.clientid;
-                return self.$store.dispatch('getToken', self.selectedServer);
+                if (self.selectedServer && response.clientid) {
+                    self.selectedServer.client_id = response.clientid;
+                    return self.$store.dispatch('getToken', self.selectedServer);
+                }
+                throw new Error('Unable to connect to server with client id. See Administrator.');
             })
             .then(function(response){
                 if (response.ok) {
                     return response.json();
                 } else {
                     if (response.status === 401) {
-                        self.error_message = 'The supplied username or password was not valid.';
+                        throw new Error('The supplied username or password was not valid.');
                     } else {
-                        self.error_message = self.default_error_message;
+                        throw new Error(self.default_error_message);
                     }
                 }
-
-                throw new Error('Network response was not ok.');
             })
             .then(function(response) {
                 self.selectedServer.token = response.access_token;
@@ -222,10 +213,12 @@ export default {
                 self.authenticating = false;
             })
             .catch(function(error) {
-                // console.log('Error:', error);
-                self.error = true;
+                self.handleAlert(error.message);
             });
         },
+        handleAlert: function(alertMessage) {
+            this.$store.commit('handleAlert', alertMessage);
+        }
     }
 };
 </script>

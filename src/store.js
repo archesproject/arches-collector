@@ -274,7 +274,8 @@ var store = new Vuex.Store({
                 servers: {}
             }
         },
-        tiles: []
+        tiles: [],
+        alerts: []
     },
     getters: {
         activeServer: function(state, getters) {
@@ -307,7 +308,7 @@ var store = new Vuex.Store({
             return state.tiles.filter(tile => tile.type === 'tile');
         },
         activeGraph: function(state, getters) {
-            if (!getters.activeServer) {
+            if (!getters.activeServer || !getters.activeProject) {
                 return {};
             }
             var activeGraph = null;
@@ -321,13 +322,14 @@ var store = new Vuex.Store({
         },
         resourcesToSync: function(state, getters) {
             var project = getters.activeProject;
+            if (!project) { return 0; }
             if ('resources_to_sync' in project) {
                 return Object.keys(project.resources_to_sync).length;
             }
             return 0;
         },
         currentGraphs: function(state, getters) {
-            if (!getters.activeServer) {
+            if (!getters.activeServer || !getters.activeProject) {
                 return {};
             }
             var graphs = {};
@@ -385,6 +387,9 @@ var store = new Vuex.Store({
                 }
                 return ret;
             };
+        },
+        getAlertMessage: function(state) {
+            return state.alerts.length > 0 ? state.alerts.shift() : false;
         }
     },
     mutations: {
@@ -469,6 +474,9 @@ var store = new Vuex.Store({
         },
         addTile: function(state, value) {
             state.tiles.push(value);
+        },
+        handleAlert: function(state, alertMessage) {
+            state.alerts.push(alertMessage);
         }
     },
     modules: {

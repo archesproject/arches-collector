@@ -163,6 +163,7 @@ export default {
                     this.$emit('map-init', map);
                 }).catch(error => {
                     console.log('map init error:', error.message);
+                    self.handleAlert('Error initializing map: ' + error.message);
                 }, self);
         },
         getMapConfig: function(offline) {
@@ -350,6 +351,9 @@ export default {
         },
         stopPropagation: function(e) {
             e.stopPropagation();
+        },
+        handleAlert: function(alertMessage) {
+            this.$store.commit('handleAlert', alertMessage);
         }
     },
     mounted() {
@@ -372,7 +376,9 @@ export default {
             .then(() => {
                 this.loading = false;
             }).catch(function(err) {
+                this.loading = false;
                 console.log('Unable to initialize offline basemap', err);
+                self.handleAlert('Unable to initialize offline basemap: ' + err.message);
             });
         }
 

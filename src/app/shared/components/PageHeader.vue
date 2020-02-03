@@ -1,14 +1,18 @@
 <template>
 
     <v-ons-toolbar class="app-header-toolbar">
+        <v-ons-toast class="arches" :visible="toastVisible" animation="fall">
+              {{alertMessage}}
+            <button @click="toastVisible = false">x</button>
+        </v-ons-toast>
         <div class="left">
             <v-ons-toolbar-button class="left-button-offset">
-                <div class="nav-header">
+            <div class="nav-header">
                 <img src="../../../assets/img/arches_logo_light.png" style="padding-right: 5px;" height="25" @click="goTo('serverlist');"></img>
                 <div v-if="$route.name === 'serverlist' || $route.name === 'projectlist'" @click="goTo('serverlist');">
                     Arches Instances
                 </div>
-                <div class="app-path-divider" v-if="$route.name !== 'serverlist'">
+                <div class="app-path-divider" v-if="$route.name !== 'serverlist' && $route.name !== 'servermanager'">
                     <div v-if="$route.name === 'projectlist'">
                         /
                     </div>
@@ -16,7 +20,7 @@
                         {{active_server_name}}
                     </div>
                 </div>
-                <div class="app-path-divider" v-if="$route.name !== 'serverlist' && $route.name !== 'projectlist'">
+                <div class="app-path-divider" v-if="$route.name !== 'serverlist' && $route.name !== 'projectlist'  && $route.name !== 'servermanager'">
                     <div>
                         /
                     </div>
@@ -24,24 +28,36 @@
                         {{active_project_name}}
                     </div>
                 </div>
+                <div v-if="$route.name === 'servermanager'">
+                    <span class="left-button-text">Add Arches Instance</span>
+                </div>
             </div>
             </v-ons-toolbar-button>
         </div>
         <div class="center"></div>
-        <div class="right">
-        </div>
+        <div class="right"></div>
     </v-ons-toolbar>
 </template>
 
 <script>
 export default {
     name: 'PageHeader',
+    data() {
+        return {
+            toastVisible: false
+        };
+    },
     computed: {
         active_server_name() {
             return this.$store.getters.activeServer ? this.$store.getters.activeServer.nickname : '';
         },
         active_project_name() {
             return this.$store.getters.activeProject ? this.$store.getters.activeProject.name : '';
+        },
+        alertMessage() {
+            var alert = this.$store.getters.getAlertMessage;
+            if (alert) {this.toastVisible = true;}
+            return alert;
         }
 
     },

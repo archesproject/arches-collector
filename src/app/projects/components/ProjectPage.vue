@@ -1,10 +1,6 @@
 <template>
     <page-header-layout>
         <v-ons-page>
-            <v-ons-toast class="arches" :visible.sync="toastVisible" animation="fall">
-              {{syncErrorMessage}}
-              <button @click="toastVisible = false">x</button>
-            </v-ons-toast>
             <v-ons-toolbar class="project-list-toolbar">
                 <div class="left">
                     <v-ons-toolbar-button>
@@ -108,7 +104,6 @@ export default {
                     key: 'ProjectSummaryPage'
                 }
             ],
-            toastVisible: false,
             syncErrorMessage: ''
         };
     },
@@ -129,7 +124,7 @@ export default {
                 .catch(function(err) {
                     self.syncfailed = true;
                     self.syncErrorMessage = err.notification ? err.notification : "Error. Unable to sync survey";
-                    self.toastVisible = true;
+                    self.handleAlert(self.syncErrorMessage);
                 })
                 .finally(function(doc) {
                     self.syncing = false;
@@ -143,6 +138,9 @@ export default {
         sortByEditDate: function() {
             this.$refs.sripage.sortValue = 'editDate';
             this.$refs.sripage.sorted = !this.$refs.sripage.sorted;
+        },
+        handleAlert: function(alertMessage) {
+            this.$store.commit('handleAlert', alertMessage);
         }
     },
     created: function() {
