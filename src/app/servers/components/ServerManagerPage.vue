@@ -1,55 +1,47 @@
 <template>
-    <v-ons-page>
-        <div class="app-input-panel">
-            <div class="form-header left">
-                <span class="left-button-text">Add Arches Instance</span>
+    <page-header-layout>
+        <v-ons-page>
+            <div class="app-input-panel">
+
+                <v-ons-progress-bar indeterminate v-if="authenticating"></v-ons-progress-bar>
+                <v-ons-row class="app-details">
+                    <div class="input-label">Instance URL</div>
+                    <input class="input input-placeholder" placeholder="My Arches Instance URL" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" float v-model="server.url"></input>
+                </v-ons-row>
+                <v-ons-row class="app-details">
+                    <div class="input-label">Instance Nickname</div>
+                    <input class="input input-placeholder" placeholder="Nickname" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" float v-model="server.nickname"></input>
+                </v-ons-row>
+                <v-ons-row class="app-details">
+                    <div class="input-label">User Name</div>
+                    <input class="input input-placeholder" placeholder="Username" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" float v-model="server.username"></input>
+                </v-ons-row>
+                <v-ons-row class="app-details">
+                    <div class="input-label">Password</div>
+                    <input class="input input-placeholder" placeholder="Password" type="password" v-model="server.password"></input>
+                </v-ons-row>
+
+                <!-- App Buttons -->
+                <v-ons-row class="app-button-row">
+                    <!-- App save Button -->
+                    <v-ons-button :disabled="disableSignIn" class="app-button relative app-save" v-on:click="login">
+                        <div class="icon-circle"></div>
+                        <v-ons-icon class="save-icon" icon="ion-checkmark-round"></v-ons-icon>
+                        <span class="btn-text">Save</span>
+                        <div class="btn-subtitle">Add this instance to your device</div>
+                    </v-ons-button>
+
+                    <!-- App Cancel Button -->
+                    <v-ons-button class="app-button relative app-delete" v-on:click="cancel">
+                        <div class="icon-circle"></div>
+                        <v-ons-icon class="delete-icon" icon="ion-trash-a"></v-ons-icon>
+                        <span class="btn-text">Cancel</span>
+                        <div class="btn-subtitle">Discard this instance</div>
+                    </v-ons-button>
+                </v-ons-row>
             </div>
-
-            <v-ons-progress-bar indeterminate v-if="authenticating"></v-ons-progress-bar>
-            <v-ons-row class="app-details">
-                <div class="input-label">Instance URL</div>
-                <input class="input input-placeholder" placeholder="My Arches Instance URL" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" float v-model="server.url"></input>
-            </v-ons-row>
-            <v-ons-row class="app-details">
-                <div class="input-label">Instance Nickname</div>
-                <input class="input input-placeholder" placeholder="Nickname" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" float v-model="server.nickname"></input>
-            </v-ons-row>
-            <v-ons-row class="app-details">
-                <div class="input-label">User Name</div>
-                <input class="input input-placeholder" placeholder="Username" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" float v-model="server.username"></input>
-            </v-ons-row>
-            <v-ons-row class="app-details">
-                <div class="input-label">Password</div>
-                <input class="input input-placeholder" placeholder="Password" type="password" v-model="server.password"></input>
-            </v-ons-row>
-
-            <v-ons-list-item class="error-panel" v-if="error">
-                <div class="left">
-                    <v-ons-icon icon="exclamation-triangle" class="list-item__icon" style="color:#ea8a0b;"></v-ons-icon>
-                </div>
-                <div class="error-text center">{{error_message}}</div>
-            </v-ons-list-item>
-
-            <!-- App Buttons -->
-            <v-ons-row class="app-button-row">
-                <!-- App save Button -->
-                <v-ons-button :disabled="disableSignIn" class="app-button relative app-save" v-on:click="login">
-                    <div class="icon-circle"></div>
-                    <v-ons-icon class="save-icon" icon="ion-checkmark-round"></v-ons-icon>
-                    <span class="btn-text">Save</span>
-                    <div class="btn-subtitle">Add this instance to your device</div>
-                </v-ons-button>
-
-                <!-- App Cancel Button -->
-                <v-ons-button class="app-button relative app-delete" v-on:click="cancel">
-                    <div class="icon-circle"></div>
-                    <v-ons-icon class="delete-icon" icon="ion-trash-a"></v-ons-icon>
-                    <span class="btn-text">Cancel</span>
-                    <div class="btn-subtitle">Discard this instance</div>
-                </v-ons-button>
-            </v-ons-row>
-        </div>
-    </v-ons-page>
+        </v-ons-page>
+    </page-header-layout>
 </template>
 
 <script>
@@ -73,7 +65,7 @@ export default {
             authenticating: false,
             error: false,
             error_message: '',
-            default_error_message: 'Oops, something happened. Maybe you are offline?'
+            default_error_message: 'Network response was not ok.'
         };
     },
     computed: {
@@ -94,13 +86,11 @@ export default {
                     return response.json();
                 } else {
                     if (response.status === 401) {
-                        self.error_message = 'The supplied username or password was not valid.';
+                        throw new Error('The supplied username or password was not valid.');
                     } else {
-                        self.error_message = self.default_error_message;
+                        throw new Error(self.default_error_message);
                     }
                 }
-
-                throw new Error('Network response was not ok.');
             })
             .then(function(response){
                 self.server.user = response;
@@ -111,55 +101,51 @@ export default {
                     return response.json();
                 } else {
                     if (response.status === 401) {
-                        self.error_message = 'The supplied username or password was not valid.';
+                        throw new Error('The supplied username or password was not valid.');
                     } else if (response.status === 500) {
-                        self.error_message = 'The instance you are trying to access does not have a registered application. Contact your Administrator to register an application with arches.';
+                        throw new Error('The instance you are trying to access does not have a registered application. Contact Administrator.');
                     } else {
-                        self.error_message = self.default_error_message;
+                        throw new Error(self.default_error_message);
                     }
                 }
-
-                throw new Error('Network response was not ok.');
             })
             .then(function(response){
-                if (response) {
-                    self.server.client_id = response.clientid;
-                    return self.$store.dispatch('getToken', self.server)
-                }
+                self.server.client_id = response.clientid;
+                return self.$store.dispatch('getToken', self.server);
             })
             .then(function(response){
                 if (response.ok) {
                     return response.json();
                 } else {
                     if (response.status === 401) {
-                        self.error_message = 'Access Token denied. Contact your Administrator to check for ClientId match between project and registered application, or else this user may not permitted to access the arches collector project.';
+                        throw new Error('Access Token denied. Contact Administrator to check ClientId or user access to project.');
                     } else {
-                        self.error_message = self.default_error_message;
+                        throw new Error(self.default_error_message);
                     }
                 }
-
-                throw new Error('Network response was not ok.');
             })
             .then(function(response) {
+                self.server.token = response.access_token;
+                self.server.refresh_token = response.refresh_token;
+                self.$store.commit('addNewServer', self.server);
+                return self.server;
+            })
+            .then(function(response) {
+                return self.$store.dispatch('getRemoteProjects', {'server': self.$store.getters.activeServer});
+            })
+            .then(function(response) {
+                self.authenticating = false;
                 if (response) {
-                    self.server.token = response.access_token;
-                    self.server.refresh_token = response.refresh_token;
-                    self.$store.commit('addNewServer', self.server);
-                    return self.server;
+                    self.$router.push({'name': 'projectlist'});
                 }
             })
-            .then(function(response) {
-                if (response) { return self.$store.dispatch('getRemoteProjects', {'server': self.$store.getters.activeServer}); }
-            })
-            .finally(function(response) {
-                self.authenticating = false;
-                self.$router.push({'name': 'projectlist'});
-            })
             .catch(function(error) {
-                // console.log('Error:', error);
-                if (self.error_message == "" || !self.error_message) { self.error_message = self.default_error_message; }
-                self.error = true;
+                self.authenticating = false;
+                self.handleAlert(error.message);
             });
+        },
+        handleAlert: function(errorMessage) {
+            this.$store.commit('handleAlert', errorMessage);
         }
     }
 };
