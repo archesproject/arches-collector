@@ -2,10 +2,10 @@
     <page-header-layout>
 
         <v-ons-splitter>
-            <v-ons-toast class="arches" :visible.sync="toastVisible" animation="fall">
+            <!-- <v-ons-toast class="arches" :visible.sync="toastVisible" animation="fall">
               {{syncErrorMessage}}
               <button @click="toastVisible = false">x</button>
-            </v-ons-toast>
+            </v-ons-toast> -->
             <v-ons-splitter-side width="80%"
                 collapse="" side="right"
                 :open.sync="showSideNav" class="sidenav toolbar-header">
@@ -247,7 +247,7 @@ export default {
                     console.log(err);
                     self.syncfailed = true;
                     self.syncErrorMessage = err.notification ? err.notification : "Error. Unable to sync survey";
-                    self.toastVisible = true;
+                    self.handleAlert(self.syncErrorMessage);
                 })
                 .finally(function(doc) {
                     console.log('syncing done');
@@ -261,6 +261,7 @@ export default {
                     .catch(function() {
                         console.log('delete failed');
                         self.syncErrorMessage = "Delete failed.";
+                        self.handleAlert("Delete failed.");
                     })
                     .finally(function(doc) {
                         var index;
@@ -291,7 +292,7 @@ export default {
                         self.$store.dispatch('deleteProject', project.id)
                         .catch(function() {
                             console.log('delete failed');
-                            self.syncErrorMessage = "Delete failed.";
+                            self.handleAlert("Delete failed.");
                         });
                     }
                     window.setTimeout(function() {
@@ -307,7 +308,8 @@ export default {
             if (answer === 1) {
                 this.$store.dispatch('toggleProjectParticipation', this.selectedProject.id)
                     .catch(function() {
-                        console.log('failed to leave project');
+                        self.handleAlert('failed to leave project');
+                        // console.log('failed to leave project');
                     })
                     .finally(function(doc) {
                         window.setTimeout(function() {
@@ -327,15 +329,13 @@ export default {
                     return response.json();
                 } else {
                     if (response.status === 401) {
-                        self.error_message = 'The supplied username or password was not valid.';
+                        throw new Error('The supplied username or password was not valid.');
                     } else if (response.status === 500) {
-                        self.error_message = 'Unable to connect to server. Restart app or contact your System Administrator.';
+                        throw new Error('Unable to connect to server. Restart app or contact your System Administrator.');
                     } else {
-                        self.error_message = self.default_error_message;
+                        throw new Error('Network response was not ok.');
                     }
                 }
-
-                throw new Error('Network response was not ok.');
             })
             .then(function(response){
                 self.server.user = response;
@@ -353,6 +353,9 @@ export default {
                     }
                 }, 1000);
             });
+        },
+        handleAlert: function(alertMessage) {
+            this.$store.commit('handleAlert', alertMessage);
         }
     },
     created: function() {
@@ -364,7 +367,8 @@ export default {
             }
             this.refreshProjectList();
         } else {
-            self.error_message = "Error: Server not connected."
+            // self.error_message = "Error: Server not connected."
+            this.handleAlert("Error: Server not connected.");
         }
     }
 };
