@@ -3,7 +3,7 @@
     <v-ons-toolbar class="app-header-toolbar">
         <v-ons-toast class="arches" :visible="toastVisible" animation="fall">
               {{alertMessage}}
-            <button @click="toastVisible = false">x</button>
+            <button @click="dismissAlert">x</button>
         </v-ons-toast>
         <div class="left">
             <v-ons-toolbar-button class="left-button-offset">
@@ -55,7 +55,7 @@ export default {
             return this.$store.getters.activeProject ? this.$store.getters.activeProject.name : '';
         },
         alertMessage() {
-            var alert = this.$store.getters.getAlertMessage;
+            var alert = this.getAlert();
             if (alert) {this.toastVisible = true;}
             return alert;
         }
@@ -70,6 +70,14 @@ export default {
         },
         goToProject: function() {
             this.$router.push({'name': 'project', params: {project: this.$store.getters.activeProject, tabIndex: this.$store.getters.activeServer.card_nav_stack[0].tabIndex}});
+        },
+        dismissAlert: function() {
+            this.toastVisible = false;
+            this.$store.commit('removeAlert');
+        },
+        getAlert: function() {
+            var alert = this.$store.getters.getAlertMessage;
+            return alert;
         },
     }
 };

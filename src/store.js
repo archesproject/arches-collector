@@ -389,7 +389,7 @@ var store = new Vuex.Store({
             };
         },
         getAlertMessage: function(state) {
-            return state.alerts.length > 0 ? state.alerts.shift() : false;
+            return state.alerts.length > 0 ? state.alerts[0] : false;
         }
     },
     mutations: {
@@ -477,6 +477,9 @@ var store = new Vuex.Store({
         },
         handleAlert: function(state, alertMessage) {
             state.alerts.push(alertMessage);
+        },
+        removeAlert: function(state) {
+            state.alerts.shift();
         }
     },
     modules: {
