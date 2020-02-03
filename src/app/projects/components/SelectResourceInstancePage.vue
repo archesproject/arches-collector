@@ -1,6 +1,10 @@
 <template>
 <v-ons-page>
     <!-- Scrollable content here -->
+    <div v-if="loading" style="padding-left:12%; padding-right:12%;">
+        <ons-progress-circular indeterminate></ons-progress-circular>
+        <span style="margin-bottom:6px;">Loading Resource Instances</span>
+    </div>
     <v-ons-list>
         <v-ons-list-item class="resource-model-name-panel" v-bind:class="{ edited: resource_instance.edited }" tappable modifier="longdivider" v-for="resource_instance in resource_instances" :key="resource_instance.resourceinstanceid" @click="selectResourceInstance(resource_instance);">
             <span class="icon-circle" v-bind:class="{ edited: resource_instance.edited }" v-bind:style="{ background: [resource_types[resource_instance.graph_id].color], color: '#fff' }">
@@ -33,7 +37,8 @@ export default {
             resource_types: {},
             sorted: false,
             sortValue: 'editDate',
-            filter: ''
+            filter: '',
+            loading: true
         };
     },
     watch: {
@@ -112,6 +117,11 @@ export default {
                         self.instances.push(doc);
                     }
                 });
+                self.loading = false;
+            })
+            .catch((error) => {
+                self.loading = false;
+                self.handleAlert('Unable to load resources. Check network connection.');
             });
         },
         deleteResource: function(resource, e) {
@@ -129,7 +139,10 @@ export default {
                 }
             })
         },
-        sortResources: function(passeddata) {}
+        sortResources: function(passeddata) {},
+        handleAlert: function(alertMessage) {
+            this.$store.commit('handleAlert', alertMessage);
+        }
     },
 };
 </script>
