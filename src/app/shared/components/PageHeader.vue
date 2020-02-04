@@ -56,7 +56,7 @@ export default {
         },
         alertMessage() {
             var alert = this.getAlert();
-            if (alert) {this.toastVisible = true;}
+            if (alert) { this.toastVisible = true; }
             return alert;
         }
 
@@ -66,10 +66,10 @@ export default {
             this.$emit('toggle-open-evt');
         },
         goTo: function(name) {
-            this.$router.push({'name': name});
+            this.$router.push({ name: name });
         },
         goToProject: function() {
-            this.$router.push({'name': 'project', params: {project: this.$store.getters.activeProject, tabIndex: this.$store.getters.activeServer.card_nav_stack[0].tabIndex}});
+            this.$router.push({ name: 'project', params: { project: this.$store.getters.activeProject, tabIndex: this.$store.getters.activeServer.card_nav_stack[0].tabIndex } });
         },
         dismissAlert: function() {
             this.toastVisible = false;
@@ -78,7 +78,7 @@ export default {
         getAlert: function() {
             var alert = this.$store.getters.getAlertMessage;
             return alert;
-        },
+        }
     }
 };
 </script>

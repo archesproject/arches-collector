@@ -60,7 +60,7 @@ export default {
                 client_id: '',
                 active_project: '',
                 projects: {},
-                user: {},
+                user: {}
             },
             authenticating: false,
             error: false,
@@ -81,68 +81,68 @@ export default {
             var self = this;
             self.authenticating = true;
             this.$store.dispatch('getUserProfile', this.server)
-            .then(function(response){
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    if (response.status === 401) {
-                        throw new Error('The supplied username or password was not valid.');
+                .then(function(response) {
+                    if (response.ok) {
+                        return response.json();
                     } else {
-                        throw new Error(self.default_error_message);
+                        if (response.status === 401) {
+                            throw new Error('The supplied username or password was not valid.');
+                        } else {
+                            throw new Error(self.default_error_message);
+                        }
                     }
-                }
-            })
-            .then(function(response){
-                self.server.user = response;
-                return self.$store.dispatch('getClientId', self.server);
-            })
-            .then(function(response){
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    if (response.status === 401) {
-                        throw new Error('The supplied username or password was not valid.');
-                    } else if (response.status === 500) {
-                        throw new Error('The instance you are trying to access does not have a registered application. Contact Administrator.');
+                })
+                .then(function(response) {
+                    self.server.user = response;
+                    return self.$store.dispatch('getClientId', self.server);
+                })
+                .then(function(response) {
+                    if (response.ok) {
+                        return response.json();
                     } else {
-                        throw new Error(self.default_error_message);
+                        if (response.status === 401) {
+                            throw new Error('The supplied username or password was not valid.');
+                        } else if (response.status === 500) {
+                            throw new Error('The instance you are trying to access does not have a registered application. Contact Administrator.');
+                        } else {
+                            throw new Error(self.default_error_message);
+                        }
                     }
-                }
-            })
-            .then(function(response){
-                self.server.client_id = response.clientid;
-                return self.$store.dispatch('getToken', self.server);
-            })
-            .then(function(response){
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    if (response.status === 401) {
-                        throw new Error('Access Token denied. Contact Administrator to check ClientId or user access to project.');
+                })
+                .then(function(response) {
+                    self.server.client_id = response.clientid;
+                    return self.$store.dispatch('getToken', self.server);
+                })
+                .then(function(response) {
+                    if (response.ok) {
+                        return response.json();
                     } else {
-                        throw new Error(self.default_error_message);
+                        if (response.status === 401) {
+                            throw new Error('Access Token denied. Contact Administrator to check ClientId or user access to project.');
+                        } else {
+                            throw new Error(self.default_error_message);
+                        }
                     }
-                }
-            })
-            .then(function(response) {
-                self.server.token = response.access_token;
-                self.server.refresh_token = response.refresh_token;
-                self.$store.commit('addNewServer', self.server);
-                return self.server;
-            })
-            .then(function(response) {
-                return self.$store.dispatch('getRemoteProjects', {'server': self.$store.getters.activeServer});
-            })
-            .then(function(response) {
-                self.authenticating = false;
-                if (response) {
-                    self.$router.push({'name': 'projectlist'});
-                }
-            })
-            .catch(function(error) {
-                self.authenticating = false;
-                self.handleAlert(error.message);
-            });
+                })
+                .then(function(response) {
+                    self.server.token = response.access_token;
+                    self.server.refresh_token = response.refresh_token;
+                    self.$store.commit('addNewServer', self.server);
+                    return self.server;
+                })
+                .then(function(response) {
+                    return self.$store.dispatch('getRemoteProjects', { server: self.$store.getters.activeServer });
+                })
+                .then(function(response) {
+                    self.authenticating = false;
+                    if (response) {
+                        self.$router.push({ name: 'projectlist' });
+                    }
+                })
+                .catch(function(error) {
+                    self.authenticating = false;
+                    self.handleAlert(error.message);
+                });
         },
         handleAlert: function(errorMessage) {
             this.$store.commit('handleAlert', errorMessage);

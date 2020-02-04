@@ -57,7 +57,7 @@ export default {
         segueToForm: function(card) {
             var dbtile = 'blank';
             if (card.tile !== null) {
-                dbtile = this.$store.getters.tiles.find(function(t){
+                dbtile = this.$store.getters.tiles.find(function(t) {
                     return t.tileid === card.tile.tileid;
                 });
             }
@@ -74,7 +74,7 @@ export default {
             // editorTab value to take us back to the report
             this.$store.getters.activeServer.card_nav_stack = [
                 this.$store.getters.activeServer.card_nav_stack[0]
-            ]
+            ];
             this.$emit('switch-tabs', 1);
         }
     }

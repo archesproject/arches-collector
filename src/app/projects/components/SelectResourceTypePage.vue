@@ -41,10 +41,10 @@ export default {
             this.$store.commit('clearActiveResourceInstance');
             this.$store.commit('setActiveGraphId', e.graphid);
             this.$router.push({
-                'name': 'resource',
+                name: 'resource',
                 params: {
-                    'nodegroupid': null,
-                    'tabIndex': 1
+                    nodegroupid: null,
+                    tabIndex: 1
                 }
             });
         }

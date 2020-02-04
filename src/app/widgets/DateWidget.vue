@@ -16,7 +16,6 @@
     </span>
 </template>
 
-
 <script>
 import moment from 'moment';
 export default {

@@ -177,25 +177,25 @@ export default {
             // and set the tile to null or the parent tile of this.tile
             // push that onto the stack
             // push the saved item back onto the stack, but change the showForm to false
-            if (this.activeindex===0) {
+            if (this.activeindex === 0) {
                 this.$router.push({
-                    'name': 'project',
+                    name: 'project',
                     params: {
-                        'project': this.project,
-                        'tabIndex': 1
+                        project: this.project,
+                        tabIndex: 1
                     }
                 });
             } else if (this.$store.getters.activeServer.card_nav_stack.length === 1) {
                 if (this.$store.getters.activeServer.card_nav_stack[0].editorTab !== undefined) {
                     this.$emit('switch-tabs', this.$store.getters.activeServer.card_nav_stack[0].editorTab);
                     this.$store.getters.activeServer.card_nav_stack = [];
-                    this.$store.getters.activeServer.card_nav_stack.unshift({card: null, tile: null, showForm: false, activeObject: 'tile'});
+                    this.$store.getters.activeServer.card_nav_stack.unshift({ card: null, tile: null, showForm: false, activeObject: 'tile' });
                 } else {
                     this.$router.push({
-                        'name': 'project',
+                        name: 'project',
                         params: {
-                            'project': this.project,
-                            'tabIndex': this.$store.getters.activeServer.card_nav_stack[0].tabIndex
+                            project: this.project,
+                            tabIndex: this.$store.getters.activeServer.card_nav_stack[0].tabIndex
                         }
                     });
                 }
@@ -207,16 +207,16 @@ export default {
                         return tile.tileid === this.tile.parenttile_id;
                     }, this);
                     this.$store.getters.activeServer.card_nav_stack.splice(1, 0, {
-                        'card': navItem.card,
-                        'tile': !!parentOfThisTile ? parentOfThisTile : null,
-                        'showForm': false,
-                        'activeObject': 'card'
+                        card: navItem.card,
+                        tile: !!parentOfThisTile ? parentOfThisTile : null,
+                        showForm: false,
+                        activeObject: 'card'
                     });
                     this.$store.getters.activeServer.card_nav_stack.splice(1, 0, {
-                        'card': navItem.card,
-                        'tile': navItem.tile,
-                        'showForm': false,
-                        'activeObject': 'tile'
+                        card: navItem.card,
+                        tile: navItem.tile,
+                        showForm: false,
+                        activeObject: 'tile'
                     });
                 }
                 this.$store.getters.activeServer.card_nav_stack.shift();
@@ -244,13 +244,13 @@ export default {
                     return node.nodeid === key;
                 });
                 if (!!tile.provisionaledits && this.user.id in tile.provisionaledits) {
-                    value = tile.provisionaledits[this.user.id]['value'][key];
+                    value = tile.provisionaledits[this.user.id].value[key];
                 } else {
                     value = tile.data[key];
                 }
-                return {label: widget.label, value: !!value ? value : 'undefined'};
+                return { label: widget.label, value: !!value ? value : 'undefined' };
             } else {
-                return {label: '', value: card.name};
+                return { label: '', value: card.name };
             }
         },
         navigateChildCard: function(card, showForm) {
@@ -279,13 +279,13 @@ export default {
             }
 
             this.$store.getters.activeServer.card_nav_stack.unshift({
-                'card': card,
-                'tile': tile,
-                'showForm': !!showForm,
-                'activeObject': 'card'
+                card: card,
+                tile: tile,
+                showForm: !!showForm,
+                activeObject: 'card'
             });
         },
-        getCardTiles: function(card){
+        getCardTiles: function(card) {
             var nodegroupid = card ? card.nodegroup_id : this.nodegroup_id;
             var tiles = this.$underscore.filter(this.tiles, function(tile) {
                 return tile.nodegroup_id === nodegroupid;

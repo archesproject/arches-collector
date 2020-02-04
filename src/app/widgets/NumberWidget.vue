@@ -17,7 +17,6 @@
     </span>
 </template>
 
-
 <script>
 export default {
     name: 'NumberWidget',

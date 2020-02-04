@@ -90,16 +90,16 @@ export default {
         selectResourceInstance: function(resource) {
             return this.$store.dispatch(
                 'getResource',
-                {'projectId': this.project.id, 'resourceinstanceid': resource.id}
+                { projectId: this.project.id, resourceinstanceid: resource.id }
             ).then((ret) => {
                 var resource = ret.docs[0];
                 this.$store.commit('setActiveResourceInstance', resource);
                 this.$store.commit('setActiveGraphId', resource.graph_id);
                 this.$router.push({
-                    'name': 'resource',
+                    name: 'resource',
                     params: {
-                        'nodegroupid': null,
-                        'tabIndex': 1
+                        nodegroupid: null,
+                        tabIndex: 1
                     }
                 });
             });
@@ -116,15 +116,15 @@ export default {
                 'getProjectResources',
                 this.$store.getters.activeProject.id
             ).then((res) => {
-                self.instances = res['docs'];
+                self.instances = res.docs;
             }).then(() => {
                 return this.$store.dispatch(
-                        'getOnlyTiles',
-                        this.$store.getters.activeProject.id
-                    )
+                    'getOnlyTiles',
+                    this.$store.getters.activeProject.id
+                );
             }).then((res) => {
-                self.tiles = res['docs'];
-            })
+                self.tiles = res.docs;
+            });
         },
         mapOnlineInit: function() {
             var self = this;
@@ -140,7 +140,7 @@ export default {
                     trackUserLocation: true
                 }));
                 self.setMapExtent(map);
-                map.addSource('resources', {type: 'geojson', data: self.resourceGeoJSON});
+                map.addSource('resources', { type: 'geojson', data: self.resourceGeoJSON });
                 self.addResourceFeatures(map);
                 self.$emit('map-init', map);
                 self.loading = false;
@@ -167,7 +167,7 @@ export default {
                 }, self);
         },
         getMapConfig: function(offline) {
-            console.log('getting geojson')
+            console.log('getting geojson');
             this.resourceGeoJSON = this.getResourceGeoJson();
             var offlineStyle = {
                 version: 8,
@@ -207,69 +207,69 @@ export default {
                 center: tr.unproject(nw.add(se).div(2)),
                 zoom: tr.scaleZoom(tr.scale * Math.min(scaleX, scaleY))
             });
-            map.addSource('extent', {type: 'geojson', data: this.extent});
+            map.addSource('extent', { type: 'geojson', data: this.extent });
             map.addLayer({
-                id: "project-extent-casing",
-                type: "line",
-                source: "extent",
+                id: 'project-extent-casing',
+                type: 'line',
+                source: 'extent',
                 layout: {},
                 paint: {
-                    "line-color": "#fff",
-                    "line-width": 6,
-                    "line-opacity": 0.8
+                    'line-color': '#fff',
+                    'line-width': 6,
+                    'line-opacity': 0.8
                 }
             });
             map.addLayer({
-                id: "project-extent",
-                type: "line",
-                source: "extent",
+                id: 'project-extent',
+                type: 'line',
+                source: 'extent',
                 layout: {},
                 paint: {
-                    "line-color": "#010195",
-                    "line-width": 2,
-                    "line-opacity": 0.8
+                    'line-color': '#010195',
+                    'line-width': 2,
+                    'line-opacity': 0.8
                 }
             });
         },
-        getPaintStyle: function(resourceid, selectedStyle, defaultStyle){
-            var propertyExpression = ["case"];
+        getPaintStyle: function(resourceid, selectedStyle, defaultStyle) {
+            var propertyExpression = ['case'];
             var selectedResourceId = resourceid || null;
-            propertyExpression.push(["==", ["get", "id"], selectedResourceId])
+            propertyExpression.push(['==', ['get', 'id'], selectedResourceId]);
             propertyExpression = propertyExpression.concat(selectedStyle);
             propertyExpression = propertyExpression.concat(defaultStyle);
             return propertyExpression;
         },
-        getPaintProperties: function(layerId, resourceid){
+        getPaintProperties: function(layerId, resourceid) {
             // the assumption here is if you pass a resourceid then
             // you want to render that feature as "selected"
 
             var colorExpression = [];
             this.project.graphs.forEach(function(graph) {
-                colorExpression.push(["==", ["get", "graph_id"], graph.graphid])
+                colorExpression.push(['==', ['get', 'graph_id'], graph.graphid]);
                 colorExpression.push(graph.color || '#a30000');
             });
-            colorExpression.push("#a30000")
-            colorExpression = this.getPaintStyle(resourceid, "#1F90F8", colorExpression);
+            colorExpression.push('#a30000');
+            colorExpression = this.getPaintStyle(resourceid, '#1F90F8', colorExpression);
 
-            switch(layerId){
-                case 'resource-point':
-                    return {
-                        "circle-color": colorExpression,
-                        "circle-radius": this.getPaintStyle(resourceid, 8, 7),
-                        "circle-stroke-width": this.getPaintStyle(resourceid, 3, 1),
-                        "circle-stroke-color": this.getPaintStyle(resourceid, "#a30000", "#888")
-                    }
-                case 'resource-line':
-                    return {
-                        "line-color": colorExpression,
-                        "line-width": this.getPaintStyle(resourceid, 5, 3),
-                    }
-                case 'resource-polygon':
-                    return {
-                        "fill-color": colorExpression,
-                        "fill-opacity": this.getPaintStyle(resourceid, 0.5, 0.5),
-                        "fill-outline-color": this.getPaintStyle(resourceid, "#a30000", "#fff")
-                    }
+            switch (layerId) {
+            case 'resource-point':
+                return {
+                    'circle-color': colorExpression,
+                    'circle-radius': this.getPaintStyle(resourceid, 8, 7),
+                    'circle-stroke-width': this.getPaintStyle(resourceid, 3, 1),
+                    'circle-stroke-color': this.getPaintStyle(resourceid, '#a30000', '#888')
+                };
+            case 'resource-line':
+                return {
+                    'line-color': colorExpression,
+                    'line-width': this.getPaintStyle(resourceid, 5, 3)
+                };
+            case 'resource-polygon':
+                return {
+                    'fill-color': colorExpression,
+                    'fill-opacity': this.getPaintStyle(resourceid, 0.5, 0.5),
+                    'fill-outline-color': this.getPaintStyle(resourceid, '#a30000', '#fff')
+                };
             }
         },
         getResourceGeoJson: function() {
@@ -285,7 +285,7 @@ export default {
                 }
                 Object.entries(tiledata).forEach(
                     ([key, value]) => {
-                        var instance = this.instances.find(function(resource){return resource.resourceinstanceid === tile.resourceinstance_id})
+                        var instance = this.instances.find(function(resource) { return resource.resourceinstanceid === tile.resourceinstance_id; });
                         if (value && value.type === 'FeatureCollection') {
                             value.features.forEach(function(feature) {
                                 feature.properties.id = tile.resourceinstance_id;
@@ -294,7 +294,7 @@ export default {
                                 feature.properties.displayname = instance.displayname;
                                 feature.properties.displaydescription = instance.displaydescription;
                             });
-                            value.features.forEach(function(f){
+                            value.features.forEach(function(f) {
                                 features.push(f);
                             });
                         }
@@ -307,38 +307,38 @@ export default {
         },
         addResourceFeatures: function(map) {
             map.addLayer({
-                id: "resource-point",
-                type: "circle",
-                source: "resources",
+                id: 'resource-point',
+                type: 'circle',
+                source: 'resources',
                 paint: this.getPaintProperties('resource-point'),
-                filter: ["==", "$type", "Point"]
+                filter: ['==', '$type', 'Point']
             });
 
             map.addLayer({
-                id: "resource-polygon",
-                type: "fill",
-                source: "resources",
+                id: 'resource-polygon',
+                type: 'fill',
+                source: 'resources',
                 layout: {},
                 paint: this.getPaintProperties('resource-polygon'),
-                filter: ["==", "$type", "Polygon"]
+                filter: ['==', '$type', 'Polygon']
             });
 
             map.addLayer({
-                id: "resource-line",
-                type: "line",
-                source: "resources",
+                id: 'resource-line',
+                type: 'line',
+                source: 'resources',
                 layout: {
-                    "line-join": "round",
-                    "line-cap": "round"
+                    'line-join': 'round',
+                    'line-cap': 'round'
                 },
                 paint: this.getPaintProperties('resource-line')
             });
 
-            ['resource-point', 'resource-polygon', 'resource-line'].forEach(function(layer){
+            ['resource-point', 'resource-polygon', 'resource-line'].forEach(function(layer) {
                 map.on('click', layer, (e) => {
                     const feature = e.features[0];
                     this.selectedResource = feature.properties;
-                    ['resource-point', 'resource-polygon', 'resource-line'].forEach(function(layer){
+                    ['resource-point', 'resource-polygon', 'resource-line'].forEach(function(layer) {
                         var paintProperties = this.getPaintProperties(layer, this.selectedResource.id);
                         Object.keys(paintProperties).forEach(function(paintProperty) {
                             this.map.setPaintProperty(layer, paintProperty, paintProperties[paintProperty]);
@@ -364,22 +364,22 @@ export default {
                 self.changes = doc;
             });
 
-        console.log(this.project.useonlinebasemaps)
+        console.log(this.project.useonlinebasemaps);
         if (this.project.useonlinebasemaps) {
             self.getResourceData()
-            .then(
-                self.mapOnlineInit
-            );
+                .then(
+                    self.mapOnlineInit
+                );
         } else {
             this.getResourceData()
-            .then(this.mapOfflineInit)
-            .then(() => {
-                this.loading = false;
-            }).catch(function(err) {
-                this.loading = false;
-                console.log('Unable to initialize offline basemap', err);
-                self.handleAlert('Unable to initialize offline basemap: ' + err.message);
-            });
+                .then(this.mapOfflineInit)
+                .then(() => {
+                    this.loading = false;
+                }).catch(function(err) {
+                    this.loading = false;
+                    console.log('Unable to initialize offline basemap', err);
+                    self.handleAlert('Unable to initialize offline basemap: ' + err.message);
+                });
         }
 
         var resourceTypes = {};

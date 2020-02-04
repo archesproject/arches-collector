@@ -51,26 +51,26 @@ export default {
             var self = this;
             if (this.sorted) {
                 return this.$underscore.sortBy(this.instances, function(resourceInstance) {
-                    if(self.sortValue === 'name'){
+                    if (self.sortValue === 'name') {
                         return resourceInstance.displayname;
                     }
-                    if(self.sortValue === 'editDate'){
-                        if(!!resourceInstance.edited){
+                    if (self.sortValue === 'editDate') {
+                        if (!!resourceInstance.edited) {
                             return new Date(resourceInstance.edited.day + ' ' + resourceInstance.edited.time).valueOf();
-                        }else{
+                        } else {
                             return 0;
                         }
                     }
                 });
             } else {
                 return this.$underscore.sortBy(this.instances, function(resourceInstance) {
-                    if(self.sortValue === 'name'){
+                    if (self.sortValue === 'name') {
                         return resourceInstance.displayname;
                     }
-                    if(self.sortValue === 'editDate'){
-                        if(!!resourceInstance.edited){
+                    if (self.sortValue === 'editDate') {
+                        if (!!resourceInstance.edited) {
                             return new Date(resourceInstance.edited.day + ' ' + resourceInstance.edited.time).valueOf();
-                        }else{
+                        } else {
                             return 0;
                         }
                     }
@@ -92,10 +92,10 @@ export default {
             this.$store.commit('setActiveResourceInstance', resource);
             this.$store.commit('setActiveGraphId', resource.graph_id);
             this.$router.push({
-                'name': 'resource',
+                name: 'resource',
                 params: {
-                    'nodegroupid': null,
-                    'tabIndex': 1
+                    nodegroupid: null,
+                    tabIndex: 1
                 }
             });
         },
@@ -106,7 +106,7 @@ export default {
                 this.$store.getters.activeProject.id
             ).then((res) => {
                 self.instances = [];
-                res['docs'].forEach(function(doc){
+                res.docs.forEach(function(doc) {
                     if (self.resource_types[doc.graph_id]) {
                         if (doc.edited) {
                             var datetime = moment(doc.edited.day + ' ' + doc.edited.time);
@@ -119,10 +119,10 @@ export default {
                 });
                 self.loading = false;
             })
-            .catch((error) => {
-                self.loading = false;
-                self.handleAlert('Unable to load resources. Check network connection.');
-            });
+                .catch((error) => {
+                    self.loading = false;
+                    self.handleAlert('Unable to load resources. Check network connection.');
+                });
         },
         deleteResource: function(resource, e) {
             var self = this;
@@ -134,16 +134,16 @@ export default {
                         self.$store.dispatch('deleteResource', resource);
                         self.getResourceData();
                     } else {
-                        //console.log('not deleting');
+                        // console.log('not deleting');
                     }
                 }
-            })
+            });
         },
         sortResources: function(passeddata) {},
         handleAlert: function(alertMessage) {
             this.$store.commit('handleAlert', alertMessage);
         }
-    },
+    }
 };
 </script>
 

@@ -120,10 +120,10 @@ export default {
             var self = this;
             this.syncing = true;
             this.sync_failed = false;
-            this.$store.dispatch('syncRemote', {'projectId': this.project.id})
+            this.$store.dispatch('syncRemote', { projectId: this.project.id })
                 .catch(function(err) {
                     self.syncfailed = true;
-                    self.syncErrorMessage = err.notification ? err.notification : "Error. Unable to sync survey";
+                    self.syncErrorMessage = err.notification ? err.notification : 'Error. Unable to sync survey';
                     self.handleAlert(self.syncErrorMessage);
                 })
                 .finally(function(doc) {
@@ -216,7 +216,6 @@ export default {
     top: 6px;
 }
 
-
 /* Place the navbar at the bottom of the page, and make it stick */
 
 .navbar {
@@ -236,7 +235,6 @@ export default {
     -webkit-flex-flow: row wrap;
     justify-content: space-around;
 }
-
 
 /* Style the links inside the navigation bar */
 
@@ -261,15 +259,12 @@ export default {
     font-size: 12px !important;
 }
 
-
 /* Change the color of links on hover */
-
 
 /*.navbar a:hover {
             background-color: #ddd;
             color: black;
         }*/
-
 
 /* Add a color to the active/current link */
 

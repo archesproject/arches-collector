@@ -21,7 +21,6 @@
     </span>
 </template>
 
-
 <script>
 import concept from '../shared/mixins/concepts';
 
@@ -39,13 +38,13 @@ export default {
         options() {
             var self = this;
             var options = [];
-            if(!!this.node.config.options){
-                this.node.config.options.forEach(function(option){
+            if (!!this.node.config.options) {
+                this.node.config.options.forEach(function(option) {
                     options.push({
                         text: option.name,
                         value: option.id
-                    })
-                })
+                    });
+                });
             }
             return options;
         },
@@ -53,13 +52,12 @@ export default {
             get: function() {
                 var ret = {};
                 var val = this.local_value || this.value;
-                this.options.forEach(function(option){
-                     if(option.value === val){
+                this.options.forEach(function(option) {
+                    if (option.value === val) {
                         ret = option;
                     }
-                })
+                });
                 return ret;
-
             },
             set: function() {
 
@@ -68,8 +66,8 @@ export default {
     },
     methods: {
         onChange(option) {
-            var ret = null
-            if(!!option) {
+            var ret = null;
+            if (!!option) {
                 ret = option.value;
             }
             this.local_value = ret;

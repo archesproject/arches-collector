@@ -117,9 +117,9 @@ export default {
             var navItem = this.currentNavItem;
             var displayname = this.resourceid ? this.$store.getters.activeServer.active_resource.displayname : 'Unnamed Resource';
             if (!!navItem && !!navItem.card) {
-                return {'value': navItem.card.name, 'label': displayname};
+                return { value: navItem.card.name, label: displayname };
             } else {
-                return {'value': this.$store.getters.activeGraph.name, 'label': displayname}
+                return { value: this.$store.getters.activeGraph.name, label: displayname };
             }
         },
         resourceid: {
@@ -156,7 +156,7 @@ export default {
         createNewRecord: function(e) {
             this.$store.commit('clearActiveResourceInstance');
             this.$store.getters.activeServer.card_nav_stack = [];
-            this.$store.getters.activeServer.card_nav_stack.unshift({card: null, tile: null, showForm: false, activeObject: 'tile', 'tabIndex': this.tabIndex});
+            this.$store.getters.activeServer.card_nav_stack.unshift({ card: null, tile: null, showForm: false, activeObject: 'tile', tabIndex: this.tabIndex });
             this.nodegroupid = null;
             this.tabIndex = 0;
             this.toggleSideNav();
@@ -168,10 +168,10 @@ export default {
                 project_id: this.project.id
             };
             this.$store.commit('setActiveProject', payload);
-            this.$router.push({'name': 'project', params: {project: this.project, tabIndex: tabIndex}});
+            this.$router.push({ name: 'project', params: { project: this.project, tabIndex: tabIndex } });
         },
         showResourceModels: function(e) {
-           this.jumpToProjectPage(0);
+            this.jumpToProjectPage(0);
         },
         showResourceList: function(e) {
             this.jumpToProjectPage(1);
@@ -182,14 +182,14 @@ export default {
         selectProject: function(e) {
             this.$store.commit('clearActiveResourceInstance');
             this.$router.push({
-                'name': 'projectlist'
+                name: 'projectlist'
             });
         }
     },
     created: function() {
         if (!!this.$store.getters.activeServer) {
             this.$store.getters.activeServer.card_nav_stack = [];
-            this.$store.getters.activeServer.card_nav_stack.unshift({card: null, tile: null, showForm: false, activeObject: 'tile', 'tabIndex': this.tabIndex});
+            this.$store.getters.activeServer.card_nav_stack.unshift({ card: null, tile: null, showForm: false, activeObject: 'tile', tabIndex: this.tabIndex });
         }
     }
 };
