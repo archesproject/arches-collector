@@ -66,7 +66,6 @@ export default {
         },
         selectedOption: {
             get: function() {
-                var self = this;
                 var ret = {};
                 var val = this.local_value || this.value;
                 this.options.forEach(function(option) {

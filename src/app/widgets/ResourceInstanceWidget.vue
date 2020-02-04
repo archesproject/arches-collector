@@ -36,7 +36,6 @@ export default {
     },
     computed: {
         options() {
-            var self = this;
             var options = [];
             if (!!this.node.config.options) {
                 this.node.config.options.forEach(function(option) {

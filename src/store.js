@@ -565,7 +565,7 @@ var store = new Vuex.Store({
                 })
             });
         },
-        getToken: function({ commit, state }, { url, username, password, client_id }) {
+        getToken: function({ commit, state }, { url, username, password, clientId }) {
             var self = this;
             self.error = false;
 
@@ -573,7 +573,7 @@ var store = new Vuex.Store({
             formData.append('username', username);
             formData.append('password', password);
             formData.append('grant_type', 'password');
-            formData.append('client_id', client_id);
+            formData.append('client_id', clientId);
 
             return fetch(url.replace(/\/$/, '') + '/o/token/', {
                 method: 'POST',

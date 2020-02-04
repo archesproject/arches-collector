@@ -128,7 +128,6 @@ export default {
         },
         mapOnlineInit: function() {
             var self = this;
-            var resources;
             mapboxgl.accessToken = self.project.mapboxkey;
             var map = new mapboxgl.Map(this.getMapConfig(false));
             map.on('load', function() {
@@ -148,7 +147,6 @@ export default {
         },
         mapOfflineInit: function() {
             var self = this;
-            var resources;
             return new mapboxgl.OfflineMap(this.getMapConfig(true))
                 .then((map) => {
                     map.addControl(new mapboxgl.NavigationControl());
@@ -274,9 +272,7 @@ export default {
         },
         getResourceGeoJson: function() {
             var features = [];
-            var self = this;
             this.tiles.forEach(function(tile) {
-                var geojson;
                 var tiledata;
                 if (tile.provisionaledits && tile.provisionaledits[this.user]) {
                     tiledata = tile.provisionaledits[this.user].value;

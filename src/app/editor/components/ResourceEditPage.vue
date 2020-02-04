@@ -227,7 +227,6 @@ export default {
                 return widget.card_id === card.cardid;
             }, this);
             if (widgets.length > 0) {
-                var value;
                 return this.$underscore.sortBy(widgets, 'sortorder')[0];
             }
             return undefined;
@@ -240,9 +239,6 @@ export default {
                 var value;
                 var widget = this.$underscore.sortBy(widgets, 'sortorder')[0];
                 var key = widget.node_id;
-                var node = this.$underscore.find(this.allNodes, function(node) {
-                    return node.nodeid === key;
-                });
                 if (!!tile.provisionaledits && this.user.id in tile.provisionaledits) {
                     value = tile.provisionaledits[this.user.id].value[key];
                 } else {

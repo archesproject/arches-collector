@@ -75,7 +75,7 @@ export default {
     },
     methods: {
         init: function() {
-            self = this;
+            var self = this;
             if (self.tile._attachments) {
                 self.$store.dispatch('getAttachments', self.tile).then(function(attachments) {
                     var cachedAttachments = {};
@@ -98,9 +98,6 @@ export default {
                     });
                 });
             }
-        },
-        updateList: function() {
-            this.$emit('update:value', ret);
         },
         takePhoto: function() {
             var options = this.setOptions(Camera.PictureSourceType.CAMERA, true);

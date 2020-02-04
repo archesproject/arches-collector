@@ -120,6 +120,9 @@ export default {
                 self.loading = false;
             })
                 .catch((error) => {
+                    if (error) {
+                        console.log(error);
+                    }
                     self.loading = false;
                     self.handleAlert('Unable to load resources. Check network connection.');
                 });
