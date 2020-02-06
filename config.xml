@@ -1,5 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="org.archesproject.archescollector" version="0.2.2" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="org.archesproject.archescollector"
+    version="0.2.2"
+    xmlns="http://www.w3.org/ns/widgets"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>ArchesCollector</name>
     <description>
       A mobile app to manage Arches resources
@@ -21,6 +25,14 @@
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
     </platform>
+    <plugin name="cordova-plugin-whitelist" spec="1" />
+    <plugin name="cordova-plugin-device" spec="^2.0.1" />
+    <plugin name="cordova-plugin-file" spec="^6.0.1" />
+    <plugin name="cordova-sqlite-ext" spec="^2.1.1" />
+    <plugin name="cordova-plugin-file-transfer" spec="^1.7.1" />
+    <plugin name="cordova-plugin-camera" spec="^4.0.3" />
+    <plugin name="cordova-plugin-geolocation" spec="^4.0.1" />
+    <plugin name="cordova-plugin-cleartext" spec="^1.0.0" />
     <preference name="DisallowOverscroll" value="true" />
     <preference name="BackupWebStorage" value="local" />
     <edit-config file="*-Info.plist" mode="merge" target="NSCameraUsageDescription">
@@ -35,15 +47,7 @@
     <edit-config file="*-Info.plist" mode="merge" target="NSPhotoLibraryAddUsageDescription">
         <string>need photo library access to save pictures there</string>
     </edit-config>
-    <engine name="browser" spec="^5.0.3" />
-    <engine name="android" spec="^7.0.0" />
-    <plugin name="cordova-plugin-whitelist" spec="1" />
-    <plugin name="cordova-plugin-device" spec="^2.0.1" />
-    <plugin name="cordova-plugin-file" spec="^6.0.1" />
-    <plugin name="cordova-sqlite-ext" spec="^2.1.1" />
-    <plugin name="cordova-plugin-sqlite-2" />
-    <plugin name="cordova-plugin-file-transfer" spec="^1.7.1" />
-    <plugin name="cordova-plugin-camera" spec="^4.0.3" />
-    <plugin name="cordova-plugin-geolocation" spec="^4.0.1" />
-    <plugin name="cordova-plugin-cleartext" spec="^1.0.0" />
+    <engine name="browser" spec="~5.0.3" />
+    <engine name="android" spec="~7.1.4" />
+    <engine name="ios" spec="~4.5.5" />
 </widget>
