@@ -102,7 +102,7 @@
 <script>
 export default {
     name: 'ServerListPage',
-    //props: ['active-server'],
+    // props: ['active-server'],
     data() {
         return {
             openSide: false,
@@ -125,7 +125,7 @@ export default {
             this.openSide = !this.openSide;
         },
         goTo: function(name) {
-            this.$router.push({'name': name});
+            this.$router.push({ name: name });
         },
         setActiveServer: function(serverurl, e) {
             this.$store.commit('setActiveServer', serverurl);
@@ -154,67 +154,67 @@ export default {
             this.error = false;
             this.authenticating = true;
             this.$store.dispatch('getUserProfile', this.selectedServer)
-            .then(function(response){
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    if (response.status === 401) {
-                        throw new Error('The supplied username or password was not valid.');
+                .then(function(response) {
+                    if (response.ok) {
+                        return response.json();
                     } else {
-                        throw new Error(self.default_error_message);
+                        if (response.status === 401) {
+                            throw new Error('The supplied username or password was not valid.');
+                        } else {
+                            throw new Error(self.default_error_message);
+                        }
                     }
-                }
-            })
-            .then(function(response){
-                self.selectedServer.user = response;
-                return self.$store.dispatch('getClientId', self.selectedServer);
-            })
-            .then(function(response){
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    if (response.status === 401) {
-                        throw new Error('The supplied username or password was not valid.');
+                })
+                .then(function(response) {
+                    self.selectedServer.user = response;
+                    return self.$store.dispatch('getClientId', self.selectedServer);
+                })
+                .then(function(response) {
+                    if (response.ok) {
+                        return response.json();
                     } else {
-                        throw new Error(self.default_error_message);
+                        if (response.status === 401) {
+                            throw new Error('The supplied username or password was not valid.');
+                        } else {
+                            throw new Error(self.default_error_message);
+                        }
                     }
-                }
-            })
-            .then(function(response){
-                if (self.selectedServer && response.clientid) {
-                    self.selectedServer.client_id = response.clientid;
-                    return self.$store.dispatch('getToken', self.selectedServer);
-                }
-                throw new Error('Unable to connect to server with client id. See Administrator.');
-            })
-            .then(function(response){
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    if (response.status === 401) {
-                        throw new Error('The supplied username or password was not valid.');
+                })
+                .then(function(response) {
+                    if (self.selectedServer && response.clientid) {
+                        self.selectedServer.client_id = response.clientid;
+                        return self.$store.dispatch('getToken', self.selectedServer);
+                    }
+                    throw new Error('Unable to connect to server with client id. See Administrator.');
+                })
+                .then(function(response) {
+                    if (response.ok) {
+                        return response.json();
                     } else {
-                        throw new Error(self.default_error_message);
+                        if (response.status === 401) {
+                            throw new Error('The supplied username or password was not valid.');
+                        } else {
+                            throw new Error(self.default_error_message);
+                        }
                     }
-                }
-            })
-            .then(function(response) {
-                self.selectedServer.token = response.access_token;
-                self.selectedServer.refresh_token = response.refresh_token;
-                return self.$store.dispatch('updateToken', self.selectedServer);
-            })
-            .then(function(response) {
-                return self.$store.dispatch('getRemoteProjects', {'server': self.$store.getters.activeServer});
-            })
-            .then(function() {
-                self.selectedServer = false;
-            })
-            .finally(function(response) {
-                self.authenticating = false;
-            })
-            .catch(function(error) {
-                self.handleAlert(error.message);
-            });
+                })
+                .then(function(response) {
+                    self.selectedServer.token = response.access_token;
+                    self.selectedServer.refresh_token = response.refresh_token;
+                    return self.$store.dispatch('updateToken', self.selectedServer);
+                })
+                .then(function(response) {
+                    return self.$store.dispatch('getRemoteProjects', { server: self.$store.getters.activeServer });
+                })
+                .then(function() {
+                    self.selectedServer = false;
+                })
+                .finally(function(response) {
+                    self.authenticating = false;
+                })
+                .catch(function(error) {
+                    self.handleAlert(error.message);
+                });
         },
         handleAlert: function(alertMessage) {
             this.$store.commit('handleAlert', alertMessage);
@@ -243,7 +243,6 @@ export default {
     background-color: #413040;
     align-items: center;
 }
-
 
 .toolbar-header-icon {
     vertical-align: middle;

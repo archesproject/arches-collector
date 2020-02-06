@@ -19,14 +19,13 @@
     </span>
 </template>
 
-
 <script>
 export default {
     name: 'BooleanWidget',
     props: ['value', 'widget', 'context', 'node'],
     data() {
         return {
-            'width': 70
+            width: 70
         };
     },
     computed: {
@@ -37,11 +36,11 @@ export default {
             set: function(value) {
                 this.$emit('update:value', value);
             }
-        },
+        }
     },
     methods: {
         getTextWidth: function(text, fontSize) {
-            var width = ((text.length*8) + 30);
+            var width = ((text.length * 8) + 30);
             return width;
         },
         toggleButtonWidth() {
@@ -50,7 +49,7 @@ export default {
             return f > t ? f : t;
         }
     },
-    mounted: function () {
+    mounted: function() {
         this.$nextTick(function() {
             this.width = this.toggleButtonWidth();
         }, this);

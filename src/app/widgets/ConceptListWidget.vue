@@ -32,7 +32,6 @@
     </span>
 </template>
 
-
 <script>
 import concept from '../shared/mixins/concepts';
 
@@ -49,13 +48,13 @@ export default {
     computed: {
         options() {
             var options = [];
-            this.widget.config.options.forEach(function(option){
+            this.widget.config.options.forEach(function(option) {
                 options.push({
                     text: option[0].value,
                     value: option[0].valueid,
                     depth: option[1]
-                })
-            })
+                });
+            });
             return options;
         },
         selectedOptions: {
@@ -64,13 +63,12 @@ export default {
                 var val = this.local_value || this.value;
                 if (!!val) {
                     this.options.forEach(function(option) {
-                        if(val.includes(option.value)) {
+                        if (val.includes(option.value)) {
                             ret.push(option);
                         }
-                    })
+                    });
                 }
                 return ret;
-
             },
             set: function() {
 
@@ -78,11 +76,11 @@ export default {
         }
     },
     methods: {
-        onChange (selectedOptions, lastSelectedOption) {
+        onChange(selectedOptions, lastSelectedOption) {
             var ret = [];
-            selectedOptions.forEach(function(option){
+            selectedOptions.forEach(function(option) {
                 ret.push(option.value);
-            })
+            });
             this.local_value = ret;
             this.$emit('update:value', ret);
         }

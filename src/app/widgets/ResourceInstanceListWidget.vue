@@ -30,7 +30,6 @@
     </span>
 </template>
 
-
 <script>
 import concept from '../shared/mixins/concepts';
 
@@ -47,13 +46,13 @@ export default {
     computed: {
         options() {
             var options = [];
-            if(!!this.node.config.options){
-                this.node.config.options.forEach(function(option){
+            if (!!this.node.config.options) {
+                this.node.config.options.forEach(function(option) {
                     options.push({
                         text: option.name,
                         value: option.id
-                    })
-                })
+                    });
+                });
             }
             return options;
         },
@@ -63,13 +62,12 @@ export default {
                 var val = this.local_value || this.value;
                 if (!!val) {
                     this.options.forEach(function(option) {
-                        if(val.includes(option.value)) {
+                        if (val.includes(option.value)) {
                             ret.push(option);
                         }
-                    })
+                    });
                 }
                 return ret;
-
             },
             set: function() {
 
@@ -77,11 +75,11 @@ export default {
         }
     },
     methods: {
-        onChange (selectedOptions, lastSelectedOption) {
+        onChange(selectedOptions, lastSelectedOption) {
             var ret = [];
-            selectedOptions.forEach(function(option){
+            selectedOptions.forEach(function(option) {
                 ret.push(option.value);
-            })
+            });
             this.local_value = ret;
             this.$emit('update:value', ret);
         }

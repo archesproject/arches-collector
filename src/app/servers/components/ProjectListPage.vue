@@ -180,14 +180,14 @@ export default {
                 };
                 var activeProjects = filterObj('active', true);
                 var inActiveProjects = filterObj('active', false);
-                var projectList = [...activeProjects, ...inActiveProjects].filter(function(p){
+                var projectList = [...activeProjects, ...inActiveProjects].filter(function(p) {
                     var projectStatus = self.getProjectStatus();
                     if (projectStatus) {
                         if (projectStatus[p.id]) {
                             p.useonlinebasemaps = projectStatus[p.id].useonlinebasemaps;
                         }
-                        if (projectStatus[p.id] && (projectStatus[p.id].joined || self.showUnjoinedProjects) ) {
-                            p.joined = projectStatus[p.id].joined
+                        if (projectStatus[p.id] && (projectStatus[p.id].joined || self.showUnjoinedProjects)) {
+                            p.joined = projectStatus[p.id].joined;
                             return p;
                         } else if (projectStatus[p.id] === undefined) {
                             return p;
@@ -195,7 +195,7 @@ export default {
                     } else {
                         return p;
                     }
-                })
+                });
                 return projectList;
             },
             set: function(arr) {
@@ -210,7 +210,7 @@ export default {
                     project_id: project.id
                 };
                 this.$store.commit('setActiveProject', payload);
-                this.$router.push({'name': 'project', params: {project: project, tabIndex: 0}});
+                this.$router.push({ name: 'project', params: { project: project, tabIndex: 0 } });
             }
         },
         getProjectStatus: function() {
@@ -229,15 +229,15 @@ export default {
         },
         toggleShowUnjoined: function(project) {
             this.showUnjoinedProjects = !this.showUnjoinedProjects;
-            this.$store.commit('updateUserPrefByKey', {'userPrefKey': 'showUnjoinedProjects', 'userPref': this.showUnjoinedProjects});
+            this.$store.commit('updateUserPrefByKey', { userPrefKey: 'showUnjoinedProjects', userPref: this.showUnjoinedProjects });
         },
         sync: function() {
             var self = this;
             this.syncing = true;
-            this.$store.dispatch('syncRemote', {'projectId': this.selectedProject.id})
+            this.$store.dispatch('syncRemote', { projectId: this.selectedProject.id })
                 .catch(function(err) {
                     console.log(err);
-                    self.syncErrorMessage = err.notification ? err.notification : "Error. Unable to sync project";
+                    self.syncErrorMessage = err.notification ? err.notification : 'Error. Unable to sync project';
                     self.handleAlert(self.syncErrorMessage);
                 })
                 .finally(function(doc) {
@@ -251,15 +251,15 @@ export default {
                 this.$store.dispatch('deleteProject', this.selectedProject.id)
                     .catch(function() {
                         console.log('delete failed');
-                        self.syncErrorMessage = "Delete failed.";
-                        self.handleAlert("Delete failed.");
+                        self.syncErrorMessage = 'Delete failed.';
+                        self.handleAlert('Delete failed.');
                     })
                     .finally(function(doc) {
                         var index;
-                        self.projects.forEach((p, i) => { if (self.selectedProject.id === p.id) index = i });
+                        self.projects.forEach((p, i) => { if (self.selectedProject.id === p.id) index = i; });
                         window.setTimeout(function() {
-                            self.toggleSideNav(undefined, false)
-                            self.projects = self.projects.splice(index, 1)
+                            self.toggleSideNav(undefined, false);
+                            self.projects = self.projects.splice(index, 1);
                         }, 250);
                     });
             } else {
@@ -272,26 +272,26 @@ export default {
                 .catch(function() {
                     console.log('failed switch source');
                 });
-            this.selectedProject.useonlinebasemaps = this.$store.getters.activeServer.user_preferences[this.server.user.id].projects[this.selectedProject.id].useonlinebasemaps
+            this.selectedProject.useonlinebasemaps = this.$store.getters.activeServer.user_preferences[this.server.user.id].projects[this.selectedProject.id].useonlinebasemaps;
             console.log(this.selectedProject.useonlinebasemaps);
         },
-        deleteAllInactiveProjects: function(answer){
+        deleteAllInactiveProjects: function(answer) {
             var self = this;
             if (answer === 1) {
-                self.projects.forEach(function(project){
+                self.projects.forEach(function(project) {
                     if (!project.active) {
                         self.$store.dispatch('deleteProject', project.id)
-                        .catch(function() {
-                            console.log('delete failed');
-                            self.handleAlert("Delete failed.");
-                        });
+                            .catch(function() {
+                                console.log('delete failed');
+                                self.handleAlert('Delete failed.');
+                            });
                     }
                     window.setTimeout(function() {
-                        self.toggleSideNav()
+                        self.toggleSideNav();
                     }, 250);
                 });
             } else {
-                console.log('user declined deletion')
+                console.log('user declined deletion');
             }
         },
         toggleProjectParticipation: function(answer) {
@@ -312,41 +312,41 @@ export default {
             }
         },
         refreshProjectList(done) {
-            var self = this, server = this.server || "";
+            var self = this; var server = this.server || '';
             this.updating = true;
             this.$store.dispatch('getUserProfile', server)
-            .then(function(response){
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    if (response.status === 401) {
-                        throw new Error('The supplied username or password was not valid.');
-                    } else if (response.status === 500) {
-                        throw new Error('Unable to connect to server. Restart app or contact your System Administrator.');
+                .then(function(response) {
+                    if (response.ok) {
+                        return response.json();
                     } else {
-                        throw new Error('Network response was not ok.');
+                        if (response.status === 401) {
+                            throw new Error('The supplied username or password was not valid.');
+                        } else if (response.status === 500) {
+                            throw new Error('Unable to connect to server. Restart app or contact your System Administrator.');
+                        } else {
+                            throw new Error('Network response was not ok.');
+                        }
                     }
-                }
-            })
-            .then(function(response){
-                self.server.user = response;
-                return self.$store.dispatch('updateRemoteProjectsStatus', self.server);
-            })
-            .catch(function(err) {
-                self.handleAlert(err.message);
-            })
-            .finally(function(){
-                try {
-                    done();
-                } catch(err) {
+                })
+                .then(function(response) {
+                    self.server.user = response;
+                    return self.$store.dispatch('updateRemoteProjectsStatus', self.server);
+                })
+                .catch(function(err) {
+                    self.handleAlert(err.message);
+                })
+                .finally(function() {
+                    try {
+                        done();
+                    } catch (err) {
                     // do nothing
-                }
-                window.setTimeout(function() {
-                    if (!!self.updating) {
-                        self.updating = false;
                     }
-                }, 1000);
-            });
+                    window.setTimeout(function() {
+                        if (!!self.updating) {
+                            self.updating = false;
+                        }
+                    }, 1000);
+                });
         },
         handleAlert: function(alertMessage) {
             this.$store.commit('handleAlert', alertMessage);
@@ -354,15 +354,15 @@ export default {
     },
     created: function() {
         if (this.server && this.server.user) {
-            if ('showUnjoinedProjects' in this.server.user_preferences[this.server.user.id]){
-                this.showUnjoinedProjects = this.server.user_preferences[this.server.user.id]['showUnjoinedProjects'];
+            if ('showUnjoinedProjects' in this.server.user_preferences[this.server.user.id]) {
+                this.showUnjoinedProjects = this.server.user_preferences[this.server.user.id].showUnjoinedProjects;
             } else {
                 this.showUnjoinedProjects = true;
             }
             this.refreshProjectList();
         } else {
             // self.error_message = "Error: Server not connected."
-            this.handleAlert("Error: Server not connected.");
+            this.handleAlert('Error: Server not connected.');
         }
     }
 };
@@ -506,6 +506,5 @@ export default {
         padding-left: 3px;
         font-size: 24px;
     }
-
 
 </style>

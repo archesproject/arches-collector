@@ -40,7 +40,7 @@ import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import GenericControl from '../../assets/map/GenericControl';
 import reportLayers from '../../assets/map/report_layers.json';
-import drawLayers from '../../assets/map/draw_layers.json'
+import drawLayers from '../../assets/map/draw_layers.json';
 
 export default {
     name: 'GeojsonFeatureCollectionWidget',
@@ -60,9 +60,9 @@ export default {
         },
         bounds() {
             return this.featureCollection &&
-                this.featureCollection.features.length > 0 ?
-                this.featureCollection :
-                this.$store.getters.activeProject.bounds;
+                this.featureCollection.features.length > 0
+                ? this.featureCollection
+                : this.$store.getters.activeProject.bounds;
         },
         displayValue: function() {
             var count = this.featureCollection.features.length;
@@ -100,9 +100,9 @@ export default {
             const deleteEl = this.$el.querySelector('.delete-control');
             this.draw = new MapboxDraw({
                 controls: {
-                    'combine_features': false,
-                    'uncombine_features': false,
-                    'trash': false
+                    combine_features: false,
+                    uncombine_features: false,
+                    trash: false
                 },
                 styles: drawLayers
             });
@@ -113,12 +113,12 @@ export default {
             this.map.on('draw.create', () => this.updateDrawings('create'));
             this.map.on('draw.update', () => this.updateDrawings('update'));
             this.map.on('draw.selectionchange', (e) => {
-                let mode = this.draw.getMode();
+                const mode = this.draw.getMode();
                 if (this.deleteActive) {
                     if (e.features) {
-                        let fc = this.draw.getAll();
-                        let features = [];
-                        let featureIds = e.features.map((feature) => {
+                        const fc = this.draw.getAll();
+                        const features = [];
+                        const featureIds = e.features.map((feature) => {
                             return feature.id;
                         });
                         fc.features.forEach((feature) => {
@@ -145,10 +145,10 @@ export default {
             });
         },
         initReport() {
-            let style = this.map.getStyle();
+            const style = this.map.getStyle();
             style.sources['report-data'] = {
-                'type': 'geojson',
-                'data': this.featureCollection
+                type: 'geojson',
+                data: this.featureCollection
             };
             style.layers.push(...reportLayers);
             this.map.setStyle(style);

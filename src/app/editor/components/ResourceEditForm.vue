@@ -42,7 +42,7 @@ export default {
         },
         allowDelete: {
             get: function() {
-                if(this.tile) {
+                if (this.tile) {
                     return this.canDeleteTile(this.tile) && !this.hasChildCards(this.tile);
                 } else {
                     return false;

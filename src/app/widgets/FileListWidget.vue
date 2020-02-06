@@ -17,7 +17,6 @@
                 </ons-list-item>
             </ons-list>
 
-
             <div class="button-panel">
                 <v-ons-button class="file-button relative select-photo" @click="selectPhoto">
                     <div class="icon-circle"></div>
@@ -32,7 +31,6 @@
             </div>
 
         </div>
-
 
     </div>
 
@@ -60,7 +58,6 @@
     </span>
 </template>
 
-
 <script>
 import uuidv4 from 'uuid/v4';
 import * as blobUtil from 'blob-util';
@@ -77,31 +74,30 @@ export default {
         this.init();
     },
     methods: {
-        init: function(){
-            self = this;
+        init: function() {
+            var self = this;
             if (self.tile._attachments) {
-                self.$store.dispatch('getAttachments', self.tile).then(function(attachments){
+                self.$store.dispatch('getAttachments', self.tile).then(function(attachments) {
                     var cachedAttachments = {};
-                    attachments.forEach(function(attachment){
+                    attachments.forEach(function(attachment) {
                         cachedAttachments[attachment[0]] = attachment[1];
                     });
-                    self.value.forEach(function(photo){
+                    self.value.forEach(function(photo) {
                         var blob = cachedAttachments[photo.file_id];
-                        blobUtil.blobToBase64String(blob).then(function (base64String) {
-                            self.images[photo.file_id] = "data:image/jpeg;base64," + base64String;
-                            setTimeout(function(){if (self.value.length > 0) {
-                                self.value[0].name = self.value[0].name + ' ';
-                                self.value[0].name = self.value[0].name.trimRight()
-                            }}, self.value.length * 100);
-                        }).catch(function (err) {
-                            console.log(err)
+                        blobUtil.blobToBase64String(blob).then(function(base64String) {
+                            self.images[photo.file_id] = 'data:image/jpeg;base64,' + base64String;
+                            setTimeout(function() {
+                                if (self.value.length > 0) {
+                                    self.value[0].name = self.value[0].name + ' ';
+                                    self.value[0].name = self.value[0].name.trimRight();
+                                }
+                            }, self.value.length * 100);
+                        }).catch(function(err) {
+                            console.log(err);
                         });
-                    })
+                    });
                 });
             }
-        },
-        updateList: function() {
-            this.$emit('update:value', ret);
         },
         takePhoto: function() {
             var options = this.setOptions(Camera.PictureSourceType.CAMERA, true);
@@ -117,21 +113,21 @@ export default {
                 self.attachImage(imageUri);
                 navigator.camera.cleanup(self.onCleanupSuccess, self.onCleanupFail);
             }, function cameraError(error) {
-                console.debug("Unable to obtain picture: " + error, "app");
+                console.debug('Unable to obtain picture: ' + error, 'app');
             }, options);
         },
         attachImage: function(imgUri) {
             var image = {
-                name: "" + ".jpg",
-                type: "image/jpeg",
+                name: '' + '.jpg',
+                type: 'image/jpeg',
                 file_id: uuidv4()
             };
             if (this.value) {
-                image.name = (this.value.length + 1) + image.name
+                image.name = (this.value.length + 1) + image.name;
                 this.value.push(image);
             } else {
-                image.name = "1" + image.name;
-                this.value = [image]
+                image.name = '1' + image.name;
+                this.value = [image];
             }
             if (!this.tile._attachments) {
                 this.tile._attachments = {};
@@ -143,14 +139,14 @@ export default {
             this.$emit('update:value', this.value);
         },
         removePhoto: function(image) {
-            var i = this.value.findIndex(function(item) {return item.file_id === image.file_id});
+            var i = this.value.findIndex(function(item) { return item.file_id === image.file_id; });
             this.value.splice(i, 1);
             if (this.tile._attachments[image.file_id]) {
-                delete this.tile._attachments[image.file_id]
+                delete this.tile._attachments[image.file_id];
             } else if (this.tile._attachments[image.name]) {
-                delete this.tile._attachments[image.file_id]
+                delete this.tile._attachments[image.file_id];
             } else {
-                console.log('no attachments')
+                console.log('no attachments');
             }
             this.$emit('update:value', this.value);
         },
@@ -164,11 +160,11 @@ export default {
                 saveToPhotoAlbum: saveToAlbum,
                 allowEdit: false,
                 correctOrientation: true
-            }
+            };
             return options;
         },
         onCleanupSuccess() {
-            console.log("Camera cleanup success.")
+            console.log('Camera cleanup success.');
         },
         onCleanupFail(message) {
             console.log('Failed because: ' + message);
@@ -178,13 +174,13 @@ export default {
         }
     },
     watch: {
-        value: function (val) {
+        value: function(val) {
             var self = this;
-            self.value.forEach(function(photo){
+            self.value.forEach(function(photo) {
                 if (self.tile._attachments && self.tile._attachments[photo.file_id] && self.tile._attachments[photo.file_id].data) {
-                    self.images[photo.file_id] = "data:image/jpeg;base64," + self.tile._attachments[photo.file_id].data
+                    self.images[photo.file_id] = 'data:image/jpeg;base64,' + self.tile._attachments[photo.file_id].data;
                 }
-            })
+            });
         }
     }
 };

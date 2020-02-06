@@ -101,10 +101,10 @@ window.archesvue = new Vue({
                 .finally(function(doc) {
                     if (store.getters.activeServer) {
                     // go to the last active server and project
-                        self.$router.push({'name': 'projectlist'});
+                        self.$router.push({ name: 'projectlist' });
                     } else if (Object.keys(store.getters.servers).length > 0) {
                     // if there is no active servers then let the user select the server
-                        self.$router.push({'name': 'serverlist'});
+                        self.$router.push({ name: 'serverlist' });
                     }
                 });
         }
@@ -140,4 +140,4 @@ window.archesvue = new Vue({
     }
 });
 
-router.push({'name': 'splash'});
+router.push({ name: 'splash' });

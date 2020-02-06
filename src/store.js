@@ -54,11 +54,11 @@ var pouchDBs = (function() {
             if (!this._projectDBs[projectId]) {
                 this._projectDBs[projectId] = {};
             }
-            this._projectDBs[projectId]['local'] = new PouchDB('project_' + projectId, {
+            this._projectDBs[projectId].local = new PouchDB('project_' + projectId, {
                 adapter: adapter,
                 iosDatabaseLocation: 'Library'
             });
-            this._projectDBs[projectId]['remote'] = new PouchDB(server.url + '/couchdb/project_' + projectId, {
+            this._projectDBs[projectId].remote = new PouchDB(server.url + '/couchdb/project_' + projectId, {
                 ajax: {
                     headers: {
                         authorization: 'Bearer ' + server.token
@@ -73,7 +73,7 @@ var pouchDBs = (function() {
             return this.servers.get('servers')
                 .then(function(doc) {
                     Object.keys(doc.servers[server.url].projects).forEach(function(projectId) {
-                        self._projectDBs[projectId]['remote'] = new PouchDB(server.url + '/couchdb/project_' + projectId, {
+                        self._projectDBs[projectId].remote = new PouchDB(server.url + '/couchdb/project_' + projectId, {
                             ajax: {
                                 headers: {
                                     authorization: 'Bearer ' + server.token
@@ -85,8 +85,8 @@ var pouchDBs = (function() {
                 });
         },
         syncProject: function(projectId) {
-            return this._projectDBs[projectId]['local']
-                .sync(this._projectDBs[projectId]['remote'], {
+            return this._projectDBs[projectId].local
+                .sync(this._projectDBs[projectId].remote, {
                     // live: true,
                     // retry: true
                 })
@@ -125,7 +125,7 @@ var pouchDBs = (function() {
             // sync.cancel(); // whenever you want to cancel only if live = true
         },
         getChanges: function(projectId) {
-            return this._projectDBs[projectId]['local'].changes({
+            return this._projectDBs[projectId].local.changes({
                 // limit: 10,
                 // since: 0
             }).then(function(result) {
@@ -140,7 +140,7 @@ var pouchDBs = (function() {
             var query = {
                 type: 'tile'
             };
-            return this._projectDBs[projectId]['local'].find({
+            return this._projectDBs[projectId].local.find({
                 selector: query
             }).then(function(docs) {
                 return docs;
@@ -149,14 +149,14 @@ var pouchDBs = (function() {
             });
         },
         getAttachments: function(projectId, tile) {
-            var db = this._projectDBs[projectId]['local'];
+            var db = this._projectDBs[projectId].local;
             var attachments = Object.keys(tile._attachments).map(attachmentid => db.getAttachment(tile.tileid, attachmentid)
                 .then(function(att) { return [attachmentid, att]; }));
             return Promise.all(attachments);
         },
         getTiles: function(projectId, resourceId) {
-            return this._projectDBs[projectId]['local']
-                .allDocs({include_docs: true, descending: true})
+            return this._projectDBs[projectId].local
+                .allDocs({ include_docs: true, descending: true })
                 .then(function(doc) {
                     var docs = doc.rows.map(function(x) {
                         return x.doc;
@@ -168,14 +168,14 @@ var pouchDBs = (function() {
                 });
         },
         putTile: function(projectId, tile) {
-            this._projectDBs[projectId]['local']
+            this._projectDBs[projectId].local
                 .changes({
                     include_docs: true
                 })
                 .then(function(docs) {
                     console.log(docs);
                 });
-            return this._projectDBs[projectId]['local']
+            return this._projectDBs[projectId].local
                 .put(tile)
                 .then(function(response) {
                     tile._rev = response.rev;
@@ -187,18 +187,18 @@ var pouchDBs = (function() {
                 });
         },
         deleteDocs: function(projectId, docs) {
-            var removedDocs = docs.map(doc => this._projectDBs[projectId]['local'].remove(doc));
+            var removedDocs = docs.map(doc => this._projectDBs[projectId].local.remove(doc));
             return Promise.all(removedDocs);
         },
         putResource: function(projectId, resource) {
-            this._projectDBs[projectId]['local']
+            this._projectDBs[projectId].local
                 .changes({
                     include_docs: true
                 })
                 .then(function(docs) {
                     console.log(docs);
                 });
-            return this._projectDBs[projectId]['local']
+            return this._projectDBs[projectId].local
                 .put(resource)
                 .then(function(response) {
                     resource._rev = response.rev;
@@ -223,7 +223,7 @@ var pouchDBs = (function() {
                     }
                 };
             };
-            return this._projectDBs[projectId]['local'].find({
+            return this._projectDBs[projectId].local.find({
                 selector: query
             }).then(function(docs) {
                 return docs;
@@ -358,7 +358,7 @@ var store = new Vuex.Store({
                     }
                     ['name', 'description', 'map_popup'].forEach(function(descriptor) {
                         var config = graphFunction.config[descriptor];
-                        ret[descriptor] = config['string_template'];
+                        ret[descriptor] = config.string_template;
                         if ('nodegroup_id' in config && !!config.nodegroup_id) {
                             tiles = $underscore.filter(tiles, function(tile) {
                                 return tile.nodegroup_id === config.nodegroup_id;
@@ -368,7 +368,7 @@ var store = new Vuex.Store({
                             if (!!tile) {
                                 var tileData = tile.data;
                                 if (!!tile.provisionaledits && !!tile.provisionaledits[user.id]) {
-                                    tileData = tile.provisionaledits[user.id]['value'];
+                                    tileData = tile.provisionaledits[user.id].value;
                                 }
                                 graph.nodes.forEach(function(node) {
                                     if (node.nodeid in tileData) {
@@ -450,19 +450,19 @@ var store = new Vuex.Store({
             Vue.set(store.getters.currentProjects[projectId].lastsync, 'date', now.toISOString().split('T')[0].replace(/-/g, '/'));
             Vue.set(store.getters.currentProjects[projectId].lastsync, 'time', pad(now.getHours(), 2) + ':' + pad(now.getMinutes(), 2));
 
-            server.user_preferences[server.user.id]['projects'][projectId].joined = true;
+            server.user_preferences[server.user.id].projects[projectId].joined = true;
             store.dispatch('saveServerInfoToPouch');
         },
-        updateUserPrefByKey: function(state, {userPrefKey, userPref}) {
+        updateUserPrefByKey: function(state, { userPrefKey, userPref }) {
             var server = store.getters.activeServer;
             server.user_preferences[server.user.id][userPrefKey] = userPref;
             store.dispatch('saveServerInfoToPouch');
         },
         updateResourceEditDateAndDescriptors: function(state, resource) {
             var date = new Date();
-            resource['edited'] = {
-                'day': date.toDateString(),
-                'time': date.toTimeString()
+            resource.edited = {
+                day: date.toDateString(),
+                time: date.toTimeString()
             };
             var descriptors = store.getters.getResourceDescriptors(resource);
             if (!!descriptors) {
@@ -496,7 +496,7 @@ var store = new Vuex.Store({
         }
     },
     actions: {
-        saveServerInfoToPouch: function({commit, state}) {
+        saveServerInfoToPouch: function({ commit, state }) {
             var appServers = state.dbs.app_servers;
             return pouchDBs.servers.upsert('servers', function(serverDoc) {
                 serverDoc = appServers;
@@ -505,16 +505,16 @@ var store = new Vuex.Store({
         },
         toggleProjectParticipation: function(state, projectId) {
             var server = this.getters.activeServer;
-            server.user_preferences[server.user.id]['projects'][projectId].joined = !server.user_preferences[server.user.id]['projects'][projectId].joined;
+            server.user_preferences[server.user.id].projects[projectId].joined = !server.user_preferences[server.user.id].projects[projectId].joined;
             store.dispatch('saveServerInfoToPouch');
         },
         toggleBasemapSource: function(state, projectId) {
             var server = this.getters.activeServer;
-            server.user_preferences[server.user.id]['projects'][projectId].useonlinebasemaps = !server.user_preferences[server.user.id]['projects'][projectId].useonlinebasemaps;
+            server.user_preferences[server.user.id].projects[projectId].useonlinebasemaps = !server.user_preferences[server.user.id].projects[projectId].useonlinebasemaps;
             store.dispatch('saveServerInfoToPouch');
         },
         deleteProject: function(state, projectId) {
-            return pouchDBs._projectDBs[projectId]['local'].destroy()
+            return pouchDBs._projectDBs[projectId].local.destroy()
                 .then(function() {
                     try {
                         if (store.getters.activeServer.projects[projectId].hasofflinebasemaps) {
@@ -528,8 +528,8 @@ var store = new Vuex.Store({
                     if (store.getters.activeServer.projects[projectId]) {
                         delete store.getters.activeServer.projects[projectId];
                         var server = store.getters.activeServer;
-                        if (server.user_preferences[server.user.id]['projects'] && server.user_preferences[server.user.id]['projects'][projectId]) {
-                            delete server.user_preferences[server.user.id]['projects'][projectId];
+                        if (server.user_preferences[server.user.id].projects && server.user_preferences[server.user.id].projects[projectId]) {
+                            delete server.user_preferences[server.user.id].projects[projectId];
                         }
                         return store.dispatch('saveServerInfoToPouch');
                     }
@@ -538,7 +538,7 @@ var store = new Vuex.Store({
                     console.log(err);
                 });
         },
-        getUserProfile: function({commit, state}, {url, username, password}) {
+        getUserProfile: function({ commit, state }, { url, username, password }) {
             var formData = new FormData();
             formData.append('username', username);
             formData.append('password', password);
@@ -548,7 +548,7 @@ var store = new Vuex.Store({
                 body: formData
             });
         },
-        getClientId: function({commit, state}, {url, username, password}) {
+        getClientId: function({ commit, state }, { url, username, password }) {
             var self = this;
             self.error = false;
 
@@ -565,7 +565,7 @@ var store = new Vuex.Store({
                 })
             });
         },
-        getToken: function({commit, state}, {url, username, password, client_id}) {
+        getToken: function({ commit, state }, { url, username, password, client_id }) {
             var self = this;
             self.error = false;
 
@@ -584,7 +584,7 @@ var store = new Vuex.Store({
                 })
             });
         },
-        refreshToken: function({commit, state}) {
+        refreshToken: function({ commit, state }) {
             var server = store.getters.activeServer;
             var formData = new FormData();
             formData.append('refresh_token', server.refresh_token);
@@ -619,11 +619,11 @@ var store = new Vuex.Store({
                     return store.dispatch('updateToken', server);
                 });
         },
-        updateToken: function({commit, state}, server) {
+        updateToken: function({ commit, state }, server) {
             pouchDBs.updateServerToken(server);
             return store.dispatch('saveServerInfoToPouch');
         },
-        syncRemote: function({commit, state}, {projectId, syncAttempts}) {
+        syncRemote: function({ commit, state }, { projectId, syncAttempts }) {
             store.commit('clearNewlyCreatedResourcesAndTiles', projectId);
             return pouchDBs.syncProject(projectId)
                 .then(function() {
@@ -631,7 +631,7 @@ var store = new Vuex.Store({
                     return fetch(server.url + '/sync/' + projectId, {
                         method: 'GET',
                         headers: new Headers({
-                            'Authorization': 'Bearer ' + server.token
+                            Authorization: 'Bearer ' + server.token
                         })
                     });
                 })
@@ -652,7 +652,7 @@ var store = new Vuex.Store({
                         if (count < 6) {
                             return store.dispatch('refreshToken')
                                 .then(function() {
-                                    return store.dispatch('syncRemote', {'projectId': projectId, 'syncAttempts': count});
+                                    return store.dispatch('syncRemote', { projectId: projectId, syncAttempts: count });
                                 });
                         }
                     }
@@ -676,7 +676,7 @@ var store = new Vuex.Store({
                         });
                 });
         },
-        getRemoteProjects: function({commit, state}, {server, surveyid}) {
+        getRemoteProjects: function({ commit, state }, { server, surveyid }) {
             var self = this;
             var url = server.url + '/mobileprojects';
             if (!!surveyid) {
@@ -704,10 +704,10 @@ var store = new Vuex.Store({
                             time: ''
                         };
                         if (server.user_preferences[server.user.id] === undefined) {
-                            server.user_preferences[server.user.id] = {'projects': {}};
+                            server.user_preferences[server.user.id] = { projects: {} };
                         }
                         if (server.user_preferences[server.user.id].projects[project.id] === undefined) {
-                            server.user_preferences[server.user.id].projects[project.id] = {joined: undefined, useonlinebasemaps: true};
+                            server.user_preferences[server.user.id].projects[project.id] = { joined: undefined, useonlinebasemaps: true };
                         }
                         project.joined = server.user_preferences[server.user.id].projects[project.id].joined;
                         project.useonlinebasemaps = server.user_preferences[server.user.id].projects[project.id].useonlinebasemaps;
@@ -737,7 +737,7 @@ var store = new Vuex.Store({
                     self.error = true;
                 });
         },
-        updateRemoteProjectsStatus: function({commit, state}, server) {
+        updateRemoteProjectsStatus: function({ commit, state }, server) {
             var self = this;
             return fetch(server.url + '/mobileprojects?status', {
                 method: 'GET',
@@ -765,7 +765,7 @@ var store = new Vuex.Store({
                             if (json[projectId].active) {
                                 projectsToGet.push(projectId);
                             }
-                         }
+                        }
                     });
                     for (var projectid in server.projects) {
                         Vue.set(server.projects[projectid], 'unavailable', false);
@@ -779,22 +779,22 @@ var store = new Vuex.Store({
                     }
                     return [projectsToGet, projectsToDelete];
                 })
-                .then(function(result){
+                .then(function(result) {
                     var projectsToUpdate = [];
                     var projectIdsToGet = result[0];
                     var projectIdsToDelete = result[1];
-                    projectIdsToGet.forEach(function(projectId){
-                       projectsToUpdate.push(store.dispatch('getRemoteProjects', {'server': server, 'surveyid': projectId}));
+                    projectIdsToGet.forEach(function(projectId) {
+                        projectsToUpdate.push(store.dispatch('getRemoteProjects', { server: server, surveyid: projectId }));
                     });
-                    projectIdsToDelete.forEach(function(projectId){
-                       projectsToUpdate.push(store.dispatch('deleteProject', projectId));
+                    projectIdsToDelete.forEach(function(projectId) {
+                        projectsToUpdate.push(store.dispatch('deleteProject', projectId));
                     });
                     return Promise.all(projectsToUpdate);
                 })
-                .then(function(){
+                .then(function() {
                     return store.dispatch('saveServerInfoToPouch');
                 })
-                .then(function(){
+                .then(function() {
                     // need to init the server store here or you can't
                     // navigate cards in the form
                     return store.dispatch('initServerStoreFromPouch');
@@ -804,24 +804,24 @@ var store = new Vuex.Store({
                     self.error = true;
                 });
         },
-        getProjectChanges: function({commit, state}, projectId) {
+        getProjectChanges: function({ commit, state }, projectId) {
             return pouchDBs.getChanges(projectId);
         },
-        getTiles: function({commit, state}, projectId) {
+        getTiles: function({ commit, state }, projectId) {
             return pouchDBs.getTiles(projectId)
                 .then(function(tiles) {
                     state.tiles = tiles;
                     return state.tiles;
                 });
         },
-        getOnlyTiles: function({commit, state}, projectId) {
+        getOnlyTiles: function({ commit, state }, projectId) {
             return pouchDBs.getOnlyTiles(projectId);
         },
-        getAttachments: function({commit, state}, tile) {
+        getAttachments: function({ commit, state }, tile) {
             var projectid = this.getters.activeProject.id;
             return pouchDBs.getAttachments(projectid, tile);
         },
-        persistTile: function({commit, state}, tile) {
+        persistTile: function({ commit, state }, tile) {
             var tileid = uuidv4();
             var addTile = false;
             var newResource = false;
@@ -875,7 +875,7 @@ var store = new Vuex.Store({
                     return tile;
                 });
         },
-        deleteTiles: function({commit, state}, tile) {
+        deleteTiles: function({ commit, state }, tile) {
             var childTiles = [].concat(tile);
             var getChildTiles = function(parentTile) {
                 state.tiles.forEach(function(tile) {
@@ -904,14 +904,14 @@ var store = new Vuex.Store({
                     console.log(err);
                 });
         },
-        persistResource: function({commit, state}, resource) {
+        persistResource: function({ commit, state }, resource) {
             var project = store.getters.activeProject;
             return pouchDBs.putResource(project.id, resource)
                 .then(function(doc) {
                     return doc;
                 });
         },
-        deleteResource: function({commit, state}, resource) {
+        deleteResource: function({ commit, state }, resource) {
             var project = store.getters.activeProject;
             var docs = state.tiles.filter(function(tile) {
                 return (tile.type === 'tile' && tile.resourceinstance_id === resource.resourceinstanceid);
@@ -922,10 +922,10 @@ var store = new Vuex.Store({
                     Vue.delete(project.newly_created_resources, resource.resourceinstanceid);
                 });
         },
-        getProjectResources: function({commit, state}, projectId) {
+        getProjectResources: function({ commit, state }, projectId) {
             return pouchDBs.getResources(projectId);
         },
-        getResource: function({commit, state}, {projectId, resourceinstanceid}) {
+        getResource: function({ commit, state }, { projectId, resourceinstanceid }) {
             var resources = pouchDBs.getResources(projectId, [resourceinstanceid]);
             return resources;
         },
@@ -937,7 +937,7 @@ var store = new Vuex.Store({
                         (dir) => {
                             dir.getDirectory(
                                 'databases',
-                                {create: true},
+                                { create: true },
                                 (subdir) => {
                                     resolve(subdir);
                                 }
@@ -956,11 +956,11 @@ var store = new Vuex.Store({
                 }
             });
         },
-        deleteProjectBasemaps: function({commit, state}, projectid) {
+        deleteProjectBasemaps: function({ commit, state }, projectid) {
             const mbtilesFile = `${projectid}.mbtiles`;
             store.dispatch('getBasemapTarget').then((target) => {
                 return new Promise((resolve, reject) => {
-                    target.getFile(mbtilesFile, {create: false}, function(filetoremove) {
+                    target.getFile(mbtilesFile, { create: false }, function(filetoremove) {
                         console.log(filetoremove.toURL());
                         filetoremove.remove(function(file) {
                             console.log('file deleted');
@@ -969,7 +969,7 @@ var store = new Vuex.Store({
                 }).catch(error => { console.log(error.message, 'mbtiles file found'); });
             });
         },
-        setupProjectBasemaps: function({commit, state}, project) {
+        setupProjectBasemaps: function({ commit, state }, project) {
             const mbtilesFile = `${project.id}.mbtiles`;
             store.dispatch('getBasemapTarget').then((target) => {
                 return new Promise((resolve, reject) => {

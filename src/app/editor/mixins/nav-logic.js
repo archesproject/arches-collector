@@ -32,11 +32,11 @@ export default {
                 }
             }
             this.$store.getters.activeServer.card_nav_stack.unshift({
-                'card': this.card,
-                'tile': tile,
-                'showForm': !!showForm,
-                'activeObject': 'tile',
-                'editorTab': editorTab
+                card: this.card,
+                tile: tile,
+                showForm: !!showForm,
+                activeObject: 'tile',
+                editorTab: editorTab
             });
         },
         hasChildCards: function(card) {
@@ -89,7 +89,6 @@ export default {
             return tiles.every(function(tile) {
                 return this.canDeleteTile(tile);
             }, this);
-
         },
         getBlankTile: function(card, parentTile) {
             return {
@@ -128,19 +127,19 @@ export default {
             var self = this;
             e.stopPropagation();
             this.$ons.notification.confirm({
-                message:  'Delete this Data? This can\'t be undone.',
-                callback: function(answer){
+                message: 'Delete this Data? This can\'t be undone.',
+                callback: function(answer) {
                     if (!!answer) {
                         self.$store.dispatch('deleteTiles', tile)
-                        .finally(function() {
-                            console.log('tile delete finished...');
-                            if(!!callback) {
-                                callback();
-                            }
-                        });
+                            .finally(function() {
+                                console.log('tile delete finished...');
+                                if (!!callback) {
+                                    callback();
+                                }
+                            });
                     }
                 }
             });
         }
     }
-}
+};

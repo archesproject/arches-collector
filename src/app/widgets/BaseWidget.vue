@@ -2,7 +2,6 @@
     <component :value.sync="value" :context.sync="context" v-bind:is="widgetComponent" :tile="tile" :widget="widget" :node="node"></component>
 </template>
 
-
 <script>
 export default {
     name: 'BaseWidget',
@@ -67,12 +66,12 @@ export default {
                     if (!this.tile.provisionaledits) {
                         this.tile.provisionaledits = {};
                     }
-                    
+
                     if (!!this.tile.provisionaledits[this.user.id]) {
-                        provisionaledit = this.tile.provisionaledits[this.user.id]['value'];
+                        provisionaledit = this.tile.provisionaledits[this.user.id].value;
                     } else {
                         this.tile.provisionaledits[this.user.id] = this.createNewProvisionalEdit();
-                        provisionaledit = this.tile.provisionaledits[this.user.id]['value'];
+                        provisionaledit = this.tile.provisionaledits[this.user.id].value;
                     }
 
                     if (!provisionaledit.hasOwnProperty(this.widget.node_id)) {
@@ -92,8 +91,8 @@ export default {
             },
             set: function(newValue) {
                 if (this.tile) {
-                    this.tile.provisionaledits[this.user.id]['value'][this.widget.node_id] = newValue;
-                    this.tile.provisionaledits[this.user.id]['timestamp'] = new Date().toJSON();
+                    this.tile.provisionaledits[this.user.id].value[this.widget.node_id] = newValue;
+                    this.tile.provisionaledits[this.user.id].timestamp = new Date().toJSON();
                     this.save();
                 }
             }

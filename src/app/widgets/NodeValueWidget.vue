@@ -29,7 +29,7 @@ export default {
     data() {
         return {
             placeholder: this.widget.config.placeholder,
-            local_value:  null,
+            local_value: null,
             user: this.$store.getters.activeServer.user,
             allWidgets: this.$store.getters.activeGraph.widgets
         };
@@ -39,16 +39,16 @@ export default {
             var self = this;
             var ret = [];
 
-            this.tiles.forEach(function(tile){
+            this.tiles.forEach(function(tile) {
                 var found = false;
                 if (!!tile.provisionaledits && tile.provisionaledits.hasOwnProperty(self.user.id) && !!tile.provisionaledits[self.user.id]) {
-                    var provisionaledit = tile.provisionaledits[self.user.id]['value'];
+                    var provisionaledit = tile.provisionaledits[self.user.id].value;
                     if (provisionaledit.hasOwnProperty(self.node.config.nodeid)) {
                         ret.push({
                             value: tile.tileid,
                             text: self.displayLabel + ': ' + provisionaledit[self.node.config.nodeid],
                             depth: 1
-                        })
+                        });
                         found = true;
                     }
                 }
@@ -58,24 +58,22 @@ export default {
                             value: tile.tileid,
                             text: self.displayLabel + ': ' + tile.data[self.node.config.nodeid],
                             depth: 1
-                        })
+                        });
                     }
                 }
-            })
+            });
             return ret;
         },
         selectedOption: {
             get: function() {
-                var self = this;
                 var ret = {};
                 var val = this.local_value || this.value;
-                this.options.forEach(function(option){
-                     if(option.value === val){
+                this.options.forEach(function(option) {
+                    if (option.value === val) {
                         ret = option;
                     }
-                })
+                });
                 return ret;
-
             },
             set: function() {
 
@@ -114,8 +112,8 @@ export default {
     },
     methods: {
         onChange(option) {
-            var ret = null
-            if(!!option) {
+            var ret = null;
+            if (!!option) {
                 ret = option.value;
             }
             this.local_value = ret;
