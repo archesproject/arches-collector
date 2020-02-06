@@ -2,9 +2,8 @@
 
 module.exports = {
   root: true,
-  parser: "vue-eslint-parser",
+  parser: 'babel-eslint',
   parserOptions: {
-    parser: "babel-eslint",
     sourceType: 'module'
   },
   env: {
@@ -14,7 +13,7 @@ module.exports = {
   extends: 'standard',
   // required to lint *.vue files
   plugins: [
-    'vue'
+    'html'
   ],
   // add your custom rules here
   rules: {
@@ -25,10 +24,6 @@ module.exports = {
     // allow async-await
     'generator-star-spacing': 'off',
     // allow debugger during development
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-    'no-prototype-builtins': 'off'
-  },
-  globals: {
-    Camera: "readonly"
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
   }
 }
