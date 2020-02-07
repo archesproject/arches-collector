@@ -59,12 +59,9 @@ var pouchDBs = (function() {
                 iosDatabaseLocation: 'Library'
             });
             this._projectDBs[projectId].remote = new PouchDB(server.url + '/couchdb/project_' + projectId, {
-                ajax: {
-                    headers: {
-                        authorization: 'Bearer ' + server.token
-                        // 'X-Some-Special-Header': 'foo'
-                    },
-                    withCredentials: false
+                fetch: function (url, opts) {
+                    opts.headers.set('authorization', 'Bearer ' + server.token);
+                    return PouchDB.fetch(url, opts);
                 }
             });
         },
@@ -74,11 +71,9 @@ var pouchDBs = (function() {
                 .then(function(doc) {
                     Object.keys(doc.servers[server.url].projects).forEach(function(projectId) {
                         self._projectDBs[projectId].remote = new PouchDB(server.url + '/couchdb/project_' + projectId, {
-                            ajax: {
-                                headers: {
-                                    authorization: 'Bearer ' + server.token
-                                },
-                                withCredentials: false
+                            fetch: function (url, opts) {
+                                opts.headers.set('authorization', 'Bearer ' + server.token);
+                                return PouchDB.fetch(url, opts);
                             }
                         });
                     });
@@ -624,10 +619,10 @@ var store = new Vuex.Store({
             return store.dispatch('saveServerInfoToPouch');
         },
         syncRemote: function({ commit, state }, { projectId, syncAttempts }) {
+            var server = store.getters.activeServer;
             store.commit('clearNewlyCreatedResourcesAndTiles', projectId);
             return pouchDBs.syncProject(projectId)
                 .then(function() {
-                    var server = store.getters.activeServer;
                     return fetch(server.url + '/sync/' + projectId, {
                         method: 'GET',
                         headers: new Headers({
