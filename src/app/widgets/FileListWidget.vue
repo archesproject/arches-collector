@@ -123,7 +123,10 @@ export default {
                 type: 'image/jpeg',
                 file_id: uuidv4()
             };
-            this.resizeImage(300, imgUri, function(resizedImg) {
+            var thumbnailSize = 10240; // 15 Kb
+            var fullsizeImageLimit = 2097152; // 2 Mb
+            
+            this.resizeImage(thumbnailSize, false, imgUri, function(resizedImg) {
                 var parts = self.dataURItoParts(resizedImg);
                 if (!self.tile._attachments) {
                     self.tile._attachments = {};
@@ -141,6 +144,21 @@ export default {
                 }
                 self.$emit('update:value', self.value);
             });
+            
+        },
+        getImageSize: function(imgUri) {
+            return new Promise(
+                function(resolve,reject){
+                    window.resolveLocalFileSystemURL(imgUri,
+                        function(fileEntryObj){
+                            fileEntryObj.file(function(file){
+                                resolve(file.size);
+                            })
+                        },
+                        reject
+                    );
+                }
+            )
         },
         removePhoto: function(image) {
             var i = this.value.findIndex(function(item) { return item.file_id === image.file_id; });
@@ -167,40 +185,62 @@ export default {
             };
             return options;
         },
-        resizeImage(longSideMax, url, callback, context) {
+        resizeImage(targetImageSize, longSideMax, imgUri, callback) {
             // inspired from https://www.zyxware.com/articles/5130/resizing-image-taken-using-camera-in-cordovaphonegap-app
+            var self = this;
             var tempImg = new Image();
-            tempImg.src = url;
+            tempImg.src = imgUri;
             tempImg.onload = function() {
-                // Get image size and aspect ratio.
-                var targetWidth = tempImg.width;
-                var targetHeight = tempImg.height;
-                var aspect = tempImg.width / tempImg.height;
+                var drawScaledImage = function() {
+                    // Get image size and aspect ratio.
+                    var targetWidth, targetHeight;
+                    var aspect = tempImg.width / tempImg.height;
 
-                // Calculate shorter side length, keeping aspect ratio on image.
-                // If source image size is less than given longSideMax, then it need to be
-                // considered instead.
-                if (tempImg.width > tempImg.height) {
-                    longSideMax = Math.min(tempImg.width, longSideMax);
-                    targetWidth = longSideMax;
-                    targetHeight = longSideMax / aspect;
-                } else {
-                    longSideMax = Math.min(tempImg.height, longSideMax);
-                    targetHeight = longSideMax;
-                    targetWidth = longSideMax * aspect;
+                    // Calculate shorter side length, keeping aspect ratio on image.
+                    // If source image size is less than given longSideMax, then it need to be
+                    // considered instead.
+                    if (tempImg.width > tempImg.height) {
+                        longSideMax = Math.min(tempImg.width, longSideMax);
+                        targetWidth = longSideMax;
+                        targetHeight = longSideMax / aspect;
+                    } else {
+                        longSideMax = Math.min(tempImg.height, longSideMax);
+                        targetHeight = longSideMax;
+                        targetWidth = longSideMax * aspect;
+                    }
+
+                    // Create canvas of required size.
+                    var canvas = document.createElement('canvas');
+                    canvas.width = targetWidth;
+                    canvas.height = targetHeight;
+
+                    var ctx = canvas.getContext('2d');
+                    // Take image from top left corner to bottom right corner and draw the image
+                    // on canvas to completely fill into.
+                    ctx.drawImage(tempImg, 0, 0, targetWidth, targetHeight);
+
+                    callback(canvas.toDataURL('image/jpeg'));
                 }
 
-                // Create canvas of required size.
-                var canvas = document.createElement('canvas');
-                canvas.width = targetWidth;
-                canvas.height = targetHeight;
-
-                var ctx = canvas.getContext('2d');
-                // Take image from top left corner to bottom right corner and draw the image
-                // on canvas to completely fill into.
-                ctx.drawImage(this, 0, 0, tempImg.width, tempImg.height, 0, 0, targetWidth, targetHeight);
-
-                callback(canvas.toDataURL('image/jpeg'));
+                if (targetImageSize) {
+                    targetImageSize = targetImageSize/1.3;
+                    longSideMax = Math.max(tempImg.width, tempImg.height);
+                    self.getImageSize(imgUri)
+                        .then(function(imageSize){
+                            // re calc longSideMax if the image needs to be reduced
+                            if(imageSize > targetImageSize) {
+                                var f = Math.sqrt(targetImageSize/imageSize);
+                                longSideMax = Math.max(f*tempImg.width, f*tempImg.height);
+                            }
+                            drawScaledImage();
+                        })
+                        .catch(function(){
+                            // if there's an error then just draw the image at original size
+                            drawScaledImage();
+                        })
+                } else {
+                    drawScaledImage();
+                }
             };
         },
         dataURItoParts(dataURI) {
