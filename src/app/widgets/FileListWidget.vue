@@ -124,27 +124,35 @@ export default {
                 file_id: uuidv4()
             };
             var thumbnailSize = 10240; // 15 Kb
-            var fullsizeImageLimit = 2097152; // 2 Mb
+            var fullsizeImageLimit = 1024000; // 1 Mb
             
-            this.resizeImage(thumbnailSize, false, imgUri, function(resizedImg) {
-                var parts = self.dataURItoParts(resizedImg);
-                if (!self.tile._attachments) {
-                    self.tile._attachments = {};
-                }
-                self.tile._attachments[image.file_id] = {
-                    content_type: 'image/jpg',
-                    data: parts.base64Data
-                };
-                if (self.value) {
-                    image.name = (self.value.length + 1) + image.name;
-                    self.value.push(image);
-                } else {
-                    image.name = '1' + image.name;
-                    self.value = [image];
-                }
-                self.$emit('update:value', self.value);
-            });
-            
+            this.resizeImage(thumbnailSize, false, imgUri)
+                .then(function(resizedImg) {
+                    var parts = self.dataURItoParts(resizedImg);
+                    if (!self.tile._attachments) {
+                        self.tile._attachments = {};
+                    }
+                    self.tile._attachments[image.file_id] = {
+                        content_type: 'image/jpg',
+                        data: parts.base64Data
+                    };
+                    
+                    if (self.value) {
+                        image.name = (self.value.length + 1) + image.name;
+                        self.value.push(image);
+                    } else {
+                        image.name = '1' + image.name;
+                        self.value = [image];
+                    }
+                    self.$emit('update:value', self.value);
+                })
+                // .then(function() {
+                //     return self.resizeImage(fullsizeImageLimit, false, imgUri, function(resizedImg) {
+                //     });
+                // })
+                // .then(function() {
+
+                // });
         },
         getImageSize: function(imgUri) {
             return new Promise(
@@ -188,60 +196,65 @@ export default {
         resizeImage(targetImageSize, longSideMax, imgUri, callback) {
             // inspired from https://www.zyxware.com/articles/5130/resizing-image-taken-using-camera-in-cordovaphonegap-app
             var self = this;
-            var tempImg = new Image();
-            tempImg.src = imgUri;
-            tempImg.onload = function() {
-                var drawScaledImage = function() {
-                    // Get image size and aspect ratio.
-                    var targetWidth, targetHeight;
-                    var aspect = tempImg.width / tempImg.height;
+            return new Promise(
+                function(resolve, reject){
+                    var tempImg = new Image();
+                    tempImg.src = imgUri;
+                    tempImg.onload = function() {
+                        var drawScaledImage = function() {
+                            // Get image size and aspect ratio.
+                            var targetWidth, targetHeight;
+                            var aspect = tempImg.width / tempImg.height;
 
-                    // Calculate shorter side length, keeping aspect ratio on image.
-                    // If source image size is less than given longSideMax, then it need to be
-                    // considered instead.
-                    if (tempImg.width > tempImg.height) {
-                        longSideMax = Math.min(tempImg.width, longSideMax);
-                        targetWidth = longSideMax;
-                        targetHeight = longSideMax / aspect;
-                    } else {
-                        longSideMax = Math.min(tempImg.height, longSideMax);
-                        targetHeight = longSideMax;
-                        targetWidth = longSideMax * aspect;
-                    }
-
-                    // Create canvas of required size.
-                    var canvas = document.createElement('canvas');
-                    canvas.width = targetWidth;
-                    canvas.height = targetHeight;
-
-                    var ctx = canvas.getContext('2d');
-                    // Take image from top left corner to bottom right corner and draw the image
-                    // on canvas to completely fill into.
-                    ctx.drawImage(tempImg, 0, 0, targetWidth, targetHeight);
-
-                    callback(canvas.toDataURL('image/jpeg'));
-                }
-
-                if (targetImageSize) {
-                    targetImageSize = targetImageSize/1.3;
-                    longSideMax = Math.max(tempImg.width, tempImg.height);
-                    self.getImageSize(imgUri)
-                        .then(function(imageSize){
-                            // re calc longSideMax if the image needs to be reduced
-                            if(imageSize > targetImageSize) {
-                                var f = Math.sqrt(targetImageSize/imageSize);
-                                longSideMax = Math.max(f*tempImg.width, f*tempImg.height);
+                            // Calculate shorter side length, keeping aspect ratio on image.
+                            // If source image size is less than given longSideMax, then it need to be
+                            // considered instead.
+                            if (tempImg.width > tempImg.height) {
+                                longSideMax = Math.min(tempImg.width, longSideMax);
+                                targetWidth = longSideMax;
+                                targetHeight = longSideMax / aspect;
+                            } else {
+                                longSideMax = Math.min(tempImg.height, longSideMax);
+                                targetHeight = longSideMax;
+                                targetWidth = longSideMax * aspect;
                             }
+
+                            // Create canvas of required size.
+                            var canvas = document.createElement('canvas');
+                            canvas.width = targetWidth;
+                            canvas.height = targetHeight;
+
+                            var ctx = canvas.getContext('2d');
+                            // Take image from top left corner to bottom right corner and draw the image
+                            // on canvas to completely fill into.
+                            ctx.drawImage(tempImg, 0, 0, targetWidth, targetHeight);
+
+                            resolve(canvas.toDataURL('image/jpeg'));
+                        }
+
+                        if (targetImageSize) {
+                            targetImageSize = targetImageSize/1.3;
+                            longSideMax = Math.max(tempImg.width, tempImg.height);
+                            self.getImageSize(imgUri)
+                                .then(function(imageSize){
+                                    // re calc longSideMax if the image needs to be reduced
+                                    if(imageSize > targetImageSize) {
+                                        var f = Math.sqrt(targetImageSize/imageSize);
+                                        longSideMax = Math.max(f*tempImg.width, f*tempImg.height);
+                                    }
+                                    drawScaledImage();
+                                })
+                                .catch(function(){
+                                    // if there's an error then just draw the image at original size
+                                    drawScaledImage();
+                                })
+                        } else {
                             drawScaledImage();
-                        })
-                        .catch(function(){
-                            // if there's an error then just draw the image at original size
-                            drawScaledImage();
-                        })
-                } else {
-                    drawScaledImage();
+                        }
+                    };
+                    
                 }
-            };
+            )
         },
         dataURItoParts(dataURI) {
             return {
