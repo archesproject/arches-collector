@@ -16,11 +16,13 @@ PouchDB.plugin(PouchDBFind);
 PouchDB.plugin(SqlLiteAdapter);
 
 var adapter = 'cordova-sqlite';
+var credentials = 'include';
 
 // this is mostly just for testing but this shouldn't hurt anything by being in here
 // as of this writing the cordova-plugin-sqlite-2 doesn't support the browser platform
 if (!window.cordova || window.cordova.platformId === 'browser') {
     adapter = 'idb';
+    credentials = 'omit';
 }
 
 var pouchDBs = (function() {
@@ -59,10 +61,16 @@ var pouchDBs = (function() {
                 iosDatabaseLocation: 'Library'
             });
             this._projectDBs[projectId].remote = new PouchDB(server.url + '/couchdb/project_' + projectId, {
-                fetch: function (url, opts) {
+                fetch: function(url, opts) {
+                    opts.credentials = credentials;
                     opts.headers.set('authorization', 'Bearer ' + server.token);
                     return PouchDB.fetch(url, opts);
                 }
+            });
+            this._projectDBs[projectId].images = new PouchDB('images_' + projectId, {
+                revs_limit: 1,
+                adapter: adapter,
+                iosDatabaseLocation: 'Library'
             });
         },
         updateServerToken: function(server) {
@@ -71,7 +79,8 @@ var pouchDBs = (function() {
                 .then(function(doc) {
                     Object.keys(doc.servers[server.url].projects).forEach(function(projectId) {
                         self._projectDBs[projectId].remote = new PouchDB(server.url + '/couchdb/project_' + projectId, {
-                            fetch: function (url, opts) {
+                            fetch: function(url, opts) {
+                                opts.credentials = credentials;
                                 opts.headers.set('authorization', 'Bearer ' + server.token);
                                 return PouchDB.fetch(url, opts);
                             }
@@ -163,6 +172,7 @@ var pouchDBs = (function() {
                 });
         },
         putTile: function(projectId, tile) {
+            var self = this;
             this._projectDBs[projectId].local
                 .changes({
                     include_docs: true
@@ -170,12 +180,40 @@ var pouchDBs = (function() {
                 .then(function(docs) {
                     console.log(docs);
                 });
-            return this._projectDBs[projectId].local
-                .put(tile)
-                .then(function(response) {
-                    tile._rev = response.rev;
-                    return response;
-                })
+
+            return this.putFullImages(projectId, tile)
+            .then(function(){
+                delete tile._fullSizeAttachments;
+                return self._projectDBs[projectId].local.put(tile);
+            })
+            .then(function(response) {
+                tile._rev = response.rev;
+                return response;
+            })
+            .catch(function(err) {
+                // CATCH 409 ERROR HERE
+                console.log(err);
+            });
+        },
+        putFullImages: function(projectId, tile) {
+            var self = this;
+            var fullSizeAttachmentsToPut = [];
+            Object.values(tile._fullSizeAttachments).forEach(function(fullSizeAttachment){
+                fullSizeAttachment.tileid = tile.tileid;
+                console.log(fullSizeAttachment)
+                fullSizeAttachmentsToPut.push(
+                    this._projectDBs[projectId].images.put(fullSizeAttachment)
+                )
+            }, this);
+            return Promise.all(fullSizeAttachmentsToPut);
+        },
+        deleteImage: function(projectId, tileid, nodeid, image) {
+            return this._projectDBs[projectId].images
+                .remove(image)
+                // .then(function(response) {
+                //     tile._rev = response.rev;
+                //     return response;
+                // })
                 .catch(function(err) {
                 // CATCH 409 ERROR HERE
                     console.log(err);
@@ -717,6 +755,8 @@ var store = new Vuex.Store({
                         project.resources_with_conflicts = {};
                         project.newly_created_resources = {};
                         project.newly_created_tiles = {};
+                        project.image_size_limit = 5000000; // 5 Mb
+                        project.thumbnail_image_size_limit = 15000; // 15 kb
 
                         Vue.set(server.projects, project.id, project);
                     });

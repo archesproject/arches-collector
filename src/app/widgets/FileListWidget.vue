@@ -63,7 +63,7 @@ import uuidv4 from 'uuid/v4';
 import * as blobUtil from 'blob-util';
 export default {
     name: 'FileListWidget',
-    props: ['value', 'widget', 'context', 'tile'],
+    props: ['value', 'widget', 'context', 'tile', 'node'],
     data() {
         return {
             activeServer: this.$store.getters.activeServer,
@@ -136,7 +136,25 @@ export default {
                         content_type: 'image/jpg',
                         data: parts.base64Data
                     };
-                    
+                    return self.resizeImage(fullsizeImageLimit, false, imgUri);
+                })
+                .then(function(resizedFullImg) {
+                    var parts = self.dataURItoParts(resizedFullImg);
+                    if (!self.tile._fullSizeAttachments) {
+                        self.tile._fullSizeAttachments = {};
+                    }
+                    self.tile._fullSizeAttachments[image.file_id] = {
+                        _attachments: {},
+                        nodeid: self.node.nodeid,
+                        tileid: self.tile.tileid,
+                        file_id: image.file_id,
+                        _id: image.file_id,
+                    };
+                    self.tile._fullSizeAttachments[image.file_id]._attachments[image.file_id] = {
+                        content_type: 'image/jpg',
+                        data: parts.base64Data
+                    }
+
                     if (self.value) {
                         image.name = (self.value.length + 1) + image.name;
                         self.value.push(image);
@@ -145,14 +163,7 @@ export default {
                         self.value = [image];
                     }
                     self.$emit('update:value', self.value);
-                })
-                // .then(function() {
-                //     return self.resizeImage(fullsizeImageLimit, false, imgUri, function(resizedImg) {
-                //     });
-                // })
-                // .then(function() {
-
-                // });
+                });
         },
         getImageSize: function(imgUri) {
             return new Promise(
