@@ -72,6 +72,7 @@ var pouchDBs = (function() {
                 adapter: adapter,
                 iosDatabaseLocation: 'Library'
             });
+            this._projectDBs[projectId].server = server;
         },
         updateServerToken: function(server) {
             var self = this;
@@ -89,20 +90,16 @@ var pouchDBs = (function() {
                 });
         },
         syncProject: function(projectId) {
+            var self = this;
             return this._projectDBs[projectId].local
                 .sync(this._projectDBs[projectId].remote, {
                     // live: true,
                     // retry: true
                 })
                 .on('complete', function() {
-                // yay, we're in sync!
+                    // yay, we're in sync!
                     console.log('yay, we\'re in sync!');
-
-                // viewModel.remote_data_updated(false);
-                // listDocs(projectId);
-                // $.get( "push_edits_to_db?projectId=" + projectId, function(data) {
-                //     console.log( "Load was performed." );
-                // });
+                    return self.syncImages(projectId);
                 })
                 // .on('change', function(info) {
                 //     // handle change
@@ -127,6 +124,59 @@ var pouchDBs = (function() {
                 });
 
             // sync.cancel(); // whenever you want to cancel only if live = true
+        },
+        syncImages: function(projectId) {
+            var self = this;
+            var server = this._projectDBs[projectId].server;
+            return this._projectDBs[projectId].images
+                .allDocs({ include_docs: true, attachments: true })
+                .then(function(doc) {
+                    var docs = doc.rows.map(function(x) {
+                        return self.syncImage(x.doc, server);
+                    });
+                    return Promise.all(docs);
+                });
+        },
+        syncImage: function(doc, server) {
+            var self = this;
+            var formData = new FormData();
+            for (let [key, value] of Object.entries(doc)) {
+                if (key === '_attachments') {
+                    for (let [file_id, value] of Object.entries(doc[key])) {
+                        formData.append('data', self.base64toBlob(value.data, value.content_type), value.content_type);
+                        formData.append('content_type', value.content_type);
+                    }
+                } else {
+                    formData.append(key, value);
+                }
+            }
+
+            return fetch(server.url.replace(/\/$/, '') + '/images', {
+                method: 'POST',
+                body: formData,
+                headers: new Headers({
+                    Authorization: 'Bearer ' + server.token
+                })
+            });
+        },
+        base64toBlob: function(b64Data, contentType = '', sliceSize = 512) {
+            const byteCharacters = atob(b64Data);
+            const byteArrays = [];
+
+            for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+                const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+                const byteNumbers = new Array(slice.length);
+                for (let i = 0; i < slice.length; i++) {
+                    byteNumbers[i] = slice.charCodeAt(i);
+                }
+
+                const byteArray = new Uint8Array(byteNumbers);
+                byteArrays.push(byteArray);
+            }
+
+            const blob = new Blob(byteArrays, {type: contentType});
+            return blob;
         },
         getChanges: function(projectId) {
             return this._projectDBs[projectId].local.changes({
@@ -182,28 +232,26 @@ var pouchDBs = (function() {
                 });
 
             return this.putFullImages(projectId, tile)
-            .then(function(){
-                delete tile._fullSizeAttachments;
-                return self._projectDBs[projectId].local.put(tile);
-            })
-            .then(function(response) {
-                tile._rev = response.rev;
-                return response;
-            })
-            .catch(function(err) {
-                // CATCH 409 ERROR HERE
-                console.log(err);
-            });
+                .then(function() {
+                    delete tile._fullSizeAttachments;
+                    return self._projectDBs[projectId].local.put(tile);
+                })
+                .then(function(response) {
+                    tile._rev = response.rev;
+                    return response;
+                })
+                .catch(function(err) {
+                    // CATCH 409 ERROR HERE
+                    console.log(err);
+                });
         },
         putFullImages: function(projectId, tile) {
-            var self = this;
             var fullSizeAttachmentsToPut = [];
-            Object.values(tile._fullSizeAttachments).forEach(function(fullSizeAttachment){
+            Object.values(tile._fullSizeAttachments).forEach(function(fullSizeAttachment) {
                 fullSizeAttachment.tileid = tile.tileid;
-                console.log(fullSizeAttachment)
                 fullSizeAttachmentsToPut.push(
                     this._projectDBs[projectId].images.put(fullSizeAttachment)
-                )
+                );
             }, this);
             return Promise.all(fullSizeAttachmentsToPut);
         },
@@ -548,6 +596,9 @@ var store = new Vuex.Store({
         },
         deleteProject: function(state, projectId) {
             return pouchDBs._projectDBs[projectId].local.destroy()
+                .then(function() {
+                    return pouchDBs._projectDBs[projectId].images.destroy();
+                })
                 .then(function() {
                     try {
                         if (store.getters.activeServer.projects[projectId].hasofflinebasemaps) {

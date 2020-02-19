@@ -23,7 +23,7 @@
                     :open.sync="showSideNav" class="sidenav toolbar-header">
                     <v-ons-page>
                         <v-ons-list style="margin-top: 0px;">
-                            <v-ons-list-item tappable @click="sync">
+                            <v-ons-list-item tappable @click="confirmSync">
                                 <v-ons-icon class="text-color-dark icon" icon="fa-comments"></v-ons-icon>
                                 <div class="menu-text">
                                     <span class="text-color-dark label right-panel-label">Sync project data</span>
@@ -115,6 +115,26 @@ export default {
     methods: {
         toggleSideNav: function() {
             this.showSideNav = !this.showSideNav;
+        },
+        confirmSync: function() {
+            var self = this;
+            var networkState = navigator.connection.type;
+            var msg = 'Your curently not connected to WIFI.  Depending on the project, download size can be large.<br><br>Do you still want to sync the project over the cell network, or wait until you are connected to WIFI?';
+
+            if (networkState !== Connection.WIFI) {
+                this.$ons.notification.confirm({
+                    messageHTML: msg,
+                    callback: function(answer) {
+                        if (answer === 1) {
+                            self.sync();
+                        }
+                    },
+                    buttonLabels: ['I\'ll wait', 'No, sync anyways'],
+                    title: 'Network Status'
+                });
+            } else {
+                self.sync();
+            }
         },
         sync: function() {
             var self = this;

@@ -125,7 +125,7 @@ export default {
             };
             var thumbnailSize = 10240; // 15 Kb
             var fullsizeImageLimit = 1024000; // 1 Mb
-            
+
             this.resizeImage(thumbnailSize, false, imgUri)
                 .then(function(resizedImg) {
                     var parts = self.dataURItoParts(resizedImg);
@@ -148,12 +148,12 @@ export default {
                         nodeid: self.node.nodeid,
                         tileid: self.tile.tileid,
                         file_id: image.file_id,
-                        _id: image.file_id,
+                        _id: image.file_id
                     };
                     self.tile._fullSizeAttachments[image.file_id]._attachments[image.file_id] = {
                         content_type: 'image/jpg',
                         data: parts.base64Data
-                    }
+                    };
 
                     if (self.value) {
                         image.name = (self.value.length + 1) + image.name;
@@ -167,17 +167,17 @@ export default {
         },
         getImageSize: function(imgUri) {
             return new Promise(
-                function(resolve,reject){
+                function(resolve, reject) {
                     window.resolveLocalFileSystemURL(imgUri,
-                        function(fileEntryObj){
-                            fileEntryObj.file(function(file){
+                        function(fileEntryObj) {
+                            fileEntryObj.file(function(file) {
                                 resolve(file.size);
-                            })
+                            });
                         },
                         reject
                     );
                 }
-            )
+            );
         },
         removePhoto: function(image) {
             var i = this.value.findIndex(function(item) { return item.file_id === image.file_id; });
@@ -208,7 +208,7 @@ export default {
             // inspired from https://www.zyxware.com/articles/5130/resizing-image-taken-using-camera-in-cordovaphonegap-app
             var self = this;
             return new Promise(
-                function(resolve, reject){
+                function(resolve, reject) {
                     var tempImg = new Image();
                     tempImg.src = imgUri;
                     tempImg.onload = function() {
@@ -241,31 +241,30 @@ export default {
                             ctx.drawImage(tempImg, 0, 0, targetWidth, targetHeight);
 
                             resolve(canvas.toDataURL('image/jpeg'));
-                        }
+                        };
 
                         if (targetImageSize) {
-                            targetImageSize = targetImageSize/1.3;
+                            targetImageSize = targetImageSize / 1.3;
                             longSideMax = Math.max(tempImg.width, tempImg.height);
                             self.getImageSize(imgUri)
-                                .then(function(imageSize){
+                                .then(function(imageSize) {
                                     // re calc longSideMax if the image needs to be reduced
-                                    if(imageSize > targetImageSize) {
-                                        var f = Math.sqrt(targetImageSize/imageSize);
-                                        longSideMax = Math.max(f*tempImg.width, f*tempImg.height);
+                                    if (imageSize > targetImageSize) {
+                                        var f = Math.sqrt(targetImageSize / imageSize);
+                                        longSideMax = Math.max(f * tempImg.width, f * tempImg.height);
                                     }
                                     drawScaledImage();
                                 })
-                                .catch(function(){
+                                .catch(function() {
                                     // if there's an error then just draw the image at original size
                                     drawScaledImage();
-                                })
+                                });
                         } else {
                             drawScaledImage();
                         }
                     };
-                    
                 }
-            )
+            );
         },
         dataURItoParts(dataURI) {
             return {
@@ -278,10 +277,10 @@ export default {
             // convert base64/URLEncoded data component to raw binary data held in a string
             var parts = this.dataURItoParts(dataURI);
             var byteString;
-            if (parts.base64Data.split(',')[0].indexOf('base64') >= 0) { 
-                byteString = atob(parts.base64Data.split(',')[1]); 
-            } else { 
-                byteString = unescape(parts.base64Data.split(',')[1]); 
+            if (parts.base64Data.split(',')[0].indexOf('base64') >= 0) {
+                byteString = atob(parts.base64Data.split(',')[1]);
+            } else {
+                byteString = unescape(parts.base64Data.split(',')[1]);
             }
 
             // write the bytes of the string to a typed array
