@@ -16,11 +16,13 @@ PouchDB.plugin(PouchDBFind);
 PouchDB.plugin(SqlLiteAdapter);
 
 var adapter = 'cordova-sqlite';
+var credentials = 'include';
 
 // this is mostly just for testing but this shouldn't hurt anything by being in here
 // as of this writing the cordova-plugin-sqlite-2 doesn't support the browser platform
 if (!window.cordova || window.cordova.platformId === 'browser') {
     adapter = 'idb';
+    credentials = 'omit';
 }
 
 var pouchDBs = (function() {
@@ -60,6 +62,7 @@ var pouchDBs = (function() {
             });
             this._projectDBs[projectId].remote = new PouchDB(server.url + '/couchdb/project_' + projectId, {
                 fetch: function (url, opts) {
+                    opts.credentials = credentials;
                     opts.headers.set('authorization', 'Bearer ' + server.token);
                     return PouchDB.fetch(url, opts);
                 }
@@ -627,7 +630,8 @@ var store = new Vuex.Store({
                         method: 'GET',
                         headers: new Headers({
                             Authorization: 'Bearer ' + server.token
-                        })
+                        }),
+                        withCredentials: false
                     });
                 })
                 .then(function(response) {
