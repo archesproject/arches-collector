@@ -132,12 +132,12 @@ var pouchDBs = (function() {
                 .allDocs({ include_docs: true, attachments: true })
                 .then(function(doc) {
                     var docs = doc.rows.map(function(x) {
-                        return self.syncImage(x.doc, server);
+                        return self.syncImage(x.doc, server, projectId);
                     });
                     return Promise.all(docs);
                 });
         },
-        syncImage: function(doc, server) {
+        syncImage: function(doc, server, projectId) {
             var self = this;
             var formData = new FormData();
             for (let [key, value] of Object.entries(doc)) {
@@ -157,6 +157,12 @@ var pouchDBs = (function() {
                 headers: new Headers({
                     Authorization: 'Bearer ' + server.token
                 })
+            }).then(function(response) {
+                if (response.ok) {
+                    // if the images was successfully uploaded then we can remove it 
+                    // so that it doesn't get uploaded on subsequent sync opertations
+                    self._projectDBs[projectId].images.remove(doc);
+                }
             });
         },
         base64toBlob: function(b64Data, contentType = '', sliceSize = 512) {
@@ -233,7 +239,6 @@ var pouchDBs = (function() {
 
             return this.putFullImages(projectId, tile)
                 .then(function() {
-                    delete tile._fullSizeAttachments;
                     return self._projectDBs[projectId].local.put(tile);
                 })
                 .then(function(response) {
@@ -247,25 +252,16 @@ var pouchDBs = (function() {
         },
         putFullImages: function(projectId, tile) {
             var fullSizeAttachmentsToPut = [];
-            Object.values(tile._fullSizeAttachments).forEach(function(fullSizeAttachment) {
-                fullSizeAttachment.tileid = tile.tileid;
-                fullSizeAttachmentsToPut.push(
-                    this._projectDBs[projectId].images.put(fullSizeAttachment)
-                );
-            }, this);
+            if ('_fullSizeAttachments' in tile) {
+                Object.values(tile._fullSizeAttachments).forEach(function(fullSizeAttachment) {
+                    fullSizeAttachment.tileid = tile.tileid;
+                    fullSizeAttachmentsToPut.push(
+                        this._projectDBs[projectId].images.put(fullSizeAttachment)
+                    );
+                }, this);
+                delete tile._fullSizeAttachments;
+            }
             return Promise.all(fullSizeAttachmentsToPut);
-        },
-        deleteImage: function(projectId, tileid, nodeid, image) {
-            return this._projectDBs[projectId].images
-                .remove(image)
-                // .then(function(response) {
-                //     tile._rev = response.rev;
-                //     return response;
-                // })
-                .catch(function(err) {
-                // CATCH 409 ERROR HERE
-                    console.log(err);
-                });
         },
         deleteDocs: function(projectId, docs) {
             var removedDocs = docs.map(doc => this._projectDBs[projectId].local.remove(doc));

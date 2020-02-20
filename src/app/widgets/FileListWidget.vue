@@ -140,6 +140,14 @@ export default {
                 })
                 .then(function(resizedFullImg) {
                     var parts = self.dataURItoParts(resizedFullImg);
+                    if (self.value) {
+                        image.name = (self.value.length + 1) + image.name;
+                        self.value.push(image);
+                    } else {
+                        image.name = '1' + image.name;
+                        self.value = [image];
+                    }
+
                     if (!self.tile._fullSizeAttachments) {
                         self.tile._fullSizeAttachments = {};
                     }
@@ -148,6 +156,7 @@ export default {
                         nodeid: self.node.nodeid,
                         tileid: self.tile.tileid,
                         file_id: image.file_id,
+                        file_name: image.name,
                         _id: image.file_id
                     };
                     self.tile._fullSizeAttachments[image.file_id]._attachments[image.file_id] = {
@@ -155,13 +164,6 @@ export default {
                         data: parts.base64Data
                     };
 
-                    if (self.value) {
-                        image.name = (self.value.length + 1) + image.name;
-                        self.value.push(image);
-                    } else {
-                        image.name = '1' + image.name;
-                        self.value = [image];
-                    }
                     self.$emit('update:value', self.value);
                 });
         },
