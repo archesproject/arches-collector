@@ -5,7 +5,7 @@
                 <div class="left">
                     <v-ons-toolbar-button>
                         <router-link :to="{ name: 'projectlist' }">
-                            <v-ons-icon class="project-header instance-list-back-btn" style="vertical-align: -1px;" icon="ion-arrow-left-b"></v-ons-icon>
+                            <v-ons-icon class="project-header instance-list-back-btn" style="vertical-align: -1px;" icon="fa-arrow-left"></v-ons-icon>
                         </router-link>
                         <span class="text-color-dark project-name">{{project.name}}</span>
                     </v-ons-toolbar-button>

@@ -4,7 +4,7 @@
             <v-ons-toolbar class="instance-editor-header relative">
                 <div class="flex" style="width: 90%;">
                     <div class="instance-editor-back-btn">
-                        <v-ons-icon class="resource-header instance-editor-back-icon" style="" icon="ion-arrow-left-b" @click="back"></v-ons-icon>
+                        <v-ons-icon class="resource-header instance-editor-back-icon" style="" icon="fa-arrow-left" @click="back"></v-ons-icon>
                     </div>
                     <div v-if="!!headerName.label" class="instance-name-position">
                         <div class="instance-name">{{headerName.label}}

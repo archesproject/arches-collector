@@ -61,7 +61,7 @@
         </v-ons-list>
         <div class="done-btn btn-delete" v-show="(!showForm && activeObject === 'tile' && !!tile && canDeleteTile(tile))">
             <v-ons-button @click="deleteTiles(tile, $event, back)" class="warning">
-                <v-ons-icon class="done-btn-icon resource-header" icon="ion-trash-b"></v-ons-icon> Delete this Record
+                <v-ons-icon class="done-btn-icon resource-header" icon="fa-trash"></v-ons-icon> Delete this Record
             </v-ons-button>
         </div>
         <div v-show="showForm">
