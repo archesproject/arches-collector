@@ -630,8 +630,7 @@ var store = new Vuex.Store({
                         method: 'GET',
                         headers: new Headers({
                             Authorization: 'Bearer ' + server.token
-                        }),
-                        withCredentials: false
+                        })
                     });
                 })
                 .then(function(response) {
