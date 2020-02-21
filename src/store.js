@@ -142,7 +142,7 @@ var pouchDBs = (function() {
             var formData = new FormData();
             for (let [key, value] of Object.entries(doc)) {
                 if (key === '_attachments') {
-                    for (let [file_id, value] of Object.entries(doc[key])) {
+                    for (let value of Object.values(doc[key])) {
                         formData.append('data', self.base64toBlob(value.data, value.content_type), value.content_type);
                         formData.append('content_type', value.content_type);
                     }
@@ -159,7 +159,7 @@ var pouchDBs = (function() {
                 })
             }).then(function(response) {
                 if (response.ok) {
-                    // if the images was successfully uploaded then we can remove it 
+                    // if the images was successfully uploaded then we can remove it
                     // so that it doesn't get uploaded on subsequent sync opertations
                     self._projectDBs[projectId].images.remove(doc);
                 }
@@ -263,8 +263,27 @@ var pouchDBs = (function() {
             }
             return Promise.all(fullSizeAttachmentsToPut);
         },
+        deleteFullImage: function(projectId, fileid) {
+            var self = this;
+            return self._projectDBs[projectId].images.get(fileid)
+                .then(function(doc) {
+                    return self._projectDBs[projectId].images.remove(doc);
+                });
+        },
         deleteDocs: function(projectId, docs) {
-            var removedDocs = docs.map(doc => this._projectDBs[projectId].local.remove(doc));
+            var self = this;
+            var removedDocs = docs.map(function(doc) {
+                return self._projectDBs[projectId].local.remove(doc)
+                    .then(function() {
+                        var removedImages = [];
+                        if (doc.type === 'tile' && '_attachments' in doc) {
+                            for (let key of Object.keys(doc._attachments)) {
+                                removedImages.push(self.deleteFullImage(projectId, key));
+                            }
+                        }
+                        return Promise.all(removedImages);
+                    });
+            });
             return Promise.all(removedDocs);
         },
         putResource: function(projectId, resource) {
@@ -1070,6 +1089,10 @@ var store = new Vuex.Store({
             }).finally(function(response) {
                 console.log('download finished');
             });
+        },
+        removeFullSizeImage: function({ commit, state }, fileid) {
+            var project = store.getters.activeProject;
+            return pouchDBs.deleteFullImage(project.id, fileid);
         }
     }
 });

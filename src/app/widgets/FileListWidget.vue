@@ -184,13 +184,8 @@ export default {
         removePhoto: function(image) {
             var i = this.value.findIndex(function(item) { return item.file_id === image.file_id; });
             this.value.splice(i, 1);
-            if (this.tile._attachments[image.file_id]) {
-                delete this.tile._attachments[image.file_id];
-            } else if (this.tile._attachments[image.name]) {
-                delete this.tile._attachments[image.file_id];
-            } else {
-                console.log('no attachments');
-            }
+            delete this.tile._attachments[image.file_id];
+            this.$store.dispatch('removeFullSizeImage', image.file_id);
             this.$emit('update:value', this.value);
         },
         setOptions(srcType, saveToAlbum) {
