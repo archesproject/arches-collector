@@ -1,8 +1,8 @@
 <template>
     <div>
         <component v-for="widget in cardWidgets" class="widget" :allNodes="allNodes" :tile="tile" :tiles="tiles" :widget="widget" :context="'editor'" :save="throttle(saveTile, tile, saveDelay)" v-bind:is="'base-widget'"></component>
-        <div class="done-btn"><v-ons-button @click="back"><v-ons-icon class="done-btn-icon resource-header" icon="ion-android-arrow-dropleft-circle"></v-ons-icon>Done</v-ons-button></div>
-        <div class="done-btn" v-if="allowDelete"><v-ons-button @click="deleteTiles(tile, $event, back)" class="warning"><v-ons-icon class="done-btn-icon resource-header" icon="ion-trash-b"></v-ons-icon>Delete this Record</v-ons-button></div>
+        <div class="done-btn"><v-ons-button @click="back"><v-ons-icon class="done-btn-icon resource-header" icon="fa-arrow-alt-circle-left"></v-ons-icon>Done</v-ons-button></div>
+        <div class="done-btn" v-if="allowDelete"><v-ons-button @click="deleteTiles(tile, $event, back)" class="warning"><v-ons-icon class="done-btn-icon resource-header" icon="fa-trash"></v-ons-icon>Delete this Record</v-ons-button></div>
     </div>
 </template>
 <script>

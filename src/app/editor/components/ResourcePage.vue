@@ -4,7 +4,7 @@
             <v-ons-toolbar class="instance-editor-header relative">
                 <div class="flex" style="width: 90%;">
                     <div class="instance-editor-back-btn">
-                        <v-ons-icon class="resource-header instance-editor-back-icon" style="" icon="ion-arrow-left-b" @click="back"></v-ons-icon>
+                        <v-ons-icon class="resource-header instance-editor-back-icon" icon="fa-arrow-left" @click="back"></v-ons-icon>
                     </div>
                     <div v-if="!!headerName.label" class="instance-name-position">
                         <div class="instance-name">{{headerName.label}}
@@ -304,14 +304,13 @@ export default {
 }
 
 .instance-editor-back-icon {
-    padding: 3px 11px;
+    padding: 3px 6px;
     color: #FEB0B2;
     background: #C2171B;
     border-radius: 50%;
     border: 1px solid #4C0002;
-    margin-top: 5px;
-    margin-left: 8px;
-    margin-right: 6px;
+    margin: 5px 6px 0 8px;
+    font-size: 22px;
 }
 
 .toolbar--material .instance-editor-back-btn {

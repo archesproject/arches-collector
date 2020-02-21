@@ -53,9 +53,9 @@ body {
     font-size: 13px;
 }
 
-.ons-icon[icon*="ion-"] {
+/* .ons-icon[icon*="ion-"] {
     font-size: 24px !important;
-}
+} */
 
 .padded-page {
     background-color: white;
