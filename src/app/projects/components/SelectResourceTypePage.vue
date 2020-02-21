@@ -72,7 +72,7 @@ export default {
     text-align: center;
     vertical-align: 5px;
     font-size: 14px;
-    margin: 10px auto;
+    padding: 10px 0 12px 0;
     width: 100%;
 }
 .icon-circle {

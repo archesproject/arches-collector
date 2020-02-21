@@ -26,7 +26,7 @@
                     <!-- App save Button -->
                     <v-ons-button :disabled="disableSignIn" class="app-button relative app-save" v-on:click="login">
                         <div class="icon-circle"></div>
-                        <v-ons-icon class="save-icon" icon="fa-check-circle"></v-ons-icon>
+                        <v-ons-icon class="save-icon" icon="fa-check"></v-ons-icon>
                         <span class="btn-text">Save</span>
                         <div class="btn-subtitle">Add this instance to your device</div>
                     </v-ons-button>
@@ -244,7 +244,8 @@ export default {
 
 .save-icon {
     position: absolute;
-    top: 17px;
+    font-size: 22px;
+    top: 20px;
     left: 30px;
 }
 
@@ -259,8 +260,9 @@ export default {
 
 .delete-icon {
     position: absolute;
-    top: 17px;
-    left: 32px;
+    font-size: 22px;
+    top: 19px;
+    left: 30px;
     color: #970B00;
 }
 

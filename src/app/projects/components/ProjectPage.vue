@@ -5,7 +5,9 @@
                 <div class="left">
                     <v-ons-toolbar-button>
                         <router-link :to="{ name: 'projectlist' }">
-                            <v-ons-icon class="project-header instance-list-back-btn" style="vertical-align: -1px;" icon="fa-arrow-left"></v-ons-icon>
+                            <span class="icon-circle">
+                                <v-ons-icon class="project-header instance-list-back-btn" style="vertical-align: -1px;" icon="fa-arrow-left"></v-ons-icon>
+                            </span>
                         </router-link>
                         <span class="text-color-dark project-name">{{project.name}}</span>
                     </v-ons-toolbar-button>
@@ -306,7 +308,7 @@ export default {
 .instance-list-back-btn {
     color: #CDF2F1;
     font-size: 24px;
-    padding: 3px 10px;
+    padding: 3px 6px;
     border-radius: 50%;
     border: 1px solid #429895;
     margin-left: -4px;

@@ -332,7 +332,7 @@ ul {
 }
 
 .add-card {
-    font-size: 14px;
+    font-size: 22px;
 }
 .tile-instance {
     padding: 0px !important;
