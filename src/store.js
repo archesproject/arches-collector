@@ -58,7 +58,8 @@ var pouchDBs = (function() {
             }
             this._projectDBs[projectId].local = new PouchDB('project_' + projectId, {
                 adapter: adapter,
-                iosDatabaseLocation: 'Library'
+                iosDatabaseLocation: 'Library',
+                auto_compaction: true
             });
             this._projectDBs[projectId].remote = new PouchDB(server.url + '/couchdb/project_' + projectId, {
                 fetch: function(url, opts) {
@@ -70,7 +71,8 @@ var pouchDBs = (function() {
             this._projectDBs[projectId].images = new PouchDB('images_' + projectId, {
                 revs_limit: 1,
                 adapter: adapter,
-                iosDatabaseLocation: 'Library'
+                iosDatabaseLocation: 'Library',
+                auto_compaction: true
             });
             this._projectDBs[projectId].server = server;
         },
@@ -129,7 +131,7 @@ var pouchDBs = (function() {
             var self = this;
             var server = this._projectDBs[projectId].server;
             return this._projectDBs[projectId].images
-                .allDocs({ include_docs: true, attachments: true })
+                .allDocs({ include_docs: true })
                 .then(function(doc) {
                     var docs = doc.rows.map(function(x) {
                         return self.syncImage(x.doc, server, projectId);
@@ -141,29 +143,31 @@ var pouchDBs = (function() {
             var self = this;
             var formData = new FormData();
             for (let [key, value] of Object.entries(doc)) {
-                if (key === '_attachments') {
-                    for (let value of Object.values(doc[key])) {
-                        formData.append('data', self.base64toBlob(value.data, value.content_type), value.content_type);
-                        formData.append('content_type', value.content_type);
-                    }
-                } else {
+                if (key !== '_attachments') {
                     formData.append(key, value);
                 }
             }
+            for (let value of Object.values(doc._attachments)) {
+                self._projectDBs[projectId].images.getAttachment(doc._id, doc.file_id)
+                    .then(function(blobOrBuffer) {
+                        formData.append('data', blobOrBuffer, value.content_type);
+                        formData.append('content_type', value.content_type);
 
-            return fetch(server.url.replace(/\/$/, '') + '/images', {
-                method: 'POST',
-                body: formData,
-                headers: new Headers({
-                    Authorization: 'Bearer ' + server.token
-                })
-            }).then(function(response) {
-                if (response.ok) {
-                    // if the images was successfully uploaded then we can remove it
-                    // so that it doesn't get uploaded on subsequent sync opertations
-                    self._projectDBs[projectId].images.remove(doc);
-                }
-            });
+                        return fetch(server.url.replace(/\/$/, '') + '/images', {
+                            method: 'POST',
+                            body: formData,
+                            headers: new Headers({
+                                Authorization: 'Bearer ' + server.token
+                            })
+                        }).then(function(response) {
+                            if (response.ok) {
+                                // if the images was successfully uploaded then we can remove it
+                                // so that it doesn't get uploaded on subsequent sync opertations
+                                self._projectDBs[projectId].images.remove(doc);
+                            }
+                        });
+                    });
+            }
         },
         base64toBlob: function(b64Data, contentType = '', sliceSize = 512) {
             const byteCharacters = atob(b64Data);

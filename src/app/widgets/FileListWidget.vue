@@ -123,8 +123,8 @@ export default {
                 type: 'image/jpeg',
                 file_id: uuidv4()
             };
-            var thumbnailSize = 10240; // 15 Kb
-            var fullsizeImageLimit = 1024000; // 1 Mb
+            var thumbnailSize = 61440; // 60 Kb
+            var fullsizeImageLimit = 1524000; // 1 Mb
 
             this.resizeImage(thumbnailSize, false, imgUri)
                 .then(function(resizedImg) {
@@ -167,20 +167,6 @@ export default {
                     self.$emit('update:value', self.value);
                 });
         },
-        getImageSize: function(imgUri) {
-            return new Promise(
-                function(resolve, reject) {
-                    window.resolveLocalFileSystemURL(imgUri,
-                        function(fileEntryObj) {
-                            fileEntryObj.file(function(file) {
-                                resolve(file.size);
-                            });
-                        },
-                        reject
-                    );
-                }
-            );
-        },
         removePhoto: function(image) {
             var i = this.value.findIndex(function(item) { return item.file_id === image.file_id; });
             this.value.splice(i, 1);
@@ -190,7 +176,7 @@ export default {
         },
         setOptions(srcType, saveToAlbum) {
             var options = {
-                quality: 50,
+                quality: 100,
                 destinationType: Camera.DestinationType.FILE_URI,
                 sourceType: srcType,
                 encodingType: Camera.EncodingType.JPEG,
@@ -201,7 +187,7 @@ export default {
             };
             return options;
         },
-        resizeImage(targetImageSize, longSideMax, imgUri, callback) {
+        resizeImage(targetImageSize, longSideMax, imgUri) {
             // inspired from https://www.zyxware.com/articles/5130/resizing-image-taken-using-camera-in-cordovaphonegap-app
             var self = this;
             return new Promise(
@@ -236,12 +222,11 @@ export default {
                             // Take image from top left corner to bottom right corner and draw the image
                             // on canvas to completely fill into.
                             ctx.drawImage(tempImg, 0, 0, targetWidth, targetHeight);
-
-                            resolve(canvas.toDataURL('image/jpeg'));
+                            resolve(canvas.toDataURL('image/jpeg', 1.0));
                         };
 
                         if (targetImageSize) {
-                            targetImageSize = targetImageSize / 1.3;
+                            targetImageSize = targetImageSize / 1.3 / 1.3;
                             longSideMax = Math.max(tempImg.width, tempImg.height);
                             self.getImageSize(imgUri)
                                 .then(function(imageSize) {
@@ -260,6 +245,21 @@ export default {
                             drawScaledImage();
                         }
                     };
+                }
+            );
+        },
+        getImageSize: function(imgUri) {
+            return new Promise(
+                function(resolve, reject) {
+                    window.resolveLocalFileSystemURL(imgUri,
+                        function(fileEntryObj) {
+                            fileEntryObj.file(function(file) {
+                                console.log(file.size);
+                                resolve(file.size);
+                            });
+                        },
+                        reject
+                    );
                 }
             );
         },
