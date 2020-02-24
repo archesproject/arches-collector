@@ -67,6 +67,7 @@ export default {
     data() {
         return {
             activeServer: this.$store.getters.activeServer,
+            activeProject: this.$store.getters.activeProject,
             images: {}
         };
     },
@@ -123,8 +124,9 @@ export default {
                 type: 'image/jpeg',
                 file_id: uuidv4()
             };
-            var thumbnailSize = 61440; // 60 Kb
-            var fullsizeImageLimit = 1524000; // 1 Mb
+
+            var thumbnailSize = this.activeProject.image_size_limits.thumb;
+            var fullsizeImageLimit = this.activeProject.image_size_limits.full;
 
             this.resizeImage(thumbnailSize, false, imgUri)
                 .then(function(resizedImg) {
