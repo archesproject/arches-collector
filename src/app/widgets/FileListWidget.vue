@@ -20,12 +20,12 @@
             <div class="button-panel">
                 <v-ons-button class="file-button relative select-photo" @click="selectPhoto">
                     <div class="icon-circle"></div>
-                    <v-ons-icon class="folder-icon" icon="ion-folder"></v-ons-icon>
+                    <v-ons-icon class="folder-icon" icon="fa-folder-open-o"></v-ons-icon>
                     <span class="btn-text">Select Photo</span>
                 </v-ons-button>
                 <v-ons-button class="file-button relative take-photo" @click="takePhoto">
                     <div class="icon-circle"></div>
-                    <v-ons-icon class="camera-icon" icon="ion-camera"></v-ons-icon>
+                    <v-ons-icon class="camera-icon" icon="fa-camera"></v-ons-icon>
                     <span class="btn-text">Take Photo</span>
                 </v-ons-button>
             </div>

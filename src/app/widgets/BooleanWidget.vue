@@ -1,7 +1,7 @@
 <template>
     <div class="widget-panel" v-if="context=='editor'">
         <span class="editor widget-label">{{widget.label}}</span>
-        <toggle-button id="changed-font" style="float: right" :sync="true" v-model="localValue" :width="width"
+        <toggle-button id="changed-font" style="float: right" v-model="localValue" :width="width"
                :labels="{'checked': node.config.trueLabel, 'unchecked': node.config.falseLabel}"/>
 
         <div id="textWidthElement"></div>

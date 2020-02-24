@@ -8,7 +8,7 @@
     <v-ons-list>
         <v-ons-list-item class="resource-model-name-panel" v-bind:class="{ edited: resource_instance.edited }" tappable modifier="longdivider" v-for="resource_instance in resource_instances" :key="resource_instance.resourceinstanceid" @click="selectResourceInstance(resource_instance);">
             <span class="icon-circle" v-bind:class="{ edited: resource_instance.edited }" v-bind:style="{ background: [resource_types[resource_instance.graph_id].color], color: '#fff' }">
-                <v-ons-icon class="resource-model-icon" v-bind:icon="resource_types[resource_instance.graph_id].iconclass.replace('fa ', '')" v-bind:style="{}"></v-ons-icon>
+                <v-ons-icon class="list-item-resource-model-icon" v-bind:icon="resource_types[resource_instance.graph_id].iconclass.replace('fa ', '')" v-bind:style="{}"></v-ons-icon>
             </span>
             <span class='resource-model-title'>
                 <span style="padding-left: 0; padding-right: 10px;">{{resource_instance.displayname.replace(/['"]+/g,'')}}</span>
@@ -179,7 +179,7 @@ export default {
     color: #999;
     letter-spacing: -0.01em;
 }
-.resource-model-icon {
+.list-item-resource-model-icon {
     text-align: center;
     vertical-align: 5px;
     font-size: 14px;

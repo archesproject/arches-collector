@@ -8,7 +8,7 @@
                         <span class="left-button-text">Arches Instance</span>
                     </div>
                     <div v-if="selectedServer">
-                        <v-ons-icon class="toolbar-header-icon"icon="ion-android-arrow-dropleft-circle" @click="setSelectedServer($event, false)"></v-ons-icon>
+                        <v-ons-icon class="toolbar-header-icon"fa-arrow-alt-circle-left" @click="setSelectedServer($event, false)"></v-ons-icon>
                         <span class="left-button-text">{{selectedServer.nickname}}</span>
                     </div>
                 </v-ons-toolbar-button>
@@ -19,20 +19,20 @@
                 <v-ons-list class="application-list">
                     <v-ons-list-item class="add-application-panel" tappable @click="goTo('servermanager');">
                         <span class="application-list-item-prepanel">
-                            <v-ons-icon class="add-application-icon" icon="ion-plus-round"></v-ons-icon>
+                            <v-ons-icon class="add-application-icon" icon="fa-plus-circle"></v-ons-icon>
                         </span>
                         <span class="application-list-item">Add Instance</span>
                     </v-ons-list-item>
                     <v-ons-list-item class="application-item-panel" tappable modifier="longdivider" v-for="(server, key) in servers" :key="server.url" @click="setActiveServer(server.url);">
                         <span class="application-app-item-prepanel">
-                            <v-ons-icon class="application-list-item-icon" style="margin-top: -1px;" icon="ion-checkmark-round"></v-ons-icon>
+                            <v-ons-icon class="application-list-item-icon" icon="fa-check"></v-ons-icon>
                         </span>
                         <span class="application-list-item">
                             {{server.nickname}}<br>
                             <span class="application-list-item-url">{{server.url}}</span>
                         </span>
                         <span class="manage-app-btn-panel" @click="setSelectedServer($event, server);">
-                            <v-ons-icon class="manage-app-btn" style="font-size: 13px;" v-if="selectedServer !== server" icon="fa-info"></v-ons-icon>
+                            <v-ons-icon class="manage-app-btn" style="font-size: 20px;" v-if="selectedServer !== server" icon="fa-info"></v-ons-icon>
                         </span>
                     </v-ons-list-item>
                 </v-ons-list>
@@ -73,7 +73,7 @@
                     <!-- App save Button -->
                     <v-ons-button class="app-button relative app-save" @click="login">
                         <div class="icon-circle"></div>
-                        <v-ons-icon class="save-icon" icon="ion-checkmark-round"></v-ons-icon>
+                        <v-ons-icon class="save-icon" icon="fa-check"></v-ons-icon>
                         <span class="btn-text">Save</span>
                         <div class="btn-subtitle">Add this instance to your device</div>
                     </v-ons-button>
@@ -81,7 +81,7 @@
                     <!-- Cancel Button -->
                     <v-ons-button class="app-button relative app-return" @click="cancel">
                         <div class="icon-circle"></div>
-                        <v-ons-icon class="return-icon" icon="ion-arrow-left-a"></v-ons-icon>
+                        <v-ons-icon class="return-icon" icon="fa-arrow-left"></v-ons-icon>
                         <span class="btn-text">Cancel</span>
                         <div class="btn-subtitle">Return to the Instance listing page</div>
                     </v-ons-button>
@@ -89,7 +89,7 @@
                     <!-- App Delete Button -->
                     <v-ons-button class="app-button relative app-delete" @click="$ons.notification.confirm({message: 'Are you sure you want to delete this instance? All unsynced data will be lost.', callback: deleteServer})">
                         <div class="icon-circle"></div>
-                        <v-ons-icon class="delete-icon" icon="ion-trash-a"></v-ons-icon>
+                        <v-ons-icon class="delete-icon" icon="fa-trash"></v-ons-icon>
                         <span class="btn-text">Delete Instance</span>
                         <div class="btn-subtitle">Remove this instance from your device</div>
                     </v-ons-button>
@@ -283,7 +283,7 @@ export default {
 
 .application-list-item-icon {
     padding-top: 6px;
-    padding-left: 8px;
+    padding-left: 6px;
     color: #2E9C94;
 }
 
@@ -293,8 +293,8 @@ export default {
 }
 
 .add-application-icon {
-    padding-top: 6px;
-    padding-left: 9px;
+    padding-top: 3px;
+    padding-left: 3px;
     color: #fff;
 }
 
@@ -356,8 +356,8 @@ export default {
 }
 
 .manage-app-btn {
-    margin-top: 8px;
-    margin-left: 14px;
+    margin-top: 4px;
+    margin-left: 12px;
     color: #777;
 }
 
@@ -408,22 +408,25 @@ export default {
 
 .save-icon {
     position: absolute;
-    top: 17px;
+    top: 20px;
     left: 30px;
+    font-size: 22px;
 }
 
 .return-icon {
     position: absolute;
-    top: 17px;
+    top: 20px;
     left: 31px;
     color: #9E7100;
+    font-size: 20px;
 }
 
 .delete-icon {
     position: absolute;
-    top: 17px;
+    top: 20px;
     left: 32px;
     color: #970B00;
+    font-size: 20px;
 }
 
 .icon-circle {
