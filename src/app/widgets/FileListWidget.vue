@@ -63,7 +63,7 @@ import uuidv4 from 'uuid/v4';
 import * as blobUtil from 'blob-util';
 export default {
     name: 'FileListWidget',
-    props: ['value', 'widget', 'context', 'tile'],
+    props: ['value', 'widget', 'context', 'tile', 'node'],
     data() {
         return {
             activeServer: this.$store.getters.activeServer,
@@ -117,43 +117,67 @@ export default {
             }, options);
         },
         attachImage: function(imgUri) {
+            var self = this;
             var image = {
                 name: '' + '.jpg',
                 type: 'image/jpeg',
                 file_id: uuidv4()
             };
-            if (this.value) {
-                image.name = (this.value.length + 1) + image.name;
-                this.value.push(image);
-            } else {
-                image.name = '1' + image.name;
-                this.value = [image];
-            }
-            if (!this.tile._attachments) {
-                this.tile._attachments = {};
-            }
-            this.tile._attachments[image.file_id] = {
-                content_type: 'image/jpg',
-                data: imgUri
-            };
-            this.$emit('update:value', this.value);
+            var thumbnailSize = 61440; // 60 Kb
+            var fullsizeImageLimit = 1524000; // 1 Mb
+
+            this.resizeImage(thumbnailSize, false, imgUri)
+                .then(function(resizedImg) {
+                    var parts = self.dataURItoParts(resizedImg);
+                    if (!self.tile._attachments) {
+                        self.tile._attachments = {};
+                    }
+                    self.tile._attachments[image.file_id] = {
+                        content_type: 'image/jpg',
+                        data: parts.base64Data
+                    };
+                    return self.resizeImage(fullsizeImageLimit, false, imgUri);
+                })
+                .then(function(resizedFullImg) {
+                    var parts = self.dataURItoParts(resizedFullImg);
+                    if (self.value) {
+                        image.name = (self.value.length + 1) + image.name;
+                        self.value.push(image);
+                    } else {
+                        image.name = '1' + image.name;
+                        self.value = [image];
+                    }
+
+                    if (!self.tile._fullSizeAttachments) {
+                        self.tile._fullSizeAttachments = {};
+                    }
+                    self.tile._fullSizeAttachments[image.file_id] = {
+                        _attachments: {},
+                        nodeid: self.node.nodeid,
+                        tileid: self.tile.tileid,
+                        file_id: image.file_id,
+                        file_name: image.name,
+                        _id: image.file_id
+                    };
+                    self.tile._fullSizeAttachments[image.file_id]._attachments[image.file_id] = {
+                        content_type: 'image/jpg',
+                        data: parts.base64Data
+                    };
+
+                    self.$emit('update:value', self.value);
+                });
         },
         removePhoto: function(image) {
             var i = this.value.findIndex(function(item) { return item.file_id === image.file_id; });
             this.value.splice(i, 1);
-            if (this.tile._attachments[image.file_id]) {
-                delete this.tile._attachments[image.file_id];
-            } else if (this.tile._attachments[image.name]) {
-                delete this.tile._attachments[image.file_id];
-            } else {
-                console.log('no attachments');
-            }
+            delete this.tile._attachments[image.file_id];
+            this.$store.dispatch('removeFullSizeImage', image.file_id);
             this.$emit('update:value', this.value);
         },
         setOptions(srcType, saveToAlbum) {
             var options = {
-                quality: 50,
-                destinationType: Camera.DestinationType.DATA_URL,
+                quality: 100,
+                destinationType: Camera.DestinationType.FILE_URI,
                 sourceType: srcType,
                 encodingType: Camera.EncodingType.JPEG,
                 mediaType: Camera.MediaType.PICTURE,
@@ -162,6 +186,107 @@ export default {
                 correctOrientation: true
             };
             return options;
+        },
+        resizeImage(targetImageSize, longSideMax, imgUri) {
+            // inspired from https://www.zyxware.com/articles/5130/resizing-image-taken-using-camera-in-cordovaphonegap-app
+            var self = this;
+            return new Promise(
+                function(resolve, reject) {
+                    var tempImg = new Image();
+                    tempImg.src = imgUri;
+                    tempImg.onload = function() {
+                        var drawScaledImage = function() {
+                            // Get image size and aspect ratio.
+                            var targetWidth, targetHeight;
+                            var aspect = tempImg.width / tempImg.height;
+
+                            // Calculate shorter side length, keeping aspect ratio on image.
+                            // If source image size is less than given longSideMax, then it need to be
+                            // considered instead.
+                            if (tempImg.width > tempImg.height) {
+                                longSideMax = Math.min(tempImg.width, longSideMax);
+                                targetWidth = longSideMax;
+                                targetHeight = longSideMax / aspect;
+                            } else {
+                                longSideMax = Math.min(tempImg.height, longSideMax);
+                                targetHeight = longSideMax;
+                                targetWidth = longSideMax * aspect;
+                            }
+
+                            // Create canvas of required size.
+                            var canvas = document.createElement('canvas');
+                            canvas.width = targetWidth;
+                            canvas.height = targetHeight;
+
+                            var ctx = canvas.getContext('2d');
+                            // Take image from top left corner to bottom right corner and draw the image
+                            // on canvas to completely fill into.
+                            ctx.drawImage(tempImg, 0, 0, targetWidth, targetHeight);
+                            resolve(canvas.toDataURL('image/jpeg', 1.0));
+                        };
+
+                        if (targetImageSize) {
+                            targetImageSize = targetImageSize / 1.3 / 1.3;
+                            longSideMax = Math.max(tempImg.width, tempImg.height);
+                            self.getImageSize(imgUri)
+                                .then(function(imageSize) {
+                                    // re calc longSideMax if the image needs to be reduced
+                                    if (imageSize > targetImageSize) {
+                                        var f = Math.sqrt(targetImageSize / imageSize);
+                                        longSideMax = Math.max(f * tempImg.width, f * tempImg.height);
+                                    }
+                                    drawScaledImage();
+                                })
+                                .catch(function() {
+                                    // if there's an error then just draw the image at original size
+                                    drawScaledImage();
+                                });
+                        } else {
+                            drawScaledImage();
+                        }
+                    };
+                }
+            );
+        },
+        getImageSize: function(imgUri) {
+            return new Promise(
+                function(resolve, reject) {
+                    window.resolveLocalFileSystemURL(imgUri,
+                        function(fileEntryObj) {
+                            fileEntryObj.file(function(file) {
+                                console.log(file.size);
+                                resolve(file.size);
+                            });
+                        },
+                        reject
+                    );
+                }
+            );
+        },
+        dataURItoParts(dataURI) {
+            return {
+                mimeString: dataURI.split(',')[0].split(':')[1].split(';')[0],
+                base64Data: dataURI.split(',')[1]
+            };
+        },
+        dataURItoBlob(dataURI) {
+            // https://stackoverflow.com/questions/4998908/convert-data-uri-to-file-then-append-to-formdata/5100158#5100158
+            // convert base64/URLEncoded data component to raw binary data held in a string
+            var parts = this.dataURItoParts(dataURI);
+            var byteString;
+            if (parts.base64Data.split(',')[0].indexOf('base64') >= 0) {
+                byteString = atob(parts.base64Data.split(',')[1]);
+            } else {
+                byteString = unescape(parts.base64Data.split(',')[1]);
+            }
+
+            // write the bytes of the string to a typed array
+            var ia = new Uint8Array(byteString.length);
+            for (var i = 0; i < byteString.length; i++) {
+                ia[i] = byteString.charCodeAt(i);
+            }
+
+            return new Blob([ia], {type: parts.mimeString});
         },
         onCleanupSuccess() {
             console.log('Camera cleanup success.');
@@ -184,7 +309,6 @@ export default {
         }
     }
 };
-
 </script>
 
 <style scoped>

@@ -59,7 +59,6 @@ export default {
             if (alert) { this.toastVisible = true; }
             return alert;
         }
-
     },
     methods: {
         toggleOpen: function() {

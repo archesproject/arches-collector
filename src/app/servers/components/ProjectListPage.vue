@@ -35,7 +35,7 @@
                         <v-ons-list-item class="panel-header">
                             <span class="panel-header-text label right-panel-label" v-if="selectedProject">{{selectedProject.name}}</span>
                         </v-ons-list-item @click="">
-                        <v-ons-list-item tappable @click="sync" v-if="selectedProject && !selectedProject.unavailable && selectedProject.joined && selectedProject.active">
+                        <v-ons-list-item tappable @click="confirmSync" v-if="selectedProject && !selectedProject.unavailable && selectedProject.joined && selectedProject.active">
                             <v-ons-icon class="text-color-dark left menu-icon" icon="fa-cloud-download-alt"></v-ons-icon>
                             <div class="menu-text">
                                 <span class="text-color-dark">Sync all records in this project</span>
@@ -121,7 +121,7 @@
                         <span class="center" @click="segueToProject(project);"></span>
                         <v-ons-icon class="right" style="display: flex; padding-left:10px; padding-right: 18px;" icon="fa-ellipsis-v" v-if="project.joined !== undefined || !project.active" @click="toggleSideNav(project)"></v-ons-icon>
 
-                        <v-ons-icon class="right" style="display: flex; padding-left:10px" icon="fa-cloud-download-alt" v-if="project.joined === undefined && project.active && !project.unavailable" @click="function(){selectedProject = project; sync()}"></v-ons-icon>
+                        <v-ons-icon class="right" style="display: flex; padding-left:10px" icon="fa-cloud-download-alt" v-if="project.joined === undefined && project.active && !project.unavailable" @click="function(){selectedProject = project; confirmSync('project-initialization')}"></v-ons-icon>
                         <v-ons-icon class="right" style="display: flex; padding-left:10px" icon="fa-trash" v-if="project.unavailable" @click="function(){selectedProject = project; deleteProject(1); refreshProjectList()}"></v-ons-icon>
                     </v-ons-list-item>
                     <v-ons-list-item v-if="projects.length === 0">
@@ -231,10 +231,35 @@ export default {
             this.showUnjoinedProjects = !this.showUnjoinedProjects;
             this.$store.commit('updateUserPrefByKey', { userPrefKey: 'showUnjoinedProjects', userPref: this.showUnjoinedProjects });
         },
+        confirmSync: function(downloadType) {
+            var self = this;
+            var networkState = navigator.connection.type;
+            var msg = 'Your curently not connected to WIFI.  Depending on the project, download size can be large.<br><br>Do you still want to sync the project over the cell network, or wait until you are connected to WIFI?';
+            var buttonLabels = ['I\'ll wait', 'No, sync anyways'];
+            if (downloadType === 'project-initialization') {
+                msg = 'Your curently not connected to WIFI.  Depending on the project, download size can be large.<br><br>Do you want to wait until you have a WIFI connection, or download the project now using the cell network?';
+                buttonLabels = ['I\'ll wait', 'No, download now'];
+            }
+
+            if (networkState !== Connection.WIFI) {
+                this.$ons.notification.confirm({
+                    messageHTML: msg,
+                    callback: function(answer) {
+                        if (answer === 1) {
+                            self.sync();
+                        }
+                    },
+                    buttonLabels: buttonLabels,
+                    title: 'Network Status'
+                });
+            } else {
+                self.sync();
+            }
+        },
         sync: function() {
             var self = this;
-            this.syncing = true;
-            this.$store.dispatch('syncRemote', { projectId: this.selectedProject.id })
+            self.syncing = true;
+            self.$store.dispatch('syncRemote', { projectId: self.selectedProject.id })
                 .catch(function(err) {
                     console.log(err);
                     self.syncErrorMessage = err.notification ? err.notification : 'Error. Unable to sync project';

@@ -29,6 +29,7 @@
     <plugin name="cordova-plugin-camera" spec="^4.0.3" />
     <plugin name="cordova-plugin-geolocation" spec="^4.0.1" />
     <plugin name="cordova-plugin-cleartext" spec="^1.0.0" />
+    <plugin name="cordova-plugin-network-information" spec="^2.0.2" />
     <preference name="DisallowOverscroll" value="true" />
     <preference name="BackupWebStorage" value="local" />
     <edit-config file="*-Info.plist" mode="merge" target="NSCameraUsageDescription">
@@ -44,6 +45,6 @@
         <string>need photo library access to save pictures there</string>
     </edit-config>
     <engine name="browser" spec="^5.0.3" />
-    <engine name="android" spec="^7.0.0" />
     <engine name="ios" spec="4.5.5" />
+    <engine name="android" spec="^7.1.4" />
 </widget>
