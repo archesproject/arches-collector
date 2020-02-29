@@ -128,7 +128,7 @@ export default {
             var thumbnailSize = this.activeProject.image_size_limits.thumb;
             var fullsizeImageLimit = this.activeProject.image_size_limits.full;
 
-            this.resizeImage(thumbnailSize, false, imgUri)
+            this.resizeImage(false, thumbnailSize, imgUri)
                 .then(function(resizedImg) {
                     var parts = self.dataURItoParts(resizedImg);
                     if (!self.tile._attachments) {
@@ -251,6 +251,27 @@ export default {
             );
         },
         getImageSize: function(imgUri) {
+            return new Promise(
+                function(resolve, reject) {
+                    var tempImg = new Image();
+                    tempImg.src = imgUri;
+                    tempImg.onload = function() {
+                        try {
+                            var canvas = document.createElement('canvas');
+                            canvas.width = tempImg.width;
+                            canvas.height = tempImg.height;
+
+                            var ctx = canvas.getContext('2d');
+                            ctx.drawImage(tempImg, 0, 0, tempImg.width, tempImg.height);
+                            canvas.toBlob(function(blob) {
+                                resolve(blob.size);
+                            }, 'image/jpeg', 1);
+                        } catch (err) {
+                            reject(err);
+                        }
+                    };
+                }
+            );
             return new Promise(
                 function(resolve, reject) {
                     window.resolveLocalFileSystemURL(imgUri,
