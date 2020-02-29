@@ -241,7 +241,7 @@ export default {
                 buttonLabels = ['I\'ll wait', 'No, download now'];
             }
 
-            if (networkState !== Connection.WIFI) {
+            if ('Connection' in window && networkState !== Connection.WIFI) {
                 this.$ons.notification.confirm({
                     messageHTML: msg,
                     callback: function(answer) {
