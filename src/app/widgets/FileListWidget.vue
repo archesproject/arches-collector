@@ -128,7 +128,7 @@ export default {
             var thumbnailSize = this.activeProject.image_size_limits.thumb;
             var fullsizeImageLimit = this.activeProject.image_size_limits.full;
 
-            this.resizeImage(thumbnailSize, false, imgUri)
+            this.resizeImage(false, thumbnailSize, imgUri)
                 .then(function(resizedImg) {
                     var parts = self.dataURItoParts(resizedImg);
                     if (!self.tile._attachments) {
@@ -228,7 +228,7 @@ export default {
                         };
 
                         if (targetImageSize) {
-                            targetImageSize = targetImageSize / 1.3 / 1.3;
+                            targetImageSize = targetImageSize / 1.3;
                             longSideMax = Math.max(tempImg.width, tempImg.height);
                             self.getImageSize(imgUri)
                                 .then(function(imageSize) {
@@ -253,15 +253,23 @@ export default {
         getImageSize: function(imgUri) {
             return new Promise(
                 function(resolve, reject) {
-                    window.resolveLocalFileSystemURL(imgUri,
-                        function(fileEntryObj) {
-                            fileEntryObj.file(function(file) {
-                                console.log(file.size);
-                                resolve(file.size);
-                            });
-                        },
-                        reject
-                    );
+                    var tempImg = new Image();
+                    tempImg.src = imgUri;
+                    tempImg.onload = function() {
+                        try {
+                            var canvas = document.createElement('canvas');
+                            canvas.width = tempImg.width;
+                            canvas.height = tempImg.height;
+
+                            var ctx = canvas.getContext('2d');
+                            ctx.drawImage(tempImg, 0, 0, tempImg.width, tempImg.height);
+                            canvas.toBlob(function(blob) {
+                                resolve(blob.size);
+                            }, 'image/jpeg', 1);
+                        } catch (err) {
+                            reject(err);
+                        }
+                    };
                 }
             );
         },
