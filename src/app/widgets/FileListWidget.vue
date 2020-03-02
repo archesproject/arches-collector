@@ -86,11 +86,11 @@ export default {
                     self.value.forEach(function(photo) {
                         var blob = cachedAttachments[photo.file_id];
                         blobUtil.blobToBase64String(blob).then(function(base64String) {
-                            self.images[photo.file_id] = 'data:image/jpeg;base64,' + base64String;
                             setTimeout(function() {
                                 if (self.value.length > 0) {
                                     self.value[0].name = self.value[0].name + ' ';
                                     self.value[0].name = self.value[0].name.trimRight();
+                                    self.images[photo.file_id] = 'data:image/jpeg;base64,' + base64String;
                                 }
                             }, self.value.length * 100);
                         }).catch(function(err) {
