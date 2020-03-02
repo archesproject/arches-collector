@@ -228,7 +228,7 @@ export default {
                         };
 
                         if (targetImageSize) {
-                            targetImageSize = targetImageSize / 1.3 / 1.3;
+                            targetImageSize = targetImageSize / 1.3;
                             longSideMax = Math.max(tempImg.width, tempImg.height);
                             self.getImageSize(imgUri)
                                 .then(function(imageSize) {
@@ -270,19 +270,6 @@ export default {
                             reject(err);
                         }
                     };
-                }
-            );
-            return new Promise(
-                function(resolve, reject) {
-                    window.resolveLocalFileSystemURL(imgUri,
-                        function(fileEntryObj) {
-                            fileEntryObj.file(function(file) {
-                                console.log(file.size);
-                                resolve(file.size);
-                            });
-                        },
-                        reject
-                    );
                 }
             );
         },
