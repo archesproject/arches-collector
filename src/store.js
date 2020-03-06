@@ -91,6 +91,34 @@ var pouchDBs = (function() {
                     });
                 });
         },
+        uploadToCouch: function(projectId) {
+            var db = this._projectDBs[projectId];
+            return db.local.replicate.to(db.remote)
+                .on('complete', function(response) {
+                    return response;
+                })
+                .on('denied', function(err) {
+                    console.log(err, 'denied');
+                })
+                .on('error', function(err) {
+                    console.log(err, 'Unable to upload data.');
+                    throw err;
+                });
+        },
+        downloadFromCouch: function(projectId) {
+            var db = this._projectDBs[projectId];
+            return db.local.replicate.from(db.remote)
+                .on('complete', function(response) {
+                    return response;
+                })
+                .on('denied', function(err) {
+                    console.log(err, 'denied');
+                })
+                .on('error', function(err) {
+                    console.log(err, 'Unable to download data.');
+                    throw err;
+                });
+        },
         syncProject: function(projectId) {
             var self = this;
             return this._projectDBs[projectId].local
@@ -101,7 +129,7 @@ var pouchDBs = (function() {
                 .on('complete', function() {
                     // yay, we're in sync!
                     console.log('yay, we\'re in sync!');
-                    return self.syncImages(projectId);
+                    return self.uploadImages(projectId);
                 })
                 // .on('change', function(info) {
                 //     // handle change
@@ -127,19 +155,19 @@ var pouchDBs = (function() {
 
             // sync.cancel(); // whenever you want to cancel only if live = true
         },
-        syncImages: function(projectId) {
+        uploadImages: function(projectId) {
             var self = this;
             var server = this._projectDBs[projectId].server;
             return this._projectDBs[projectId].images
                 .allDocs({ include_docs: true })
                 .then(function(doc) {
                     var docs = doc.rows.map(function(x) {
-                        return self.syncImage(x.doc, server, projectId);
+                        return self.uploadImage(x.doc, server, projectId);
                     });
                     return Promise.all(docs);
                 });
         },
-        syncImage: function(doc, server, projectId) {
+        uploadImage: function(doc, server, projectId) {
             var self = this;
             var formData = new FormData();
             for (let [key, value] of Object.entries(doc)) {
@@ -726,17 +754,85 @@ var store = new Vuex.Store({
             pouchDBs.updateServerToken(server);
             return store.dispatch('saveServerInfoToPouch');
         },
-        syncRemote: function({ commit, state }, { projectId, syncAttempts }) {
+        syncArchesFromCouch: function({ commit, state }, projectId) {
             var server = store.getters.activeServer;
-            store.commit('clearNewlyCreatedResourcesAndTiles', projectId);
-            return pouchDBs.syncProject(projectId)
-                .then(function() {
-                    return fetch(server.url + '/sync/' + projectId, {
-                        method: 'GET',
-                        headers: new Headers({
-                            Authorization: 'Bearer ' + server.token
-                        })
+            return fetch(server.url + '/sync/' + projectId, {
+                method: 'GET',
+                headers: new Headers({
+                    Authorization: 'Bearer ' + server.token
+                })
+            })
+                .then(function(response) {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        this.$store.commit('handleAlert', 'oh snap');
+                        return;
+                    }
+                });
+        },
+        pollForSyncFinished: function({ commit, state }, logid) {
+            var interval = 1000;
+            var timeout = 20000;
+            var server = store.getters.activeServer;
+            var endTime = Number(new Date()) + (timeout || 2000);
+            interval = interval || 100;
+
+            var checkCondition = function(resolve, reject) {
+                // If the condition is met, we're done!
+                fetch(server.url + '/checksyncstatus/' + logid, {
+                    method: 'GET',
+                    headers: new Headers({
+                        Authorization: 'Bearer ' + server.token
+                    })
+                })
+                    .then(function(response) {
+                        console.log('CALLING TEMP....');
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            reject(new Error('timed out for pollForSyncFinished: ' + arguments));
+                        }
+                    })
+                    .then(function(result) {
+                        if (result.status === 'FINISHED') {
+                            resolve(result);
+                        }
+                        // If the condition isn't met but the timeout hasn't elapsed, go again
+                        else if (Number(new Date()) < endTime) {
+                            setTimeout(checkCondition, interval, resolve, reject);
+                        }
+                        // Didn't match and too much time, reject!
+                        else {
+                            reject(new Error('timed out for pollForSyncFinished: ' + arguments));
+                        }
                     });
+            };
+
+            return new Promise(checkCondition);
+        },
+        syncRemote: function({ commit, state }, { projectId, syncAttempts }) {
+            // var self = this;
+            store.commit('clearNewlyCreatedResourcesAndTiles', projectId);
+            return pouchDBs.uploadToCouch(projectId)
+                .then(function(response) {
+                    return pouchDBs.uploadImages(projectId);
+                })
+                .then(function(response) {
+                    return store.dispatch('syncArchesFromCouch', projectId);
+                    // return self.syncArchesFromCouch(projectId);
+                })
+                .then(function(response) {
+                    if (response) {
+                        // then wait for the arches to sync
+                        return store.dispatch('pollForSyncFinished', response.logid);
+                    } else {
+                        // something went wrong, so just pull the lates from couch
+                        return;
+                    }
+                })
+                .then(function() {
+                    return pouchDBs.downloadFromCouch(projectId);
                 })
                 .then(function(response) {
                     if (response.ok) {
