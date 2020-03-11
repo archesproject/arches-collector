@@ -55,8 +55,14 @@ export default {
             return this.$store.getters.activeProject ? this.$store.getters.activeProject.name : '';
         },
         alertMessage() {
+            var self = this;
             var alert = this.getAlert();
-            if (alert) { this.toastVisible = true; }
+            if (alert) {
+                this.toastVisible = true;
+                window.setTimeout(function() {
+                    self.dismissAlert();
+                }, 4000);
+            }
             return alert;
         }
     },

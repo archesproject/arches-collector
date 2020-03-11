@@ -24,12 +24,19 @@
                     swipeable collapse="" side="right"
                     :open.sync="showSideNav" class="sidenav toolbar-header">
                     <v-ons-page>
-                        <v-ons-list style="margin-top: 0px;">
-                            <v-ons-list-item tappable @click="confirmSync">
+                        <v-ons-list style="margin-top: 0px;" class="flex">
+                            <v-ons-list-item tappable @click="confirmSync" v-if="!syncing">
                                 <v-ons-icon class="text-color-dark icon" icon="fa-comments"></v-ons-icon>
                                 <div class="menu-text">
                                     <span class="text-color-dark label right-panel-label">Sync project data</span>
                                     <div class="menu-subtext">Send/get data from Arches instance</div>
+                                </div>
+                            </v-ons-list-item>
+                            <v-ons-list-item tappable @click="cancelSync" v-if="syncing">
+                                <v-ons-icon class="text-color-dark icon" icon="fa-stop-circle"></v-ons-icon>
+                                <div class="menu-text">
+                                    <span class="text-color-dark label right-panel-label">Click to Cancel Sync</span>
+                                    <div class="menu-subtext">STATUS: {{syncstatus}}</div>
                                 </div>
                             </v-ons-list-item>
                             <v-ons-progress-bar indeterminate v-if="syncing"></v-ons-progress-bar>
@@ -81,7 +88,6 @@ export default {
         return {
             showSideNav: false,
             syncing: false,
-            sync_failed: false,
             activeIndex: 0,
             lastsync: '',
             tabs: [
@@ -112,6 +118,9 @@ export default {
     computed: {
         title() {
             return this.tabs[this.activeIndex].label;
+        },
+        syncstatus() {
+            return this.$store.getters.getSyncStatus(this.project.id);
         }
     },
     methods: {
@@ -123,7 +132,7 @@ export default {
             var networkState = navigator.connection.type;
             var msg = 'Your curently not connected to WIFI.  Depending on the project, download size can be large.<br><br>Do you still want to sync the project over the cell network, or wait until you are connected to WIFI?';
 
-            if (networkState !== Connection.WIFI) {
+            if ('Connection' in window && networkState !== Connection.WIFI) {
                 this.$ons.notification.confirm({
                     messageHTML: msg,
                     callback: function(answer) {
@@ -141,13 +150,15 @@ export default {
         sync: function() {
             var self = this;
             this.syncing = true;
-            this.sync_failed = false;
             this.$store.dispatch('syncRemote', { projectId: this.project.id })
-                .catch(function(err) {
-                    self.syncfailed = true;
-                    self.syncErrorMessage = err.notification ? err.notification : 'Error. Unable to sync survey';
-                    self.handleAlert(self.syncErrorMessage);
-                })
+                .finally(function(doc) {
+                    self.syncing = false;
+                    self.lastsync = self.project.lastsync;
+                });
+        },
+        cancelSync: function() {
+            var self = this;
+            this.$store.dispatch('cancelSync', this.project.id)
                 .finally(function(doc) {
                     self.syncing = false;
                     self.lastsync = self.project.lastsync;
@@ -160,9 +171,6 @@ export default {
         sortByEditDate: function() {
             this.$refs.sripage.sortValue = 'editDate';
             this.$refs.sripage.sorted = !this.$refs.sripage.sorted;
-        },
-        handleAlert: function(alertMessage) {
-            this.$store.commit('handleAlert', alertMessage);
         }
     },
     created: function() {
@@ -342,5 +350,13 @@ export default {
 
 .toolbar-button--material > .instance-editor-back-btn {
     margin-left: -20px;
+}
+
+.flex > v-ons-list-item {
+    display: flex
+}
+
+.menu-text {
+    flex: 1 0 0;
 }
 </style>

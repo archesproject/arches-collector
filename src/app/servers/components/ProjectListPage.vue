@@ -260,15 +260,13 @@ export default {
             var self = this;
             self.syncing = true;
             self.$store.dispatch('syncRemote', { projectId: self.selectedProject.id })
-                .catch(function(err) {
-                    console.log(err);
-                    self.syncErrorMessage = err.notification ? err.notification : 'Error. Unable to sync project';
-                    self.handleAlert(self.syncErrorMessage);
-                })
                 .finally(function(doc) {
                     console.log('syncing done');
                     self.syncing = false;
                 });
+        },
+        cancelSync: function() {
+            this.$store.dispatch('cancelSync', this.selectedProject.id);
         },
         deleteProject: function(answer) {
             var self = this;
