@@ -834,6 +834,30 @@ var store = new Vuex.Store({
                     }
                 });
         },
+        initProject: function({ commit, state, getters }, { projectId, syncAttempts }) {
+            return pouchDBs.downloadFromCouch(projectId)
+                .then(function(response) {
+                    return store.dispatch('getTiles', projectId);
+                })
+                .then(function() {
+                    return store.commit('setLastProjectSync', projectId);
+                })
+                .catch(function(err) {
+                    console.log(err);
+                    if (err.status === 403) {
+                        var count = syncAttempts === undefined ? 0 : syncAttempts + 1;
+                        // console.log('syncAttempts:', count);
+                        if (count < 6) {
+                            return store.dispatch('refreshToken')
+                                .then(function() {
+                                    return store.dispatch('initProject', { projectId: projectId, syncAttempts: count });
+                                });
+                        }
+                    } else {
+                        store.commit('handleAlert', err);
+                    }
+                });
+        },
         initServerStoreFromPouch: function({ commit, state }) {
             pouchDBs.setupServer();
             return pouchDBs.servers.get('servers')
@@ -880,6 +904,7 @@ var store = new Vuex.Store({
                         };
                         project.cancelsync = false;
                         project.syncstatus = '';
+                        project.syncing = false;
                         if (server.user_preferences[server.user.id] === undefined) {
                             server.user_preferences[server.user.id] = { projects: {} };
                         }

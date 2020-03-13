@@ -11,69 +11,78 @@
                             <span class="panel-header-text label right-panel-label">All Projects</span>
                         </v-ons-list-item>
                         <v-ons-list-item tappable @click='toggleShowUnjoined'>
-                            <v-ons-icon class="text-color-dark left menu-icon" icon="fa-eye" v-if="showUnjoinedProjects === false"></v-ons-icon>
-                            <v-ons-icon class="text-color-dark left menu-icon" icon="fa-eye-slash" v-else></v-ons-icon>
+                            <v-ons-icon class="text-color-dark icon" icon="fa-eye" v-if="showUnjoinedProjects === false"></v-ons-icon>
+                            <v-ons-icon class="text-color-dark icon" icon="fa-eye-slash" v-else></v-ons-icon>
                             <div class="menu-text" v-if="showUnjoinedProjects === false">
                                 <span class="text-color-dark">Show all projects</span>
-                                <span class="menu-subtext">List all projects regardless of status</span>
+                                <div class="menu-subtext">List all projects regardless of status</div>
                             </div>
                             <div class="menu-text" v-else>
                                 <span class="text-color-dark">Show only projects I've downloaded</span>
-                                <span class="text-color-dark menu-subtext">List all projects ready for data collection</span>
+                                <div class="menu-subtext">List all projects ready for data collection</div>
                             </div>
-                        </v-ons-list-item @click="">
+                        </v-ons-list-item>
                         <v-ons-list-item tappable @click="$ons.notification.confirm({message: 'Deleting a project will remove all related data (synced and unsynced) from your device?. Are you sure you want to proceed?', callback: deleteAllInactiveProjects})">
-                            <v-ons-icon class="text-color-dark left menu-icon" icon="fa-trash"></v-ons-icon>
+                            <v-ons-icon class="text-color-dark icon" icon="fa-trash"></v-ons-icon>
                             <div class="menu-text">
                                 <span class="text-color-dark">Delete all inactive projects</span>
-                                <span class="text-color-dark menu-subtext">Remove all inactive projects from my device</span>
+                                <div class="menu-subtext">Remove all inactive projects from my device</div>
                             </div>
-                        </v-ons-list-item @click="">
+                        </v-ons-list-item>
                     </v-ons-list>
 
-                    <v-ons-list v-else>
-                        <v-ons-list-item class="panel-header">
-                            <span class="panel-header-text label right-panel-label" v-if="selectedProject">{{selectedProject.name}}</span>
-                        </v-ons-list-item @click="">
-                        <v-ons-list-item tappable @click="confirmSync" v-if="selectedProject && !selectedProject.unavailable && selectedProject.joined && selectedProject.active">
-                            <v-ons-icon class="text-color-dark left menu-icon" icon="fa-cloud-download-alt"></v-ons-icon>
-                            <div class="menu-text">
-                                <span class="text-color-dark">Sync all records in this project</span>
-                                <span class="menu-subtext">Sync all project data</span>
-                            </div>
-                        </v-ons-list-item @click="">
-                        <v-ons-progress-bar indeterminate v-if="syncing"></v-ons-progress-bar>
-                        <v-ons-list-item tappable v-if="selectedProject && !selectedProject.unavailable && selectedProject.joined && selectedProject.active" @click="$ons.notification.confirm({message: 'Are you sure you want to leave this project?. If you leave, this project will not sync with the remote server unless you rejoin.', callback: toggleProjectParticipation})">
-                            <v-ons-icon class="text-color-dark left menu-icon" icon="fa-toggle-off"></v-ons-icon>
-                            <div class="menu-text">
-                                <span class="text-color-dark">Leave project</span>
-                                <span class="menu-subtext">Stop participating in this active project</span>
-                            </div>
-                        </v-ons-list-item @click="">
-                        <v-ons-list-item tappable v-if="selectedProject && !selectedProject.joined && selectedProject.active" @click="function(){toggleProjectParticipation(1)}">
-                            <v-ons-icon class="text-color-dark left menu-icon" icon="fa-toggle-off"></v-ons-icon>
-                            <div class="menu-text">
-                                <span class="text-color-dark">Re-join project</span>
-                                <span class="menu-subtext">Resume participating in this active project</span>
-                            </div>
-                        </v-ons-list-item @click="">
-                        <v-ons-list-item tappable v-if="selectedProject && (selectedProject.unavailable || !selectedProject.active)" @click="$ons.notification.confirm({message: 'Are you sure you want to delete this Project? All unsynced data will be lost.', callback: deleteProject})">
-                            <v-ons-icon class="text-color-dark left menu-icon" icon="fa-trash"></v-ons-icon>
-                            <div class="menu-text">
-                                <span class="text-color-dark">Delete this project from my device</span>
-                                <span class="menu-subtext">Remove inactive project from my device</span>
-                            </div>
-                        </v-ons-list-item @click="">
-                        <v-ons-list-item tappable v-if="selectedProject && selectedProject.active && !selectedProject.unavailable && selectedProject.joined" v-bind:disabled="selectedProject.hasofflinebasemaps === false" @click="toggleMapSource">
-                            <v-ons-icon class="text-color-dark left menu-icon" v-if="selectedProject.useonlinebasemaps === true" icon="fa-toggle-off"></v-ons-icon>
-                            <v-ons-icon class="text-color-dark left menu-icon" v-if="selectedProject.useonlinebasemaps === false" icon="fa-toggle-on"></v-ons-icon>
-                            <v-ons-icon class="text-color-dark left menu-icon" v-if="selectedProject.useonlinebasemaps === undefined" icon="fa-globe"></v-ons-icon>
-                            <div class="menu-text">
-                                <span class="text-color-dark">Use offline maps</span>
-                                <span class="menu-subtext" v-if="selectedProject.hasofflinebasemaps">Use your projects offline basemap</span>
-                                <span class="menu-subtext" v-else>The project does not have an offline basemap</span>
-                            </div>
-                        </v-ons-list-item @click="">
+                    <v-ons-list v-else class="flex">
+                        <div v-for="project in projects" :key="project.id" v-if="project === selectedProject">
+                            <v-ons-list-item class="panel-header">
+                                <span class="panel-header-text label right-panel-label">{{project.name}}</span>
+                            </v-ons-list-item>
+                             <v-ons-list-item tappable @click="confirmSync" v-if="!project.unavailable && project.joined && project.active && !project.syncing">
+                                <v-ons-icon class="text-color-dark icon" icon="fa-cloud-download-alt"></v-ons-icon>
+                                <div class="menu-text">
+                                    <span class="text-color-dark">Sync all records in this project</span>
+                                    <div class="menu-subtext">Sync all project data</div>
+                                </div>
+                            </v-ons-list-item>
+                            <v-ons-list-item tappable @click="cancelSync" v-if="!project.unavailable && project.joined && project.active && project.syncing">
+                                <v-ons-icon class="text-color-dark icon" icon="fa-stop-circle"></v-ons-icon>
+                                <div class="menu-text">
+                                    <span class="text-color-dark">Click to Cancel Sync</span>
+                                    <div class="menu-subtext">STATUS: {{project.syncstatus}}</div>
+                                </div>
+                            </v-ons-list-item>
+                            <v-ons-progress-bar indeterminate v-if="project.syncing"></v-ons-progress-bar>
+                            <v-ons-list-item tappable v-if="!project.unavailable && project.joined && project.active" @click="$ons.notification.confirm({message: 'Are you sure you want to leave this project?. If you leave, this project will not sync with the remote server unless you rejoin.', callback: toggleProjectParticipation})">
+                                <v-ons-icon class="text-color-dark left menu-icon" icon="fa-toggle-off"></v-ons-icon>
+                                <div class="menu-text">
+                                    <span class="text-color-dark">Leave project</span>
+                                    <div class="menu-subtext">Stop participating in this active project</div>
+                                </div>
+                            </v-ons-list-item>
+                            <v-ons-list-item tappable v-if="!project.joined && project.active" @click="function(){toggleProjectParticipation(1)}">
+                                <v-ons-icon class="text-color-dark left menu-icon" icon="fa-toggle-off"></v-ons-icon>
+                                <div class="menu-text">
+                                    <span class="text-color-dark">Re-join project</span>
+                                    <div class="menu-subtext">Resume participating in this active project</div>
+                                </div>
+                            </v-ons-list-item>
+                            <v-ons-list-item tappable v-if="(project.unavailable || !project.active)" @click="$ons.notification.confirm({message: 'Are you sure you want to delete this Project? All unsynced data will be lost.', callback: deleteProject})">
+                                <v-ons-icon class="text-color-dark left menu-icon" icon="fa-trash"></v-ons-icon>
+                                <div class="menu-text">
+                                    <span class="text-color-dark">Delete this project from my device</span>
+                                    <div class="menu-subtext">Remove inactive project from my device</div>
+                                </div>
+                            </v-ons-list-item>
+                            <v-ons-list-item tappable v-if="project.active && !project.unavailable && project.joined" v-bind:disabled="project.hasofflinebasemaps === false" @click="toggleMapSource">
+                                <v-ons-icon class="text-color-dark left menu-icon" v-if="project.useonlinebasemaps === true" icon="fa-toggle-off"></v-ons-icon>
+                                <v-ons-icon class="text-color-dark left menu-icon" v-if="project.useonlinebasemaps === false" icon="fa-toggle-on"></v-ons-icon>
+                                <v-ons-icon class="text-color-dark left menu-icon" v-if="project.useonlinebasemaps === undefined" icon="fa-globe"></v-ons-icon>
+                                <div class="menu-text">
+                                    <span class="text-color-dark">Use offline maps</span>
+                                    <div class="menu-subtext" v-if="project.hasofflinebasemaps">Use your projects offline basemap</div>
+                                    <div class="menu-subtext" v-else>The project does not have an offline basemap</div>
+                                </div>
+                            </v-ons-list-item>
+                        </div>
                     </v-ons-list>
                 </v-ons-page>
             </v-ons-splitter-side>
@@ -99,8 +108,8 @@
 
                 <v-ons-list>
                     <v-ons-progress-bar indeterminate v-if="updating"></v-ons-progress-bar>
-                    <v-ons-progress-bar indeterminate v-if="syncing"></v-ons-progress-bar>
                     <v-ons-list-item tappable modifier="longdivider" v-for="project in projects" :key="project.id" v-bind:class="{ deleted: project.unavailable || !project.active, unjoined: project.joined === false }">
+                        <v-ons-progress-bar indeterminate v-if="syncing[project.id]"></v-ons-progress-bar>
                         <span class="left" style="display: flex; flex-direction: column; align-items: baseline; line-height: 1.1em; border-style: 1px; background-color: light-blue; border-color: dark-blue;" @click="segueToProject(project);">
                             <span class="left-project-text" v-if="project.joined === false && project.active">You've left this project</span>
                             <span class="project-name">{{project.name}}</span>
@@ -121,8 +130,8 @@
                         <span class="center" @click="segueToProject(project);"></span>
                         <v-ons-icon class="right" style="display: flex; padding-left:10px; padding-right: 18px;" icon="fa-ellipsis-v" v-if="project.joined !== undefined || !project.active" @click="toggleSideNav(project)"></v-ons-icon>
 
-                        <v-ons-icon class="right" style="display: flex; padding-left:10px" icon="fa-cloud-download-alt" v-if="project.joined === undefined && project.active && !project.unavailable" @click="function(){selectedProject = project; confirmSync('project-initialization')}"></v-ons-icon>
-                        <v-ons-icon class="right" style="display: flex; padding-left:10px" icon="fa-trash" v-if="project.unavailable" @click="function(){selectedProject = project; deleteProject(1); refreshProjectList()}"></v-ons-icon>
+                        <v-ons-icon class="right" style="display: flex; padding-left:10px" icon="fa-cloud-download-alt" v-if="project.joined === undefined && project.active && !project.unavailable" @click="function(){selectedProject = project; confirmSync('project-initialization'); refreshProjectList()}"></v-ons-icon>
+                        <v-ons-icon class="right" style="display: flex; padding-left:10px" icon="fa-trash" v-if="project.unavailable" @click="function(){selectedProject = project; deleteProject(1);}"></v-ons-icon>
                     </v-ons-list-item>
                     <v-ons-list-item v-if="projects.length === 0">
                         <div class="summary-panel relative">
@@ -150,7 +159,7 @@ export default {
         return {
             state: 'initial',
             showSideNav: false,
-            syncing: false,
+            syncing: {},
             updating: false,
             selectedProject: undefined,
             showAllProjectsMenuContent: true,
@@ -201,6 +210,9 @@ export default {
             set: function(arr) {
                 return arr;
             }
+        },
+        syncstatus() {
+            return this.$store.getters.getSyncStatus(this.selectedProject.id);
         }
     },
     methods: {
@@ -246,27 +258,35 @@ export default {
                     messageHTML: msg,
                     callback: function(answer) {
                         if (answer === 1) {
-                            self.sync();
+                            self.sync(downloadType);
                         }
                     },
                     buttonLabels: buttonLabels,
                     title: 'Network Status'
                 });
             } else {
-                self.sync();
+                self.sync(downloadType);
             }
         },
-        sync: function() {
+        sync: function(downloadType) {
             var self = this;
-            self.syncing = true;
-            self.$store.dispatch('syncRemote', { projectId: self.selectedProject.id })
+            var syncOperation = downloadType === 'project-initialization' ? 'initProject' : 'syncRemote';
+            this.selectedProject.syncing = true;
+            self.$store.dispatch(syncOperation, { projectId: self.selectedProject.id })
                 .finally(function(doc) {
                     console.log('syncing done');
-                    self.syncing = false;
+                    self.selectedProject.syncing = false;
                 });
         },
         cancelSync: function() {
-            this.$store.dispatch('cancelSync', this.selectedProject.id);
+            var self = this;
+            this.$store.dispatch('cancelSync', this.selectedProject.id)
+                .finally(function(doc) {
+                    self.selectedProject.syncing = false;
+                });
+        },
+        getSyncStatus: function(selectedProject) {
+            return this.$store.getters.getSyncStatus(this.selectedProject.id);
         },
         deleteProject: function(answer) {
             var self = this;
@@ -394,6 +414,32 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
+    .sidenav {
+        height: 100%;
+        width: 60%;
+        background-color: white;
+        overflow-x: hidden;
+        font-size: 16px;
+    }
+
+    .sidenav .icon {
+        font-size: 14px;
+        font-family: FontAwesome5;
+        width: 25px;
+    }
+
+    .sidenav a {
+        padding: 22px;
+        text-decoration: none;
+        display: block;
+        transition: 0.3s;
+        border-bottom: solid 2px #e8e8e8;
+    }
+
+    .sidenav a:hover {
+        color: #f1f1f1;
+    }
+
     .inactive_project{
         background-color: #f3f3f3;
     }
@@ -427,14 +473,13 @@ export default {
 
     .menu-icon {
         width: 25px;
-        display: flex;
     }
 
-    .menu-text {
+    /*.menu-text {
         font-size: 15px;
         display: flex;
         flex-direction: column;
-    }
+    }*/
 
     ons-list-item[disabled] {
       background-color: #ccc;
@@ -528,6 +573,14 @@ export default {
         padding-top: 15px;
         padding-left: 3px;
         font-size: 24px;
+    }
+
+    .flex > v-ons-list-item {
+        display: flex
+    }
+
+    .menu-text {
+        flex: 1 0 0;
     }
 
 </style>

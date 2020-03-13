@@ -29,7 +29,7 @@
 import moment from 'moment';
 export default {
     name: 'SelectResourceInstancePage',
-    props: ['project', 'lastsync'],
+    props: ['project'],
     data() {
         return {
             state: 'initial',
@@ -42,11 +42,14 @@ export default {
         };
     },
     watch: {
-        lastsync: function(val) {
+        lastprojectsync: function(val) {
             this.getResourceData();
         }
     },
     computed: {
+        lastprojectsync: function() {
+            return JSON.stringify(this.project.lastsync);
+        },
         resource_instances: function() {
             var self = this;
             if (this.sorted) {

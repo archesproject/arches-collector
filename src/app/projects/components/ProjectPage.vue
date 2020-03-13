@@ -25,21 +25,21 @@
                     :open.sync="showSideNav" class="sidenav toolbar-header">
                     <v-ons-page>
                         <v-ons-list style="margin-top: 0px;" class="flex">
-                            <v-ons-list-item tappable @click="confirmSync" v-if="!syncing">
+                            <v-ons-list-item tappable @click="confirmSync" v-if="!project.syncing">
                                 <v-ons-icon class="text-color-dark icon" icon="fa-comments"></v-ons-icon>
                                 <div class="menu-text">
                                     <span class="text-color-dark label right-panel-label">Sync project data</span>
                                     <div class="menu-subtext">Send/get data from Arches instance</div>
                                 </div>
                             </v-ons-list-item>
-                            <v-ons-list-item tappable @click="cancelSync" v-if="syncing">
+                            <v-ons-list-item tappable @click="cancelSync" v-if="project.syncing">
                                 <v-ons-icon class="text-color-dark icon" icon="fa-stop-circle"></v-ons-icon>
                                 <div class="menu-text">
                                     <span class="text-color-dark label right-panel-label">Click to Cancel Sync</span>
-                                    <div class="menu-subtext">STATUS: {{syncstatus}}</div>
+                                    <div class="menu-subtext">STATUS: {{project.syncstatus}}</div>
                                 </div>
                             </v-ons-list-item>
-                            <v-ons-progress-bar indeterminate v-if="syncing"></v-ons-progress-bar>
+                            <v-ons-progress-bar indeterminate v-if="project.syncing"></v-ons-progress-bar>
                             <v-ons-list-item tappable @click="sortByName">
                                 <v-ons-icon class="text-color-dark icon" icon="fa-sort-alpha-down"></v-ons-icon>
                                 <div class="menu-text">
@@ -63,8 +63,8 @@
                       <v-ons-tabbar swipeable animation="none" :index.sync="activeIndex">
                         <template slot="pages">
                             <select-resource-type-page></select-resource-type-page>
-                            <select-resource-instance-page :project="project" :lastsync="lastsync" ref="sripage"></select-resource-instance-page>
-                            <project-map-page :project="project" :lastsync="lastsync"></project-map-page>
+                            <select-resource-instance-page :project="project" ref="sripage"></select-resource-instance-page>
+                            <project-map-page :project="project"></project-map-page>
                             <project-summary-page :project="project"></project-summary-page>
                         </template>
 
@@ -87,9 +87,7 @@ export default {
     data() {
         return {
             showSideNav: false,
-            syncing: false,
             activeIndex: 0,
-            lastsync: '',
             tabs: [
                 {
                     icon: 'fa-plus-circle',
@@ -118,9 +116,6 @@ export default {
     computed: {
         title() {
             return this.tabs[this.activeIndex].label;
-        },
-        syncstatus() {
-            return this.$store.getters.getSyncStatus(this.project.id);
         }
     },
     methods: {
@@ -149,19 +144,17 @@ export default {
         },
         sync: function() {
             var self = this;
-            this.syncing = true;
+            this.project.syncing = true;
             this.$store.dispatch('syncRemote', { projectId: this.project.id })
                 .finally(function(doc) {
-                    self.syncing = false;
-                    self.lastsync = self.project.lastsync;
+                    self.project.syncing = false;
                 });
         },
         cancelSync: function() {
             var self = this;
             this.$store.dispatch('cancelSync', this.project.id)
                 .finally(function(doc) {
-                    self.syncing = false;
-                    self.lastsync = self.project.lastsync;
+                    self.project.syncing = false;
                 });
         },
         sortByName: function() {
@@ -207,10 +200,6 @@ export default {
 }
 
 .right-panel-label {
-    font-size: 14px;
-}
-
-.sidenav .icon {
     font-size: 14px;
 }
 
@@ -312,6 +301,7 @@ export default {
 }
 
 .sidenav .icon {
+    font-size: 14px;
     font-family: FontAwesome5;
     width: 25px;
 }
