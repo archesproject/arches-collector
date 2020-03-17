@@ -326,12 +326,13 @@ export default {
 .instance-list-back-btn {
     color: #CDF2F1;
     font-size: 24px;
-    padding: 3px 6px;
+    padding: 6px;
     border-radius: 50%;
     border: 1px solid #429895;
     margin-left: -4px;
     background: #6BBBB8;
-
+    width: 35px;
+    height: 35px;
 }
 
 .toolbar-button--material > a .instance-list-back-btn {
