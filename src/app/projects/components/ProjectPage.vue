@@ -24,15 +24,22 @@
                     swipeable collapse="" side="right"
                     :open.sync="showSideNav" class="sidenav toolbar-header">
                     <v-ons-page>
-                        <v-ons-list style="margin-top: 0px;">
-                            <v-ons-list-item tappable @click="confirmSync">
+                        <v-ons-list style="margin-top: 0px;" class="flex">
+                            <v-ons-list-item tappable @click="confirmSync" v-if="!project.syncing">
                                 <v-ons-icon class="text-color-dark icon" icon="fa-comments"></v-ons-icon>
                                 <div class="menu-text">
                                     <span class="text-color-dark label right-panel-label">Sync project data</span>
                                     <div class="menu-subtext">Send/get data from Arches instance</div>
                                 </div>
                             </v-ons-list-item>
-                            <v-ons-progress-bar indeterminate v-if="syncing"></v-ons-progress-bar>
+                            <v-ons-list-item tappable @click="cancelSync" v-if="project.syncing">
+                                <v-ons-icon class="text-color-dark icon" icon="fa-stop-circle"></v-ons-icon>
+                                <div class="menu-text">
+                                    <span class="text-color-dark label right-panel-label">Click to Cancel Sync</span>
+                                    <div class="menu-subtext">STATUS: {{project.syncstatus}}</div>
+                                </div>
+                            </v-ons-list-item>
+                            <v-ons-progress-bar indeterminate v-if="project.syncing"></v-ons-progress-bar>
                             <v-ons-list-item tappable @click="sortByName">
                                 <v-ons-icon class="text-color-dark icon" icon="fa-sort-alpha-down"></v-ons-icon>
                                 <div class="menu-text">
@@ -56,8 +63,8 @@
                       <v-ons-tabbar swipeable animation="none" :index.sync="activeIndex">
                         <template slot="pages">
                             <select-resource-type-page></select-resource-type-page>
-                            <select-resource-instance-page :project="project" :lastsync="lastsync" ref="sripage"></select-resource-instance-page>
-                            <project-map-page :project="project" :lastsync="lastsync"></project-map-page>
+                            <select-resource-instance-page :project="project" ref="sripage"></select-resource-instance-page>
+                            <project-map-page :project="project"></project-map-page>
                             <project-summary-page :project="project"></project-summary-page>
                         </template>
 
@@ -80,10 +87,7 @@ export default {
     data() {
         return {
             showSideNav: false,
-            syncing: false,
-            sync_failed: false,
             activeIndex: 0,
-            lastsync: '',
             tabs: [
                 {
                     icon: 'fa-plus-circle',
@@ -123,7 +127,7 @@ export default {
             var networkState = navigator.connection.type;
             var msg = 'Your curently not connected to WIFI.  Depending on the project, download size can be large.<br><br>Do you still want to sync the project over the cell network, or wait until you are connected to WIFI?';
 
-            if (networkState !== Connection.WIFI) {
+            if ('Connection' in window && networkState !== Connection.WIFI) {
                 this.$ons.notification.confirm({
                     messageHTML: msg,
                     callback: function(answer) {
@@ -140,17 +144,17 @@ export default {
         },
         sync: function() {
             var self = this;
-            this.syncing = true;
-            this.sync_failed = false;
+            this.project.syncing = true;
             this.$store.dispatch('syncRemote', { projectId: this.project.id })
-                .catch(function(err) {
-                    self.syncfailed = true;
-                    self.syncErrorMessage = err.notification ? err.notification : 'Error. Unable to sync survey';
-                    self.handleAlert(self.syncErrorMessage);
-                })
                 .finally(function(doc) {
-                    self.syncing = false;
-                    self.lastsync = self.project.lastsync;
+                    self.project.syncing = false;
+                });
+        },
+        cancelSync: function() {
+            var self = this;
+            this.$store.dispatch('cancelSync', this.project.id)
+                .finally(function(doc) {
+                    self.project.syncing = false;
                 });
         },
         sortByName: function() {
@@ -160,9 +164,6 @@ export default {
         sortByEditDate: function() {
             this.$refs.sripage.sortValue = 'editDate';
             this.$refs.sripage.sorted = !this.$refs.sripage.sorted;
-        },
-        handleAlert: function(alertMessage) {
-            this.$store.commit('handleAlert', alertMessage);
         }
     },
     created: function() {
@@ -199,10 +200,6 @@ export default {
 }
 
 .right-panel-label {
-    font-size: 14px;
-}
-
-.sidenav .icon {
     font-size: 14px;
 }
 
@@ -304,6 +301,7 @@ export default {
 }
 
 .sidenav .icon {
+    font-size: 14px;
     font-family: FontAwesome5;
     width: 25px;
 }
@@ -328,12 +326,13 @@ export default {
 .instance-list-back-btn {
     color: #CDF2F1;
     font-size: 24px;
-    padding: 3px 6px;
+    padding: 6px;
     border-radius: 50%;
     border: 1px solid #429895;
     margin-left: -4px;
     background: #6BBBB8;
-
+    width: 35px;
+    height: 35px;
 }
 
 .toolbar-button--material > a .instance-list-back-btn {
@@ -342,5 +341,13 @@ export default {
 
 .toolbar-button--material > .instance-editor-back-btn {
     margin-left: -20px;
+}
+
+.flex > v-ons-list-item {
+    display: flex
+}
+
+.menu-text {
+    flex: 1 0 0;
 }
 </style>

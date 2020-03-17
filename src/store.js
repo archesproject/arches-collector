@@ -91,55 +91,35 @@ var pouchDBs = (function() {
                     });
                 });
         },
-        syncProject: function(projectId) {
-            var self = this;
-            return this._projectDBs[projectId].local
-                .sync(this._projectDBs[projectId].remote, {
-                    // live: true,
-                    // retry: true
-                })
-                .on('complete', function() {
-                    // yay, we're in sync!
-                    console.log('yay, we\'re in sync!');
-                    return self.syncImages(projectId);
-                })
-                // .on('change', function(info) {
-                //     // handle change
-                // })
-                // .on('paused', function(err) {
-                //     // replication paused (e.g. replication up to date, user went offline)
-                // })
-                // .on('active', function() {
-                //     // replicate resumed (e.g. new changes replicating, user went back online)
-                // })
-                .on('denied', function(err) {
-                    // a document failed to replicate (e.g. due to permissions)
-                    console.log(err, 'denied');
-                })
-                .on('error', function(err) {
-                // boo, we hit an error!
-                    console.log(err, 'Unable to sync. Please check your data connection and try again.');
-                    // if(err.status === 403) {
-                    // Promise.reject(new Error(err));
-                    throw err;
-                    // }
+        uploadToCouch: function(projectId) {
+            var db = this._projectDBs[projectId];
+            return db.local.replicate.to(db.remote)
+                .catch(function(err) {
+                    console.log(err);
+                    throw new Error('Unable to upload data.  Did you go offline?');
                 });
-
-            // sync.cancel(); // whenever you want to cancel only if live = true
         },
-        syncImages: function(projectId) {
+        downloadFromCouch: function(projectId) {
+            var db = this._projectDBs[projectId];
+            return db.local.replicate.from(db.remote)
+                .catch(function(err) {
+                    console.log(err);
+                    throw new Error('Unable to download data.  Did you go offline?');
+                });
+        },
+        uploadImages: function(projectId) {
             var self = this;
             var server = this._projectDBs[projectId].server;
             return this._projectDBs[projectId].images
                 .allDocs({ include_docs: true })
                 .then(function(doc) {
                     var docs = doc.rows.map(function(x) {
-                        return self.syncImage(x.doc, server, projectId);
+                        return self.uploadImage(x.doc, server, projectId);
                     });
                     return Promise.all(docs);
                 });
         },
-        syncImage: function(doc, server, projectId) {
+        uploadImage: function(doc, server, projectId) {
             var self = this;
             var formData = new FormData();
             for (let [key, value] of Object.entries(doc)) {
@@ -490,6 +470,11 @@ var store = new Vuex.Store({
         },
         getAlertMessage: function(state) {
             return state.alerts.length > 0 ? state.alerts[0] : false;
+        },
+        getSyncStatus: function(state, getters) {
+            return function(projectId) {
+                return getters.activeServer.projects[projectId].syncstatus;
+            };
         }
     },
     mutations: {
@@ -726,29 +711,117 @@ var store = new Vuex.Store({
             pouchDBs.updateServerToken(server);
             return store.dispatch('saveServerInfoToPouch');
         },
-        syncRemote: function({ commit, state }, { projectId, syncAttempts }) {
+        syncArchesFromCouch: function({ commit, state }, projectId) {
             var server = store.getters.activeServer;
-            store.commit('clearNewlyCreatedResourcesAndTiles', projectId);
-            return pouchDBs.syncProject(projectId)
-                .then(function() {
-                    return fetch(server.url + '/sync/' + projectId, {
+            return fetch(server.url + '/sync/' + projectId, {
+                method: 'GET',
+                headers: new Headers({
+                    Authorization: 'Bearer ' + server.token
+                })
+            })
+                .then(function(response) {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        this.$store.commit('handleAlert', 'oh snap');
+                    }
+                });
+        },
+        cancelSync: function({ getters }, projectId) {
+            var project = getters.activeServer.projects[projectId];
+            project.cancelsync = true;
+            project.syncstatus = 'Canceling sync...';
+        },
+        pollForSyncFinished: function({ getters }, { projectId, logid }) {
+            var interval = 1000;
+            var maxinterval = 30000;
+            var backoffthreshold = 60000;
+            var server = store.getters.activeServer;
+            var project = server.projects[projectId];
+            var pollingstart = new Date().getTime();
+
+            var checkSyncStatus = function(resolve, reject) {
+                // backoff algorithm to increase the polling interval
+                if (new Date().getTime() > (pollingstart + backoffthreshold)) {
+                    interval = Math.min(interval * 2, maxinterval);
+                    pollingstart = new Date().getTime();
+                }
+                if (project.cancelsync) {
+                    resolve({'ok': true});
+                } else {
+                    return fetch(server.url + '/checksyncstatus/' + logid, {
                         method: 'GET',
                         headers: new Headers({
                             Authorization: 'Bearer ' + server.token
                         })
-                    });
-                })
+                    })
+                        .then(function(response) {
+                            console.log('POLLING....', 'every', interval/1000, 'seconds');
+                            if (response.ok) {
+                                return response.json();
+                            } else {
+                                throw new Error();
+                            }
+                        })
+                        .then(function(result) {
+                            if (result.status === 'FINISHED') {
+                                resolve({'ok': true});
+                            } else if (result.status === 'FAILED') {
+                                reject('There was an issue syncing data with Arches and couch, but your data uploaded without issue.');
+                            } else {
+                                setTimeout(checkSyncStatus, interval, resolve, reject);
+                            }
+                        })
+                        .catch(function(err) {
+                            console.log(err);
+                            reject('There was an issue contacting the server.  Did you go offline?');
+                        });
+                }
+            };
+
+            return new Promise(checkSyncStatus);
+        },
+        syncRemote: function({ commit, state, getters }, { projectId, syncAttempts }) {
+            var project = getters.activeServer.projects[projectId];
+            project.cancelsync = false;
+            project.syncstatus = 'Uploading to couch....';
+            store.commit('clearNewlyCreatedResourcesAndTiles', projectId);
+            return pouchDBs.uploadToCouch(projectId)
                 .then(function(response) {
-                    if (response.ok) {
-                        return store.dispatch('getTiles', projectId);
-                    } else {
-                        throw response;
+                    if (!project.cancelsync) {
+                        project.syncstatus = 'Uploading images....';
+                        return pouchDBs.uploadImages(projectId);
                     }
                 })
+                .then(function(response) {
+                    if (!project.cancelsync) {
+                        project.syncstatus = 'Syncing Arches with couch....';
+                        return store.dispatch('syncArchesFromCouch', projectId);
+                    }
+                })
+                .then(function(response) {
+                    if (!project.cancelsync) {
+                        return store.dispatch('pollForSyncFinished', {'projectId': projectId, 'logid': response.logid});
+                    }
+                })
+                .then(function(response) {
+                    if (!project.cancelsync) {
+                        project.syncstatus = 'Downloading from couch....';
+                        return pouchDBs.downloadFromCouch(projectId);
+                    }
+                })
+                .then(function(response) {
+                    return store.dispatch('getTiles', projectId);
+                })
                 .then(function() {
-                    return store.commit('setLastProjectSync', projectId);
+                    return new Promise(function(resolve, reject) {
+                        project.syncstatus = 'Sync completed....';
+                        store.commit('setLastProjectSync', projectId);
+                        setTimeout(resolve, 1500);
+                    });
                 })
                 .catch(function(err) {
+                    console.log(err);
                     if (err.status === 403) {
                         var count = syncAttempts === undefined ? 0 : syncAttempts + 1;
                         // console.log('syncAttempts:', count);
@@ -758,8 +831,33 @@ var store = new Vuex.Store({
                                     return store.dispatch('syncRemote', { projectId: projectId, syncAttempts: count });
                                 });
                         }
+                    } else {
+                        store.commit('handleAlert', err);
                     }
-                    throw err;
+                });
+        },
+        initProject: function({ commit, state, getters }, { projectId, syncAttempts }) {
+            return pouchDBs.downloadFromCouch(projectId)
+                .then(function(response) {
+                    return store.dispatch('getTiles', projectId);
+                })
+                .then(function() {
+                    return store.commit('setLastProjectSync', projectId);
+                })
+                .catch(function(err) {
+                    console.log(err);
+                    if (err.status === 403) {
+                        var count = syncAttempts === undefined ? 0 : syncAttempts + 1;
+                        // console.log('syncAttempts:', count);
+                        if (count < 6) {
+                            return store.dispatch('refreshToken')
+                                .then(function() {
+                                    return store.dispatch('initProject', { projectId: projectId, syncAttempts: count });
+                                });
+                        }
+                    } else {
+                        store.commit('handleAlert', err);
+                    }
                 });
         },
         initServerStoreFromPouch: function({ commit, state }) {
@@ -806,6 +904,9 @@ var store = new Vuex.Store({
                             date: '',
                             time: ''
                         };
+                        project.cancelsync = false;
+                        project.syncstatus = '';
+                        project.syncing = false;
                         if (server.user_preferences[server.user.id] === undefined) {
                             server.user_preferences[server.user.id] = { projects: {} };
                         }

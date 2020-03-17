@@ -226,7 +226,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .list-item .ons-icon {
-    font-size: 30px;
+    font-size: 22px;
 }
 
 .left-button-text{
@@ -293,8 +293,8 @@ export default {
 }
 
 .add-application-icon {
-    padding-top: 3px;
-    padding-left: 3px;
+    padding-top: 7px;
+    padding-left: 7px;
     color: #fff;
 }
 
@@ -362,8 +362,8 @@ export default {
 }
 
 .list-item--material__center .manage-app-btn {
-  margin-top: 9px;
-  margin-left: 13px;
+  margin-top: 5px;
+  margin-left: 11px;
 }
 
 .relative {
