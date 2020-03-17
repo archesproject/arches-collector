@@ -61,7 +61,7 @@ export default {
                 this.toastVisible = true;
                 window.setTimeout(function() {
                     self.dismissAlert();
-                }, 4000);
+                }, 4500);
             }
             return alert;
         }

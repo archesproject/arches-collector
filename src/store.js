@@ -766,6 +766,8 @@ var store = new Vuex.Store({
                         .then(function(result) {
                             if (result.status === 'FINISHED') {
                                 resolve({'ok': true});
+                            } else if (result.status === 'FAILED') {
+                                reject('There was an issue syncing data with Arches and couch, but your data uploaded without issue.');
                             } else {
                                 setTimeout(checkSyncStatus, interval, resolve, reject);
                             }
