@@ -112,8 +112,8 @@ var pouchDBs = (function() {
             var server = this._projectDBs[projectId].server;
             return this._projectDBs[projectId].images
                 .allDocs({ include_docs: true })
-                .then(function(doc) {
-                    var docs = doc.rows.map(function(x) {
+                .then(function(imageDocs) {
+                    var docs = imageDocs.rows.map(function(x, i) {
                         return self.uploadImage(x.doc, server, projectId);
                     });
                     return Promise.all(docs);
@@ -127,27 +127,26 @@ var pouchDBs = (function() {
                     formData.append(key, value);
                 }
             }
-            for (let value of Object.values(doc._attachments)) {
-                self._projectDBs[projectId].images.getAttachment(doc._id, doc.file_id)
-                    .then(function(blobOrBuffer) {
-                        formData.append('data', blobOrBuffer, value.content_type);
-                        formData.append('content_type', value.content_type);
+            var attachment = doc._attachments[Object.keys(doc._attachments)[0]];
+            return self._projectDBs[projectId].images.getAttachment(doc._id, doc.file_id)
+                .then(function(blobOrBuffer) {
+                    formData.append('data', blobOrBuffer, attachment.content_type);
+                    formData.append('content_type', attachment.content_type);
 
-                        return fetch(server.url.replace(/\/$/, '') + '/images', {
-                            method: 'POST',
-                            body: formData,
-                            headers: new Headers({
-                                Authorization: 'Bearer ' + server.token
-                            })
-                        }).then(function(response) {
-                            if (response.ok) {
-                                // if the images was successfully uploaded then we can remove it
-                                // so that it doesn't get uploaded on subsequent sync opertations
-                                self._projectDBs[projectId].images.remove(doc);
-                            }
-                        });
+                    return fetch(server.url.replace(/\/$/, '') + '/images', {
+                        method: 'POST',
+                        body: formData,
+                        headers: new Headers({
+                            Authorization: 'Bearer ' + server.token
+                        })
+                    }).then(function(response) {
+                        if (response.ok) {
+                            // if the images was successfully uploaded then we can remove it
+                            // so that it doesn't get uploaded on subsequent sync opertations
+                            return self._projectDBs[projectId].images.remove(doc);
+                        }
                     });
-            }
+                });
         },
         base64toBlob: function(b64Data, contentType = '', sliceSize = 512) {
             const byteCharacters = atob(b64Data);
@@ -634,7 +633,11 @@ var store = new Vuex.Store({
             return fetch(url.replace(/\/$/, '') + '/auth/user_profile', {
                 method: 'POST',
                 body: formData
-            });
+            })
+                .catch(function(err) {
+                    console.log(err);
+                    throw new Error('There was an issue contacting the server.  Did you go offline?');
+                });
         },
         getClientId: function({ commit, state }, { url, username, password }) {
             var self = this;
