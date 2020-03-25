@@ -65,7 +65,7 @@ export default {
             authenticating: false,
             error: false,
             error_message: '',
-            default_error_message: 'Network response was not ok.'
+            default_error_message: 'An error occurred with status: errorCode. See Administrator.'
         };
     },
     computed: {
@@ -88,7 +88,7 @@ export default {
                         if (response.status === 401) {
                             throw new Error('The supplied username or password was not valid.');
                         } else {
-                            throw new Error(self.default_error_message);
+                            throw new Error(self.default_error_message.replace("errorCode", response.status));
                         }
                     }
                 })
@@ -105,7 +105,7 @@ export default {
                         } else if (response.status === 500) {
                             throw new Error('The instance you are trying to access does not have a registered application. Contact Administrator.');
                         } else {
-                            throw new Error(self.default_error_message);
+                            throw new Error(self.default_error_message.replace("errorCode", response.status));
                         }
                     }
                 })
@@ -120,7 +120,7 @@ export default {
                         if (response.status === 401) {
                             throw new Error('Access Token denied. Contact Administrator to check ClientId or user access to project.');
                         } else {
-                            throw new Error(self.default_error_message);
+                            throw new Error(self.default_error_message.replace("errorCode", response.status));
                         }
                     }
                 })
