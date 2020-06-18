@@ -321,6 +321,7 @@ var pouchDBs = (function() {
     servers: {
         server_url: {
             url: server_url,
+            version: version_number,
             user: userObj,
             nickname: nickname,
             username: username, <-- maybe we don't store
@@ -625,6 +626,61 @@ var store = new Vuex.Store({
                     console.log(err);
                 });
         },
+        loginUser: function({ commit, state }, selectedServer) {
+            var usernamePasswordErrorMsg = 'The supplied username or password was not valid.';
+            var defaultNetworkErrorMsg = 'An error occurred with status: errorCode. See Administrator.';
+            return store.dispatch('getUserProfile', selectedServer)
+                .then(function(response) {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        if (response.status === 401) {
+                            throw new Error(usernamePasswordErrorMsg);
+                        } else {
+                            throw new Error(defaultNetworkErrorMsg.replace('errorCode', response.status));
+                        }
+                    }
+                })
+                .then(function(response) {
+                    selectedServer.user = response;
+                    return store.dispatch('getServerSettings', selectedServer);
+                })
+                .then(function(response) {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        if (response.status === 401) {
+                            throw new Error(usernamePasswordErrorMsg);
+                        } else {
+                            throw new Error(defaultNetworkErrorMsg.replace('errorCode', response.status));
+                        }
+                    }
+                })
+                .then(function(response) {
+                    if (response.clientid !== '') {
+                        selectedServer.client_id = response.clientid;
+                        selectedServer.version = !!response.version ? response.version : '4.0.0';
+                        return store.dispatch('getToken', selectedServer);
+                    }
+                    throw new Error('The client id on the server appears to be blank. See Administrator.');
+                })
+                .then(function(response) {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        if (response.status === 401) {
+                            throw new Error('Access Token denied. Contact Administrator to check ClientId or user access to project.');
+                        } else {
+                            throw new Error(defaultNetworkErrorMsg.replace('errorCode', response.status));
+                        }
+                    }
+                })
+                .then(function(response) {
+                    selectedServer.token = response.access_token;
+                    selectedServer.refresh_token = response.refresh_token;
+                    return selectedServer;
+                });
+        },
         getUserProfile: function({ commit, state }, { url, username, password }) {
             var formData = new FormData();
             formData.append('username', username);
@@ -639,10 +695,34 @@ var store = new Vuex.Store({
                     throw new Error('There was an issue contacting the server.  Did you go offline?');
                 });
         },
-        getClientId: function({ commit, state }, { url, username, password }) {
-            var self = this;
-            self.error = false;
+        getServerSettings: function({ commit, state }, { url, username, password }) {
+            var formData = new FormData();
+            formData.append('username', username);
+            formData.append('password', password);
 
+            return fetch(url.replace(/\/$/, '') + '/auth/server_settings', {
+                method: 'POST',
+                body: formData,
+                headers: new Headers({
+                    // 'Content-Type': 'text/plain'
+                    // 'Content-Type': 'application/x-www-form-urlencoded'
+                })
+            })
+                .then(function(response) {
+                    if (response.ok) {
+                        return response;
+                    } else {
+                        if (response.status === 403) {
+                            // this assumes that we're hitting a version of arches < 5.x
+                            return store.dispatch('getClientId', { 'url': url, 'username': username, 'password': password });
+                        }
+                    }
+                });
+        },
+        //
+        // This is here for backward compatibility to Arches v4
+        //
+        getClientId: function({ commit, state }, { url, username, password }) {
             var formData = new FormData();
             formData.append('username', username);
             formData.append('password', password);
@@ -657,9 +737,6 @@ var store = new Vuex.Store({
             });
         },
         getToken: function({ commit, state }, { url, username, password, client_id }) {
-            var self = this;
-            self.error = false;
-
             var formData = new FormData();
             formData.append('username', username);
             formData.append('password', password);

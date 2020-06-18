@@ -2,11 +2,10 @@
 .DS_Store
 
 /dist/
+test/*
 
 # Logs
 *.log
-/test/unit/coverage/
-/test/e2e/reports/
 
 # Dependency directories
 node_modules
@@ -23,3 +22,8 @@ node_modules
 *.ntvs*
 *.njsproj
 *.sln
+*.xcf
+*.sublime-project
+*.sublime-workspace
+gradlew
+gradlew.bat

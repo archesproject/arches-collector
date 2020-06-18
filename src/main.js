@@ -42,6 +42,7 @@ import GeojsonFeatureCollectionWidget from './app/widgets/GeojsonFeatureCollecti
 import FileListWidget from './app/widgets/FileListWidget.vue';
 import ResourceInstanceWidget from './app/widgets/ResourceInstanceWidget.vue';
 import ResourceInstanceListWidget from './app/widgets/ResourceInstanceListWidget.vue';
+import ResourceInstanceListWidgetV4 from './app/widgets/ResourceInstanceListWidget-v4.vue';
 import NodeValueWidget from './app/widgets/NodeValueWidget.vue';
 import Card from './app/editor/components/Card.vue';
 
@@ -61,21 +62,47 @@ Vue.component('resource-edit-page', ResourceEditPage);
 Vue.component('resource-edit-form', ResourceEditForm);
 Vue.component('resource-report-page', ResourceReportPage);
 Vue.component('base-widget', BaseWidget);
-Vue.component('string-widget', StringWidget);
-Vue.component('concept-widget', ConceptWidget);
-Vue.component('concept-list-widget', ConceptListWidget);
-Vue.component('date-widget', DateWidget);
-Vue.component('domain-value-widget', DomainWidget);
-Vue.component('domain-value-list-widget', DomainListWidget);
-Vue.component('edtf-widget', EDTFWidget);
-Vue.component('number-widget', NumberWidget);
-Vue.component('boolean-widget', BooleanWidget);
-Vue.component('geojson-feature-collection-widget', GeojsonFeatureCollectionWidget);
-Vue.component('file-list-widget', FileListWidget);
-Vue.component('resource-instance-widget', ResourceInstanceWidget);
-Vue.component('resource-instance-list-widget', ResourceInstanceListWidget);
-Vue.component('node-value-widget', NodeValueWidget);
 Vue.component('card', Card);
+
+var widgetMapping = {
+    'string-widget': StringWidget,
+    'concept-widget': ConceptWidget,
+    'concept-list-widget': ConceptListWidget,
+    'date-widget': DateWidget,
+    'domain-value-widget': DomainWidget,
+    'domain-value-list-widget': DomainListWidget,
+    'edtf-widget': EDTFWidget,
+    'number-widget': NumberWidget,
+    'boolean-widget': BooleanWidget,
+    'geojson-feature-collection-widget': GeojsonFeatureCollectionWidget,
+    'file-list-widget': FileListWidget,
+    'resource-instance-widget': ResourceInstanceWidget,
+    'resource-instance-list-widget': {
+        'widgetVersions': {
+            '^4.0.0': { // using semantic versioning, this widget will be used with Arches up to but not including v5.0.0
+                'resource-instance-list-widget-v4': ResourceInstanceListWidgetV4
+            }
+        },
+        'latest': ResourceInstanceListWidget
+    },
+    // 'resource-instance-list-widget-v4': ResourceInstanceListWidget__V4,
+    'node-value-widget': NodeValueWidget
+};
+Object.defineProperty(Vue.prototype, '$widgetMapping', {value: widgetMapping});
+for (let [key, value] of Object.entries(widgetMapping)) {
+    if (!!value.widgetVersions) {
+        // this widget is versioned
+        Vue.component(key, value.latest);
+        for (let [verNum, item] of Object.entries(value.widgetVersions)) {
+            var componentName = Object.keys(item)[0];
+            Vue.component(componentName, item[componentName]);
+        }
+    } else {
+        // this widget isn't versioned
+        Vue.component(key, value);
+    }
+}
+
 // Vue.config.productionTip = false;
 
 Object.defineProperty(Vue.prototype, '$underscore', { value: underscore });

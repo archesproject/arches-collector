@@ -109,8 +109,6 @@ export default {
             selectedServer: undefined,
             selectedServerCopy: undefined,
             error: false,
-            error_message: '',
-            default_error_message: 'An error occurred with status: errorCode. See Administrator.',
             authenticating: false,
             appInfoVisible: false
         };
@@ -153,51 +151,7 @@ export default {
             var self = this;
             this.error = false;
             this.authenticating = true;
-            this.$store.dispatch('getUserProfile', this.selectedServer)
-                .then(function(response) {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        if (response.status === 401) {
-                            throw new Error('The supplied username or password was not valid.');
-                        } else {
-                            throw new Error(self.default_error_message.replace("errorCode", response.status));
-                        }
-                    }
-                })
-                .then(function(response) {
-                    self.selectedServer.user = response;
-                    return self.$store.dispatch('getClientId', self.selectedServer);
-                })
-                .then(function(response) {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        if (response.status === 401) {
-                            throw new Error('The supplied username or password was not valid.');
-                        } else {
-                            throw new Error(self.default_error_message.replace("errorCode", response.status));
-                        }
-                    }
-                })
-                .then(function(response) {
-                    if (self.selectedServer && response.clientid) {
-                        self.selectedServer.client_id = response.clientid;
-                        return self.$store.dispatch('getToken', self.selectedServer);
-                    }
-                    throw new Error('Unable to connect to server with client id. See Administrator.');
-                })
-                .then(function(response) {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        if (response.status === 401) {
-                            throw new Error('The supplied username or password was not valid.');
-                        } else {
-                            throw new Error(self.default_error_message.replace("errorCode", response.status));
-                        }
-                    }
-                })
+            this.$store.dispatch('loginUser', this.selectedServer)
                 .then(function(response) {
                     self.selectedServer.token = response.access_token;
                     self.selectedServer.refresh_token = response.refresh_token;
