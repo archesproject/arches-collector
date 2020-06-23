@@ -1,7 +1,7 @@
 <template>
     <div class="widget-panel" v-if="context=='editor'">
         <div class="editor widget-label">{{widget.label}}</div>
-        <input :value="value" type=number placeholder="derive from configs" @input="$emit('update:value', $event.target.value);"/>
+        <input :value="value" type=number placeholder="enter an integer" @input="$emit('update:value', $event.target.value);"/>
     </div>
 
     <ons-row class="report-widget" v-else-if="context=='report'">
