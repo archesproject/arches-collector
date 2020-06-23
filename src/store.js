@@ -723,10 +723,12 @@ var store = new Vuex.Store({
                 })
             })
                 .then(function(response) {
-                    if (response.ok) {
+                    if (response.ok && response.status !== 500) {
                         return response.json();
+                    } else if (response.status === 500) {
+                        store.commit('handleAlert', 'Celery may not be running. Please contact Admin.');
                     } else {
-                        this.$store.commit('handleAlert', 'oh snap');
+                        store.commit('handleAlert', 'oh snap');
                     }
                 });
         },
