@@ -80,8 +80,6 @@ export default {
             self.authenticating = true;
             this.$store.dispatch('loginUser', this.server)
                 .then(function(response) {
-                    self.server.token = response.access_token;
-                    self.server.refresh_token = response.refresh_token;
                     self.$store.commit('addNewServer', self.server);
                     return self.server;
                 })

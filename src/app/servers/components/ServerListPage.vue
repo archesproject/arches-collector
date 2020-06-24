@@ -153,8 +153,6 @@ export default {
             this.authenticating = true;
             this.$store.dispatch('loginUser', this.selectedServer)
                 .then(function(response) {
-                    self.selectedServer.token = response.access_token;
-                    self.selectedServer.refresh_token = response.refresh_token;
                     return self.$store.dispatch('updateToken', self.selectedServer);
                 })
                 .then(function(response) {
