@@ -959,9 +959,9 @@ var store = new Vuex.Store({
         },
         getRemoteProjects: function({ commit, state }, { server, surveyid }) {
             var self = this;
-            var url = server.url + '/mobileprojects';
+            var url = server.url + '/mobileprojects/';
             if (!!surveyid) {
-                url = url + '/' + surveyid;
+                url = url + surveyid;
             }
             return fetch(url, {
                 method: 'GET',
@@ -1025,7 +1025,7 @@ var store = new Vuex.Store({
         },
         updateRemoteProjectsStatus: function({ commit, state }, server) {
             var self = this;
-            return fetch(server.url + '/mobileprojects?status', {
+            return fetch(server.url + '/mobileprojects/?status', {
                 method: 'GET',
                 headers: new Headers({
                     'X-Authorization': 'Bearer ' + server.token
