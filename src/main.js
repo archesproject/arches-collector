@@ -41,6 +41,7 @@ import BooleanWidget from './app/widgets/BooleanWidget.vue';
 import GeojsonFeatureCollectionWidget from './app/widgets/GeojsonFeatureCollectionWidget.vue';
 import FileListWidget from './app/widgets/FileListWidget.vue';
 import ResourceInstanceWidget from './app/widgets/ResourceInstanceWidget.vue';
+import ResourceInstanceWidgetV4 from './app/widgets/ResourceInstanceWidget-v4.vue';
 import ResourceInstanceListWidget from './app/widgets/ResourceInstanceListWidget.vue';
 import ResourceInstanceListWidgetV4 from './app/widgets/ResourceInstanceListWidget-v4.vue';
 import NodeValueWidget from './app/widgets/NodeValueWidget.vue';
@@ -76,7 +77,14 @@ var widgetMapping = {
     'boolean-widget': BooleanWidget,
     'geojson-feature-collection-widget': GeojsonFeatureCollectionWidget,
     'file-list-widget': FileListWidget,
-    'resource-instance-widget': ResourceInstanceWidget,
+    'resource-instance-widget': {
+        'widgetVersions': {
+            '^4.0.0': { // using semantic versioning, this widget will be used with Arches up to but not including v5.0.0
+                'resource-instance-widget-v4': ResourceInstanceWidgetV4
+            }
+        },
+        'latest': ResourceInstanceWidget
+    },
     'resource-instance-list-widget': {
         'widgetVersions': {
             '^4.0.0': { // using semantic versioning, this widget will be used with Arches up to but not including v5.0.0

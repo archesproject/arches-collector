@@ -11,54 +11,51 @@
     <ons-row class="report-widget" v-else-if="context=='report'">
         <ons-col>
             <span class="report widget-label">{{widget.label}}</span>
-            <span class="report widget-value">{{selectedOption.text}}</span>
+            <span class="report widget-value">{{conceptLabel.text}}</span>
         </ons-col>
     </ons-row>
     <span class="flex tile-data" v-else-if="context=='nav'">
-        <div v-if="!!selectedOption">{{selectedOption.text}}</div>
+        <div v-if="!!conceptLabel">{{conceptLabel.text}}</div>
         <div v-else>no data</div>
         <div class="widget-label">{{widget.label}}</div>
     </span>
 </template>
 
 <script>
+import concept from '../shared/mixins/concepts';
 
 export default {
     name: 'ResourceInstanceWidget',
     props: ['value', 'widget', 'node', 'context'],
+    mixins: [concept],
     data() {
         return {
             placeholder: this.widget.config.placeholder,
-            local_value: null,
-            options: this.node.config.options.map(function(item){
-                item.text = item.name;
-                item.value = item.id;
-                return item;
-            }),
-            optionsLookup: this.node.config.options.reduce(function(acc, curr){
-                acc[curr.id] = curr;
-                return acc;
-            }, {}),
-            nodeConfigLookup: this.node.config.graphs.reduce(function(acc, curr){
-                acc[curr.graphid] = curr;
-                return acc;
-            }, {})
+            local_value: null
         };
     },
     computed: {
+        options() {
+            var options = [];
+            if (!!this.node.config.options) {
+                this.node.config.options.forEach(function(option) {
+                    options.push({
+                        text: option.name,
+                        value: option.id
+                    });
+                });
+            }
+            return options;
+        },
         selectedOption: {
             get: function() {
-                !Array.isArray(this.value) ? this.value = [] : false;
                 var ret = {};
-                var val = this.value;
-                if (!!val && val.length > 0) {
-                    ret = this.options.find(function(option) {
-                        return option.value === val[0].resourceId;
-                    });
-                }
-                if (!ret) {
-                    ret = {};
-                }
+                var val = this.local_value || this.value;
+                this.options.forEach(function(option) {
+                    if (option.value === val) {
+                        ret = option;
+                    }
+                });
                 return ret;
             },
             set: function() {
@@ -70,15 +67,7 @@ export default {
         onChange(option) {
             var ret = null;
             if (!!option) {
-                var defaults = this.optionsLookup[option.value];
-                var config = this.nodeConfigLookup[defaults.graphid];
-                var ret = [{
-                    "resourceId": option.value,
-                    "ontologyProperty":config.ontologyProperty,
-                    "inverseOntologyProperty": config.inverseOntologyProperty,
-                    "resourceXresourceId": ""
-                }];
-                Object.defineProperty(ret[0], 'resourceName', {value: defaults.name});
+                ret = option.value;
             }
             this.local_value = ret;
             this.$emit('update:value', ret);
