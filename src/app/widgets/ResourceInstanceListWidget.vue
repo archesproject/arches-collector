@@ -1,26 +1,43 @@
 <template>
     <div class="widget-panel" v-if="context=='editor'">
         <div class="editor widget-label">{{widget.label}}</div>
-        <multi-select
-            :selected-options="selectedOptions"
+        <model-select
             :options="options"
             :placeholder="placeholder"
-            @select="onChange">
-        </multi-select>
+            :option-value="id"
+            :option-text="name"
+            @input="onSelect
+        ">
+        </model-select>
+        <div style="display: flex; flex-direction: column; padding-top: 10px;">
+            <div class='rr-table-row' v-for="val in selectedOptions">
+                <div style="display: flex; flex-direction: row; height: 40px;">
+                    <div class='rr-table-column' style="width: 35px;">
+                        <button v-on:click="onDelete(val)">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </div>
+                    <div class="rr-table-column" style="flex-grow: 1;" v-bind:style="{paddingTop: ontologyInfo(val) === '' ?  '12px' : '3px'}">
+                        <div>{{val.resourceName}}</div><div style="font-size: 10px;">{{ontologyInfo(val)}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
     </div>
     <ons-row class="report-widget" v-else-if="context=='report'">
         <ons-col>
           <span class="report widget-label">{{widget.label}}</span>
-          <span v-for="label in conceptLabels">
-              <span class="report widget-value">{{label.text}}</span>
+          <span v-for="(item, index)  in selectedOptions">
+              <span class="report widget-value"><span v-if="index > 0">, </span>{{item.resourceName}}</span>
           </span>
         </ons-col>
     </ons-row>
     <span class="flex tile-data" v-else-if="context=='nav'">
         <div class="flex">
-            <template v-if="conceptLabels.length > 0">
-                <span style="display: inline;" v-for="(label, index) in conceptLabels">
-                    <span v-if="index < 2"><span v-if="index > 0 && index < 2">, </span>{{label.text}}</span>
+            <template v-if="selectedOptions.length > 0">
+                <span style="display: inline;" v-for="(item, index) in selectedOptions">
+                    <span v-if="index < 2"><span v-if="index > 0 && index < 2">, </span>{{item.resourceName}}</span>
                     <span v-else-if="index == 2">, ...</span>
                 </span>
             </template>
@@ -31,40 +48,46 @@
 </template>
 
 <script>
-import concept from '../shared/mixins/concepts';
+
+import ontology from '../shared/mixins/ontology';
 
 export default {
     name: 'ResourceInstanceListWidget',
     props: ['value', 'widget', 'node', 'context'],
-    mixins: [concept],
+    mixins: [ontology],
     data() {
+        !Array.isArray(this.value) ? this.value = [] : false;
         return {
             placeholder: this.widget.config.placeholder,
-            local_value: null
+            local_value: null,
+            options: this.node.config.options.map(function(item){
+                item.text = item.name;
+                item.value = item.id;
+                return item;
+            }),
+            optionsLookup: this.node.config.options.reduce(function(acc, curr){
+                acc[curr.id] = curr;
+                return acc;
+            }, {}),
+            nodeConfigLookup: this.node.config.graphs.reduce(function(acc, curr){
+                acc[curr.graphid] = curr;
+                return acc;
+            }, {})
         };
     },
     computed: {
-        options() {
-            var options = [];
-            if (!!this.node.config.options) {
-                this.node.config.options.forEach(function(option) {
-                    options.push({
-                        text: option.name,
-                        value: option.id
-                    });
-                });
-            }
-            return options;
-        },
         selectedOptions: {
             get: function() {
+                var self = this;
+                !Array.isArray(this.value) ? this.value = [] : false;
                 var ret = [];
-                var val = this.local_value || this.value;
+                var val = this.value;
                 if (!!val) {
-                    this.options.forEach(function(option) {
-                        if (val.includes(option.value)) {
-                            ret.push(option);
+                    val.forEach(function(item) {
+                        if(item.hasOwnProperty('resourceName') === false){
+                            Object.defineProperty(item, 'resourceName', {value: self.optionsLookup[item.resourceId].name});
                         }
+                        ret.push(item);
                     });
                 }
                 return ret;
@@ -75,13 +98,36 @@ export default {
         }
     },
     methods: {
-        onChange(selectedOptions, lastSelectedOption) {
-            var ret = [];
-            selectedOptions.forEach(function(option) {
-                ret.push(option.value);
-            });
-            this.local_value = ret;
-            this.$emit('update:value', ret);
+        ontologyInfo(item) {
+            if(item.ontologyProperty || item.inverseOntologyProperty) {
+                return '(' + this.makeFriendly(item.ontologyProperty) + '/' + this.makeFriendly(item.inverseOntologyProperty) + ')';
+            } else {
+                return '';
+            }
+        },
+        onSelect(resourceId) {
+            var self = this;
+            var defaults = this.optionsLookup[resourceId];
+            var config = this.nodeConfigLookup[defaults.graphid];
+            var item = {
+                "resourceId": resourceId,
+                "ontologyProperty":config.ontologyProperty,
+                "inverseOntologyProperty": config.inverseOntologyProperty,
+                "resourceXresourceId": ""
+            };
+            Object.defineProperty(item, 'resourceName', {value: defaults.name});
+            this.value = this.value.concat(item);
+            this.$emit('update:value', this.selectedOptions);
+        },
+        onDelete(resourceInstance) {
+            console.log('in onDelete');
+            var idx = this.value.findIndex(function(item) {
+                return item.resourceId === resourceInstance.resourceId;
+            }, this);
+            if(idx !== -1) {
+                this.value.splice(idx, 1)
+                this.$emit('update:value', this.selectedOptions);
+            }
         }
     }
 };
@@ -119,5 +165,38 @@ export default {
     color: #271F4C;
     font-size: 13px;
     padding-bottom: 10px;
+}
+
+.rr-table-row {
+    min-height: 40px;
+    display: flex;
+    border-bottom: solid 1px #e0e0e0;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.rr-table-row:first-child {
+    border-top: solid 1px #e0e0e0;
+}
+
+.rr-table-row:nth-last-child(odd) {
+    background: rgb(236, 240, 245);
+}
+
+.rr-table-column {
+    padding-top: 12px;
+    padding-left: 10px;
+    border-left: solid 1px #e0e0e0;
+}
+
+.rr-table-column:last-child {
+    border-right: solid 1px #e0e0e0
+}
+
+.rr-table-column button {
+    padding: 0px;
+    color: #5f5f5f;
+    border: none;
+    background: none;
 }
 </style>
