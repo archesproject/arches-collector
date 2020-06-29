@@ -4,8 +4,6 @@
         <model-select
             :options="options"
             :placeholder="placeholder"
-            :option-value="id"
-            :option-text="name"
             @input="onSelect
         ">
         </model-select>
@@ -59,7 +57,6 @@ export default {
         !Array.isArray(this.value) ? this.value = [] : false;
         return {
             placeholder: this.widget.config.placeholder,
-            local_value: null,
             options: this.node.config.options.map(function(item){
                 item.text = item.name;
                 item.value = item.id;
@@ -79,9 +76,8 @@ export default {
         selectedOptions: {
             get: function() {
                 var self = this;
-                !Array.isArray(this.value) ? this.value = [] : false;
                 var ret = [];
-                var val = this.value;
+                var val = !Array.isArray(this.value) ? [] : this.value;
                 if (!!val) {
                     val.forEach(function(item) {
                         if(item.hasOwnProperty('resourceName') === false){
@@ -106,7 +102,6 @@ export default {
             }
         },
         onSelect(resourceId) {
-            var self = this;
             var defaults = this.optionsLookup[resourceId];
             var config = this.nodeConfigLookup[defaults.graphid];
             var item = {
