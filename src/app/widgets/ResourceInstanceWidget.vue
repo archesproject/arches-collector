@@ -27,6 +27,7 @@ export default {
     name: 'ResourceInstanceWidget',
     props: ['value', 'widget', 'node', 'context'],
     data() {
+        !Array.isArray(this.value) ? this.value = [] : false;
         return {
             placeholder: this.widget.config.placeholder,
             local_value: null,
@@ -48,16 +49,15 @@ export default {
     computed: {
         selectedOption: {
             get: function() {
-                !Array.isArray(this.value) ? this.value = [] : false;
                 var ret = {};
-                var val = this.value;
+                var val = !Array.isArray(this.value) ? [] : this.local_value || this.value;
                 if (!!val && val.length > 0) {
                     ret = this.options.find(function(option) {
                         return option.value === val[0].resourceId;
                     });
-                }
-                if (!ret) {
-                    ret = {};
+                    if (!ret) {
+                        ret = {};
+                    }
                 }
                 return ret;
             },
