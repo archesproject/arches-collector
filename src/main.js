@@ -33,6 +33,7 @@ import StringWidget from './app/widgets/StringWidget.vue';
 import ConceptWidget from './app/widgets/ConceptWidget.vue';
 import ConceptListWidget from './app/widgets/ConceptListWidget.vue';
 import DateWidget from './app/widgets/DateWidget.vue';
+import DateWidgetV4 from './app/widgets/DateWidget-v4.vue';
 import DomainWidget from './app/widgets/DomainWidget.vue';
 import EDTFWidget from './app/widgets/EDTFWidget.vue';
 import DomainListWidget from './app/widgets/DomainListWidget.vue';
@@ -65,13 +66,20 @@ Vue.component('resource-report-page', ResourceReportPage);
 Vue.component('base-widget', BaseWidget);
 Vue.component('card', Card);
 
-// widgetMapping uses keys that are the Arches datatype table 
+// widgetMapping uses keys that are the Arches datatype table
 // primary key "strings" appended with the word "-widget"
 var widgetMapping = {
     'string-widget': StringWidget,
     'concept-widget': ConceptWidget,
     'concept-list-widget': ConceptListWidget,
-    'date-widget': DateWidget,
+    'date-widget': {
+        'widgetVersions': {
+            '^4.0.0': { // using semantic versioning, this widget will be used with Arches up to but not including v5.0.0
+                'date-widget-v4': DateWidgetV4
+            }
+        },
+        'latest': DateWidget
+    },
     'domain-value-widget': DomainWidget,
     'domain-value-list-widget': DomainListWidget,
     'edtf-widget': EDTFWidget,
