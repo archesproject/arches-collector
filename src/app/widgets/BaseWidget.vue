@@ -3,6 +3,7 @@
 </template>
 
 <script>
+import semverSatisfies from 'semver/functions/satisfies';
 export default {
     name: 'BaseWidget',
     props: ['allNodes', 'widget', 'save', 'tile', 'context'],
@@ -48,7 +49,21 @@ export default {
     computed: {
         widgetComponent: {
             get: function() {
-                return this.node.datatype + '-widget';
+                var server = this.$store.getters.activeServer;
+                var widgetComponentName = this.node.datatype + '-widget';
+                var widgetMappingItem = this.$widgetMapping[widgetComponentName];
+                if (widgetMappingItem.hasOwnProperty('widgetVersions')) {
+                    // this widget is versioned
+                    var version = Object.keys(widgetMappingItem['widgetVersions']).find(function(version){
+                        return semverSatisfies(server.version, version);
+                    });
+                    if(!!version) {
+                        return Object.keys(widgetMappingItem['widgetVersions'][version])[0];
+                    }
+                }
+
+                // this widget isn't versioned or we can't find a versioned match then default to the latest version
+                return widgetComponentName;
             }
         },
         node: {

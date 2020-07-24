@@ -63,9 +63,7 @@ export default {
                 user: {}
             },
             authenticating: false,
-            error: false,
-            error_message: '',
-            default_error_message: 'An error occurred with status: errorCode. See Administrator.'
+            error: false
         };
     },
     computed: {
@@ -80,53 +78,8 @@ export default {
         login: function() {
             var self = this;
             self.authenticating = true;
-            this.$store.dispatch('getUserProfile', this.server)
+            this.$store.dispatch('loginUser', this.server)
                 .then(function(response) {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        if (response.status === 401) {
-                            throw new Error('The supplied username or password was not valid.');
-                        } else {
-                            throw new Error(self.default_error_message.replace("errorCode", response.status));
-                        }
-                    }
-                })
-                .then(function(response) {
-                    self.server.user = response;
-                    return self.$store.dispatch('getClientId', self.server);
-                })
-                .then(function(response) {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        if (response.status === 401) {
-                            throw new Error('The supplied username or password was not valid.');
-                        } else if (response.status === 500) {
-                            throw new Error('The instance you are trying to access does not have a registered application. Contact Administrator.');
-                        } else {
-                            throw new Error(self.default_error_message.replace("errorCode", response.status));
-                        }
-                    }
-                })
-                .then(function(response) {
-                    self.server.client_id = response.clientid;
-                    return self.$store.dispatch('getToken', self.server);
-                })
-                .then(function(response) {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        if (response.status === 401) {
-                            throw new Error('Access Token denied. Contact Administrator to check ClientId or user access to project.');
-                        } else {
-                            throw new Error(self.default_error_message.replace("errorCode", response.status));
-                        }
-                    }
-                })
-                .then(function(response) {
-                    self.server.token = response.access_token;
-                    self.server.refresh_token = response.refresh_token;
                     self.$store.commit('addNewServer', self.server);
                     return self.server;
                 })
