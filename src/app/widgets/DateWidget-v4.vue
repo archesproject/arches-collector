@@ -19,7 +19,7 @@
 <script>
 import moment from 'moment';
 export default {
-    name: 'DateWidget',
+    name: 'DateWidget-v4',
     props: ['value', 'widget', 'context'],
     data() {
         return {};
