@@ -65,6 +65,8 @@ Vue.component('resource-report-page', ResourceReportPage);
 Vue.component('base-widget', BaseWidget);
 Vue.component('card', Card);
 
+// widgetMapping uses keys that are the Arches datatype table 
+// primary key "strings" appended with the word "-widget"
 var widgetMapping = {
     'string-widget': StringWidget,
     'concept-widget': ConceptWidget,
