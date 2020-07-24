@@ -30,7 +30,7 @@ export default {
                 return this.value;
             },
             set: function(value) {
-                this.$emit('update:value', moment(value, 'YYYY-MM-DDThh:mm:ss A Z').parseZone().format('YYYY-MM-DD'));
+                this.$emit('update:value', value);
             }
         },
         formatted: {
