@@ -74,8 +74,8 @@ export default {
                 var config = this.nodeConfigLookup[defaults.graphid];
                 var ret = [{
                     "resourceId": option.value,
-                    "ontologyProperty":config.ontologyProperty,
-                    "inverseOntologyProperty": config.inverseOntologyProperty,
+                    "ontologyProperty": !!config.ontologyProperty ? config.ontologyProperty : "",
+                    "inverseOntologyProperty": !!config.inverseOntologyProperty ? config.inverseOntologyProperty : "",
                     "resourceXresourceId": ""
                 }];
                 Object.defineProperty(ret[0], 'resourceName', {value: defaults.name});
