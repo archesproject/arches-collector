@@ -34,7 +34,7 @@ module.exports = {
   },
   plugins: [
     new webpack.ProvidePlugin({
-        'window.mapboxgl': 'mapbox-gl-cordova-offline/www/mapbox-gl-cordova-offline'
+        // 'window.mapboxgl': 'mapbox-gl-cordova-offline/www/mapbox-gl-cordova-offline'
     })
   ],
   resolve: {

@@ -45,11 +45,13 @@
 <script>
 import geojsonExtent from '@mapbox/geojson-extent';
 import uuidv4 from 'uuid/v4';
-import 'mapbox-gl-cordova-offline/www/mapbox-gl.css';
+// import 'mapbox-gl-cordova-offline/www/mapbox-gl.css';
+import "mapbox-gl/dist/mapbox-gl.css";
 // TODO: pull basemap layer styles from project?
 import basemapLayers from '../../../assets/map/basemap_layers.json';
 
-const mapboxgl = window.mapboxgl;
+// const mapboxgl = window.mapboxgl;
+import * as mapboxgl from "mapbox-gl";
 
 export default {
     name: 'ProjectMap',
