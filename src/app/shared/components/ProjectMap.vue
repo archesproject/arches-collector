@@ -397,7 +397,6 @@ export default {
     .mapboxgl-map {
         height: 100%;
         border: 1px solid rgb(200, 200, 200);
-        box-sizing: border-box;
     }
     ons-progress-circular {
         display: block;
