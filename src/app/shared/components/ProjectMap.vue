@@ -35,7 +35,7 @@
                     {{ selectedResource.displaydescription.replace(/['"]+/g,'') }}
                 </div>
             </div>
-            <v-ons-button class="edit-button" v-on:click="selectResourceInstance(selectedResource)">
+            <v-ons-button class="edit-button" @click="selectResourceInstance(selectedResource)">
                 <span>Edit Resource</span>
             </v-ons-button>
         </div>
@@ -253,7 +253,7 @@ export default {
             case 'resource-point':
                 return {
                     'circle-color': colorExpression,
-                    'circle-radius': this.getPaintStyle(resourceid, 8, 7),
+                    'circle-radius': this.getPaintStyle(resourceid, 10, 8),
                     'circle-stroke-width': this.getPaintStyle(resourceid, 3, 1),
                     'circle-stroke-color': this.getPaintStyle(resourceid, '#a30000', '#888')
                 };
@@ -352,7 +352,7 @@ export default {
             this.$store.commit('handleAlert', alertMessage);
         }
     },
-    mounted() {
+    created() {
         var self = this;
         var project = this.$store.getters.activeProject;
         this.$store.dispatch('getProjectChanges', project.id)
