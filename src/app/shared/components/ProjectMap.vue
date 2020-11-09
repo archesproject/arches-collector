@@ -1,8 +1,8 @@
 <template>
-    <div style="height: 100%">
+    <div class="map-container">
         <ons-progress-circular indeterminate v-if="loading">
         </ons-progress-circular>
-        <div :id="mapId" v-on:touchstart="stopPropagation"></div>
+        <div class='bar' :id="mapId" v-on:touchstart="stopPropagation"></div>
         <div class="map-control-templates">
             <div ref="attribution">
                 <a href="http://www.openmaptiles.org/" target="_blank">
@@ -147,7 +147,6 @@ export default {
                 self.$emit('map-init', map);
                 self.loading = false;
                 console.log('map load complete')
-                map.resize();
             });
         },
         mapOfflineInit: function() {
@@ -395,17 +394,18 @@ export default {
 </script>
 
 <style scoped>
-    .mapboxgl-map {
-        height: 100%;
-        width: 100vw;
-
-        border: 1px solid rgb(200, 200, 200);
+    .map-container {
+        position: relative;
+        height: 100% !important;
+        width: 100% !important;
     }
-    .mapboxgl-canvas-container {
-        height: 100vh;
-        width: 100vw;
-
-        bottom: 0px !important;
+    .mapboxgl-map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        border: 1px solid rgb(200, 200, 200);
     }
     ons-progress-circular {
         display: block;
