@@ -2,7 +2,7 @@
     <div class="map-container">
         <ons-progress-circular indeterminate v-if="loading">
         </ons-progress-circular>
-        <div class='bar' :id="mapId" v-on:touchstart="stopPropagation"></div>
+        <div :id="mapId" v-on:touchstart="stopPropagation"></div>
         <div class="map-control-templates">
             <div ref="attribution">
                 <a href="http://www.openmaptiles.org/" target="_blank">
