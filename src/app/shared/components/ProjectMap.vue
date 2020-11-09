@@ -398,6 +398,12 @@ export default {
         height: 100%;
         border: 1px solid rgb(200, 200, 200);
     }
+    .mapboxgl-canvas-container {
+        height: 100vh;
+        width: 100vw;
+
+        bottom: 0px !important;
+    }
     ons-progress-circular {
         display: block;
         /* margin: 20% auto; */

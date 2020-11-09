@@ -163,7 +163,7 @@ window.archesvue = new Vue({
             }
         });
         if (this.$ons.platform.isIPhoneX()) {
-            html.setAttribute('onsflag-iphonex-portrait', '');
+            html.setAttribute('onsflag-iphonex-portrait', ''); // causes white bar on iphonex!
             html.setAttribute('onsflag-iphonex-landscape', '');
         }
     },
