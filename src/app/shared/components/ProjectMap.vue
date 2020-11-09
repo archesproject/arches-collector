@@ -147,6 +147,7 @@ export default {
                 self.$emit('map-init', map);
                 self.loading = false;
                 console.log('map load complete')
+                map.resize();
             });
         },
         mapOfflineInit: function() {
@@ -396,6 +397,8 @@ export default {
 <style scoped>
     .mapboxgl-map {
         height: 100%;
+        width: 100vw;
+
         border: 1px solid rgb(200, 200, 200);
     }
     .mapboxgl-canvas-container {
