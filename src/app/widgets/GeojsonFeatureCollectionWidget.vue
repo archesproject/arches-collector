@@ -17,6 +17,36 @@
             <div class="map-wrapper" v-bind:class="{ fullscreen: fullscreenActive }">
                 <project-map v-on:map-init="mapInit" :extent="bounds"></project-map>
             </div>
+
+
+
+            <!-- <ul>
+                <li v-for="foo in value.features" v-bind:key="foo.id">
+                    {{ foo }}
+                </li>
+            </ul> -->
+
+
+
+            <div v-for="bar in foo" v-bind:key="bar.id">
+                {{ bar }}
+            </div>
+
+
+
+
+
+
+
+
+            <!-- <div v-bind:></div> -->
+
+
+
+
+
+
+
         </div>
         <div class="report-widget" v-else-if="context=='report'">
             <ons-col class="report widget-label">{{widget.label}}</ons-col>
@@ -47,6 +77,7 @@ export default {
     props: ['value', 'widget', 'context', 'tile'],
     data() {
         return {
+            foo: [],
             fullscreenActive: false,
             deleteActive: false
         };
@@ -82,7 +113,7 @@ export default {
         },
         fullscreenActive() {
             if (this.map) this.$nextTick(() => this.map.resize());
-        }
+        },
     },
     methods: {
         mapInit(map) {
@@ -177,6 +208,19 @@ export default {
                         this.$emit('update:value', fc);
                     }
                 } else {
+
+
+
+                    console.log(this.foo, e, fc)
+
+                    this.foo = fc.features;
+
+                    // for (let feature of fc.features) {
+
+                    // };
+
+
+
                     this.$emit('update:value', fc);
                 }
             } else {
