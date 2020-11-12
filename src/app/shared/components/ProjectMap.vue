@@ -1,7 +1,6 @@
 <template>
     <div style="height: 100%">
-        <ons-progress-circular indeterminate v-if="loading">
-        </ons-progress-circular>
+        <v-ons-progress-circular indeterminate v-if="loading"></v-ons-progress-circular>
         <div :id="mapId" v-on:touchstart="stopPropagation"></div>
         <div class="map-control-templates">
             <div ref="attribution">
@@ -131,19 +130,23 @@ export default {
             mapboxgl.accessToken = self.project.mapboxkey;
             console.log('make map');
             var map = new mapboxgl.Map(this.getMapConfig(false));
+            
+            map.addControl(new mapboxgl.NavigationControl());
+            map.addControl(new mapboxgl.GeolocateControl({
+                positionOptions: {
+                    enableHighAccuracy: true
+                },
+                trackUserLocation: true
+            }));
+
             console.log('map made');
             map.on('load', function() {
                 console.log('map loaded')
-                map.addControl(new mapboxgl.NavigationControl());
-                map.addControl(new mapboxgl.GeolocateControl({
-                    positionOptions: {
-                        enableHighAccuracy: true
-                    },
-                    trackUserLocation: true
-                }));
-                self.setMapExtent(map);
+
                 map.addSource('resources', { type: 'geojson', data: self.resourceGeoJSON });
+
                 self.addResourceFeatures(map);
+                self.setMapExtent(map);
                 self.$emit('map-init', map);
                 self.loading = false;
                 console.log('map load complete')
@@ -341,8 +344,10 @@ export default {
                     const feature = e.features[0];
                     this.selectedResource = feature.properties;
                     ['resource-point', 'resource-polygon', 'resource-line'].forEach(function(layer) {
+                        console.log('ahh')
                         var paintProperties = this.getPaintProperties(layer, this.selectedResource.id);
                         Object.keys(paintProperties).forEach(function(paintProperty) {
+                            console.log("ohh")
                             this.map.setPaintProperty(layer, paintProperty, paintProperties[paintProperty]);
                         }, this);
                     }, this);

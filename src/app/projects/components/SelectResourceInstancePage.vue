@@ -2,7 +2,7 @@
 <v-ons-page>
     <!-- Scrollable content here -->
     <div v-if="loading" style="padding-left:12%; padding-right:12%;">
-        <ons-progress-circular indeterminate></ons-progress-circular>
+        <v-ons-progress-circular indeterminate></v-ons-progress-circular>
         <span style="margin-bottom:6px;">Loading Resource Instances</span>
     </div>
     <v-ons-list>

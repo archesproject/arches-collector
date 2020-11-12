@@ -1,8 +1,11 @@
 <template>
-    <div>
-        <component v-for="widget in cardWidgets" class="widget" :allNodes="allNodes" :tile="tile" :tiles="tiles" :widget="widget" :context="'editor'" :save="throttle(saveTile, tile, saveDelay)" v-bind:is="'base-widget'"></component>
-        <div class="done-btn"><v-ons-button @click="back"><v-ons-icon class="done-btn-icon resource-header" icon="fa-arrow-alt-circle-left"></v-ons-icon>Done</v-ons-button></div>
-        <div class="done-btn" v-if="allowDelete"><v-ons-button @click="deleteTiles(tile, $event, back)" class="warning"><v-ons-icon class="done-btn-icon resource-header" icon="fa-trash"></v-ons-icon>Delete this Record</v-ons-button></div>
+    <div style="height: 100%; display:flex; flex-direction: column;">
+        <component v-for="widget in cardWidgets" :key="widget.id" class="widget" :allNodes="allNodes" :tile="tile" :tiles="tiles" :widget="widget" :context="'editor'" :save="throttle(saveTile, tile, saveDelay)" v-bind:is="'base-widget'"></component>
+        
+        <div class="button-container">
+            <v-ons-button @click="back"><v-ons-icon class="done-btn-icon resource-header" icon="fa-arrow-alt-circle-left"></v-ons-icon>Done</v-ons-button>
+            <v-ons-button v-show="allowDelete" @click="deleteTiles(tile, $event, back)" class="warning"><v-ons-icon class="done-btn-icon resource-header" icon="fa-trash"></v-ons-icon>Delete this Record</v-ons-button>
+        </div>
     </div>
 </template>
 <script>
@@ -34,6 +37,8 @@ export default {
                     var widgets = this.$underscore.filter(this.allWidgets, function(widget) {
                         return widget.card_id === this.card.cardid;
                     }, this);
+
+                    console.log('!!!!!!', widgets)
                     return this.$underscore.sortBy(widgets, 'sortorder');
                 } else {
                     return [];
@@ -75,13 +80,20 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .widget {
-    padding: 15px;
-}
-.done-btn {
-    float: right;
+    /* height: inherit; */
     padding: 10px;
+    overflow: hidden;
+    display: flex;
 }
-.done-btn-icon {
-    padding-right: 7px;
+.button-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    height: max-content;
+}
+.button-container > div {
+    padding: 0px 20px;
 }
 </style>

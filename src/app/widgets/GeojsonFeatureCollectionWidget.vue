@@ -1,6 +1,6 @@
 <template>
     <div v-if="value !== null">
-    <div v-if="context == 'editor' || context == 'report'">
+    <div v-if="context == 'editor' || context == 'report'" style="width:100vw; display:flex;">
         <div class="map-controls">
             <div class="mapboxgl-ctrl mapboxgl-ctrl-group fullscreen-control">
                 <button class="mapboxgl-ctrl-icon" type="button" v-on:click="toggleFullscreen" v-bind:class="{
@@ -12,36 +12,19 @@
                 <button class="mapbox-gl-draw_ctrl-draw-btn mapbox-gl-draw_trash" title="Delete" v-on:click="toggleDelete"></button>
             </div>
         </div>
-        <div v-if="context=='editor'">
+        <div v-if="context=='editor'" class="quux">
             <div class="editor widget-label">{{widget.label}}</div>
-            <div class="map-wrapper" v-bind:class="{ fullscreen: fullscreenActive }">
-                <project-map v-on:map-init="mapInit" :extent="bounds"></project-map>
+            <div class="editor widget-value">
+                <div class="map-wrapper" v-bind:class="{ fullscreen: fullscreenActive }">
+                    <project-map v-on:map-init="mapInit" :extent="bounds"></project-map>
+                </div>
             </div>
 
-
-
-            <!-- <ul>
-                <li v-for="foo in value.features" v-bind:key="foo.id">
-                    {{ foo }}
-                </li>
-            </ul> -->
-
-
-
-            <div v-for="bar in foo" v-bind:key="bar.id">
-                {{ bar }}
+            <div class='qux'>
+                <div v-for="bar in foo" v-bind:key="bar.id">
+                    {{ bar }}
+                </div>
             </div>
-
-
-
-
-
-
-
-
-            <!-- <div v-bind:></div> -->
-
-
 
 
 
@@ -49,12 +32,12 @@
 
         </div>
         <div class="report-widget" v-else-if="context=='report'">
-            <ons-col class="report widget-label">{{widget.label}}</ons-col>
-            <ons-col class="report widget-value">
+            <v-ons-col class="report widget-label">{{widget.label}}</v-ons-col>
+            <v-ons-col class="report widget-value">
                 <div class="map-wrapper" v-bind:class="{ fullscreen: fullscreenActive }">
                     <project-map v-on:map-init="mapInit" :extent="bounds"></project-map>
                 </div>
-            </ons-col>
+            </v-ons-col>
         </div>
     </div>
     <span class="flex tile-data" v-else-if="context=='nav'">
@@ -244,6 +227,24 @@ export default {
 <style scoped>
 .map-wrapper {
     height: 260px;
+    padding: 10px 0px;
+}
+
+
+
+.quux {
+    /* height: 100%; */
+    height: inherit;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+.qux {
+    /* max-height: calc(ini); */
+    overflow: scroll;
+    /* flex-shrink: 0; */
+    display: flex;
 }
 
 .report .map-wrapper {
