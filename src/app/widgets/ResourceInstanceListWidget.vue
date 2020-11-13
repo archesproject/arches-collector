@@ -8,33 +8,33 @@
         ">
         </model-select>
         <div style="display: flex; flex-direction: column; padding-top: 10px;">
-            <div class='rr-table-row' v-for="val in selectedOptions">
+            <div class='rr-table-row' v-for="(item, index) in selectedOptions" :key="index">
                 <div style="display: flex; flex-direction: row; height: 40px;">
                     <div class='rr-table-column' style="width: 35px;">
-                        <button v-on:click="onDelete(val)">
+                        <button v-on:click="onDelete(item)">
                             <i class="fa fa-trash"></i>
                         </button>
                     </div>
-                    <div class="rr-table-column" style="flex-grow: 1;" v-bind:style="{paddingTop: ontologyInfo(val) === '' ?  '12px' : '3px'}">
-                        <div>{{val.resourceName}}</div><div style="font-size: 10px;">{{ontologyInfo(val)}}</div>
+                    <div class="rr-table-column" style="flex-grow: 1;" v-bind:style="{paddingTop: ontologyInfo(item) === '' ?  '12px' : '3px'}">
+                        <div>{{item.resourceName}}</div><div style="font-size: 10px;">{{ontologyInfo(item)}}</div>
                     </div>
                 </div>
             </div>
         </div>
         
     </div>
-    <ons-row class="report-widget" v-else-if="context=='report'">
-        <ons-col>
+    <v-ons-row class="report-widget" v-else-if="context=='report'">
+        <v-ons-col>
           <span class="report widget-label">{{widget.label}}</span>
-          <span v-for="(item, index)  in selectedOptions">
+          <span v-for="(item, index)  in selectedOptions" :key="index">
               <span class="report widget-value"><span v-if="index > 0">, </span>{{item.resourceName}}</span>
           </span>
-        </ons-col>
-    </ons-row>
+        </v-ons-col>
+    </v-ons-row>
     <span class="flex tile-data" v-else-if="context=='nav'">
         <div class="flex">
             <template v-if="selectedOptions.length > 0">
-                <span style="display: inline;" v-for="(item, index) in selectedOptions">
+                <span style="display: inline;" v-for="(item, index) in selectedOptions" :key="index">
                     <span v-if="index < 2"><span v-if="index > 0 && index < 2">, </span>{{item.resourceName}}</span>
                     <span v-else-if="index == 2">, ...</span>
                 </span>

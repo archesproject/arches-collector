@@ -8,18 +8,18 @@
             @select="onChange">
         </multi-select>
     </div>
-    <ons-row class="report-widget" v-else-if="context=='report'">
-        <ons-col class="report widget-label">{{widget.label}}</ons-col>
-        <ons-col>
-            <div v-for="label in conceptLabels">
+    <v-ons-row class="report-widget" v-else-if="context=='report'">
+        <v-ons-col class="report widget-label">{{widget.label}}</v-ons-col>
+        <v-ons-col>
+            <div v-for="(label, index) in conceptLabels" :key="index">
                 <div class="report widget-value">{{label.text}}</div>
             </div>
-        </ons-col>
-    </ons-row>
+        </v-ons-col>
+    </v-ons-row>
     <span class="flex tile-data" v-else-if="context=='nav'">
         <div class="flex">
             <template v-if="!!conceptLabels">
-                <span style="display: inline;" v-for="(label, index) in conceptLabels">
+                <span style="display: inline;" v-for="(label, index) in conceptLabels" :key="index">
                     <span v-if="index < 2"><span v-if="index > 0 && index < 2">, </span>{{label.text}}</span>
                     <span v-else-if="index == 2">, ...</span>
                 </span>

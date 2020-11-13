@@ -2,9 +2,9 @@
     <div v-if="context=='editor'">
         <div class="editor-panel">
             <div class="editor widget-label">{{widget.label}}</div>
-            <ons-col class="widget-value" v-if="!value">No image selected yet</ons-col>
-            <ons-list class="photo-list">
-                <ons-list-item v-for="file in value">
+            <v-ons-col class="widget-value" v-if="!value">No image selected yet</v-ons-col>
+            <v-ons-list class="photo-list">
+                <v-ons-list-item v-for="file in value" :key="file.file_id">
                     <div class="left">
                       <img class="image-thumbnail" v-bind:alt="file.name" v-bind:src="images[file.file_id]"></img>
                     </div>
@@ -12,10 +12,10 @@
                         <input class="photo-name" underbar placeholder="Photo name" v-on:keyup="updateImages" v-model="file.name"></input>
                     </div>
                     <div class="right">
-                        <ons-col width="10%"><v-ons-button @click="removePhoto(file)" class="right warning"><v-ons-icon class="fa5 fa-trash" icon="fa-trash"></v-ons-icon></v-ons-button></ons-col>
+                        <v-ons-col width="10%"><v-ons-button @click="removePhoto(file)" class="right warning"><v-ons-icon class="fa5 fa-trash" icon="fa-trash"></v-ons-icon></v-ons-button></v-ons-col>
                     </div>
-                </ons-list-item>
-            </ons-list>
+                </v-ons-list-item>
+            </v-ons-list>
 
             <div class="button-panel">
                 <v-ons-button class="file-button relative select-photo" @click="selectPhoto">
@@ -34,20 +34,20 @@
 
     </div>
 
-    <ons-row class="report-widget" v-else-if="context=='report'">
-        <ons-list class="photo-list">
-            <ons-list-item v-for="file in value">
-              <ons-col>
+    <v-ons-row class="report-widget" v-else-if="context=='report'">
+        <v-ons-list class="photo-list">
+            <v-ons-list-item v-for="file in value" :key="file.file_id">
+              <v-ons-col>
                 <img class="image-thumbnail" alt="star" v-bind:src="images[file.file_id]"></img>
-              </ons-col>
-              <ons-col class="" style="margin-left: -40px; padding-right: 10px; color: #777;">{{file.name}}</ons-col>
-            </ons-list-item>
-        </ons-list>
-    </ons-row>
+              </v-ons-col>
+              <v-ons-col class="" style="margin-left: -40px; padding-right: 10px; color: #777;">{{file.name}}</v-ons-col>
+            </v-ons-list-item>
+        </v-ons-list>
+    </v-ons-row>
     <span class="flex tile-data" v-else-if="context=='nav'">
         <div class="flex">
             <template v-if="value.length > 0">
-                <span style="display: inline;" v-for="(file, index) in value">
+                <span style="display: inline;" v-for="(file, index) in value" :key="file.file_id">
                     <span v-if="index < 2"><span v-if="index > 0 && index < 2">, </span>{{file.name}}</span>
                     <span v-else-if="index == 2">, ...</span>
                 </span>

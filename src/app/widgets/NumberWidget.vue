@@ -4,12 +4,12 @@
         <input :value="value" type=number placeholder="enter an integer" @input="$emit('update:value', $event.target.value);"/>
     </div>
 
-    <ons-row class="report-widget" v-else-if="context=='report'">
-      <ons-col>
+    <v-ons-row class="report-widget" v-else-if="context=='report'">
+      <v-ons-col>
           <span class="report widget-label">{{widget.label}}</span>
           <span class="report widget-value">{{value}}</span>
-      </ons-col>
-    </ons-row>
+      </v-ons-col>
+    </v-ons-row>
     <span class="flex tile-data" v-else-if="context=='nav'">
         <div v-if="!!value">{{value}}</div>
         <div v-else>no data</div>

@@ -3,12 +3,12 @@
         <div class="editor widget-label">{{widget.label}}</div>
         <datetime v-model="localValue" value-zone="local"></datetime>
     </div>
-    <ons-row class="report-widget" v-else-if="context=='report'">
-        <ons-col
+    <v-ons-row class="report-widget" v-else-if="context=='report'">
+        <v-ons-col>
             <span class="report widget-label">{{widget.label}}</span>
             <span class="report widget-value">{{formatted}}</span>
-        </ons-col>
-    </ons-row>
+        </v-ons-col>
+    </v-ons-row>
     <span class="flex tile-data" v-else-if="context=='nav'">
         <div v-if="!!formatted">{{formatted}}</div>
         <div v-else>no data</div>
