@@ -111,7 +111,6 @@ export default {
             else this.initReport();
         },
         initDraw() {
-            const deleteEl = this.$el.querySelector('.delete-control');
             this.draw = new MapboxDraw({
                 controls: {
                     combine_features: false,
@@ -120,9 +119,13 @@ export default {
                 },
                 styles: drawLayers
             });
+
             this.map.addControl(this.draw, 'top-left');
-            this.draw.add(this.featureCollection);
-            this.map.addControl(new GenericControl(deleteEl), 'top-left');
+            this.map.addControl(
+                new GenericControl(this.$el.querySelector('.delete-control')),
+                'top-left',
+            );
+
             this.map.on('draw.delete', () => this.updateDrawings('delete'));
             this.map.on('draw.create', () => this.updateDrawings('create'));
             this.map.on('draw.update', () => this.updateDrawings('update'));
@@ -157,6 +160,9 @@ export default {
                     this.toggleDelete();
                 }
             });
+
+            this.draw.add(this.featureCollection);
+            this.updateDrawings('init');
         },
         initReport() {
             const style = this.map.getStyle();
@@ -184,15 +190,16 @@ export default {
         },
         updateDrawings(e) {
             var fc = this.draw.getAll();
+            console.log("HERE WE ARE", this, fc, e)
             var featuresValid = this.checkIfFeatureIsValid(fc);
             if (featuresValid === true) {
                 if (e === 'selectionchange') {
                     if (this.draw.getSelectedIds().length === 0) {
+                        this.foo = fc.features;
                         this.$emit('update:value', fc);
                     }
                 } else {
                     this.foo = fc.features;
-
                     this.$emit('update:value', fc);
                 }
             } else {
