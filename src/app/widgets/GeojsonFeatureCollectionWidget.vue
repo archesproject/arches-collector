@@ -1,6 +1,6 @@
 <template>
     <div v-if="value !== null">
-    <div v-if="context == 'editor' || context == 'report'" style="width:100vw; display:flex;">
+    <div v-if="context == 'editor' || context == 'report'" style="width:100%; display:flex;">
         <div class="map-controls">
             <div class="mapboxgl-ctrl mapboxgl-ctrl-group fullscreen-control">
                 <button class="mapboxgl-ctrl-icon" type="button" v-on:click="toggleFullscreen" v-bind:class="{
@@ -12,7 +12,7 @@
                 <button class="mapbox-gl-draw_ctrl-draw-btn mapbox-gl-draw_trash" title="Delete" v-on:click="toggleDelete"></button>
             </div>
         </div>
-        <div v-if="context=='editor'" class="quux">
+        <div v-if="context=='editor'" class="editor-widget">
             <div class="editor widget-label">{{widget.label}}</div>
             <div class="editor widget-value">
                 <div class="map-wrapper" v-bind:class="{ fullscreen: fullscreenActive }">
@@ -31,7 +31,7 @@
 
 
         </div>
-        <div class="report-widget" v-else-if="context=='report'">
+        <div v-else-if="context=='report'" class="report-widget" >
             <v-ons-col class="report widget-label">{{widget.label}}</v-ons-col>
             <v-ons-col class="report widget-value">
                 <div class="map-wrapper" v-bind:class="{ fullscreen: fullscreenActive }">
@@ -191,18 +191,7 @@ export default {
                         this.$emit('update:value', fc);
                     }
                 } else {
-
-
-
-                    console.log(this.foo, e, fc)
-
                     this.foo = fc.features;
-
-                    // for (let feature of fc.features) {
-
-                    // };
-
-
 
                     this.$emit('update:value', fc);
                 }
@@ -232,7 +221,7 @@ export default {
 
 
 
-.quux {
+.editor-widget {
     /* height: 100%; */
     height: inherit;
     overflow: hidden;
@@ -241,10 +230,13 @@ export default {
     width: 100%;
 }
 .qux {
-    /* max-height: calc(ini); */
     overflow: scroll;
-    /* flex-shrink: 0; */
     display: flex;
+    flex-direction: column;
+}
+
+.report-widget {
+    width: 100%;
 }
 
 .report .map-wrapper {

@@ -8,7 +8,7 @@
             <div>
                 <div class="report widget-value" style="padding-left:5px" v-if="card.tile === null">No data yet added</div>
                 <div v-if="card.tile !== null">
-                    <component v-for="widget in card.widgets" :allNodes="allNodes" class="widget" :tiles="tiles" :context="'report'" :tile="card.tile" :widget="widget" v-bind:is="'base-widget'"></component>
+                    <component v-for="widget in card.widgets" :key="widget.id" :allNodes="allNodes" class="widget" :tiles="tiles" :context="'report'" :tile="card.tile" :widget="widget" v-bind:is="'base-widget'"></component>
                 </div>
             </div>
             <div v-for="cardtile in card.cards" v-if="canView(cardtile)">
