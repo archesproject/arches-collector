@@ -80,8 +80,9 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .widget {
-    padding: 10px;
-    overflow: hidden;
+    /* padding: 10px; */
+    /* overflow: hidden; */
+    height: 100%;
     display: flex;
 }
 .button-container {
