@@ -22,20 +22,22 @@
 
             <div class="foo">
                 <v-ons-list class='qux'>
-                    <v-ons-list-item v-for="bar in foo" v-bind:key="bar.id" style="padding:0;margin:0;flex-shrink:0;">
+                    <v-ons-list-item v-for="bar in foo" v-bind:key="bar.id">
                         <div class="quux center">
-                            <div style="width:50%;">{{ bar.geometry.type }}</div>
+                            <div style="margin: 5px; padding: 10px; display:flex; height:100%; width: 100%; align-items: center; justify-content: space-between;">
+                                <div style="width:50%; font-size: larger;">{{ bar.geometry.type }}</div>
 
-                            <div class="button-container">
-                                <v-ons-button class="geometry-button">
-                                    <v-ons-icon class="geomtery-button-icon" icon="fa-search-plus"></v-ons-icon>
-                                </v-ons-button>
-                                <v-ons-button class="geometry-button">
-                                    <v-ons-icon class="geomtery-button-icon" icon="fa-pencil-alt"></v-ons-icon>
-                                </v-ons-button>
-                                <v-ons-button class="geometry-button">
-                                    <v-ons-icon class="geomtery-button-icon" icon="fa-trash"></v-ons-icon>
-                                </v-ons-button>
+                                <div class="button-container">
+                                    <v-ons-button class="geometry-button">
+                                        <v-ons-icon class="geomtery-button-icon" icon="fa-search-plus"></v-ons-icon>
+                                    </v-ons-button>
+                                    <v-ons-button class="geometry-button">
+                                        <v-ons-icon class="geomtery-button-icon" icon="fa-pencil-alt"></v-ons-icon>
+                                    </v-ons-button>
+                                    <v-ons-button class="geometry-button">
+                                        <v-ons-icon class="geomtery-button-icon" icon="fa-trash"></v-ons-icon>
+                                    </v-ons-button>
+                                </div>
                             </div>
                         </div>
                     </v-ons-list-item>
@@ -265,9 +267,13 @@ export default {
     width: 100%;
     overflow: scroll;
 }
+.list-item {
+    padding: unset;
+    flex-shrink: 0;
+}
 .quux {
     /* height: 100%; */
-    width: 100%;
+    /* width: 100%; */
     padding: 5px; 
     /* margin: 10px; */
     /* background: #fafafa; */
@@ -286,10 +292,13 @@ export default {
 }
 .geometry-button {
     height: 100%;
-    border-radius: 100%;
+    border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
+    background: #eee;
+    border: 1px solid #bbb;
+    color:  rgb(31, 31, 33, 0.8);
 }
 .report-widget {
     width: 100%;
