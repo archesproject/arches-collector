@@ -24,8 +24,8 @@
                 <v-ons-list class='qux'>
                     <v-ons-list-item v-for="bar in foo" v-bind:key="bar.id">
                         <div class="quux center">
-                            <div style="margin: 5px; padding: 10px; display:flex; height:100%; width: 100%; align-items: center; justify-content: space-between;">
-                                <div style="width:50%; font-size: larger;">{{ bar.geometry.type }}</div>
+                            <div style="padding: 10px; display:flex; height:100%; width: 100%; align-items: center; justify-content: space-between;">
+                                <div style="width:50%; font-size:1.1em; padding-left:5px;">{{ bar.geometry.type }}</div>
 
                                 <div class="button-container">
                                     <v-ons-button class="geometry-button">
@@ -291,8 +291,10 @@ export default {
     justify-content: space-around;
 }
 .geometry-button {
-    height: 100%;
+    /* height: 100%; */
+    min-width: 35px;
     border-radius: 50%;
+    padding: 8px;
     display: flex;
     justify-content: center;
     align-items: center;
