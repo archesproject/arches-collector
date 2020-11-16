@@ -22,8 +22,8 @@
 
             <div class="foo">
                 <v-ons-list class='qux'>
-                    <v-ons-list-item v-for="bar in foo" v-bind:key="bar.id" :class="{selected: bar.id === selectedGeometryId}" @click="selectGeometry(bar.id)" modifier="longdivider" tappable>
-                        <div class="left" style="width:50%; font-size:1.1em; padding-left:5px;">{{ bar.geometry.type }}</div>
+                    <v-ons-list-item v-for="feature in foo" v-bind:key="feature.id" :class="{selected: (selectedFeature && selectedFeature.id === feature.id) }" @click="selectFeature(feature)" modifier="longdivider" tappable>
+                        <div class="left" style="width:50%; font-size:1.1em; padding-left:5px;">{{ feature.geometry.type }}</div>
 
                         <div class="button-container right">
                             <v-ons-button class="geometry-button">
@@ -75,7 +75,7 @@ export default {
     data() {
         return {
             foo: [],
-            selectedGeometryId: null,
+            selectedFeature: null,
             fullscreenActive: false,
             deleteActive: false
         };
@@ -145,35 +145,50 @@ export default {
             this.map.on('draw.create', () => this.updateDrawings('create'));
             this.map.on('draw.update', () => this.updateDrawings('update'));
             this.map.on('draw.selectionchange', (e) => {
-                const mode = this.draw.getMode();
-                if (this.deleteActive) {
-                    if (e.features) {
-                        const fc = this.draw.getAll();
-                        const features = [];
-                        const featureIds = e.features.map((feature) => {
-                            return feature.id;
-                        });
-                        fc.features.forEach((feature) => {
-                            if (featureIds.indexOf(feature.id) < 0) {
-                                features.push(feature);
-                            }
-                        });
-                        fc.features = features;
-                        this.draw.set(fc);
-                    }
-                    this.toggleDelete();
-                }
+                // const mode = this.draw.getMode();
+
+                console.log(e)
+
+                this.selectedFeature = e.features[0];
+
+
+                // if (this.deleteActive) {
+                //     if (e.features) {
+                //         const fc = this.draw.getAll();
+                //         const features = [];
+                //         const featureIds = e.features.map((feature) => {
+                //             return feature.id;
+                //         });
+                //         fc.features.forEach((feature) => {
+                //             if (featureIds.indexOf(feature.id) < 0) {
+                //                 features.push(feature);
+                //             }
+                //         });
+                //         fc.features = features;
+                //         this.draw.set(fc);
+                //     }
+                //     this.toggleDelete();
+                // }
+                // console.log('bing')
                 this.updateDrawings('selectionchange');
-                if (mode === 'simple_select' || mode === 'direct_select') {
-                    this.draw.changeMode('simple_select');
-                }
+                // if (this.draw.getMode() === 'direct_select') {  /* always force simple_select for map gesture sanity */
+                //     this.draw.changeMode('simple_select', {
+                //         featureIds: [e.features[0].id]
+                //     });
+                // }
+
             });
             this.map.on('draw.modechange', (e) => {
-                if (e.mode === 'simple_select' || e.mode === 'direct_select') {
-                    this.draw.changeMode('simple_select');
-                } else if (this.deleteActive) {
-                    this.toggleDelete();
-                }
+                console.log('999', e)
+                if (e.mode === 'direct_select') {
+                    // this.draw.changeMode('simple_select');
+                    this.draw.changeMode('simple_select', {
+                        featureIds: [this.selectedFeature.id],
+                    });
+                } 
+                // else if (this.deleteActive) {
+                //     this.toggleDelete();
+                // }
             });
 
             this.draw.add(this.featureCollection);
@@ -227,8 +242,12 @@ export default {
         toggleDelete() {
             this.deleteActive = !this.deleteActive;
         },
-        selectGeometry(geometryId) {
-            this.selectedGeometryId = geometryId;
+        selectFeature(feature) {
+            this.selectedFeature = feature;
+
+            this.draw.changeMode('simple_select', {
+                featureIds: [feature.id],
+            });
         },
     },
     destroyed() {

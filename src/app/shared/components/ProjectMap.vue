@@ -143,7 +143,11 @@ export default {
             map.on('load', function() {
                 console.log('map loaded')
 
-                map.addSource('resources', { type: 'geojson', data: self.resourceGeoJSON });
+                map.addSource('resources', { 
+                    type: 'geojson', 
+                    data: self.resourceGeoJSON,
+                    generateId: true,
+                });
 
                 self.addResourceFeatures(map);
                 self.setMapExtent(map);
