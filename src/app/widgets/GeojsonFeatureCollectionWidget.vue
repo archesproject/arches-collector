@@ -22,23 +22,19 @@
 
             <div class="foo">
                 <v-ons-list class='qux'>
-                    <v-ons-list-item v-for="bar in foo" v-bind:key="bar.id">
-                        <div class="quux center">
-                            <div style="padding: 10px; display:flex; height:100%; width: 100%; align-items: center; justify-content: space-between;">
-                                <div style="width:50%; font-size:1.1em; padding-left:5px;">{{ bar.geometry.type }}</div>
+                    <v-ons-list-item v-for="bar in foo" v-bind:key="bar.id" :class="{selected: bar.id === selectedGeometryId}" @click="selectGeometry(bar.id)" modifier="longdivider" tappable>
+                        <div class="left" style="width:50%; font-size:1.1em; padding-left:5px;">{{ bar.geometry.type }}</div>
 
-                                <div class="button-container">
-                                    <v-ons-button class="geometry-button">
-                                        <v-ons-icon class="geomtery-button-icon" icon="fa-search-plus"></v-ons-icon>
-                                    </v-ons-button>
-                                    <v-ons-button class="geometry-button">
-                                        <v-ons-icon class="geomtery-button-icon" icon="fa-pencil-alt"></v-ons-icon>
-                                    </v-ons-button>
-                                    <v-ons-button class="geometry-button">
-                                        <v-ons-icon class="geomtery-button-icon" icon="fa-trash"></v-ons-icon>
-                                    </v-ons-button>
-                                </div>
-                            </div>
+                        <div class="button-container right">
+                            <v-ons-button class="geometry-button">
+                                <v-ons-icon class="geomtery-button-icon" icon="fa-search-plus"></v-ons-icon>
+                            </v-ons-button>
+                            <v-ons-button class="geometry-button">
+                                <v-ons-icon class="geomtery-button-icon" icon="fa-pencil-alt"></v-ons-icon>
+                            </v-ons-button>
+                            <v-ons-button class="geometry-button">
+                                <v-ons-icon class="geomtery-button-icon" icon="fa-trash"></v-ons-icon>
+                            </v-ons-button>
                         </div>
                     </v-ons-list-item>
                 </v-ons-list>
@@ -79,6 +75,7 @@ export default {
     data() {
         return {
             foo: [],
+            selectedGeometryId: null,
             fullscreenActive: false,
             deleteActive: false
         };
@@ -229,7 +226,10 @@ export default {
         },
         toggleDelete() {
             this.deleteActive = !this.deleteActive;
-        }
+        },
+        selectGeometry(geometryId) {
+            this.selectedGeometryId = geometryId;
+        },
     },
     destroyed() {
         this.draw = undefined;
@@ -268,20 +268,11 @@ export default {
     overflow: scroll;
 }
 .list-item {
-    padding: unset;
+    /* padding: unset; */
     flex-shrink: 0;
 }
-.quux {
-    /* height: 100%; */
-    /* width: 100%; */
-    padding: 5px; 
-    /* margin: 10px; */
-    /* background: #fafafa; */
-    justify-content: space-between;
-    align-items: center;
-    /* box-sizing: border-box; */
-    display: flex;
-    align-items: center;
+.selected {
+    background-color: #d9d9d9;
 }
 .button-container {
     height: 100%;
