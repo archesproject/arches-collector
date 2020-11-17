@@ -26,13 +26,13 @@
                         <div class="left" style="width:50%; font-size:1.1em; padding-left:5px;">{{ feature.geometry.type }}</div>
 
                         <div class="button-container right">
-                            <v-ons-button class="geometry-button">
-                                <v-ons-icon class="geomtery-button-icon" icon="fa-search-plus" @click="zoomToFeature"></v-ons-icon>
+                            <v-ons-button class="geometry-button" :disabled="!selectedFeature || selectedFeature.id !== feature.id" @click="zoomToFeature">
+                                <v-ons-icon class="geomtery-button-icon" icon="fa-search-plus"></v-ons-icon>
                             </v-ons-button>
-                            <v-ons-button class="geometry-button">
+                            <v-ons-button class="geometry-button" >
                                 <v-ons-icon class="geomtery-button-icon" icon="fa-pencil-alt"></v-ons-icon>
                             </v-ons-button>
-                            <v-ons-button class="geometry-button">
+                            <v-ons-button class="geometry-button" >
                                 <v-ons-icon class="geomtery-button-icon" icon="fa-trash"></v-ons-icon>
                             </v-ons-button>
                         </div>
@@ -291,7 +291,7 @@ export default {
 
             if (bounds) {
                 this.map.fitBounds(bounds, {
-                    padding: 20
+                    padding: 30
                 });
             }
         },
