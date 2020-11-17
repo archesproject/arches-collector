@@ -27,7 +27,7 @@
 
                         <div class="button-container right">
                             <v-ons-button class="geometry-button">
-                                <v-ons-icon class="geomtery-button-icon" icon="fa-search-plus"></v-ons-icon>
+                                <v-ons-icon class="geomtery-button-icon" icon="fa-search-plus" @click="zoomToFeature"></v-ons-icon>
                             </v-ons-button>
                             <v-ons-button class="geometry-button">
                                 <v-ons-icon class="geomtery-button-icon" icon="fa-pencil-alt"></v-ons-icon>
@@ -145,50 +145,26 @@ export default {
             this.map.on('draw.create', () => this.updateDrawings('create'));
             this.map.on('draw.update', () => this.updateDrawings('update'));
             this.map.on('draw.selectionchange', (e) => {
-                // const mode = this.draw.getMode();
+                if (e.features.length) {
+                    this.selectFeature(e.features[0]);
+                }
+            });
 
-                console.log(e)
-
-                this.selectedFeature = e.features[0];
-
-
-                // if (this.deleteActive) {
-                //     if (e.features) {
-                //         const fc = this.draw.getAll();
-                //         const features = [];
-                //         const featureIds = e.features.map((feature) => {
-                //             return feature.id;
-                //         });
-                //         fc.features.forEach((feature) => {
-                //             if (featureIds.indexOf(feature.id) < 0) {
-                //                 features.push(feature);
-                //             }
-                //         });
-                //         fc.features = features;
-                //         this.draw.set(fc);
-                //     }
-                //     this.toggleDelete();
-                // }
-                // console.log('bing')
-                this.updateDrawings('selectionchange');
-                // if (this.draw.getMode() === 'direct_select') {  /* always force simple_select for map gesture sanity */
-                //     this.draw.changeMode('simple_select', {
-                //         featureIds: [e.features[0].id]
-                //     });
-                // }
-
+            this.map.on('touchend', (e) => {
+                setTimeout(() => {
+                    /* this is neccessary to keep features selected after tap */
+                    if (
+                        this.selectedFeature 
+                        && ['draw_point', 'draw_line_string', 'draw_polygon'].includes(this.draw.getMode()) === false
+                    ) {
+                        this.selectFeature(this.selectedFeature)
+                    }
+                }, 0);
             });
             this.map.on('draw.modechange', (e) => {
-                console.log('999', e)
-                if (e.mode === 'direct_select') {
-                    // this.draw.changeMode('simple_select');
-                    this.draw.changeMode('simple_select', {
-                        featureIds: [this.selectedFeature.id],
-                    });
-                } 
-                // else if (this.deleteActive) {
-                //     this.toggleDelete();
-                // }
+                if (this.selectedFeature && e.mode === 'direct_select') {
+                    this.selectFeature(this.selectedFeature);
+                }
             });
 
             this.draw.add(this.featureCollection);
@@ -243,11 +219,81 @@ export default {
             this.deleteActive = !this.deleteActive;
         },
         selectFeature(feature) {
-            this.selectedFeature = feature;
+            if ( !this.selectedFeature || (this.selectedFeature && this.selectedFeature.id !== feature.id) ) {
+                this.selectedFeature = feature;
+            }
 
-            this.draw.changeMode('simple_select', {
+            /* force mapbox to highlight feature */ 
+            this.draw.changeMode('simple_select', { 
                 featureIds: [feature.id],
             });
+        },
+        baz(feature) {
+            let xCoord, yCoord, coordAverage, bounds;
+
+            const getCoordAverage = coordList => {
+                const accumulatedCoords = coordList.reduce((acc, coords) => {
+                    acc[0] += coords[0];
+                    acc[1] += coords[1];
+
+                    return acc;
+                }, [0, 0]);
+
+                return [
+                    accumulatedCoords[0] / coordList.length,
+                    accumulatedCoords[1] / coordList.length,
+                ]
+            }
+
+            switch (feature.geometry.type) {
+                case 'Point':
+                    xCoord = feature.geometry.coordinates[0];
+                    yCoord = feature.geometry.coordinates[1];
+
+                    break;
+                case 'LineString':
+                    coordAverage = getCoordAverage(feature.geometry.coordinates);
+                    xCoord = coordAverage[0];
+                    yCoord = coordAverage[1];
+
+                    bounds = feature.geometry.coordinates.reduce(function (bounds, coord) {
+                        return bounds.extend(coord);
+                    }, new window.mapboxgl.LngLatBounds(feature.geometry.coordinates[0], feature.geometry.coordinates[0]));
+
+                    break;
+                case 'Polygon':
+                    const subGeometryAverages = feature.geometry.coordinates.map(coordList => getCoordAverage(coordList));
+
+                    coordAverage = getCoordAverage(subGeometryAverages);
+                    xCoord = coordAverage[0];
+                    yCoord = coordAverage[1];
+
+                    bounds = new window.mapboxgl.LngLatBounds(feature.geometry.coordinates[0][0], feature.geometry.coordinates[0][0]);
+
+                    for (let coordList of feature.geometry.coordinates) {
+                        for (let coord of coordList) {
+                            bounds.extend(coord);
+                        }
+                    }
+
+                    break;
+            }
+
+            return [xCoord, yCoord, bounds];
+        },
+        zoomToFeature() {
+            const [xCoord, yCoord, bounds] = this.baz(this.selectedFeature);
+
+            this.map.flyTo({
+                center: new window.mapboxgl.LngLat(xCoord, yCoord),
+                zoom: 9,
+            })
+
+            if (bounds) {
+                this.map.fitBounds(bounds, {
+                    padding: 20
+                });
+            }
         },
     },
     destroyed() {
@@ -272,7 +318,6 @@ export default {
     display: flex;
     flex-direction: column;
     width: 100%;
-    padding-bottom: 10px;
 }
 
 .foo {

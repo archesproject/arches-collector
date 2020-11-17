@@ -38,7 +38,6 @@ export default {
                         return widget.card_id === this.card.cardid;
                     }, this);
 
-                    console.log('!!!!!!', widgets)
                     return this.$underscore.sortBy(widgets, 'sortorder');
                 } else {
                     return [];

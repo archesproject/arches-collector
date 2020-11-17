@@ -348,10 +348,8 @@ export default {
                     const feature = e.features[0];
                     this.selectedResource = feature.properties;
                     ['resource-point', 'resource-polygon', 'resource-line'].forEach(function(layer) {
-                        console.log('ahh')
                         var paintProperties = this.getPaintProperties(layer, this.selectedResource.id);
                         Object.keys(paintProperties).forEach(function(paintProperty) {
-                            console.log("ohh")
                             this.map.setPaintProperty(layer, paintProperty, paintProperties[paintProperty]);
                         }, this);
                     }, this);
