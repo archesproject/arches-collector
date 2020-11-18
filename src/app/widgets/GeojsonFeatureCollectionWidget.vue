@@ -43,10 +43,19 @@
                             >
                                 <v-ons-icon class="geomtery-button-icon" icon="fa-search-plus"></v-ons-icon>
                             </v-ons-button>
-                            <v-ons-button class="geometry-button" >
+                            <v-ons-button 
+                                class="geometry-button" 
+                            >
                                 <v-ons-icon class="geomtery-button-icon" icon="fa-pencil-alt"></v-ons-icon>
                             </v-ons-button>
-                            <v-ons-button class="geometry-button" >
+                            <v-ons-button 
+                                class="geometry-button"
+                                v-bind:class="{
+                                    'white': (selectedFeature && selectedFeature.id === feature.id) && deleteClicked
+                                }"
+                                :disabled="!selectedFeature || selectedFeature.id !== feature.id" 
+                                @click="handleDeleteFeature(); deleteClicked = !deleteClicked;"
+                            >
                                 <v-ons-icon class="geomtery-button-icon" icon="fa-trash"></v-ons-icon>
                             </v-ons-button>
                         </div>
@@ -91,6 +100,7 @@ export default {
         return {
             foo: [],
             zoomClicked: false,
+            deleteClicked: false,
             selectedFeature: null,
             fullscreenActive: false,
             deleteActive: false
@@ -207,19 +217,28 @@ export default {
         },
         updateDrawings(e) {
             var fc = this.draw.getAll();
-            console.log("HERE WE ARE", this, fc, e)
             var featuresValid = this.checkIfFeatureIsValid(fc);
+            
             if (featuresValid === true) {
-                if (e === 'selectionchange') {
+                if (e === 'selectionchange')  {
                     if (this.draw.getSelectedIds().length === 0) {
                         this.foo = fc.features;
                         this.$emit('update:value', fc);
                     }
-                } else {
+                } 
+                else if (e === 'delete') {
+                    this.foo = fc.features;
+                    this.$emit('update:value', fc);
+
+                    // const data = this.draw.getAll();
+                    // this.map.getSource('gl-draw-line-inactive').setData(data);
+                }
+                else {
                     this.foo = fc.features;
                     this.$emit('update:value', fc);
                 }
-            } else {
+            } 
+            else {
                 console.log(fc, e);
             }
         },
@@ -239,6 +258,7 @@ export default {
             }
 
             this.zoomClicked = false;
+            this.deleteClicked = false;
             
             /* force mapbox to highlight feature */ 
             this.draw.changeMode('simple_select', { 
@@ -294,14 +314,15 @@ export default {
                 zoom: 9,
             })
 
-            if (this.zoomClicked) {
-                this.map.fitBounds(geojsonExtent(this.featureCollection), {
-                    padding: 30
-                });
+            if (this.zoomClicked) { /* if zoom is already selected, let's fit the map to all features*/
+                this.map.fitBounds(geojsonExtent(this.featureCollection), { padding: 50 });
             } else if (this.selectedFeature.geometry.type !== 'Point') {  /* giving a point a bbox overrides zoom */
-                this.map.fitBounds(geojsonExtent(this.selectedFeature), {
-                    padding: 30
-                });
+                this.map.fitBounds(geojsonExtent(this.selectedFeature), { padding: 50 });
+            }
+        },
+        handleDeleteFeature() {
+            if (this.deleteClicked) { /* if delete is already active, let's delete the features */
+                this.draw.trash();
             }
         },
     },
