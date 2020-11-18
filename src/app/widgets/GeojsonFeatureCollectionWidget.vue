@@ -26,13 +26,13 @@
                         v-for="feature in foo" 
                         v-bind:key="feature.id" 
                         :class="{selected: (selectedFeature && selectedFeature.id === feature.id) }" 
-                        @click="selectFeature(feature);" 
+                        @click="(!selectedFeature || selectedFeature.id !== feature.id) ? selectFeature(feature) : selectFeature(null);" 
                         modifier="longdivider" 
                         tappable
                     >
                         <div class="left" style="width:50%; font-size:1.1em; padding-left:5px;">{{ feature.geometry.type }}</div>
 
-                        <div class="button-container right">
+                        <div class="button-container right" @click.stop>
                             <v-ons-button 
                                 class="geometry-button" 
                                 v-bind:class="{
@@ -160,26 +160,21 @@ export default {
             this.map.on('draw.delete', () => this.updateDrawings('delete'));
             this.map.on('draw.create', () => this.updateDrawings('create'));
             this.map.on('draw.update', () => this.updateDrawings('update'));
+            this.map.on('draw.modechange', (e) => {
+                /* always force simple_select */ 
+                if (e.mode === 'direct_select') {
+                    this.draw.changeMode('simple_select', { 
+                        featureIds: this.selectedFeature ? [this.selectedFeature.id] : [],
+                    });
+                }
+            });
             this.map.on('draw.selectionchange', (e) => {
                 if (e.features.length) {
                     this.selectFeature(e.features[0]);
-                }
-            });
-
-            this.map.on('touchend', (e) => {
-                setTimeout(() => {
-                    /* this is neccessary to keep features selected after tap */
-                    if (
-                        this.selectedFeature 
-                        && ['draw_point', 'draw_line_string', 'draw_polygon'].includes(this.draw.getMode()) === false
-                    ) {
-                        this.selectFeature(this.selectedFeature)
-                    }
-                }, 0);
-            });
-            this.map.on('draw.modechange', (e) => {
-                if (this.selectedFeature && e.mode === 'direct_select') {
+                } else if (this.selectedFeature) {
                     this.selectFeature(this.selectedFeature);
+                } else {
+                    this.selectFeature(null);
                 }
             });
 
@@ -235,15 +230,19 @@ export default {
             this.deleteActive = !this.deleteActive;
         },
         selectFeature(feature) {
-            if ( !this.selectedFeature || (this.selectedFeature && this.selectedFeature.id !== feature.id) ) {
+           if ( 
+               !this.selectedFeature
+               || !feature 
+               || (this.selectedFeature && this.selectedFeature.id !== feature.id) 
+            ) {
                 this.selectedFeature = feature;
-                
-                this.zoomClicked = false;
             }
 
+            this.zoomClicked = false;
+            
             /* force mapbox to highlight feature */ 
             this.draw.changeMode('simple_select', { 
-                featureIds: [feature.id],
+                featureIds: this.selectedFeature ? [this.selectedFeature.id] : [],
             });
         },
         baz(feature) {
@@ -274,10 +273,6 @@ export default {
                     xCoord = coordAverage[0];
                     yCoord = coordAverage[1];
 
-                    bounds = feature.geometry.coordinates.reduce(function (bounds, coord) {
-                        return bounds.extend(coord);
-                    }, new window.mapboxgl.LngLatBounds(feature.geometry.coordinates[0], feature.geometry.coordinates[0]));
-
                     break;
                 case 'Polygon':
                     const subGeometryAverages = feature.geometry.coordinates.map(coordList => getCoordAverage(coordList));
@@ -285,14 +280,6 @@ export default {
                     coordAverage = getCoordAverage(subGeometryAverages);
                     xCoord = coordAverage[0];
                     yCoord = coordAverage[1];
-
-                    bounds = new window.mapboxgl.LngLatBounds(feature.geometry.coordinates[0][0], feature.geometry.coordinates[0][0]);
-
-                    for (let coordList of feature.geometry.coordinates) {
-                        for (let coord of coordList) {
-                            bounds.extend(coord);
-                        }
-                    }
 
                     break;
             }
@@ -307,21 +294,15 @@ export default {
                 zoom: 9,
             })
 
-            if (bounds) {
-                this.map.fitBounds(bounds, {
-                    padding: 30
-                });
-            }
-
-            console.log('yeah?')
-
             if (this.zoomClicked) {
                 this.map.fitBounds(geojsonExtent(this.featureCollection), {
                     padding: 30
                 });
+            } else if (this.selectedFeature.geometry.type !== 'Point') {  /* giving a point a bbox overrides zoom */
+                this.map.fitBounds(geojsonExtent(this.selectedFeature), {
+                    padding: 30
+                });
             }
-
-            // this.zoomClicked = !this.zoomClicked;
         },
     },
     destroyed() {
