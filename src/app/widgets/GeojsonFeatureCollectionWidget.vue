@@ -22,11 +22,25 @@
 
             <div class="foo">
                 <v-ons-list class='qux'>
-                    <v-ons-list-item v-for="feature in foo" v-bind:key="feature.id" :class="{selected: (selectedFeature && selectedFeature.id === feature.id) }" @click="selectFeature(feature)" modifier="longdivider" tappable>
+                    <v-ons-list-item 
+                        v-for="feature in foo" 
+                        v-bind:key="feature.id" 
+                        :class="{selected: (selectedFeature && selectedFeature.id === feature.id) }" 
+                        @click="selectFeature(feature);" 
+                        modifier="longdivider" 
+                        tappable
+                    >
                         <div class="left" style="width:50%; font-size:1.1em; padding-left:5px;">{{ feature.geometry.type }}</div>
 
                         <div class="button-container right">
-                            <v-ons-button class="geometry-button" :disabled="!selectedFeature || selectedFeature.id !== feature.id" @click="zoomToFeature">
+                            <v-ons-button 
+                                class="geometry-button" 
+                                v-bind:class="{
+                                    'blue': (selectedFeature && selectedFeature.id === feature.id) && zoomClicked
+                                }"
+                                :disabled="!selectedFeature || selectedFeature.id !== feature.id" 
+                                @click="handleZoom(); zoomClicked = !zoomClicked;"
+                            >
                                 <v-ons-icon class="geomtery-button-icon" icon="fa-search-plus"></v-ons-icon>
                             </v-ons-button>
                             <v-ons-button class="geometry-button" >
@@ -64,6 +78,7 @@
 
 <script>
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
+import geojsonExtent from '@mapbox/geojson-extent';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import GenericControl from '../../assets/map/GenericControl';
 import reportLayers from '../../assets/map/report_layers.json';
@@ -75,6 +90,7 @@ export default {
     data() {
         return {
             foo: [],
+            zoomClicked: false,
             selectedFeature: null,
             fullscreenActive: false,
             deleteActive: false
@@ -221,6 +237,8 @@ export default {
         selectFeature(feature) {
             if ( !this.selectedFeature || (this.selectedFeature && this.selectedFeature.id !== feature.id) ) {
                 this.selectedFeature = feature;
+                
+                this.zoomClicked = false;
             }
 
             /* force mapbox to highlight feature */ 
@@ -281,7 +299,7 @@ export default {
 
             return [xCoord, yCoord, bounds];
         },
-        zoomToFeature() {
+        handleZoom() {
             const [xCoord, yCoord, bounds] = this.baz(this.selectedFeature);
 
             this.map.flyTo({
@@ -294,6 +312,16 @@ export default {
                     padding: 30
                 });
             }
+
+            console.log('yeah?')
+
+            if (this.zoomClicked) {
+                this.map.fitBounds(geojsonExtent(this.featureCollection), {
+                    padding: 30
+                });
+            }
+
+            // this.zoomClicked = !this.zoomClicked;
         },
     },
     destroyed() {
@@ -318,6 +346,16 @@ export default {
     display: flex;
     flex-direction: column;
     width: 100%;
+}
+
+
+
+.white {
+    background-color: red !important;
+}
+
+.blue {
+    background-color: blue !important;
 }
 
 .foo {
