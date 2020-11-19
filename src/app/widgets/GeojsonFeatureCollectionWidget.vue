@@ -28,6 +28,7 @@
                         :class="{selected: (selectedFeature && selectedFeature.id === feature.id) }" 
                         @click="(!selectedFeature || selectedFeature.id !== feature.id) ? selectFeature(feature) : selectFeature(null);" 
                         modifier="longdivider" 
+                        @touchmove.self.stop
                     >
                         <v-ons-carousel
                             class="center"
@@ -37,8 +38,9 @@
                             auto-scroll-ratio="0.1"
                             animation="none"
                             style="padding:10px; overflow:hidden;"
+                            :disabled="(!selectedFeature || selectedFeature.id !== feature.id)"
                         >
-                            <v-ons-carousel-item> 
+                            <v-ons-carousel-item > 
                                 <div style="height:100%;width:50vw;align-items:center;display:flex;">{{ feature.geometry.type }}</div>
                             </v-ons-carousel-item>
 
