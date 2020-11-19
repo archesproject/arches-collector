@@ -28,37 +28,53 @@
                         :class="{selected: (selectedFeature && selectedFeature.id === feature.id) }" 
                         @click="(!selectedFeature || selectedFeature.id !== feature.id) ? selectFeature(feature) : selectFeature(null);" 
                         modifier="longdivider" 
-                        tappable
                     >
-                        <div class="left" style="width:50%; font-size:1.1em; padding-left:5px;">{{ feature.geometry.type }}</div>
+                        <v-ons-carousel
+                            class="center"
+                            swipeable
+                            overscrollable
+                            auto-scroll
+                            auto-scroll-ratio="0.1"
+                            animation="none"
+                            style="padding:10px; overflow:hidden;"
+                        >
+                            <v-ons-carousel-item> 
+                                <div style="height:100%;width:50vw;align-items:center;display:flex;">{{ feature.geometry.type }}</div>
+                            </v-ons-carousel-item>
 
-                        <div class="button-container right" @click.stop>
-                            <v-ons-button 
-                                class="geometry-button" 
-                                v-bind:class="{
-                                    'blue': (selectedFeature && selectedFeature.id === feature.id) && zoomClicked
-                                }"
-                                :disabled="!selectedFeature || selectedFeature.id !== feature.id" 
-                                @click="handleZoom(); zoomClicked = !zoomClicked;"
-                            >
-                                <v-ons-icon class="geomtery-button-icon" icon="fa-search-plus"></v-ons-icon>
-                            </v-ons-button>
-                            <v-ons-button 
-                                class="geometry-button" 
-                            >
-                                <v-ons-icon class="geomtery-button-icon" icon="fa-pencil-alt"></v-ons-icon>
-                            </v-ons-button>
-                            <v-ons-button 
-                                class="geometry-button"
-                                v-bind:class="{
-                                    'white': (selectedFeature && selectedFeature.id === feature.id) && deleteClicked
-                                }"
-                                :disabled="!selectedFeature || selectedFeature.id !== feature.id" 
-                                @click="handleDeleteFeature(); deleteClicked = !deleteClicked;"
-                            >
-                                <v-ons-icon class="geomtery-button-icon" icon="fa-trash"></v-ons-icon>
-                            </v-ons-button>
-                        </div>
+                            <v-ons-carousel-item>
+                                <div class="button-container" @click.stop>
+                                    <!-- <v-ons-button 
+                                        class="geometry-button" 
+                                        v-bind:class="{
+                                            'blue': (selectedFeature && selectedFeature.id === feature.id) && zoomClicked
+                                        }"
+                                        :disabled="!selectedFeature || selectedFeature.id !== feature.id" 
+                                        @click="handleZoom(); zoomClicked = !zoomClicked;"
+                                    >
+                                        <v-ons-icon class="geomtery-button-icon" icon="fa-search-plus"></v-ons-icon>
+                                    </v-ons-button> -->
+                                    <!-- <v-ons-button 
+                                        class="geometry-button" 
+                                    >
+                                        <v-ons-icon class="geomtery-button-icon" icon="fa-pencil-alt"></v-ons-icon>
+                                    </v-ons-button> -->
+                                    <div>
+                                        Delete Feature?
+                                    </div>
+                                    <v-ons-button 
+                                        class="geometry-button"
+                                        v-bind:class="{
+                                            'white': (selectedFeature && selectedFeature.id === feature.id) && deleteClicked
+                                        }"
+                                        :disabled="!selectedFeature || selectedFeature.id !== feature.id" 
+                                        @click="handleDeleteFeature(); deleteClicked = !deleteClicked;"
+                                    >
+                                        <v-ons-icon class="geomtery-button-icon" icon="fa-trash"></v-ons-icon>
+                                    </v-ons-button>
+                                </div>
+                            </v-ons-carousel-item>
+                        </v-ons-carousel>
                     </v-ons-list-item>
                 </v-ons-list>
             </div>
@@ -372,7 +388,7 @@ export default {
     overflow: scroll;
 }
 .list-item {
-    /* padding: unset; */
+    padding: unset;
     flex-shrink: 0;
 }
 .selected {
@@ -380,7 +396,9 @@ export default {
 }
 .button-container {
     height: 100%;
-    width: 50%;
+    /* width: 100%; */
+    width: 50vw;
+    /* padding-left: 65vw; */
     display: flex;
     align-items: center;
     justify-content: space-around;
