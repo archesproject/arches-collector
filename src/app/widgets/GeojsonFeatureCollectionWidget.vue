@@ -223,6 +223,9 @@ export default {
                         deleteFlag = document.querySelector(`#delete-flag-${this.selectedFeature.id}`);
                         deleteFlag.style.display = "none";
                     }
+
+                    const listItem = document.querySelector(`#list-item-${e.features[0].id}`);
+                    listItem.scrollIntoView({behavior: "smooth", block: "center"});
                     
                     this.selectFeature(e.features[0]);
 
@@ -233,10 +236,6 @@ export default {
                     /* show new flag */ 
                     deleteFlag = document.querySelector(`#delete-flag-${e.features[0].id}`);
                     deleteFlag.style.display = "flex";
-
-
-                    const listItem = document.querySelector(`#list-item-${e.features[0].id}`);
-                    listItem.scrollIntoView({behavior: "smooth", block: "center"});
                 } 
                 else if (this.selectedFeature) {
                     this.selectFeature(this.selectedFeature);
