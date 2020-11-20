@@ -28,7 +28,7 @@
                         v-bind:key="feature.id" 
                         :class="{selected: (selectedFeature && selectedFeature.id === feature.id) }" 
                         @click="handleListItemClick(feature);" 
-                        @dragstart="handleListItemDrag(feature);"
+                        @dragstart="handleListItemDragStart(feature);"
                         @touchmove.self.stop
                         lock-on-drag
                     >
@@ -40,6 +40,7 @@
                             auto-scroll
                             auto-scroll-ratio="0.1"
                             style="padding:10px; overflow:hidden;"
+                            @dragend="handleFOO(feature);"
                         >
                             <v-ons-carousel-item > 
                                 <div style="height:100%;width:50vw;align-items:center;display:flex;">{{ feature.geometry.type }}</div>
@@ -79,8 +80,14 @@
                             </v-ons-carousel-item>
                         </v-ons-carousel>
 
-                        <div class="right" style="position:absolute; right:0px;">
-                            <v-ons-icon class="geomtery-button-icon list-item__icon" icon="fa-trash"></v-ons-icon>
+                        <div
+                            :id="'delete-flag-' + feature.id"
+                            class="right" 
+                            style="position:absolute; height:100%; right:0px; pointer-events:none; display:none;"
+                        >
+                            <v-ons-icon class="geomtery-button-icon" icon="fa-caret-left"></v-ons-icon>
+                            <v-ons-icon class="geomtery-button-icon" icon="fa-caret-left"></v-ons-icon>
+                            <v-ons-icon class="geomtery-button-icon" style="margin:5px;" icon="fa-trash"></v-ons-icon>
                         </div>
                     </v-ons-list-item>
                 </v-ons-list>
@@ -344,20 +351,34 @@ export default {
             }
         },
         handleListItemClick(feature) {
-            let carousel;
+            let carousel, deleteFlag;
 
             if (!this.selectedFeature) {
                 this.selectFeature(feature);
+                
+                deleteFlag = document.querySelector(`#delete-flag-${feature.id}`);
+                deleteFlag.style.display = "flex";
             } 
             else if (this.selectedFeature.id !== feature.id) {
                 carousel = document.querySelector(`#carousel-${this.selectedFeature.id}`);
                 carousel.setActiveIndex(0);
+
+                /* hide previous flag */ 
+                deleteFlag = document.querySelector(`#delete-flag-${this.selectedFeature.id}`);
+                deleteFlag.style.display = "none";
                 
                 this.selectFeature(feature);
+
+                /* show new flag */ 
+                deleteFlag = document.querySelector(`#delete-flag-${this.selectedFeature.id}`);
+                deleteFlag.style.display = "flex";
             } 
             else { /* touch already selected list item */
-                carousel = document.querySelector(`#carousel-${this.selectedFeature.id}`);
+                deleteFlag = document.querySelector(`#delete-flag-${this.selectedFeature.id}`);
+                deleteFlag.style.display = "none";
 
+                carousel = document.querySelector(`#carousel-${this.selectedFeature.id}`);
+                
                 if (carousel.getActiveIndex() === 0) {
                     this.selectFeature(null);
                 } 
@@ -380,18 +401,56 @@ export default {
 
         //     return true;
         // },
-        handleListItemDrag(feature) {
-            let carousel;
+        foobar(feature) {
+            console.log('!!!', feature);
+
+            // if (this.selectedFeature && this.selectedFeature.id === feature.id) {
+                const carousel = document.querySelector(`#carousel-${feature.id}`);
+
+                if (carousel && carousel.getActiveIndex() === 0) {
+                    return true;
+                }
+
+                return false;
+            // }
+
+        },
+        handleListItemDragStart(feature) {
+            let carousel, deleteFlag;
 
             if (!this.selectedFeature) {
                 this.selectFeature(feature);
+                
+                deleteFlag = document.querySelector(`#delete-flag-${feature.id}`);
+                deleteFlag.style.display = "flex";
             } 
             else if (this.selectedFeature.id !== feature.id) {
                 carousel = document.querySelector(`#carousel-${this.selectedFeature.id}`);
                 carousel.setActiveIndex(0);
+
+                /* hide previous flag */ 
+                deleteFlag = document.querySelector(`#delete-flag-${this.selectedFeature.id}`);
+                deleteFlag.style.display = "none";
                 
                 this.selectFeature(feature);
-            } 
+
+                /* show new flag */ 
+                deleteFlag = document.querySelector(`#delete-flag-${this.selectedFeature.id}`);
+                deleteFlag.style.display = "flex";
+            }
+        },
+        handleFOO(feature) {
+            setTimeout(() => {
+                const carousel = document.querySelector(`#carousel-${feature.id}`);
+                const deleteFlag = document.querySelector(`#delete-flag-${feature.id}`);
+    
+                if (carousel.getActiveIndex() !== 0) {
+                    deleteFlag.style.display = "none";
+                } 
+                else {
+                    deleteFlag.style.display = "flex";
+                }
+            }, 0);
         },
         handleDeleteFeature() {
             if (this.deleteClicked) { /* if delete is already active, let's delete the features */
