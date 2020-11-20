@@ -23,14 +23,16 @@
             <div class="foo">
                 <v-ons-list class='qux'>
                     <v-ons-list-item 
+                        modifier="longdivider"
                         v-for="feature in foo" 
                         v-bind:key="feature.id" 
                         :class="{selected: (selectedFeature && selectedFeature.id === feature.id) }" 
-                        @click="(!selectedFeature || selectedFeature.id !== feature.id) ? selectFeature(feature) : selectFeature(null);" 
-                        modifier="longdivider" 
+                        @click="handleListItemClick(feature);" 
+                        @dragstart="handleListItemDrag(feature);"
                         @touchmove.self.stop
                     >
                         <v-ons-carousel
+                            :id="'carousel-' + feature.id"
                             class="center"
                             swipeable
                             overscrollable
@@ -38,7 +40,6 @@
                             auto-scroll-ratio="0.1"
                             animation="none"
                             style="padding:10px; overflow:hidden;"
-                            :disabled="(!selectedFeature || selectedFeature.id !== feature.id)"
                         >
                             <v-ons-carousel-item > 
                                 <div style="height:100%;width:50vw;align-items:center;display:flex;">{{ feature.geometry.type }}</div>
@@ -337,6 +338,56 @@ export default {
             } else if (this.selectedFeature.geometry.type !== 'Point') {  /* giving a point a bbox overrides zoom */
                 this.map.fitBounds(geojsonExtent(this.selectedFeature), { padding: 50 });
             }
+        },
+        handleListItemClick(feature) {
+            let carousel;
+
+            if (!this.selectedFeature) {
+                this.selectFeature(feature);
+            } 
+            else if (this.selectedFeature.id !== feature.id) {
+                carousel = document.querySelector(`#carousel-${this.selectedFeature.id}`);
+                carousel.setActiveIndex(0);
+                
+                this.selectFeature(feature);
+            } 
+            else { /* touch already selected list item */
+                carousel = document.querySelector(`#carousel-${this.selectedFeature.id}`);
+
+                if (carousel.getActiveIndex() === 0) {
+                    this.selectFeature(null);
+                } 
+            }
+
+            // if (carousel) {  };
+        },
+        // isCarouselEnabled(feature) {
+        //     /* 
+        //         carousel is only disabled if it's not the selected 
+        //         list item && showing the delete interface
+        //     */ 
+        //     if (!this.selectedFeature || this.selectedFeature.id !== feature.id) {
+        //         const carousel = document.querySelector(`#carousel-${feature.id}`);
+            
+        //         if (carousel.getActiveIndex() !== 0) {
+        //             return false;
+        //         }
+        //     };
+
+        //     return true;
+        // },
+        handleListItemDrag(feature) {
+            let carousel;
+
+            if (!this.selectedFeature) {
+                this.selectFeature(feature);
+            } 
+            else if (this.selectedFeature.id !== feature.id) {
+                carousel = document.querySelector(`#carousel-${this.selectedFeature.id}`);
+                carousel.setActiveIndex(0);
+                
+                this.selectFeature(feature);
+            } 
         },
         handleDeleteFeature() {
             if (this.deleteClicked) { /* if delete is already active, let's delete the features */
