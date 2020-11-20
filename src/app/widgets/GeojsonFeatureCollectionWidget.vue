@@ -23,6 +23,7 @@
             <div class="foo">
                 <v-ons-list class='qux'>
                     <v-ons-list-item 
+                        :id="'list-item-' + feature.id"
                         modifier="longdivider"
                         v-for="feature in foo" 
                         v-bind:key="feature.id" 
@@ -210,10 +211,37 @@ export default {
             });
             this.map.on('draw.selectionchange', (e) => {
                 if (e.features.length) {
+
+                    let deleteFlag, carousel;
+
+                    if (this.selectedFeature) {
+                        /* reset previous carousel */ 
+                        carousel = document.querySelector(`#carousel-${this.selectedFeature.id}`);
+                        carousel.setActiveIndex(0);
+
+                        /* hide previous flag */ 
+                        deleteFlag = document.querySelector(`#delete-flag-${this.selectedFeature.id}`);
+                        deleteFlag.style.display = "none";
+                    }
+                    
                     this.selectFeature(e.features[0]);
-                } else if (this.selectedFeature) {
+
+                    /* reset current carousel */ 
+                    carousel = document.querySelector(`#carousel-${e.features[0].id}`);
+                    carousel.setActiveIndex(0);
+
+                    /* show new flag */ 
+                    deleteFlag = document.querySelector(`#delete-flag-${e.features[0].id}`);
+                    deleteFlag.style.display = "flex";
+
+
+                    const listItem = document.querySelector(`#list-item-${e.features[0].id}`);
+                    listItem.scrollIntoView({behavior: "smooth", block: "center"});
+                } 
+                else if (this.selectedFeature) {
                     this.selectFeature(this.selectedFeature);
-                } else {
+                } 
+                else {
                     this.selectFeature(null);
                 }
             });
