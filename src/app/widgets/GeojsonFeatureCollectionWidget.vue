@@ -64,10 +64,7 @@
                                     >
                                         <v-ons-icon class="geomtery-button-icon" icon="fa-pencil-alt"></v-ons-icon>
                                     </v-ons-button> -->
-                                    <div>
-                                        Delete the feature?
-                                    </div>
-                                    <v-ons-button 
+                                    <!-- <v-ons-button 
                                         class="geometry-button"
                                         v-bind:class="{
                                             'white': (selectedFeature && selectedFeature.id === feature.id) && deleteClicked
@@ -76,7 +73,21 @@
                                         @click="handleDeleteFeature(); deleteClicked = !deleteClicked;"
                                     >
                                         <v-ons-icon class="geomtery-button-icon" icon="fa-trash"></v-ons-icon>
-                                    </v-ons-button>
+                                    </v-ons-button> -->
+                                    <div style="width:50%;">
+                                        Delete this {{ feature.geometry.type }}?
+                                    </div>
+
+                                    <div style="width:50%;">
+                                        <v-ons-button style="min-width: 80px;" modifier="outline">
+                                            <v-ons-icon style="padding-right:5px;" icon="fa-trash"></v-ons-icon>
+                                            <span>YES</span>
+                                        </v-ons-button>
+                                        <v-ons-button style="min-width: 80px;" modifier="cta">
+                                            <v-ons-icon style="padding-right:5px;" icon="fa-ban"></v-ons-icon>
+                                            <span>NO</span>
+                                        </v-ons-button>
+                                    </div>
                                 </div>
                             </v-ons-carousel-item>
                         </v-ons-carousel>
@@ -538,13 +549,13 @@ export default {
     background-color: #d9d9d9;
 }
 .button-container {
-    height: 100%;
+    /* height: 100%; */
     /* width: 100%; */
-    width: 50vw;
+    width: 89vw; /* forcing container viewwidth */
     /* padding-left: 65vw; */
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-between;
 }
 .geometry-button {
     /* height: 100%; */
