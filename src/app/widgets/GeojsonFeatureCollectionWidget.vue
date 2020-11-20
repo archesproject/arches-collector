@@ -30,6 +30,7 @@
                         @click="handleListItemClick(feature);" 
                         @dragstart="handleListItemDrag(feature);"
                         @touchmove.self.stop
+                        lock-on-drag
                     >
                         <v-ons-carousel
                             :id="'carousel-' + feature.id"
@@ -38,7 +39,6 @@
                             overscrollable
                             auto-scroll
                             auto-scroll-ratio="0.1"
-                            animation="none"
                             style="padding:10px; overflow:hidden;"
                         >
                             <v-ons-carousel-item > 
@@ -63,7 +63,7 @@
                                         <v-ons-icon class="geomtery-button-icon" icon="fa-pencil-alt"></v-ons-icon>
                                     </v-ons-button> -->
                                     <div>
-                                        Delete Feature?
+                                        Delete the feature?
                                     </div>
                                     <v-ons-button 
                                         class="geometry-button"
@@ -78,6 +78,10 @@
                                 </div>
                             </v-ons-carousel-item>
                         </v-ons-carousel>
+
+                        <div class="right" style="position:absolute; right:0px;">
+                            <v-ons-icon class="geomtery-button-icon list-item__icon" icon="fa-trash"></v-ons-icon>
+                        </div>
                     </v-ons-list-item>
                 </v-ons-list>
             </div>
