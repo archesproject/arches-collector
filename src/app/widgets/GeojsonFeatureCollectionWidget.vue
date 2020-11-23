@@ -82,11 +82,19 @@
                                     </div>
 
                                     <div style="width:50%;">
-                                        <v-ons-button style="min-width: 80px;" modifier="outline">
+                                        <v-ons-button 
+                                            style="min-width: 80px;" 
+                                            modifier="outline"
+                                            @click.stop="handleDeleteFeature();"
+                                        >
                                             <v-ons-icon style="padding-right:5px;" icon="fa-trash"></v-ons-icon>
                                             <span>YES</span>
                                         </v-ons-button>
-                                        <v-ons-button style="min-width: 80px;" modifier="cta">
+                                        <v-ons-button 
+                                            style="min-width: 80px;" 
+                                            modifier="cta"
+                                            @click.stop="cancelDeleteFeature(feature);"
+                                        >
                                             <v-ons-icon style="padding-right:5px;" icon="fa-ban"></v-ons-icon>
                                             <span>NO</span>
                                         </v-ons-button>
@@ -398,10 +406,10 @@ export default {
             })
 
             if (this.zoomClicked) { /* giving a point a bbox overrides zoom */
-                this.map.fitBounds(geojsonExtent(this.selectedFeature), { padding: 40, maxZoom: 9 });
+                this.map.fitBounds(geojsonExtent(this.selectedFeature), { padding: { top: 20, right: 50, bottom: 20, left: 20 }, maxZoom: 9 });
             } 
             else { /* if zoom is already selected, let's fit the map to all features*/
-                this.map.fitBounds(geojsonExtent(this.featureCollection), { padding: 20, offset:[-20, 0] });
+                this.map.fitBounds(geojsonExtent(this.featureCollection), { padding: { top: 20, right: 50, bottom: 20, left: 20 } });
             }
         },
         handleListItemClick(feature) {
@@ -504,10 +512,15 @@ export default {
                 }
             }, 0);
         },
+        cancelDeleteFeature(feature) {
+            const carousel = document.querySelector(`#carousel-${feature.id}`);
+            carousel.setActiveIndex(0);
+        },
         handleDeleteFeature() {
-            if (this.deleteClicked) { /* if delete is already active, let's delete the features */
+            // if (this.deleteClicked) { /* if delete is already active, let's delete the features */
                 this.draw.trash();
-            }
+                this.selectedFeature = null;
+            // }
         },
     },
     destroyed() {
