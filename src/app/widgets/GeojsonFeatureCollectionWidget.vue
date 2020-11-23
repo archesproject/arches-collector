@@ -3,13 +3,15 @@
     <div v-if="context == 'editor' || context == 'report'" style="width:100%; display:flex; flex-direction:column; padding: 10px;">
         <div class="map-controls">
             <div class="mapboxgl-ctrl mapboxgl-ctrl-group fullscreen-control">
-                <button class="mapboxgl-ctrl-icon" type="button" v-on:click="toggleFullscreen" v-bind:class="{
+                <button 
+                    class="mapboxgl-ctrl-icon" 
+                    type="button" 
+                    v-on:click="toggleFullscreen" 
+                    v-bind:class="{
                             'mapboxgl-ctrl-shrink': fullscreenActive,
                             'mapboxgl-ctrl-fullscreen': !fullscreenActive
-                    }"></button>
-            </div>
-            <div class="mapboxgl-ctrl-group mapboxgl-ctrl delete-control">
-                <button class="mapbox-gl-draw_ctrl-draw-btn mapbox-gl-draw_trash" title="Delete" v-on:click="toggleDelete"></button>
+                    }">
+                </button>
             </div>
         </div>
         <div v-if="context=='editor'" class="editor-widget">
@@ -61,22 +63,7 @@
                             </v-ons-carousel-item>
 
                             <v-ons-carousel-item style="display:flex; align-items:center;">
-                                <div class="button-container" @click.stop>
-                                    <!-- <v-ons-button 
-                                        class="geometry-button" 
-                                    >
-                                        <v-ons-icon class="geomtery-button-icon" icon="fa-pencil-alt"></v-ons-icon>
-                                    </v-ons-button> -->
-                                    <!-- <v-ons-button 
-                                        class="geometry-button"
-                                        v-bind:class="{
-                                            'white': (selectedFeature && selectedFeature.id === feature.id) && deleteClicked
-                                        }"
-                                        :disabled="!selectedFeature || selectedFeature.id !== feature.id" 
-                                        @click="handleDeleteFeature(); deleteClicked = !deleteClicked;"
-                                    >
-                                        <v-ons-icon class="geomtery-button-icon" icon="fa-trash"></v-ons-icon>
-                                    </v-ons-button> -->
+                                <div class="delete-container" @click.stop>
                                     <div style="width:50%;">
                                         Delete this {{ feature.geometry.type }}?
                                     </div>
@@ -215,14 +202,10 @@ export default {
             });
 
             this.map.addControl(this.draw, 'top-left');
-            this.map.addControl(
-                new GenericControl(this.$el.querySelector('.delete-control')),
-                'top-left',
-            );
 
-            this.map.on('draw.delete', () => this.updateDrawings('delete'));
             this.map.on('draw.create', () => this.updateDrawings('create'));
             this.map.on('draw.update', () => this.updateDrawings('update'));
+            this.map.on('draw.delete', () => this.updateDrawings('delete'));
             this.map.on('draw.modechange', (e) => {
                 /* always force simple_select */ 
                 if (e.mode === 'direct_select') {
@@ -308,9 +291,6 @@ export default {
                 else if (e === 'delete') {
                     this.foo = fc.features;
                     this.$emit('update:value', fc);
-
-                    // const data = this.draw.getAll();
-                    // this.map.getSource('gl-draw-line-inactive').setData(data);
                 }
                 else {
                     this.foo = fc.features;
@@ -575,7 +555,7 @@ export default {
 .selected {
     background-color: #d9d9d9;
 }
-.button-container {
+.delete-container {
     /* height: 100%; */
     /* width: 100%; */
     width: 89vw; /* forcing container viewwidth */
