@@ -43,22 +43,25 @@
                             style="padding:10px; overflow:hidden;"
                             @dragend="handleFOO(feature);"
                         >
-                            <v-ons-carousel-item > 
-                                <div style="height:100%;width:50vw;align-items:center;display:flex;">{{ feature.geometry.type }}</div>
-                            </v-ons-carousel-item>
-
-                            <v-ons-carousel-item>
-                                <div class="button-container" @click.stop>
-                                    <!-- <v-ons-button 
-                                        class="geometry-button" 
+                            <v-ons-carousel-item style="display:flex; align-items:center;">
+                                <div style="display:flex; align-items: center; width: 50vw;">
+                                    <v-ons-button
+                                        class="geometry-button"
                                         v-bind:class="{
                                             'blue': (selectedFeature && selectedFeature.id === feature.id) && zoomClicked
                                         }"
-                                        :disabled="!selectedFeature || selectedFeature.id !== feature.id" 
-                                        @click="handleZoom(); zoomClicked = !zoomClicked;"
+                                        @click.stop="handleZoom(feature);"
                                     >
                                         <v-ons-icon class="geomtery-button-icon" icon="fa-search-plus"></v-ons-icon>
-                                    </v-ons-button> -->
+                                    </v-ons-button>
+                                    <div style="padding-left: 20px;">
+                                        {{ feature.geometry.type }}
+                                    </div>
+                                </div>
+                            </v-ons-carousel-item>
+
+                            <v-ons-carousel-item style="display:flex; align-items:center;">
+                                <div class="button-container" @click.stop>
                                     <!-- <v-ons-button 
                                         class="geometry-button" 
                                     >
@@ -374,7 +377,19 @@ export default {
 
             return [xCoord, yCoord, bounds];
         },
-        handleZoom() {
+        handleZoom(feature) {
+            if (!this.selectedFeature) {
+                this.handleListItemClick(feature);
+                this.zoomClicked = true
+            }
+            else if (this.selectedFeature && this.selectedFeature.id !== feature.id) {
+                this.handleListItemClick(feature);
+                this.zoomClicked = true;
+            }
+            else {
+                this.zoomClicked = !this.zoomClicked;
+            }
+            
             const [xCoord, yCoord, bounds] = this.baz(this.selectedFeature);
 
             this.map.flyTo({
@@ -382,10 +397,11 @@ export default {
                 zoom: 9,
             })
 
-            if (this.zoomClicked) { /* if zoom is already selected, let's fit the map to all features*/
-                this.map.fitBounds(geojsonExtent(this.featureCollection), { padding: 50 });
-            } else if (this.selectedFeature.geometry.type !== 'Point') {  /* giving a point a bbox overrides zoom */
-                this.map.fitBounds(geojsonExtent(this.selectedFeature), { padding: 50 });
+            if (this.zoomClicked) { /* giving a point a bbox overrides zoom */
+                this.map.fitBounds(geojsonExtent(this.selectedFeature), { padding: 40, maxZoom: 9 });
+            } 
+            else { /* if zoom is already selected, let's fit the map to all features*/
+                this.map.fitBounds(geojsonExtent(this.featureCollection), { padding: 20, offset:[-20, 0] });
             }
         },
         handleListItemClick(feature) {
@@ -421,8 +437,6 @@ export default {
                     this.selectFeature(null);
                 } 
             }
-
-            // if (carousel) {  };
         },
         // isCarouselEnabled(feature) {
         //     /* 
