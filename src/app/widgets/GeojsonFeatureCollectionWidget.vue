@@ -171,8 +171,14 @@ export default {
     watch: {
         featureCollection(value) {
             if (this.map) {
-                if (this.context === 'editor') this.draw.set(value);
-                else this.map.getSource('report-data').setData(value);
+                if (this.context === 'editor') {
+                    if (this.draw) {
+                        this.draw.set(value);
+                    }
+                }
+                else {
+                    this.map.getSource('report-data').setData(value);
+                }
             }
         },
         fullscreenActive() {
@@ -193,6 +199,7 @@ export default {
         },
         initDraw() {
             this.draw = new MapboxDraw({
+                displayControlsDefault: false,
                 controls: {
                     combine_features: false,
                     uncombine_features: false,
@@ -201,7 +208,7 @@ export default {
                 styles: drawLayers
             });
 
-            this.map.addControl(this.draw, 'top-left');
+            this.map.addControl(this.draw);
 
             this.map.on('draw.create', () => this.updateDrawings('create'));
             this.map.on('draw.update', () => this.updateDrawings('update'));
@@ -386,10 +393,10 @@ export default {
             })
 
             if (this.zoomClicked) { /* giving a point a bbox overrides zoom */
-                this.map.fitBounds(geojsonExtent(this.selectedFeature), { padding: { top: 20, right: 50, bottom: 20, left: 20 }, maxZoom: 9 });
+                this.map.fitBounds(geojsonExtent(this.selectedFeature), { padding: { top: 20, right: 60, bottom: 20, left: 20 }, maxZoom: 9 });
             } 
             else { /* if zoom is already selected, let's fit the map to all features*/
-                this.map.fitBounds(geojsonExtent(this.featureCollection), { padding: { top: 20, right: 50, bottom: 20, left: 20 } });
+                this.map.fitBounds(geojsonExtent(this.featureCollection), { padding: { top: 20, right: 60, bottom: 20, left: 20 } });
             }
         },
         handleListItemClick(feature) {
@@ -424,6 +431,8 @@ export default {
                 if (carousel.getActiveIndex() === 0) {
                     this.selectFeature(null);
                 } 
+
+                this.map.fitBounds(geojsonExtent(this.featureCollection), { padding: { top: 20, right: 60, bottom: 20, left: 20 } });
             }
         },
         // isCarouselEnabled(feature) {
