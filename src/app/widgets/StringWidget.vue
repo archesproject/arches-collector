@@ -47,7 +47,7 @@ export default {
 }
 
 .widget-panel {
-    padding-bottom: 25px;
+    padding: 10px 10px 25px 10px;
     background: #fbfbfb;
     border-bottom: 1px solid #ddd;
 }
