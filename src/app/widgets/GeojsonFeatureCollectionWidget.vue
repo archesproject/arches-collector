@@ -17,8 +17,50 @@
         <div v-if="context=='editor'" class="editor-widget">
             <div class="editor widget-label">{{widget.label}}</div>
             <div class="editor widget-value">
-                <div class="map-wrapper" v-bind:class="{ fullscreen: fullscreenActive }">
-                    <project-map v-on:map-init="mapInit" :extent="bounds"></project-map>
+                <div v-bind:class="{ fullscreen: fullscreenActive }" class="bongo">
+                    <div class="map-wrapper" >
+                        <project-map v-on:map-init="mapInit" :extent="bounds"></project-map>
+                    </div>
+
+                    <div v-if="!drawActive" class="draw-button-container">
+                        <v-ons-button 
+                            class="draw-button" 
+                            @click="handleDrawFeature('point')"
+                        >
+                            <v-ons-icon icon="fa-plus" style="padding-right: 9px;"></v-ons-icon>
+                            <v-ons-icon icon="fa-map-marker" style="padding-right: 3px;"></v-ons-icon>
+                            <div>Point</div>
+                        </v-ons-button>
+                        <v-ons-button 
+                            class="draw-button"
+                            style="border-left: 1px solid #bbb; border-right: 1px solid #bbb;"
+                            @click="handleDrawFeature('line')"
+                        >
+                            <v-ons-icon icon="fa-plus" style="padding-right: 9px;"></v-ons-icon>
+                            <v-ons-icon icon="fa-bezier-curve" style="padding-right: 3px;"></v-ons-icon>
+                            <div>Line</div>
+                        </v-ons-button>
+                        <v-ons-button 
+                            class="draw-button" 
+                            @click="handleDrawFeature('polygon')"
+                        >
+                            <v-ons-icon icon="fa-plus" style="padding-right: 9px;"></v-ons-icon>
+                            <v-ons-icon icon="fa-draw-polygon" style="padding-right: 3px;"></v-ons-icon>
+                            <div>Polygon</div>
+                        </v-ons-button>
+                    </div>
+                    <div v-else-if="drawActive" style="display:flex;">
+                        <v-ons-button style="display:flex; justify-content:center; padding:unset; width:50%;" disabled>
+                            Undo
+                        </v-ons-button>
+
+                        <v-ons-button 
+                            @click="handleFinishFeature"
+                            style="display:flex; justify-content:center; padding:unset; width:50%;"
+                        >
+                            Finish
+                        </v-ons-button>
+                    </div>
                 </div>
             </div>
 
@@ -102,11 +144,6 @@
                     </v-ons-list-item>
                 </v-ons-list>
             </div>
-
-
-
-
-
         </div>
         <div v-else-if="context=='report'" class="report-widget" >
             <v-ons-col class="report widget-label">{{widget.label}}</v-ons-col>
@@ -143,6 +180,7 @@ export default {
             deleteClicked: false,
             selectedFeature: null,
             fullscreenActive: false,
+            drawActive: false,
             deleteActive: false
         };
     },
@@ -317,12 +355,13 @@ export default {
         selectFeature(feature) {
            if ( 
                !this.selectedFeature
-               || !feature 
+               || !feature /* allows null values but is confusing, let's remove this during refactor */
                || (this.selectedFeature && this.selectedFeature.id !== feature.id) 
             ) {
                 this.selectedFeature = feature;
             }
 
+            this.drawActive = false;
             this.zoomClicked = false;
             this.deleteClicked = false;
             
@@ -435,21 +474,6 @@ export default {
                 this.map.fitBounds(geojsonExtent(this.featureCollection), { padding: { top: 20, right: 60, bottom: 20, left: 20 } });
             }
         },
-        // isCarouselEnabled(feature) {
-        //     /* 
-        //         carousel is only disabled if it's not the selected 
-        //         list item && showing the delete interface
-        //     */ 
-        //     if (!this.selectedFeature || this.selectedFeature.id !== feature.id) {
-        //         const carousel = document.querySelector(`#carousel-${feature.id}`);
-            
-        //         if (carousel.getActiveIndex() !== 0) {
-        //             return false;
-        //         }
-        //     };
-
-        //     return true;
-        // },
         foobar(feature) {
             console.log('!!!', feature);
 
@@ -487,6 +511,9 @@ export default {
                 deleteFlag = document.querySelector(`#delete-flag-${this.selectedFeature.id}`);
                 deleteFlag.style.display = "flex";
             }
+
+            // GOOD BUT BUGGY
+            // this.map.fitBounds(geojsonExtent(this.selectedFeature), { padding: { top: 20, right: 60, bottom: 20, left: 20 }, maxZoom: 9 });
         },
         handleFOO(feature) {
             setTimeout(() => {
@@ -501,6 +528,47 @@ export default {
                 }
             }, 0);
         },
+        handleDrawFeature(featureType) {
+            if (this.selectedFeature) {
+                const carousel = document.querySelector(`#carousel-${this.selectedFeature.id}`);
+                carousel.setActiveIndex(0);
+
+                const deleteFlag = document.querySelector(`#delete-flag-${this.selectedFeature.id}`);
+                deleteFlag.style.display = "none";
+
+                this.selectFeature(null);
+            }
+
+            if (featureType === 'point') {
+                this.draw.changeMode('draw_point');
+            }
+            else if (featureType === 'line') {
+                this.draw.changeMode('draw_line_string');
+            }
+            else if (featureType === 'polygon') {
+                this.draw.changeMode('draw_polygon');
+            }
+
+            /* needs this delay to keep UI happy */ 
+            setTimeout(() => {
+                this.drawActive = true;
+            }, 0);
+        },
+        handleFinishFeature() {
+            this.drawActive = false;
+
+            this.map.fire('draw.create');
+
+            // this.map.dispatchEvent(new KeyboardEvent('keydown' ,{'keycode': 13}));
+            // this.map.dispatchEvent(new KeyboardEvent('keyup' ,{'keycode': 13}));
+            // this.selectFeature(null);
+
+            // setTimeout(() => {
+                // console.log('aaaa', this.foo)
+                
+                // this.draw.changeMode('simple_select');
+            // }, 200);
+        },
         cancelDeleteFeature(feature) {
             const carousel = document.querySelector(`#carousel-${feature.id}`);
             carousel.setActiveIndex(0);
@@ -508,7 +576,8 @@ export default {
         handleDeleteFeature() {
             // if (this.deleteClicked) { /* if delete is already active, let's delete the features */
                 this.draw.trash();
-                this.selectedFeature = null;
+                this.selectFeature(null);
+                this.map.fitBounds(geojsonExtent(this.featureCollection), { padding: { top: 20, right: 60, bottom: 20, left: 20 } });
             // }
         },
     },
@@ -522,10 +591,7 @@ export default {
 <style scoped>
 .map-wrapper {
     height: 260px;
-    padding: 10px 0px;
 }
-
-
 
 .editor-widget {
     /* height: 100%; */
@@ -546,9 +612,36 @@ export default {
     background-color: blue !important;
 }
 
+
+.bongo {
+    display:flex; 
+    flex: 1;
+    flex-direction:column; 
+    height:100%; 
+    margin-top: 10px;
+}
+
+.draw-button-container {
+    display:flex; 
+    /* width:100%;  */
+    border: 1px solid #bbb; 
+    border-top: none;
+}
+.draw-button {
+    padding: unset;
+    border-radius: none;
+    display:flex; 
+    flex: 1;
+    font-size: smaller;
+    align-items: center;
+    justify-content: center;
+    background: #eee;
+    color:  rgb(31, 31, 33, 0.8);
+}
 .foo {
     display: flex;
-
+    flex: 1 1 auto;
+    margin-top: 10px;
     box-sizing: border-box;
     border-left: 1px solid rgb(31, 31, 33, 0.2);
     border-right: 1px solid rgb(31, 31, 33, 0.2);
