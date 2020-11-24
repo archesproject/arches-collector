@@ -38,7 +38,7 @@
                         >
                             <v-ons-icon icon="fa-plus" style="padding-right: 9px;"></v-ons-icon>
                             <v-ons-icon icon="fa-bezier-curve" style="padding-right: 3px;"></v-ons-icon>
-                            <div>Line</div>
+                            <div>LineString</div>
                         </v-ons-button>
                         <v-ons-button 
                             class="draw-button" 
@@ -556,18 +556,15 @@ export default {
         },
         handleFinishFeature() {
             this.drawActive = false;
+            this.selectFeature(null);
 
-            this.map.fire('draw.create');
+            setTimeout(() => {
+                const newlyCreatedFeature = this.foo[(this.foo.length - 1)];
+                this.selectFeature(newlyCreatedFeature);
 
-            // this.map.dispatchEvent(new KeyboardEvent('keydown' ,{'keycode': 13}));
-            // this.map.dispatchEvent(new KeyboardEvent('keyup' ,{'keycode': 13}));
-            // this.selectFeature(null);
-
-            // setTimeout(() => {
-                // console.log('aaaa', this.foo)
-                
-                // this.draw.changeMode('simple_select');
-            // }, 200);
+                const listItem = document.querySelector(`#list-item-${newlyCreatedFeature.id}`);
+                listItem.scrollIntoView({behavior: "smooth", block: "center"});
+            }, 0);
         },
         cancelDeleteFeature(feature) {
             const carousel = document.querySelector(`#carousel-${feature.id}`);
@@ -618,7 +615,7 @@ export default {
     flex: 1;
     flex-direction:column; 
     height:100%; 
-    margin-top: 10px;
+    margin-top: 5px;
 }
 
 .draw-button-container {
