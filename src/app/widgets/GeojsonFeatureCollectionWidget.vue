@@ -50,8 +50,12 @@
                         </v-ons-button>
                     </div>
                     <div v-else-if="drawActive" style="display:flex;">
-                        <v-ons-button style="display:flex; justify-content:center; padding:unset; width:50%;" disabled>
-                            Undo
+                        <v-ons-button
+                            ref="cancelDrawFeatureButton"
+                            @click="handleCancelFeature"
+                            style="display:flex; justify-content:center; padding:unset; width:50%;"
+                        >
+                            Cancel
                         </v-ons-button>
 
                         <v-ons-button 
@@ -553,6 +557,9 @@ export default {
             setTimeout(() => {
                 this.drawActive = true;
             }, 0);
+        },
+        handleCancelFeature() {
+            this.draw.trash();
         },
         handleFinishFeature() {
             this.drawActive = false;
