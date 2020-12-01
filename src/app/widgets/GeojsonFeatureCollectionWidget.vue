@@ -22,7 +22,7 @@
                         <project-map v-on:map-init="mapInit" :extent="bounds"></project-map>
                     </div>
 
-                    <div v-if="!drawActive" class="draw-button-container">
+                    <div v-if="!activeDrawMode" class="draw-button-container">
                         <v-ons-button 
                             class="draw-button" 
                             @click="handleDrawFeature('point')"
@@ -49,20 +49,25 @@
                             <div>Polygon</div>
                         </v-ons-button>
                     </div>
-                    <div v-else-if="drawActive" style="display:flex;">
+                    <div v-else-if="activeDrawMode" class="draw-button-container">
                         <v-ons-button
-                            ref="cancelDrawFeatureButton"
+                            modifier="quiet"
                             @click="handleCancelFeature"
-                            style="display:flex; justify-content:center; padding:unset; width:50%;"
+                            style="display:flex; flex: 3; justify-content:center; padding:unset; width:50%; border-radius: unset; color: rgba(255, 0, 0, 0.8); background-color: rgba(255, 0, 0, 0.2); font-size: small;"
                         >
-                            Cancel
+                            <v-ons-icon icon="fa-ban" style="display: flex; align-items: center; padding-right: 8px;"></v-ons-icon>
+                            <div>Cancel</div>
                         </v-ons-button>
 
                         <v-ons-button 
+                            v-if="activeDrawMode !== 'point'"
                             @click="handleFinishFeature"
-                            style="display:flex; justify-content:center; padding:unset; width:50%;"
+                            style="display:flex; flex: 4; justify-content:center; padding:unset; width:50%; border-radius: unset; font-size: small;"
                         >
-                            Finish
+                            <v-ons-icon v-if="activeDrawMode === 'linestring'" icon="fa-bezier-curve" style="display: flex; align-items: center; padding-right: 8px;"></v-ons-icon>
+                            <v-ons-icon v-else-if="activeDrawMode === 'polygon'" icon="fa-draw-polygon" style="display: flex; align-items: center; padding-right: 8px;"></v-ons-icon>
+
+                            <div>Finish</div>
                         </v-ons-button>
                     </div>
                 </div>
@@ -184,7 +189,7 @@ export default {
             deleteClicked: false,
             selectedFeature: null,
             fullscreenActive: false,
-            drawActive: false,
+            activeDrawMode: null,
             deleteActive: false
         };
     },
@@ -365,7 +370,7 @@ export default {
                 this.selectedFeature = feature;
             }
 
-            this.drawActive = false;
+            this.activeDrawMode = null;
             this.zoomClicked = false;
             this.deleteClicked = false;
             
@@ -543,26 +548,34 @@ export default {
                 this.selectFeature(null);
             }
 
+            let activeDrawMode;
+
             if (featureType === 'point') {
                 this.draw.changeMode('draw_point');
+                activeDrawMode = 'point';
             }
             else if (featureType === 'line') {
                 this.draw.changeMode('draw_line_string');
+                activeDrawMode = 'linestring';
             }
             else if (featureType === 'polygon') {
                 this.draw.changeMode('draw_polygon');
+                activeDrawMode = 'polygon';
             }
 
             /* needs this delay to keep UI happy */ 
             setTimeout(() => {
-                this.drawActive = true;
+                this.activeDrawMode = activeDrawMode;
             }, 0);
         },
         handleCancelFeature() {
             this.draw.trash();
+            
+            this.activeDrawMode = null;
+            this.selectFeature(null);
         },
         handleFinishFeature() {
-            this.drawActive = false;
+            this.activeDrawMode = null;
             this.selectFeature(null);
 
             setTimeout(() => {
@@ -628,12 +641,13 @@ export default {
 .draw-button-container {
     display:flex; 
     /* width:100%;  */
+    box-sizing: border-box;
     border: 1px solid #bbb; 
     border-top: none;
 }
 .draw-button {
     padding: unset;
-    border-radius: none;
+    border-radius: unset;
     display:flex; 
     flex: 1;
     font-size: smaller;
