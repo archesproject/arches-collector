@@ -80,7 +80,10 @@
                         modifier="longdivider"
                         v-for="feature in foo" 
                         v-bind:key="feature.id" 
-                        :class="{selected: (selectedFeature && selectedFeature.id === feature.id) }" 
+                        v-bind:class="{
+                            selected: (selectedFeature && selectedFeature.id === feature.id),
+                            'delete-mode-active': (selectedFeature && selectedFeature.id === feature.id) && deleteModeActive
+                        }" 
                         @click="handleListItemClick(feature);" 
                         @dragstart="handleListItemDragStart(feature);"
                         @touchmove.self.stop
@@ -123,7 +126,7 @@
                                         <v-ons-button 
                                             style="min-width: 80px;" 
                                             modifier="outline"
-                                            @click.stop="handleDeleteFeature();"
+                                            @click.stop="handleDeleteFeature"
                                         >
                                             <v-ons-icon style="padding-right:5px;" icon="fa-trash"></v-ons-icon>
                                             <span>YES</span>
@@ -186,11 +189,11 @@ export default {
         return {
             foo: [],
             zoomClicked: false,
-            deleteClicked: false,
+            deleteModeActive: false,
             selectedFeature: null,
             fullscreenActive: false,
             activeDrawMode: null,
-            deleteActive: false
+            deleteModeActive: false
         };
     },
     computed: {
@@ -358,9 +361,6 @@ export default {
         toggleFullscreen() {
             this.fullscreenActive = !this.fullscreenActive;
         },
-        toggleDelete() {
-            this.deleteActive = !this.deleteActive;
-        },
         selectFeature(feature) {
            if ( 
                !this.selectedFeature
@@ -372,7 +372,7 @@ export default {
 
             this.activeDrawMode = null;
             this.zoomClicked = false;
-            this.deleteClicked = false;
+            this.deleteModeActive = false;
             
             /* force mapbox to highlight feature */ 
             this.draw.changeMode('simple_select', { 
@@ -507,6 +507,7 @@ export default {
                 deleteFlag.style.display = "flex";
             } 
             else if (this.selectedFeature.id !== feature.id) {
+                /* set previous carosel to 0 index */ 
                 carousel = document.querySelector(`#carousel-${this.selectedFeature.id}`);
                 carousel.setActiveIndex(0);
 
@@ -531,9 +532,11 @@ export default {
     
                 if (carousel.getActiveIndex() !== 0) {
                     deleteFlag.style.display = "none";
+                    this.deleteModeActive = true;
                 } 
                 else {
                     deleteFlag.style.display = "flex";
+                    this.deleteModeActive = false;
                 }
             }, 0);
         },
@@ -589,13 +592,13 @@ export default {
         cancelDeleteFeature(feature) {
             const carousel = document.querySelector(`#carousel-${feature.id}`);
             carousel.setActiveIndex(0);
+
+            this.deleteModeActive = false;
         },
         handleDeleteFeature() {
-            // if (this.deleteClicked) { /* if delete is already active, let's delete the features */
-                this.draw.trash();
-                this.selectFeature(null);
-                this.map.fitBounds(geojsonExtent(this.featureCollection), { padding: { top: 20, right: 60, bottom: 20, left: 20 } });
-            // }
+            this.draw.trash();
+            this.selectFeature(null);
+            this.map.fitBounds(geojsonExtent(this.featureCollection), { padding: { top: 20, right: 60, bottom: 20, left: 20 } });
         },
     },
     destroyed() {
@@ -620,6 +623,16 @@ export default {
 }
 
 
+.delete-mode-active {
+    /* 
+        the !important flags are neccesary to get onsen playing nicely with Vue's render logic,
+        if we were to go the roundabout way of using a querySelector and manually changing
+        the values the !important flags become unneccesary. However let's use Vue's more 
+        graceful logic instead.
+    */
+    transition: 'background-color 400ms linear' !important;
+    background-color: rgba(255, 0, 0, 0.2) !important;
+}
 
 .white {
     background-color: red !important;
