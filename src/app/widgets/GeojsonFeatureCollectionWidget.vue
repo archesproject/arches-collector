@@ -82,7 +82,7 @@
                         v-bind:key="feature.id" 
                         v-bind:class="{
                             selected: (selectedFeature && selectedFeature.id === feature.id),
-                            'delete-mode-active': (selectedFeature && selectedFeature.id === feature.id) && deleteModeActive
+                            'delete-mode': (selectedFeature && selectedFeature.id === feature.id) && deleteModeActive
                         }" 
                         @click="handleListItemClick(feature);" 
                         @dragstart="handleListItemDragStart(feature);"
@@ -122,21 +122,21 @@
                                         Delete this {{ feature.geometry.type }}?
                                     </div>
 
-                                    <div style="width:50%;">
+                                    <div style="display: flex; width:50%; justify-content: space-between;">
                                         <v-ons-button 
-                                            style="min-width: 80px;" 
+                                            style="display:flex; justify-content: center; align-items: center; min-width: 80px; color:rgba(255,0,0,0.8); border-color: rgba(255,0,0,0.6); padding: unset;" 
                                             modifier="outline"
                                             @click.stop="handleDeleteFeature"
                                         >
-                                            <v-ons-icon style="padding-right:5px;" icon="fa-trash"></v-ons-icon>
+                                            <v-ons-icon style="padding-right:8px;" icon="fa-trash"></v-ons-icon>
                                             <span>YES</span>
                                         </v-ons-button>
                                         <v-ons-button 
-                                            style="min-width: 80px;" 
+                                            style="display:flex; justify-content: center; align-items: center; min-width: 80px; padding: unset;" 
                                             modifier="cta"
                                             @click.stop="cancelDeleteFeature(feature);"
                                         >
-                                            <v-ons-icon style="padding-right:5px;" icon="fa-ban"></v-ons-icon>
+                                            <v-ons-icon style="padding-right:8px;" icon="fa-ban"></v-ons-icon>
                                             <span>NO</span>
                                         </v-ons-button>
                                     </div>
@@ -623,7 +623,7 @@ export default {
 }
 
 
-.delete-mode-active {
+.delete-mode {
     /* 
         the !important flags are neccesary to get onsen playing nicely with Vue's render logic,
         if we were to go the roundabout way of using a querySelector and manually changing
@@ -632,6 +632,7 @@ export default {
     */
     transition: 'background-color 400ms linear' !important;
     background-color: rgba(255, 0, 0, 0.2) !important;
+    color: rgba(255, 0, 0, 0.8);
 }
 
 .white {
