@@ -27,8 +27,8 @@
                             class="draw-button" 
                             @click="beginDrawFeature('point')"
                         >
-                            <v-ons-icon icon="fa-plus" style="padding-right: 9px;"></v-ons-icon>
-                            <v-ons-icon icon="fa-map-marker" style="padding-right: 3px;"></v-ons-icon>
+                            <v-ons-icon icon="fa-plus" style="padding-right: 8px;"></v-ons-icon>
+                            <v-ons-icon icon="fa-map-marker" style="padding-right: 4px;"></v-ons-icon>
                             <div>Point</div>
                         </v-ons-button>
                         <v-ons-button 
@@ -36,16 +36,16 @@
                             style="border-left: 1px solid #bbb; border-right: 1px solid #bbb;"
                             @click="beginDrawFeature('line')"
                         >
-                            <v-ons-icon icon="fa-plus" style="padding-right: 9px;"></v-ons-icon>
-                            <v-ons-icon icon="fa-bezier-curve" style="padding-right: 3px;"></v-ons-icon>
+                            <v-ons-icon icon="fa-plus" style="padding-right: 8px;"></v-ons-icon>
+                            <v-ons-icon icon="fa-bezier-curve" style="padding-right: 4px;"></v-ons-icon>
                             <div>LineString</div>
                         </v-ons-button>
                         <v-ons-button 
                             class="draw-button" 
                             @click="beginDrawFeature('polygon')"
                         >
-                            <v-ons-icon icon="fa-plus" style="padding-right: 9px;"></v-ons-icon>
-                            <v-ons-icon icon="fa-draw-polygon" style="padding-right: 3px;"></v-ons-icon>
+                            <v-ons-icon icon="fa-plus" style="padding-right: 8px;"></v-ons-icon>
+                            <v-ons-icon icon="fa-draw-polygon" style="padding-right: 4px;"></v-ons-icon>
                             <div>Polygon</div>
                         </v-ons-button>
                     </div>
@@ -98,6 +98,7 @@
                             auto-scroll
                             auto-scroll-ratio="0.1"
                             style="padding:10px 20px; overflow:hidden;"
+                            @dragstart="handleCarouselDragStart(feature);"
                             @dragend="handleCarouselDragEnd(feature);"
                         >
                             <v-ons-carousel-item style="display:flex; align-items:center;">
@@ -106,11 +107,13 @@
                                         modifier="cta"
                                         class="zoom-button"
                                         v-bind:style="{
-                                            'opacity': (selectedFeature && selectedFeature.id === feature.id) ? '90%' : '70%' 
+                                            'opacity': (selectedFeature && selectedFeature.id === feature.id) ? '90%' : '70%',
+                                            'background-color': ((selectedFeature && selectedFeature.id === feature.id) && zoomActive) ? 'rgba(255, 0, 0, 0.2)' : '#25a6d9'
                                         }"
                                         @click.stop="handleZoomClick(feature);"
                                     >
-                                        <v-ons-icon icon="fa-search-plus"></v-ons-icon>
+                                        <v-ons-icon v-if="(selectedFeature && selectedFeature.id === feature.id) && zoomActive" icon="fa-search-minus"></v-ons-icon>
+                                        <v-ons-icon v-else icon="fa-search-plus"></v-ons-icon>
                                     </v-ons-button>
                                     <div 
                                         style="padding-left: 15px;"
@@ -284,7 +287,6 @@ export default {
             });
             this.map.on('draw.selectionchange', (e) => {
                 if (e.features.length) {
-
                     let carousel;
 
                     if (this.selectedFeature) {
@@ -301,6 +303,7 @@ export default {
                     /* reset current carousel */ 
                     carousel = document.querySelector(`#carousel-${e.features[0].id}`);
                     carousel.setActiveIndex(0);
+                    this.deleteModeActive = false;
                 } 
                 else if (this.selectedFeature) {
                     this.selectFeature(this.selectedFeature);
@@ -367,11 +370,12 @@ export default {
                || (this.selectedFeature && this.selectedFeature.id !== feature.id) 
             ) {
                 this.selectedFeature = feature;
+
+                this.zoomActive = false;
+                this.deleteModeActive = false;
             }
 
             this.activeDrawMode = null;
-            this.zoomActive = false;
-            this.deleteModeActive = false;
             
             /* force mapbox to highlight feature */ 
             this.draw.changeMode('simple_select', { 
@@ -379,6 +383,8 @@ export default {
             });
         },
         zoomToFeature(feature) {
+            this.zoomActive = true;
+
             this.map.flyTo({
                 bounds: geojsonExtent(feature),
             })
@@ -392,6 +398,8 @@ export default {
             );
         },
         zoomToFeatureCollection() {
+            this.zoomActive = false;
+
             this.map.fitBounds(
                 geojsonExtent(this.featureCollection), 
                 { 
@@ -402,17 +410,15 @@ export default {
         },
         handleZoomClick(feature) {
             if (this.selectedFeature && this.selectedFeature.id === feature.id) { 
-                this.zoomActive = !this.zoomActive;
+                this.zoomActive ? this.zoomToFeatureCollection() : this.zoomToFeature(feature);
             }
             else {
                 this.handleListItemClick(feature);
-                this.zoomActive = true
+                this.zoomToFeature(feature)
             }
-
-            this.zoomActive ? this.zoomToFeature(feature) : this.zoomToFeatureCollection();
         },
         handleListItemClick(feature) {
-            let carousel, deleteFlag;
+            let carousel;
 
             if (!this.selectedFeature) {
                 this.selectFeature(feature);
@@ -447,14 +453,21 @@ export default {
                 this.selectFeature(feature);
             }
         },
+        handleCarouselDragStart(feature) {
+            const carousel = document.querySelector(`#carousel-${feature.id}`);
+
+            if (carousel.getActiveIndex() === 1) {
+                this.zoomToFeature(feature);
+            } 
+        },
         handleCarouselDragEnd(feature) {
             /* need setTimeout here to ensure the drag motion has completed before asserting carousel index */ 
             setTimeout(() => {
                 const carousel = document.querySelector(`#carousel-${feature.id}`);
     
-                if (carousel.getActiveIndex() !== 0) {
-                    this.zoomToFeature(feature);
+                if (carousel.getActiveIndex() === 1) {
                     this.deleteModeActive = true;
+                    this.zoomToFeature(feature);
                 } 
                 else {
                     this.deleteModeActive = false;
@@ -492,6 +505,7 @@ export default {
             this.activeDrawMode = null;
             this.selectFeature(null);
 
+            /* setTimeout necessary for proper seleciton UX for LineString and Polygon features */ 
             setTimeout(() => {
                 const newlyCreatedFeature = this.foo[(this.foo.length - 1)];
                 this.selectFeature(newlyCreatedFeature);
