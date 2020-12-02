@@ -8,8 +8,8 @@
                     type="button" 
                     v-on:click="toggleFullscreen" 
                     v-bind:class="{
-                            'mapboxgl-ctrl-shrink': fullscreenActive,
-                            'mapboxgl-ctrl-fullscreen': !fullscreenActive
+                        'mapboxgl-ctrl-shrink': fullscreenActive,
+                        'mapboxgl-ctrl-fullscreen': !fullscreenActive
                     }">
                 </button>
             </div>
@@ -82,11 +82,11 @@
                         v-for="feature in foo" 
                         v-bind:key="feature.id" 
                         v-bind:class="{
-                            selected: (selectedFeature && selectedFeature.id === feature.id),
-                            'delete-mode': (selectedFeature && selectedFeature.id === feature.id) && deleteModeActive
+                            selected: selectedFeatureId === feature.id,
+                            'delete-mode': (selectedFeatureId === feature.id) && deleteModeActive
                         }" 
-                        @click.stop="handleListItemClick(feature);" 
-                        @dragstart="selectFeature(feature);"
+                        @click.stop="handleListItemClick(feature.id);" 
+                        @dragstart="selectFeature(feature.id);"
                         @touchmove.self.stop
                         lock-on-drag
                     >
@@ -98,8 +98,8 @@
                             auto-scroll
                             auto-scroll-ratio="0.1"
                             style="padding:10px 20px; overflow:hidden;"
-                            @dragstart="handleCarouselDragStart(feature);"
-                            @dragend="handleCarouselDragEnd(feature);"
+                            @dragstart="handleCarouselDragStart(feature.id);"
+                            @dragend="handleCarouselDragEnd(feature.id);"
                         >
                             <v-ons-carousel-item style="display:flex; align-items:center;">
                                 <div style="display:flex; align-items: center;">
@@ -107,17 +107,17 @@
                                         modifier="cta"
                                         class="zoom-button"
                                         v-bind:style="{
-                                            'opacity': (selectedFeature && selectedFeature.id === feature.id) ? '90%' : '70%',
-                                            'background-color': ((selectedFeature && selectedFeature.id === feature.id) && zoomActive) ? 'rgba(255, 0, 0, 0.2)' : '#25a6d9'
+                                            'opacity': selectedFeatureId === feature.id ? '90%' : '70%',
+                                            'background-color': (selectedFeatureId === feature.id) && zoomActive ? 'rgba(255, 0, 0, 0.2)' : '#25a6d9'
                                         }"
-                                        @click.stop="handleZoomClick(feature);"
+                                        @click.stop="handleZoomClick(feature.id);"
                                     >
-                                        <v-ons-icon v-if="(selectedFeature && selectedFeature.id === feature.id) && zoomActive" icon="fa-search-minus"></v-ons-icon>
+                                        <v-ons-icon v-if="(selectedFeatureId === feature.id) && zoomActive" icon="fa-search-minus"></v-ons-icon>
                                         <v-ons-icon v-else icon="fa-search-plus"></v-ons-icon>
                                     </v-ons-button>
                                     <div 
                                         style="padding-left: 15px;"
-                                        v-bind:style="{'font-weight': (selectedFeature && selectedFeature.id === feature.id) ? 'bold' : 'normal' }"
+                                        v-bind:style="{'font-weight': selectedFeatureId === feature.id ? 'bold' : 'normal'}"
                                     >
                                         {{ feature.geometry.type }}
                                     </div>
@@ -142,7 +142,7 @@
                                         <v-ons-button 
                                             style="display:flex; justify-content: center; align-items: center; min-width: 80px; padding: unset; font-size: small; margin: 0 2px;" 
                                             modifier="cta"
-                                            @click.stop="cancelDeleteFeature(feature);"
+                                            @click.stop="cancelDeleteFeature(feature.id);"
                                         >
                                             <v-ons-icon style="padding-right:8px;" icon="fa-ban"></v-ons-icon>
                                             <span>NO</span>
@@ -153,13 +153,13 @@
                         </v-ons-carousel>
 
                         <div
-                            v-show="(selectedFeature && selectedFeature.id === feature.id) && !deleteModeActive "
+                            v-show="(selectedFeatureId === feature.id) && !deleteModeActive "
                             class="right" 
                             style="position:absolute; height:100%; right:0px; color:rgba(255,0,0,0.7);"
                         >
                             <v-ons-icon 
                                 v-bind:class=" /* necessary to maintain bounce with v-show on parent */ {
-                                    bounce: (selectedFeature && selectedFeature.id === feature.id) && !deleteModeActive 
+                                    bounce: (selectedFeatureId === feature.id) && !deleteModeActive 
                                 }"
                                 icon="fa-caret-left"
                             ></v-ons-icon>
@@ -203,7 +203,7 @@ export default {
     data() {
         return {
             foo: [],
-            selectedFeature: null,
+            selectedFeatureId: null,
             zoomActive: false,
             deleteModeActive: false,
             fullscreenActive: false,
@@ -281,19 +281,18 @@ export default {
                 /* always force simple_select */ 
                 if (e.mode === 'direct_select') {
                     this.draw.changeMode('simple_select', { 
-                        featureIds: this.selectedFeature ? [this.selectedFeature.id] : [],
+                        featureIds: this.selectedFeatureId ? [this.selectedFeatureId] : [],
                     });
                 }
             });
             this.map.on('draw.selectionchange', (e) => {
                 if (e.features.length) { /* mostly used for tapping map features */
-                    this.selectFeature(e.features[0]);
-                    this.scrollListItemIntoView(e.features[0]);
+                    this.selectFeature(e.features[0].id);
+                    this.scrollListItemIntoView(e.features[0].id);
                 } 
-                else if (this.selectedFeature) { /* keeps feature selected throughout map scroll */
-                    this.selectFeature(this.selectedFeature);
+                else if (this.selectedFeatureId) { /* keeps feature selected throughout map scroll */
+                    this.selectFeature(this.selectedFeatureId);
                 }
-
             });
 
             this.draw.add(this.featureCollection);
@@ -313,9 +312,9 @@ export default {
             var invalidFeatures = fc.features.filter(function(feature) {
                 var geom = feature.geometry;
                 if (
-                    (geom.type === 'Point' && !geom.coordinates) ||
-                    (geom.type === 'Linestring' && geom.coordinates.length === 0) ||
-                    (geom.type === 'Polygon' && geom.coordinates[0].length === 1)
+                    (geom.type === 'Point' && !geom.coordinates)
+                    || (geom.type === 'Linestring' && geom.coordinates.length === 0)
+                    || (geom.type === 'Polygon' && geom.coordinates[0].length === 1)
                 ) {
                     return feature;
                 }
@@ -346,17 +345,17 @@ export default {
         toggleFullscreen() {
             this.fullscreenActive = !this.fullscreenActive;
         },
-        selectFeature(feature) {
+        selectFeature(featureId) {
             /* reset carousel of previously selected feature */ 
-            if (this.selectedFeature && this.selectedFeature.id !== feature.id) {
-                this.resetCarousel(this.selectedFeature)
+            if (this.selectedFeatureId && this.selectedFeatureId !== featureId) {
+                this.resetCarousel(this.selectedFeatureId)
             }
 
             if (
-                !this.selectedFeature
-                || this.selectedFeature && this.selectedFeature.id !== feature.id
+                !this.selectedFeatureId
+                || this.selectedFeatureId !== featureId
             ) {
-                this.selectedFeature = feature;
+                this.selectedFeatureId = featureId;
                 this.zoomActive = false;
                 this.deleteModeActive = false;
             }
@@ -365,11 +364,16 @@ export default {
 
             /* force mapbox to highlight feature */ 
             this.draw.changeMode('simple_select', { 
-                featureIds: this.selectedFeature ? [this.selectedFeature.id] : [],
+                featureIds: this.selectedFeatureId ? [this.selectedFeatureId] : [],
             });
         },
         deselectFeature() {
-            this.selectedFeature = null;
+            /* reset carousel of previously selected feature */ 
+            if (this.selectedFeatureId) {
+                this.resetCarousel(this.selectedFeatureId)
+            }
+
+            this.selectedFeatureId = null;
             this.zoomActive = false;
             this.deleteModeActive = false;
             this.activeDrawMode = null;
@@ -379,7 +383,11 @@ export default {
                 featureIds: [],
             });
         },
-        zoomToFeature(feature) {
+        zoomToFeature(featureId) {
+            const feature = this.foo.find(bar => {
+                return bar.id === featureId;
+            })
+
             this.zoomActive = true;
 
             this.map.flyTo({
@@ -405,25 +413,30 @@ export default {
                 }
             );
         },
-        handleZoomClick(feature) {
-            if (this.selectedFeature && this.selectedFeature.id === feature.id) { 
-                this.zoomActive ? this.zoomToFeatureCollection() : this.zoomToFeature(feature);
+        handleZoomClick(featureId) {
+            if (this.selectedFeatureId === featureId) { 
+                if (this.zoomActive) {
+                    this.zoomToFeatureCollection()
+                }
+                else {
+                    this.zoomToFeature(featureId);
+                }
             }
             else {
-                this.selectFeature(feature);
-                this.zoomToFeature(feature)
+                this.selectFeature(featureId);
+                this.zoomToFeature(featureId)
             }
         },
-        scrollListItemIntoView(feature) {
-            const listItem = document.querySelector(`#list-item-${feature.id}`);
+        scrollListItemIntoView(featureId) {
+            const listItem = document.querySelector(`#list-item-${featureId}`);
             listItem.scrollIntoView({behavior: "smooth", block: "center"});
         },
-        handleListItemClick(feature) {
-            if (!this.selectedFeature || this.selectedFeature.id !== feature.id) {
-                this.selectFeature(feature);
+        handleListItemClick(featureId) {
+            if (!this.selectedFeatureId || this.selectedFeatureId !== featureId) {
+                this.selectFeature(featureId);
             } 
-            else { /* touch already selected list item */
-                const carousel = document.querySelector(`#carousel-${this.selectedFeature.id}`);
+            else { /* click already selected list item */
+                const carousel = document.querySelector(`#carousel-${this.selectedFeatureId}`);
                 
                 if (carousel.getActiveIndex() === 0) {
                     this.deselectFeature();
@@ -431,25 +444,30 @@ export default {
                 } 
             }
         },
-        resetCarousel(feature) {
-            const carousel = document.querySelector(`#carousel-${feature.id}`);
-            carousel.setActiveIndex(0);
-        },
-        handleCarouselDragStart(feature) {
-            const carousel = document.querySelector(`#carousel-${feature.id}`);
+        resetCarousel(featureId) {
+            const carousel = document.querySelector(`#carousel-${featureId}`);
 
             if (carousel.getActiveIndex() === 1) {
-                this.zoomToFeature(feature);
+                carousel.setActiveIndex(0);
+            }
+        },
+        handleCarouselDragStart(featureId) {
+            const carousel = document.querySelector(`#carousel-${featureId}`);
+
+            if (carousel.getActiveIndex() === 1) {
+                this.zoomToFeature(featureId);
             } 
         },
-        handleCarouselDragEnd(feature) {
+        handleCarouselDragEnd(featureId) {
             /* need setTimeout here to ensure the drag motion has completed before asserting carousel index */ 
             setTimeout(() => {
-                const carousel = document.querySelector(`#carousel-${feature.id}`);
+                this.selectFeature(featureId);
+                
+                const carousel = document.querySelector(`#carousel-${featureId}`);
     
                 if (carousel.getActiveIndex() === 1) {
                     this.deleteModeActive = true;
-                    this.zoomToFeature(feature);
+                    this.zoomToFeature(featureId);
                 } 
                 else {
                     this.deleteModeActive = false;
@@ -482,8 +500,8 @@ export default {
             /* setTimeout necessary for proper seleciton UX for LineString and Polygon features */ 
             setTimeout(() => {
                 const feature = this.foo[(this.foo.length - 1)];
-                this.selectFeature(feature);
-                this.scrollListItemIntoView(feature)
+                this.selectFeature(feature.id);
+                this.scrollListItemIntoView(feature.id)
             }, 0);
         },
         handleDeleteFeature() {
@@ -491,8 +509,8 @@ export default {
             this.deselectFeature();
             this.zoomToFeatureCollection();
         },
-        cancelDeleteFeature(feature) {
-            this.resetCarousel(feature)
+        cancelDeleteFeature(featureId) {
+            this.resetCarousel(featureId)
             this.deleteModeActive = false;
         },
     },
@@ -527,7 +545,6 @@ export default {
 }
 
 .editor-widget {
-    /* height: 100%; */
     height: inherit;
     overflow: hidden;
     display: flex;
@@ -558,7 +575,6 @@ export default {
 
 .draw-button-container {
     display:flex; 
-    /* width:100%;  */
     box-sizing: border-box;
     border: 1px solid #bbb; 
     border-top: none;
