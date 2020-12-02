@@ -25,7 +25,7 @@
                     <div v-if="!activeDrawMode" class="draw-button-container">
                         <v-ons-button 
                             class="draw-button" 
-                            @click="handleDrawFeature('point')"
+                            @click="beginDrawFeature('point')"
                         >
                             <v-ons-icon icon="fa-plus" style="padding-right: 9px;"></v-ons-icon>
                             <v-ons-icon icon="fa-map-marker" style="padding-right: 3px;"></v-ons-icon>
@@ -34,7 +34,7 @@
                         <v-ons-button 
                             class="draw-button"
                             style="border-left: 1px solid #bbb; border-right: 1px solid #bbb;"
-                            @click="handleDrawFeature('line')"
+                            @click="beginDrawFeature('line')"
                         >
                             <v-ons-icon icon="fa-plus" style="padding-right: 9px;"></v-ons-icon>
                             <v-ons-icon icon="fa-bezier-curve" style="padding-right: 3px;"></v-ons-icon>
@@ -42,7 +42,7 @@
                         </v-ons-button>
                         <v-ons-button 
                             class="draw-button" 
-                            @click="handleDrawFeature('polygon')"
+                            @click="beginDrawFeature('polygon')"
                         >
                             <v-ons-icon icon="fa-plus" style="padding-right: 9px;"></v-ons-icon>
                             <v-ons-icon icon="fa-draw-polygon" style="padding-right: 3px;"></v-ons-icon>
@@ -52,7 +52,7 @@
                     <div v-else-if="activeDrawMode" class="draw-button-container">
                         <v-ons-button
                             modifier="quiet"
-                            @click="handleCancelFeature"
+                            @click="cancelDrawFeature"
                             style="display:flex; flex: 3; justify-content:center; padding:unset; width:50%; border-radius: unset; color: rgba(255, 0, 0, 0.8); background-color: rgba(255, 0, 0, 0.2); font-size: small;"
                         >
                             <v-ons-icon icon="fa-ban" style="display: flex; align-items: center; padding-right: 8px;"></v-ons-icon>
@@ -61,7 +61,7 @@
 
                         <v-ons-button 
                             v-if="activeDrawMode !== 'point'"
-                            @click="handleFinishFeature"
+                            @click="finishDrawFeature"
                             style="display:flex; flex: 4; justify-content:center; padding:unset; width:50%; border-radius: unset; font-size: small;"
                         >
                             <v-ons-icon v-if="activeDrawMode === 'linestring'" icon="fa-bezier-curve" style="display: flex; align-items: center; padding-right: 8px;"></v-ons-icon>
@@ -84,7 +84,7 @@
                             selected: (selectedFeature && selectedFeature.id === feature.id),
                             'delete-mode': (selectedFeature && selectedFeature.id === feature.id) && deleteModeActive
                         }" 
-                        @click="handleListItemClick(feature);" 
+                        @click.stop="handleListItemClick(feature);" 
                         @dragstart="handleListItemDragStart(feature);"
                         @touchmove.self.stop
                         lock-on-drag
@@ -96,21 +96,25 @@
                             overscrollable
                             auto-scroll
                             auto-scroll-ratio="0.1"
-                            style="padding:10px; overflow:hidden;"
-                            @dragend="handleFOO(feature);"
+                            style="padding:10px 20px; overflow:hidden;"
+                            @dragend="handleCarouselDragEnd(feature);"
                         >
                             <v-ons-carousel-item style="display:flex; align-items:center;">
-                                <div style="display:flex; align-items: center; width: 50vw;">
+                                <div style="display:flex; align-items: center;">
                                     <v-ons-button
-                                        class="geometry-button"
-                                        v-bind:class="{
-                                            'blue': (selectedFeature && selectedFeature.id === feature.id) && zoomClicked
+                                        modifier="cta"
+                                        class="zoom-button"
+                                        v-bind:style="{
+                                            'opacity': (selectedFeature && selectedFeature.id === feature.id) ? '90%' : '70%' 
                                         }"
                                         @click.stop="handleZoom(feature);"
                                     >
-                                        <v-ons-icon class="geomtery-button-icon" icon="fa-search-plus"></v-ons-icon>
+                                        <v-ons-icon icon="fa-search-plus"></v-ons-icon>
                                     </v-ons-button>
-                                    <div style="padding-left: 20px;">
+                                    <div 
+                                        style="padding-left: 15px;"
+                                        v-bind:style="{'font-weight': (selectedFeature && selectedFeature.id === feature.id) ? 'bold' : 'normal' }"
+                                    >
                                         {{ feature.geometry.type }}
                                     </div>
                                 </div>
@@ -124,7 +128,7 @@
 
                                     <div style="display: flex; width:50%; justify-content: space-between;">
                                         <v-ons-button 
-                                            style="display:flex; justify-content: center; align-items: center; min-width: 80px; color:rgba(255,0,0,0.8); border-color: rgba(255,0,0,0.6); padding: unset;" 
+                                            style="display:flex; justify-content: center; align-items: center; min-width: 80px; color:rgba(255,0,0,0.8); border-color: rgba(255,0,0,0.6); padding: unset; font-size: small; margin: 0 2px;" 
                                             modifier="outline"
                                             @click.stop="handleDeleteFeature"
                                         >
@@ -132,7 +136,7 @@
                                             <span>YES</span>
                                         </v-ons-button>
                                         <v-ons-button 
-                                            style="display:flex; justify-content: center; align-items: center; min-width: 80px; padding: unset;" 
+                                            style="display:flex; justify-content: center; align-items: center; min-width: 80px; padding: unset; font-size: small; margin: 0 2px;" 
                                             modifier="cta"
                                             @click.stop="cancelDeleteFeature(feature);"
                                         >
@@ -145,13 +149,20 @@
                         </v-ons-carousel>
 
                         <div
-                            :id="'delete-flag-' + feature.id"
+                            v-show="(selectedFeature && selectedFeature.id === feature.id) && !deleteModeActive "
                             class="right" 
-                            style="position:absolute; height:100%; right:0px; pointer-events:none; display:none;"
+                            style="position:absolute; height:100%; right:0px; color:rgba(255,0,0,0.7);"
                         >
-                            <v-ons-icon class="geomtery-button-icon" icon="fa-caret-left"></v-ons-icon>
-                            <v-ons-icon class="geomtery-button-icon" icon="fa-caret-left"></v-ons-icon>
-                            <v-ons-icon class="geomtery-button-icon" style="margin:5px;" icon="fa-trash"></v-ons-icon>
+                            <v-ons-icon 
+                                v-bind:class=" /* necessary to maintain bounce with v-show on parent */ {
+                                    bounce: (selectedFeature && selectedFeature.id === feature.id) && !deleteModeActive 
+                                }"
+                                icon="fa-caret-left"
+                            ></v-ons-icon>
+                            <v-ons-icon 
+                                style="padding:5px; padding-right: 15px;" 
+                                icon="fa-trash"
+                            ></v-ons-icon>
                         </div>
                     </v-ons-list-item>
                 </v-ons-list>
@@ -280,10 +291,6 @@ export default {
                         /* reset previous carousel */ 
                         carousel = document.querySelector(`#carousel-${this.selectedFeature.id}`);
                         carousel.setActiveIndex(0);
-
-                        /* hide previous flag */ 
-                        deleteFlag = document.querySelector(`#delete-flag-${this.selectedFeature.id}`);
-                        deleteFlag.style.display = "none";
                     }
 
                     const listItem = document.querySelector(`#list-item-${e.features[0].id}`);
@@ -294,10 +301,6 @@ export default {
                     /* reset current carousel */ 
                     carousel = document.querySelector(`#carousel-${e.features[0].id}`);
                     carousel.setActiveIndex(0);
-
-                    /* show new flag */ 
-                    deleteFlag = document.querySelector(`#delete-flag-${e.features[0].id}`);
-                    deleteFlag.style.display = "flex";
                 } 
                 else if (this.selectedFeature) {
                     this.selectFeature(this.selectedFeature);
@@ -452,28 +455,14 @@ export default {
 
             if (!this.selectedFeature) {
                 this.selectFeature(feature);
-                
-                deleteFlag = document.querySelector(`#delete-flag-${feature.id}`);
-                deleteFlag.style.display = "flex";
             } 
             else if (this.selectedFeature.id !== feature.id) {
                 carousel = document.querySelector(`#carousel-${this.selectedFeature.id}`);
                 carousel.setActiveIndex(0);
 
-                /* hide previous flag */ 
-                deleteFlag = document.querySelector(`#delete-flag-${this.selectedFeature.id}`);
-                deleteFlag.style.display = "none";
-                
                 this.selectFeature(feature);
-
-                /* show new flag */ 
-                deleteFlag = document.querySelector(`#delete-flag-${this.selectedFeature.id}`);
-                deleteFlag.style.display = "flex";
             } 
             else { /* touch already selected list item */
-                deleteFlag = document.querySelector(`#delete-flag-${this.selectedFeature.id}`);
-                deleteFlag.style.display = "none";
-
                 carousel = document.querySelector(`#carousel-${this.selectedFeature.id}`);
                 
                 if (carousel.getActiveIndex() === 0) {
@@ -483,70 +472,40 @@ export default {
                 this.map.fitBounds(geojsonExtent(this.featureCollection), { padding: { top: 20, right: 60, bottom: 20, left: 20 } });
             }
         },
-        foobar(feature) {
-            console.log('!!!', feature);
-
-            // if (this.selectedFeature && this.selectedFeature.id === feature.id) {
-                const carousel = document.querySelector(`#carousel-${feature.id}`);
-
-                if (carousel && carousel.getActiveIndex() === 0) {
-                    return true;
-                }
-
-                return false;
-            // }
-
-        },
         handleListItemDragStart(feature) {
             let carousel, deleteFlag;
 
             if (!this.selectedFeature) {
                 this.selectFeature(feature);
-                
-                deleteFlag = document.querySelector(`#delete-flag-${feature.id}`);
-                deleteFlag.style.display = "flex";
             } 
             else if (this.selectedFeature.id !== feature.id) {
                 /* set previous carosel to 0 index */ 
                 carousel = document.querySelector(`#carousel-${this.selectedFeature.id}`);
                 carousel.setActiveIndex(0);
 
-                /* hide previous flag */ 
-                deleteFlag = document.querySelector(`#delete-flag-${this.selectedFeature.id}`);
-                deleteFlag.style.display = "none";
-                
                 this.selectFeature(feature);
-
-                /* show new flag */ 
-                deleteFlag = document.querySelector(`#delete-flag-${this.selectedFeature.id}`);
-                deleteFlag.style.display = "flex";
             }
 
             // GOOD BUT BUGGY
             // this.map.fitBounds(geojsonExtent(this.selectedFeature), { padding: { top: 20, right: 60, bottom: 20, left: 20 }, maxZoom: 9 });
         },
-        handleFOO(feature) {
+        handleCarouselDragEnd(feature) {
+            /* need setTimeout here to ensure the drag motion has completed before asserting a carousel index */ 
             setTimeout(() => {
                 const carousel = document.querySelector(`#carousel-${feature.id}`);
-                const deleteFlag = document.querySelector(`#delete-flag-${feature.id}`);
     
                 if (carousel.getActiveIndex() !== 0) {
-                    deleteFlag.style.display = "none";
                     this.deleteModeActive = true;
                 } 
                 else {
-                    deleteFlag.style.display = "flex";
                     this.deleteModeActive = false;
                 }
             }, 0);
         },
-        handleDrawFeature(featureType) {
+        beginDrawFeature(featureType) {
             if (this.selectedFeature) {
                 const carousel = document.querySelector(`#carousel-${this.selectedFeature.id}`);
                 carousel.setActiveIndex(0);
-
-                const deleteFlag = document.querySelector(`#delete-flag-${this.selectedFeature.id}`);
-                deleteFlag.style.display = "none";
 
                 this.selectFeature(null);
             }
@@ -571,13 +530,13 @@ export default {
                 this.activeDrawMode = activeDrawMode;
             }, 0);
         },
-        handleCancelFeature() {
+        cancelDrawFeature() {
             this.draw.trash();
             
             this.activeDrawMode = null;
             this.selectFeature(null);
         },
-        handleFinishFeature() {
+        finishDrawFeature() {
             this.activeDrawMode = null;
             this.selectFeature(null);
 
@@ -589,16 +548,16 @@ export default {
                 listItem.scrollIntoView({behavior: "smooth", block: "center"});
             }, 0);
         },
+        handleDeleteFeature() {
+            this.draw.trash();
+            this.selectFeature(null);
+            this.map.fitBounds(geojsonExtent(this.featureCollection), { padding: { top: 20, right: 60, bottom: 40, left: 20 } });
+        },
         cancelDeleteFeature(feature) {
             const carousel = document.querySelector(`#carousel-${feature.id}`);
             carousel.setActiveIndex(0);
 
             this.deleteModeActive = false;
-        },
-        handleDeleteFeature() {
-            this.draw.trash();
-            this.selectFeature(null);
-            this.map.fitBounds(geojsonExtent(this.featureCollection), { padding: { top: 20, right: 60, bottom: 20, left: 20 } });
         },
     },
     destroyed() {
@@ -609,6 +568,24 @@ export default {
 </script>
 
 <style scoped>
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateX(0);
+  }
+  40% {
+    transform: translateX(-4px);
+  }
+  60% {
+    transform: translateX(-2px);
+  }
+}
+
+.bounce {
+    animation: bounce 1.5s;
+    animation-iteration-count: 2;
+}
+
 .map-wrapper {
     height: 260px;
 }
@@ -690,25 +667,15 @@ export default {
     background-color: #d9d9d9;
 }
 .delete-container {
-    /* height: 100%; */
-    /* width: 100%; */
-    width: 89vw; /* forcing container viewwidth */
-    /* padding-left: 65vw; */
+    width: 80vw; /* forcing container viewwidth */
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
-.geometry-button {
-    /* height: 100%; */
-    min-width: 35px;
+.zoom-button {
+    padding: 0 8px;
+    margin: 4px 0;
     border-radius: 50%;
-    padding: 8px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: #eee;
-    border: 1px solid #bbb;
-    color:  rgb(31, 31, 33, 0.8);
 }
 .report-widget {
     width: 100%;
