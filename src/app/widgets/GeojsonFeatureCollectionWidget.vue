@@ -108,7 +108,7 @@
                                         v-bind:style="{
                                             'opacity': (selectedFeature && selectedFeature.id === feature.id) ? '90%' : '70%' 
                                         }"
-                                        @click.stop="handleZoom(feature);"
+                                        @click.stop="handleZoomClick(feature);"
                                     >
                                         <v-ons-icon icon="fa-search-plus"></v-ons-icon>
                                     </v-ons-button>
@@ -347,10 +347,6 @@ export default {
                         this.foo = fc.features;
                         this.$emit('update:value', fc);
                     }
-                } 
-                else if (e === 'delete') {
-                    this.foo = fc.features;
-                    this.$emit('update:value', fc);
                 }
                 else {
                     this.foo = fc.features;
@@ -358,7 +354,7 @@ export default {
                 }
             } 
             else {
-                console.log(fc, e);
+                console.warn(fc, e);
             }
         },
         toggleFullscreen() {
@@ -382,32 +378,38 @@ export default {
                 featureIds: this.selectedFeature ? [this.selectedFeature.id] : [],
             });
         },
-        handleZoom(feature) {
-            if (!this.selectedFeature) {
+        zoomToFeature(feature) {
+            this.map.flyTo({
+                bounds: geojsonExtent(feature),
+            })
+
+            this.map.fitBounds(
+                geojsonExtent(feature), 
+                { 
+                    padding: { top: 20, right: 60, bottom: 40, left: 20 }, 
+                    maxZoom: 10 
+                }
+            );
+        },
+        zoomToFeatureCollection() {
+            this.map.fitBounds(
+                geojsonExtent(this.featureCollection), 
+                { 
+                    padding: { top: 20, right: 60, bottom: 40, left: 20 }, 
+                    maxZoom: 10
+                }
+            );
+        },
+        handleZoomClick(feature) {
+            if (this.selectedFeature && this.selectedFeature.id === feature.id) { 
+                this.zoomActive = !this.zoomActive;
+            }
+            else {
                 this.handleListItemClick(feature);
                 this.zoomActive = true
             }
-            else if (this.selectedFeature && this.selectedFeature.id !== feature.id) {
-                this.handleListItemClick(feature);
-                this.zoomActive = true;
-            }
-            else {
-                this.zoomActive = !this.zoomActive;
-            }
 
-            const selectedFeatureGeojsonExtent = geojsonExtent(this.selectedFeature);
-            
-            this.map.flyTo({
-                bounds: selectedFeatureGeojsonExtent,
-                zoom: 9,
-            })
-
-            if (this.zoomActive) { /* giving a point a bbox overrides zoom */
-                this.map.fitBounds(selectedFeatureGeojsonExtent, { padding: { top: 20, right: 60, bottom: 40, left: 20 }, maxZoom: 9 });
-            } 
-            else { /* if zoom is already selected, let's fit the map to all features*/
-                this.map.fitBounds(geojsonExtent(this.featureCollection), { padding: { top: 20, right: 60, bottom: 40, left: 20 } });
-            }
+            this.zoomActive ? this.zoomToFeature(feature) : this.zoomToFeatureCollection();
         },
         handleListItemClick(feature) {
             let carousel, deleteFlag;
@@ -428,7 +430,7 @@ export default {
                     this.selectFeature(null);
                 } 
 
-                this.map.fitBounds(geojsonExtent(this.featureCollection), { padding: { top: 20, right: 60, bottom: 20, left: 20 } });
+                this.zoomToFeatureCollection();
             }
         },
         handleListItemDragStart(feature) {
@@ -444,16 +446,14 @@ export default {
 
                 this.selectFeature(feature);
             }
-
-            // GOOD BUT BUGGY
-            // this.map.fitBounds(geojsonExtent(this.selectedFeature), { padding: { top: 20, right: 60, bottom: 20, left: 20 }, maxZoom: 9 });
         },
         handleCarouselDragEnd(feature) {
-            /* need setTimeout here to ensure the drag motion has completed before asserting a carousel index */ 
+            /* need setTimeout here to ensure the drag motion has completed before asserting carousel index */ 
             setTimeout(() => {
                 const carousel = document.querySelector(`#carousel-${feature.id}`);
     
                 if (carousel.getActiveIndex() !== 0) {
+                    this.zoomToFeature(feature);
                     this.deleteModeActive = true;
                 } 
                 else {
@@ -469,25 +469,18 @@ export default {
                 this.selectFeature(null);
             }
 
-            let activeDrawMode;
-
             if (featureType === 'point') {
                 this.draw.changeMode('draw_point');
-                activeDrawMode = 'point';
+                this.activeDrawMode = 'point';
             }
             else if (featureType === 'line') {
                 this.draw.changeMode('draw_line_string');
-                activeDrawMode = 'linestring';
+                this.activeDrawMode = 'linestring';
             }
             else if (featureType === 'polygon') {
                 this.draw.changeMode('draw_polygon');
-                activeDrawMode = 'polygon';
+                this.activeDrawMode = 'polygon';
             }
-
-            /* needs this delay to keep UI happy */ 
-            setTimeout(() => {
-                this.activeDrawMode = activeDrawMode;
-            }, 0);
         },
         cancelDrawFeature() {
             this.draw.trash();
@@ -510,7 +503,7 @@ export default {
         handleDeleteFeature() {
             this.draw.trash();
             this.selectFeature(null);
-            this.map.fitBounds(geojsonExtent(this.featureCollection), { padding: { top: 20, right: 60, bottom: 40, left: 20 } });
+            this.zoomToFeatureCollection();
         },
         cancelDeleteFeature(feature) {
             const carousel = document.querySelector(`#carousel-${feature.id}`);
@@ -618,7 +611,7 @@ export default {
 }
 .delete-container {
     width: 80vw;
-    margin-left: -4px; /* workaround to keep children cenetered with onsen carousel logic */
+    margin-left: -5px; /* workaround to keep children cenetered with onsen carousel logic */
     display: flex;
     align-items: center;
     justify-content: space-between;
