@@ -86,7 +86,7 @@
                             'delete-mode': (selectedFeature && selectedFeature.id === feature.id) && deleteModeActive
                         }" 
                         @click.stop="handleListItemClick(feature);" 
-                        @dragstart="handleListItemDragStart(feature);"
+                        @dragstart="selectFeature(feature);"
                         @touchmove.self.stop
                         lock-on-drag
                     >
@@ -286,31 +286,14 @@ export default {
                 }
             });
             this.map.on('draw.selectionchange', (e) => {
-                if (e.features.length) {
-                    let carousel;
-
-                    if (this.selectedFeature) {
-                        /* reset previous carousel */ 
-                        carousel = document.querySelector(`#carousel-${this.selectedFeature.id}`);
-                        carousel.setActiveIndex(0);
-                    }
-
-                    const listItem = document.querySelector(`#list-item-${e.features[0].id}`);
-                    listItem.scrollIntoView({behavior: "smooth", block: "center"});
-                    
+                if (e.features.length) { /* mostly used for tapping map features */
                     this.selectFeature(e.features[0]);
-
-                    /* reset current carousel */ 
-                    carousel = document.querySelector(`#carousel-${e.features[0].id}`);
-                    carousel.setActiveIndex(0);
-                    this.deleteModeActive = false;
+                    this.scrollListItemIntoView(e.features[0]);
                 } 
-                else if (this.selectedFeature) {
+                else if (this.selectedFeature) { /* keeps feature selected throughout map scroll */
                     this.selectFeature(this.selectedFeature);
-                } 
-                else {
-                    this.selectFeature(null);
                 }
+
             });
 
             this.draw.add(this.featureCollection);
@@ -364,22 +347,36 @@ export default {
             this.fullscreenActive = !this.fullscreenActive;
         },
         selectFeature(feature) {
-           if ( 
-               !feature /* allows null input */
-               || !this.selectedFeature
-               || (this.selectedFeature && this.selectedFeature.id !== feature.id) 
+            /* reset carousel of previously selected feature */ 
+            if (this.selectedFeature && this.selectedFeature.id !== feature.id) {
+                this.resetCarousel(this.selectedFeature)
+            }
+
+            if (
+                !this.selectedFeature
+                || this.selectedFeature && this.selectedFeature.id !== feature.id
             ) {
                 this.selectedFeature = feature;
-
                 this.zoomActive = false;
                 this.deleteModeActive = false;
             }
-
-            this.activeDrawMode = null;
             
+            this.activeDrawMode = null;
+
             /* force mapbox to highlight feature */ 
             this.draw.changeMode('simple_select', { 
                 featureIds: this.selectedFeature ? [this.selectedFeature.id] : [],
+            });
+        },
+        deselectFeature() {
+            this.selectedFeature = null;
+            this.zoomActive = false;
+            this.deleteModeActive = false;
+            this.activeDrawMode = null;
+
+            /* roundabout way to create valid feature from current geometry */ 
+            this.draw.changeMode('simple_select', { 
+                featureIds: [],
             });
         },
         zoomToFeature(feature) {
@@ -413,45 +410,30 @@ export default {
                 this.zoomActive ? this.zoomToFeatureCollection() : this.zoomToFeature(feature);
             }
             else {
-                this.handleListItemClick(feature);
+                this.selectFeature(feature);
                 this.zoomToFeature(feature)
             }
         },
+        scrollListItemIntoView(feature) {
+            const listItem = document.querySelector(`#list-item-${feature.id}`);
+            listItem.scrollIntoView({behavior: "smooth", block: "center"});
+        },
         handleListItemClick(feature) {
-            let carousel;
-
-            if (!this.selectedFeature) {
-                this.selectFeature(feature);
-            } 
-            else if (this.selectedFeature.id !== feature.id) {
-                carousel = document.querySelector(`#carousel-${this.selectedFeature.id}`);
-                carousel.setActiveIndex(0);
-
+            if (!this.selectedFeature || this.selectedFeature.id !== feature.id) {
                 this.selectFeature(feature);
             } 
             else { /* touch already selected list item */
-                carousel = document.querySelector(`#carousel-${this.selectedFeature.id}`);
+                const carousel = document.querySelector(`#carousel-${this.selectedFeature.id}`);
                 
                 if (carousel.getActiveIndex() === 0) {
-                    this.selectFeature(null);
+                    this.deselectFeature();
+                    this.zoomToFeatureCollection();
                 } 
-
-                this.zoomToFeatureCollection();
             }
         },
-        handleListItemDragStart(feature) {
-            let carousel, deleteFlag;
-
-            if (!this.selectedFeature) {
-                this.selectFeature(feature);
-            } 
-            else if (this.selectedFeature.id !== feature.id) {
-                /* set previous carosel to 0 index */ 
-                carousel = document.querySelector(`#carousel-${this.selectedFeature.id}`);
-                carousel.setActiveIndex(0);
-
-                this.selectFeature(feature);
-            }
+        resetCarousel(feature) {
+            const carousel = document.querySelector(`#carousel-${feature.id}`);
+            carousel.setActiveIndex(0);
         },
         handleCarouselDragStart(feature) {
             const carousel = document.querySelector(`#carousel-${feature.id}`);
@@ -475,12 +457,7 @@ export default {
             }, 0);
         },
         beginDrawFeature(featureType) {
-            if (this.selectedFeature) {
-                const carousel = document.querySelector(`#carousel-${this.selectedFeature.id}`);
-                carousel.setActiveIndex(0);
-
-                this.selectFeature(null);
-            }
+            this.deselectFeature();
 
             if (featureType === 'point') {
                 this.draw.changeMode('draw_point');
@@ -497,32 +474,25 @@ export default {
         },
         cancelDrawFeature() {
             this.draw.trash();
-            
-            this.activeDrawMode = null;
-            this.selectFeature(null);
+            this.deselectFeature();
         },
         finishDrawFeature() {
-            this.activeDrawMode = null;
-            this.selectFeature(null);
+            this.deselectFeature();
 
             /* setTimeout necessary for proper seleciton UX for LineString and Polygon features */ 
             setTimeout(() => {
-                const newlyCreatedFeature = this.foo[(this.foo.length - 1)];
-                this.selectFeature(newlyCreatedFeature);
-
-                const listItem = document.querySelector(`#list-item-${newlyCreatedFeature.id}`);
-                listItem.scrollIntoView({behavior: "smooth", block: "center"});
+                const feature = this.foo[(this.foo.length - 1)];
+                this.selectFeature(feature);
+                this.scrollListItemIntoView(feature)
             }, 0);
         },
         handleDeleteFeature() {
             this.draw.trash();
-            this.selectFeature(null);
+            this.deselectFeature();
             this.zoomToFeatureCollection();
         },
         cancelDeleteFeature(feature) {
-            const carousel = document.querySelector(`#carousel-${feature.id}`);
-            carousel.setActiveIndex(0);
-
+            this.resetCarousel(feature)
             this.deleteModeActive = false;
         },
     },
