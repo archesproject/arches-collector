@@ -60,6 +60,7 @@
                         </v-ons-button>
 
                         <v-ons-button 
+                            modifier="cta"
                             v-if="activeDrawMode !== 'point'"
                             @click="finishDrawFeature"
                             style="display:flex; flex: 4; justify-content:center; padding:unset; width:50%; border-radius: unset; font-size: small;"
@@ -199,12 +200,11 @@ export default {
     data() {
         return {
             foo: [],
-            zoomClicked: false,
-            deleteModeActive: false,
             selectedFeature: null,
+            zoomActive: false,
+            deleteModeActive: false,
             fullscreenActive: false,
             activeDrawMode: null,
-            deleteModeActive: false
         };
     },
     computed: {
@@ -285,7 +285,7 @@ export default {
             this.map.on('draw.selectionchange', (e) => {
                 if (e.features.length) {
 
-                    let deleteFlag, carousel;
+                    let carousel;
 
                     if (this.selectedFeature) {
                         /* reset previous carousel */ 
@@ -366,15 +366,15 @@ export default {
         },
         selectFeature(feature) {
            if ( 
-               !this.selectedFeature
-               || !feature /* allows null values but is confusing, let's remove this during refactor */
+               !feature /* allows null input */
+               || !this.selectedFeature
                || (this.selectedFeature && this.selectedFeature.id !== feature.id) 
             ) {
                 this.selectedFeature = feature;
             }
 
             this.activeDrawMode = null;
-            this.zoomClicked = false;
+            this.zoomActive = false;
             this.deleteModeActive = false;
             
             /* force mapbox to highlight feature */ 
@@ -382,72 +382,31 @@ export default {
                 featureIds: this.selectedFeature ? [this.selectedFeature.id] : [],
             });
         },
-        baz(feature) {
-            let xCoord, yCoord, coordAverage, bounds;
-
-            const getCoordAverage = coordList => {
-                const accumulatedCoords = coordList.reduce((acc, coords) => {
-                    acc[0] += coords[0];
-                    acc[1] += coords[1];
-
-                    return acc;
-                }, [0, 0]);
-
-                return [
-                    accumulatedCoords[0] / coordList.length,
-                    accumulatedCoords[1] / coordList.length,
-                ]
-            }
-
-            switch (feature.geometry.type) {
-                case 'Point':
-                    xCoord = feature.geometry.coordinates[0];
-                    yCoord = feature.geometry.coordinates[1];
-
-                    break;
-                case 'LineString':
-                    coordAverage = getCoordAverage(feature.geometry.coordinates);
-                    xCoord = coordAverage[0];
-                    yCoord = coordAverage[1];
-
-                    break;
-                case 'Polygon':
-                    const subGeometryAverages = feature.geometry.coordinates.map(coordList => getCoordAverage(coordList));
-
-                    coordAverage = getCoordAverage(subGeometryAverages);
-                    xCoord = coordAverage[0];
-                    yCoord = coordAverage[1];
-
-                    break;
-            }
-
-            return [xCoord, yCoord, bounds];
-        },
         handleZoom(feature) {
             if (!this.selectedFeature) {
                 this.handleListItemClick(feature);
-                this.zoomClicked = true
+                this.zoomActive = true
             }
             else if (this.selectedFeature && this.selectedFeature.id !== feature.id) {
                 this.handleListItemClick(feature);
-                this.zoomClicked = true;
+                this.zoomActive = true;
             }
             else {
-                this.zoomClicked = !this.zoomClicked;
+                this.zoomActive = !this.zoomActive;
             }
-            
-            const [xCoord, yCoord, bounds] = this.baz(this.selectedFeature);
 
+            const selectedFeatureGeojsonExtent = geojsonExtent(this.selectedFeature);
+            
             this.map.flyTo({
-                center: new window.mapboxgl.LngLat(xCoord, yCoord),
+                bounds: selectedFeatureGeojsonExtent,
                 zoom: 9,
             })
 
-            if (this.zoomClicked) { /* giving a point a bbox overrides zoom */
-                this.map.fitBounds(geojsonExtent(this.selectedFeature), { padding: { top: 20, right: 60, bottom: 20, left: 20 }, maxZoom: 9 });
+            if (this.zoomActive) { /* giving a point a bbox overrides zoom */
+                this.map.fitBounds(selectedFeatureGeojsonExtent, { padding: { top: 20, right: 60, bottom: 40, left: 20 }, maxZoom: 9 });
             } 
             else { /* if zoom is already selected, let's fit the map to all features*/
-                this.map.fitBounds(geojsonExtent(this.featureCollection), { padding: { top: 20, right: 60, bottom: 20, left: 20 } });
+                this.map.fitBounds(geojsonExtent(this.featureCollection), { padding: { top: 20, right: 60, bottom: 40, left: 20 } });
             }
         },
         handleListItemClick(feature) {
@@ -612,15 +571,6 @@ export default {
     color: rgba(255, 0, 0, 0.8);
 }
 
-.white {
-    background-color: red !important;
-}
-
-.blue {
-    background-color: blue !important;
-}
-
-
 .bongo {
     display:flex; 
     flex: 1;
@@ -667,7 +617,8 @@ export default {
     background-color: #d9d9d9;
 }
 .delete-container {
-    width: 80vw; /* forcing container viewwidth */
+    width: 80vw;
+    margin-left: -4px; /* workaround to keep children cenetered with onsen carousel logic */
     display: flex;
     align-items: center;
     justify-content: space-between;
