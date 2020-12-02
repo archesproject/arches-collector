@@ -1,28 +1,30 @@
 <template>
     <div v-if="value !== null">
-    <div v-if="context == 'editor' || context == 'report'" style="width:100%; display:flex; flex-direction:column; padding: 10px;">
-        <div class="map-controls">
-            <div class="mapboxgl-ctrl mapboxgl-ctrl-group fullscreen-control">
-                <button 
-                    class="mapboxgl-ctrl-icon" 
-                    type="button" 
-                    v-on:click="toggleFullscreen" 
-                    v-bind:class="{
-                        'mapboxgl-ctrl-shrink': fullscreenActive,
-                        'mapboxgl-ctrl-fullscreen': !fullscreenActive
-                    }">
-                </button>
-            </div>
+    <div v-if="context == 'editor' || context == 'report'">
+        <div class="mapboxgl-ctrl mapboxgl-ctrl-group fullscreen-control">
+            <button 
+                class="mapboxgl-ctrl-icon" 
+                type="button" 
+                v-on:click="toggleFullscreen" 
+                v-bind:class="{
+                    'mapboxgl-ctrl-shrink': fullscreenActive,
+                    'mapboxgl-ctrl-fullscreen': !fullscreenActive
+                }">
+            </button>
         </div>
         <div v-if="context=='editor'" class="editor-widget">
             <div class="editor widget-label">{{widget.label}}</div>
             <div class="editor widget-value">
-                <div v-bind:class="{ fullscreen: fullscreenActive }" class="bongo">
+                <div
+                    @touchstart.self.stop
+                    @dragstart.self.stop
+                    v-bind:class="{ fullscreen: fullscreenActive }" 
+                >
                     <div class="map-wrapper" >
                         <project-map v-on:map-init="mapInit" :extent="bounds"></project-map>
                     </div>
 
-                    <div v-if="!activeDrawMode" class="draw-button-container">
+                    <div v-if="!activeDrawMode && canEditResource()" class="draw-button-container">
                         <v-ons-button 
                             class="draw-button" 
                             @click="beginDrawFeature('point')"
@@ -49,7 +51,7 @@
                             <div>Polygon</div>
                         </v-ons-button>
                     </div>
-                    <div v-else-if="activeDrawMode" class="draw-button-container">
+                    <div v-else-if="activeDrawMode && canEditResource()" class="draw-button-container">
                         <v-ons-button
                             modifier="quiet"
                             @click="cancelDrawFeature"
@@ -72,14 +74,12 @@
                         </v-ons-button>
                     </div>
                 </div>
-            </div>
 
-            <div class="foo">
-                <v-ons-list class='qux'>
+                <v-ons-list class='feature-list'>
                     <v-ons-list-item 
                         :id="'list-item-' + feature.id"
                         modifier="longdivider"
-                        v-for="feature in foo" 
+                        v-for="feature in features" 
                         v-bind:key="feature.id" 
                         v-bind:class="{
                             selected: selectedFeatureId === feature.id,
@@ -124,14 +124,17 @@
                                 </div>
                             </v-ons-carousel-item>
 
-                            <v-ons-carousel-item style="display:flex; align-items:center;">
+                            <v-ons-carousel-item 
+                                style="display:flex; align-items:center;"
+                            >
                                 <div class="delete-container" @click.stop>
                                     <div style="width:50%;">
                                         Delete this {{ feature.geometry.type }}?
                                     </div>
 
                                     <div style="display: flex; width:50%; justify-content: space-between;">
-                                        <v-ons-button 
+                                        <v-ons-button
+                                            v-if="shouldShowDeleteButton(feature.id)"
                                             style="display:flex; justify-content: center; align-items: center; min-width: 80px; color:rgba(255,0,0,0.8); border-color: rgba(255,0,0,0.6); padding: unset; font-size: small; margin: 0 2px;" 
                                             modifier="outline"
                                             @click.stop="handleDeleteFeature"
@@ -202,7 +205,7 @@ export default {
     props: ['value', 'widget', 'context', 'tile'],
     data() {
         return {
-            foo: [],
+            features: [],
             selectedFeatureId: null,
             zoomActive: false,
             deleteModeActive: false,
@@ -230,7 +233,7 @@ export default {
             } else {
                 return null;
             }
-        }
+        },
     },
     watch: {
         featureCollection(value) {
@@ -307,6 +310,14 @@ export default {
             style.layers.push(...reportLayers);
             this.map.setStyle(style);
         },
+        canEditResource() { /* roundabout way to access logic of ResourceEditForm */ 
+            const deleteResourceButton = document.querySelector('#delete-resource-button');
+
+            return Boolean(
+                deleteResourceButton 
+                && window.getComputedStyle(deleteResourceButton).getPropertyValue('display') !== 'none'
+            );
+        },
         checkIfFeatureIsValid(fc) {
             var valid;
             var invalidFeatures = fc.features.filter(function(feature) {
@@ -329,12 +340,12 @@ export default {
             if (featuresValid === true) {
                 if (e === 'selectionchange')  {
                     if (this.draw.getSelectedIds().length === 0) {
-                        this.foo = fc.features;
+                        this.features = fc.features;
                         this.$emit('update:value', fc);
                     }
                 }
                 else {
-                    this.foo = fc.features;
+                    this.features = fc.features;
                     this.$emit('update:value', fc);
                 }
             } 
@@ -384,7 +395,7 @@ export default {
             });
         },
         zoomToFeature(featureId) {
-            const feature = this.foo.find(bar => {
+            const feature = this.features.find(bar => {
                 return bar.id === featureId;
             })
 
@@ -398,7 +409,7 @@ export default {
                 geojsonExtent(feature), 
                 { 
                     padding: { top: 20, right: 60, bottom: 40, left: 20 }, 
-                    maxZoom: 10 
+                    maxZoom: 19, /* === ProjectMap maxZoom */
                 }
             );
         },
@@ -409,7 +420,7 @@ export default {
                 geojsonExtent(this.featureCollection), 
                 { 
                     padding: { top: 20, right: 60, bottom: 40, left: 20 }, 
-                    maxZoom: 10
+                    maxZoom: 19, /* === ProjectMap maxZoom */
                 }
             );
         },
@@ -429,7 +440,7 @@ export default {
         },
         scrollListItemIntoView(featureId) {
             const listItem = document.querySelector(`#list-item-${featureId}`);
-            listItem.scrollIntoView({behavior: "smooth", block: "center"});
+            listItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         },
         handleListItemClick(featureId) {
             if (!this.selectedFeatureId || this.selectedFeatureId !== featureId) {
@@ -499,10 +510,14 @@ export default {
 
             /* setTimeout necessary for proper seleciton UX for LineString and Polygon features */ 
             setTimeout(() => {
-                const feature = this.foo[(this.foo.length - 1)];
+                const feature = this.features[(this.features.length - 1)];
                 this.selectFeature(feature.id);
                 this.scrollListItemIntoView(feature.id)
             }, 0);
+        },
+        shouldShowDeleteButton(featureId) {
+            const carousel = document.querySelector(`#carousel-${featureId}`);
+            return Boolean(carousel && carousel.getActiveIndex() === 1 && this.canEditResource());
         },
         handleDeleteFeature() {
             this.draw.trash();
@@ -534,7 +549,6 @@ export default {
     transform: translateX(-2px);
   }
 }
-
 .bounce {
     animation: bounce 1.5s;
     animation-iteration-count: 2;
@@ -545,14 +559,12 @@ export default {
 }
 
 .editor-widget {
+    width: 100%;
     height: inherit;
     overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
+    /* display: flex; */
+    /* flex-direction: column; */
 }
-
-
 .delete-mode {
     /* 
         the !important flags are neccesary to get onsen playing nicely with Vue's render logic,
@@ -566,10 +578,6 @@ export default {
 }
 
 .bongo {
-    display:flex; 
-    flex: 1;
-    flex-direction:column; 
-    height:100%; 
     margin-top: 5px;
 }
 
@@ -590,15 +598,9 @@ export default {
     background: #eee;
     color:  rgb(31, 31, 33, 0.8);
 }
-.foo {
-    display: flex;
-    flex: 1 1 auto;
+.feature-list {
     margin-top: 10px;
-    box-sizing: border-box;
-    border-left: 1px solid rgb(31, 31, 33, 0.2);
-    border-right: 1px solid rgb(31, 31, 33, 0.2);
-}
-.qux {
+    max-height: 30vh;
     width: 100%;
     overflow: scroll;
 }
@@ -639,10 +641,6 @@ export default {
     left: 0;
     z-index: 10;
     margin: 0;
-}
-
-.map-controls {
-    display: none;
 }
 
 .tile-data {

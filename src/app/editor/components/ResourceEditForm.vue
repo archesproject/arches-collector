@@ -1,10 +1,33 @@
 <template>
-    <div style="height: 100%; display:flex; flex-direction: column;">
-        <component v-for="widget in cardWidgets" :key="widget.id" class="widget" :allNodes="allNodes" :tile="tile" :tiles="tiles" :widget="widget" :context="'editor'" :save="throttle(saveTile, tile, saveDelay)" v-bind:is="'base-widget'"></component>
+    <div>
+        <component 
+            v-for="widget in cardWidgets" 
+            :key="widget.id" 
+            class="widget" 
+            :allNodes="allNodes" 
+            :tile="tile" 
+            :tiles="tiles" 
+            :widget="widget" 
+            :context="'editor'" 
+            :save="throttle(saveTile, tile, saveDelay)" 
+            v-bind:is="'base-widget'"
+        ></component>
         
         <div class="button-container">
-            <v-ons-button class="resource-edit-button" style="max-width:40%;" @click="back"><v-ons-icon class="btn-icon resource-header" icon="fa-arrow-alt-circle-left"></v-ons-icon>Done</v-ons-button>
-            <v-ons-button class="resource-edit-button warning" v-show="allowDelete" @click="deleteTiles(tile, $event, back)"><v-ons-icon class="btn-icon resource-header" icon="fa-trash"></v-ons-icon>Delete this Record</v-ons-button>
+            <div style="display: flex; justify-content: space-between;">
+                <v-ons-button class="resource-edit-button" @click="back">
+                    <v-ons-icon class="btn-icon resource-header" icon="fa-arrow-alt-circle-left"></v-ons-icon>
+                    Done
+                </v-ons-button>
+                <v-ons-button 
+                    id="delete-resource-button" 
+                    class="resource-edit-button warning" 
+                    v-show="allowDelete" @click="deleteTiles(tile, $event, back)"
+                >
+                    <v-ons-icon class="btn-icon resource-header" icon="fa-trash"></v-ons-icon>
+                    Delete this Record
+                </v-ons-button>
+            </div>
         </div>
     </div>
 </template>
@@ -79,25 +102,16 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .widget {
-    /* padding: 10px; */
-    /* overflow: hidden; */
-    height: 100%;
-    display: flex;
+    padding: 10px;
 }
 .button-container {
-    display: flex;
-    flex-direction:row-reverse;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 10px;
-    height: max-content;
+    padding: 10px;
 }
 .resource-edit-button {
     display: flex;
-    flex: 1;
     justify-content: center;
     align-items: center;
-    margin: 0 10px;
+    min-width: 40%;
 }
 .btn-icon {
     padding-right: 7px;

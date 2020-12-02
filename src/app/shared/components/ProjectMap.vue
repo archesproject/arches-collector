@@ -1,42 +1,44 @@
 <template>
     <div style="height: 100%">
-        <v-ons-progress-circular indeterminate v-if="loading"></v-ons-progress-circular>
-        <div :id="mapId" v-on:touchstart="stopPropagation"></div>
-        <div class="map-control-templates">
-            <div ref="attribution">
-                <a href="http://www.openmaptiles.org/" target="_blank">
-                    &copy; OpenMapTiles
-                </a>
-                <a href="http://www.openstreetmap.org/about/" target="_blank">
-                    &copy; OpenStreetMap contributors
-                </a>
+        <v-ons-progress-circular indeterminate v-show="loading"></v-ons-progress-circular>
+        <div v-show="!loading" style="height: inherit;">
+            <div :id="mapId" v-on:touchstart="stopPropagation"></div>
+            <div class="map-control-templates">
+                <div ref="attribution">
+                    <a href="http://www.openmaptiles.org/" target="_blank">
+                        &copy; OpenMapTiles
+                    </a>
+                    <a href="http://www.openstreetmap.org/about/" target="_blank">
+                        &copy; OpenStreetMap contributors
+                    </a>
+                </div>
             </div>
-        </div>
-        <div class="popup" v-if="selectedResource">
-            <div class="popup-content">
-                <div class="popup-header">
-                    <div class="icon-circle" v-bind:style="{ background: [resource_types[selectedResource.graph_id].color], color: '#fff' }">
-                        <v-ons-icon class="resource-model-icon" v-bind:icon="resource_types[selectedResource.graph_id].iconclass.replace('fa ', '')"></v-ons-icon>
+            <div class="popup" v-if="selectedResource">
+                <div class="popup-content">
+                    <div class="popup-header">
+                        <div class="icon-circle" v-bind:style="{ background: [resource_types[selectedResource.graph_id].color], color: '#fff' }">
+                            <v-ons-icon class="resource-model-icon" v-bind:icon="resource_types[selectedResource.graph_id].iconclass.replace('fa ', '')"></v-ons-icon>
+                        </div>
+                        <span class='resource-model-title'>
+                            <span style="padding-left: 0; padding-right: 10px;">
+                                {{selectedResource.displayname.replace(/['"]+/g,'')}}
+                            </span>
+                            <span class="resource-model-subtitle">
+                                {{resource_types[selectedResource.graph_id].name}}
+                            </span>
+                        </span>
+                        <span @click="closePopup()">
+                            <div class="popup-close fa fa-times"></div>
+                        </span>
                     </div>
-                    <span class='resource-model-title'>
-                        <span style="padding-left: 0; padding-right: 10px;">
-                            {{selectedResource.displayname.replace(/['"]+/g,'')}}
-                        </span>
-                        <span class="resource-model-subtitle">
-                            {{resource_types[selectedResource.graph_id].name}}
-                        </span>
-                    </span>
-                    <span @click="closePopup()">
-                        <div class="popup-close fa fa-times"></div>
-                    </span>
+                    <div class="description">
+                        {{ selectedResource.displaydescription.replace(/['"]+/g,'') }}
+                    </div>
                 </div>
-                <div class="description">
-                    {{ selectedResource.displaydescription.replace(/['"]+/g,'') }}
-                </div>
+                <v-ons-button class="edit-button" v-on:click="selectResourceInstance(selectedResource)">
+                    <span>Edit Resource</span>
+                </v-ons-button>
             </div>
-            <v-ons-button class="edit-button" v-on:click="selectResourceInstance(selectedResource)">
-                <span>Edit Resource</span>
-            </v-ons-button>
         </div>
     </div>
 </template>
