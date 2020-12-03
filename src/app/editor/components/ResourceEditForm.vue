@@ -103,6 +103,9 @@ export default {
 <style scoped>
 .widget {
     padding: 10px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
 }
 .button-container {
     padding: 10px;

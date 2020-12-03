@@ -1,6 +1,6 @@
 <template>
     <div v-if="value !== null">
-    <div v-if="context == 'editor' || context == 'report'">
+    <div v-if="context == 'editor' || context == 'report'" style="width:100%; height: 100%;">
         <div class="mapboxgl-ctrl mapboxgl-ctrl-group fullscreen-control">
             <button 
                 class="mapboxgl-ctrl-icon" 
@@ -14,17 +14,13 @@
         </div>
         <div v-if="context=='editor'" class="editor-widget">
             <div class="editor widget-label">{{widget.label}}</div>
-            <div class="editor widget-value">
-                <div
-                    @touchstart.self.stop
-                    @dragstart.self.stop
-                    v-bind:class="{ fullscreen: fullscreenActive }" 
-                >
-                    <div class="map-wrapper" >
+            <div class="editor widget-value" style="height: 100%; width: 100%;">
+                <div v-bind:class="{ fullscreen: fullscreenActive }">
+                    <div class="map-wrapper">
                         <project-map v-on:map-init="mapInit" :extent="bounds"></project-map>
                     </div>
 
-                    <div v-if="!activeDrawMode && canEditResource()" class="draw-button-container">
+                    <div v-if="!activeDrawMode" class="draw-button-container">
                         <v-ons-button 
                             class="draw-button" 
                             @click="beginDrawFeature('point')"
@@ -51,7 +47,7 @@
                             <div>Polygon</div>
                         </v-ons-button>
                     </div>
-                    <div v-else-if="activeDrawMode && canEditResource()" class="draw-button-container">
+                    <div v-else-if="activeDrawMode" class="draw-button-container">
                         <v-ons-button
                             modifier="quiet"
                             @click="cancelDrawFeature"
@@ -75,7 +71,10 @@
                     </div>
                 </div>
 
-                <v-ons-list class='feature-list'>
+                <v-ons-list 
+                    class='feature-list'
+                    @touchmove.self.stop
+                >
                     <v-ons-list-item 
                         :id="'list-item-' + feature.id"
                         modifier="longdivider"
@@ -87,7 +86,6 @@
                         }" 
                         @click.stop="handleListItemClick(feature.id);" 
                         @dragstart="selectFeature(feature.id);"
-                        @touchmove.self.stop
                         lock-on-drag
                     >
                         <v-ons-carousel
@@ -556,14 +554,13 @@ export default {
 
 .map-wrapper {
     height: 260px;
+    width: 100%;
 }
 
 .editor-widget {
     width: 100%;
-    height: inherit;
+    height: 100%;
     overflow: hidden;
-    /* display: flex; */
-    /* flex-direction: column; */
 }
 .delete-mode {
     /* 
@@ -575,10 +572,6 @@ export default {
     transition: 'background-color 400ms linear' !important;
     background-color: rgba(255, 0, 0, 0.2) !important;
     color: rgba(255, 0, 0, 0.8);
-}
-
-.bongo {
-    margin-top: 5px;
 }
 
 .draw-button-container {
@@ -625,6 +618,7 @@ export default {
 }
 .report-widget {
     width: 100%;
+    padding-right: 20px;
 }
 
 .report .map-wrapper {

@@ -1,7 +1,7 @@
 <template>
-    <div style="height: 100%">
-        <v-ons-progress-circular indeterminate v-show="loading"></v-ons-progress-circular>
-        <div v-show="!loading" style="height: inherit;">
+    <div style="height: 100%; width: 100%;">
+        <v-ons-progress-circular indeterminate v-if="loading"></v-ons-progress-circular>
+        <div style="height: 100%; width: 100%;">
             <div :id="mapId" v-on:touchstart="stopPropagation"></div>
             <div class="map-control-templates">
                 <div ref="attribution">
@@ -105,12 +105,6 @@ export default {
                 });
             });
         },
-        setupBasemaps: function() {
-            return this.$store.dispatch(
-                'setupProjectBasemaps',
-                this.project
-            );
-        },
         getResourceData: function() {
             var self = this;
             return this.$store.dispatch(
@@ -154,7 +148,7 @@ export default {
                 self.addResourceFeatures(map);
                 self.setMapExtent(map);
                 self.$emit('map-init', map);
-                self.loading = false;
+
                 console.log('map load complete')
             });
         },
@@ -378,11 +372,12 @@ export default {
         console.log(this.project.useonlinebasemaps);
         if (this.project.useonlinebasemaps) {
             self.getResourceData()
-                .then(
-                    self.mapOnlineInit
-                );
+                .then(self.mapOnlineInit)
+                .then(() => {
+                    this.loading = false;
+                });
         } else {
-            this.getResourceData()
+            self.getResourceData()
                 .then(this.mapOfflineInit)
                 .then(() => {
                     this.loading = false;
@@ -405,6 +400,7 @@ export default {
 <style scoped>
     .mapboxgl-map {
         height: 100%;
+        width: 100%;
         border: 1px solid rgb(200, 200, 200);
     }
     ons-progress-circular {
