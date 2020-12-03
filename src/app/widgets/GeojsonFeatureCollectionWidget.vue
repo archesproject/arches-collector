@@ -1,6 +1,6 @@
 <template>
     <div v-if="value !== null">
-    <div v-if="context == 'editor' || context == 'report'" style="width:100%; height: 100%;">
+    <div v-if="context == 'editor' || context == 'report'">
         <div class="mapboxgl-ctrl mapboxgl-ctrl-group fullscreen-control">
             <button 
                 class="mapboxgl-ctrl-icon" 
@@ -14,7 +14,7 @@
         </div>
         <div v-if="context=='editor'" class="editor-widget">
             <div class="editor widget-label">{{widget.label}}</div>
-            <div class="editor widget-value" style="height: 100%; width: 100%;">
+            <div class="editor widget-value">
                 <div v-bind:class="{ fullscreen: fullscreenActive }">
                     <div class="map-wrapper">
                         <project-map v-on:map-init="mapInit" :extent="bounds"></project-map>
@@ -50,8 +50,9 @@
                     <div v-else-if="activeDrawMode" class="draw-button-container">
                         <v-ons-button
                             modifier="quiet"
+                            class="draw-control-button"
                             @click="cancelDrawFeature"
-                            style="display:flex; flex: 3; justify-content:center; padding:unset; width:50%; border-radius: unset; color: rgba(255, 0, 0, 0.8); background-color: rgba(255, 0, 0, 0.2); font-size: small;"
+                            style="flex: 3; color: rgba(255, 0, 0, 0.8); background-color: rgba(255, 0, 0, 0.2);"
                         >
                             <v-ons-icon icon="fa-ban" style="display: flex; align-items: center; padding-right: 8px;"></v-ons-icon>
                             <div>Cancel</div>
@@ -59,12 +60,22 @@
 
                         <v-ons-button 
                             modifier="cta"
+                            class="draw-control-button"
+                            style="flex: 4;"
                             v-if="activeDrawMode !== 'point'"
                             @click="finishDrawFeature"
-                            style="display:flex; flex: 4; justify-content:center; padding:unset; width:50%; border-radius: unset; font-size: small;"
                         >
-                            <v-ons-icon v-if="activeDrawMode === 'linestring'" icon="fa-bezier-curve" style="display: flex; align-items: center; padding-right: 8px;"></v-ons-icon>
-                            <v-ons-icon v-else-if="activeDrawMode === 'polygon'" icon="fa-draw-polygon" style="display: flex; align-items: center; padding-right: 8px;"></v-ons-icon>
+                            <v-ons-icon 
+                                v-if="activeDrawMode === 'linestring'" 
+                                icon="fa-bezier-curve" 
+                                style="display: flex; align-items: center; padding-right: 8px;"
+                            >
+                            </v-ons-icon>
+                            <v-ons-icon 
+                                v-else-if="activeDrawMode === 'polygon'" 
+                                icon="fa-draw-polygon" 
+                                style="display: flex; align-items: center; padding-right: 8px;">
+                            </v-ons-icon>
 
                             <div>Finish</div>
                         </v-ons-button>
@@ -106,7 +117,7 @@
                                         class="zoom-button"
                                         v-bind:style="{
                                             'opacity': selectedFeatureId === feature.id ? '90%' : '70%',
-                                            'background-color': (selectedFeatureId === feature.id) && zoomActive ? 'rgba(255, 0, 0, 0.2)' : '#25a6d9'
+                                            'background-color': (selectedFeatureId === feature.id) && zoomActive ? 'rgba(255, 0, 0, 0.2)' : 'rgba(37,166,217, 1)'
                                         }"
                                         @click.stop="handleZoomClick(feature.id);"
                                     >
@@ -122,9 +133,7 @@
                                 </div>
                             </v-ons-carousel-item>
 
-                            <v-ons-carousel-item 
-                                style="display:flex; align-items:center;"
-                            >
+                            <v-ons-carousel-item style="display:flex; align-items:center;">
                                 <div class="delete-container" @click.stop>
                                     <div style="width:50%;">
                                         Delete this {{ feature.geometry.type }}?
@@ -457,7 +466,7 @@ export default {
         resetCarousel(featureId) {
             const carousel = document.querySelector(`#carousel-${featureId}`);
 
-            if (carousel.getActiveIndex() === 1) {
+            if (carousel && carousel.getActiveIndex() === 1) {
                 carousel.setActiveIndex(0);
             }
         },
@@ -591,6 +600,14 @@ export default {
     justify-content: center;
     background: #eee;
     color:  rgb(31, 31, 33, 0.8);
+}
+.draw-control-button {
+    display: flex;
+    justify-content:center; 
+    padding:unset; 
+    width:50%; 
+    border-radius: unset; 
+    font-size: small;
 }
 .feature-list {
     margin-top: 10px;

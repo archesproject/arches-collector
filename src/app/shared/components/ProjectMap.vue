@@ -1,5 +1,5 @@
 <template>
-    <div style="height: 100%">
+    <div style="height: 100%; width: 100%;">
         <v-ons-progress-circular indeterminate v-if="loading"></v-ons-progress-circular>
         <div :id="mapId" v-on:touchstart="stopPropagation"></div>
         <div class="map-control-templates">
@@ -130,14 +130,6 @@ export default {
             mapboxgl.accessToken = self.project.mapboxkey;
             console.log('make map');
             var map = new mapboxgl.Map(this.getMapConfig(false));
-            
-            map.addControl(new mapboxgl.NavigationControl());
-            map.addControl(new mapboxgl.GeolocateControl({
-                positionOptions: {
-                    enableHighAccuracy: true
-                },
-                trackUserLocation: true
-            }));
 
             console.log('map made');
             map.on('load', function() {
@@ -151,6 +143,15 @@ export default {
 
                 self.addResourceFeatures(map);
                 self.setMapExtent(map);
+                            
+                map.addControl(new mapboxgl.NavigationControl());
+                map.addControl(new mapboxgl.GeolocateControl({
+                    positionOptions: {
+                        enableHighAccuracy: true
+                    },
+                    trackUserLocation: true
+                }));
+
                 self.$emit('map-init', map);
                 self.loading = false;
                 console.log('map load complete')
@@ -376,9 +377,7 @@ export default {
         console.log(this.project.useonlinebasemaps);
         if (this.project.useonlinebasemaps) {
             self.getResourceData()
-                .then(
-                    self.mapOnlineInit
-                );
+                .then(self.mapOnlineInit);
         } else {
             this.getResourceData()
                 .then(this.mapOfflineInit)

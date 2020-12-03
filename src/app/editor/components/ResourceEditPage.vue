@@ -174,9 +174,6 @@ export default {
                 return this.getCardinality(this);
             }
         },
-        stringData: {
-
-        },
     },
     watch: {
         goBack: function() {
