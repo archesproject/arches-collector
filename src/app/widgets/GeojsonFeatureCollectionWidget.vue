@@ -133,7 +133,8 @@
                                     <div style="display: flex; width:50%; justify-content: space-between;">
                                         <v-ons-button
                                             v-if="shouldShowDeleteButton(feature.id)"
-                                            style="display:flex; justify-content: center; align-items: center; min-width: 80px; color:rgba(255,0,0,0.8); border-color: rgba(255,0,0,0.6); padding: unset; font-size: small; margin: 0 2px;" 
+                                            class="feature-control-button"
+                                            style="color:rgba(255,0,0,0.8); border-color: rgba(255,0,0,0.6);" 
                                             modifier="outline"
                                             @click.stop="handleDeleteFeature"
                                         >
@@ -141,7 +142,7 @@
                                             <span>YES</span>
                                         </v-ons-button>
                                         <v-ons-button 
-                                            style="display:flex; justify-content: center; align-items: center; min-width: 80px; padding: unset; font-size: small; margin: 0 2px;" 
+                                            class="feature-control-button"
                                             modifier="cta"
                                             @click.stop="cancelDeleteFeature(feature.id);"
                                         >
@@ -407,7 +408,7 @@ export default {
                 geojsonExtent(feature), 
                 { 
                     padding: { top: 20, right: 60, bottom: 40, left: 20 }, 
-                    maxZoom: 19, /* === ProjectMap maxZoom */
+                    maxZoom: 15,
                 }
             );
         },
@@ -415,10 +416,10 @@ export default {
             this.zoomActive = false;
 
             this.map.fitBounds(
-                geojsonExtent(this.featureCollection), 
+                geojsonExtent(this.bounds), 
                 { 
                     padding: { top: 20, right: 60, bottom: 40, left: 20 }, 
-                    maxZoom: 19, /* === ProjectMap maxZoom */
+                    maxZoom: 15,
                 }
             );
         },
@@ -593,9 +594,18 @@ export default {
 }
 .feature-list {
     margin-top: 10px;
-    max-height: 30vh;
+    max-height: 25vh;
     width: 100%;
     overflow: scroll;
+}
+.feature-control-button {
+    display:flex; 
+    justify-content: center; 
+    align-items: center; 
+    min-width: 80px; 
+    padding: unset; 
+    font-size: small; 
+    margin: 0 2px;
 }
 .list-item {
     padding: unset;

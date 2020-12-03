@@ -1,6 +1,8 @@
 <template>
     <div>
         <component 
+            @touchstart.self.stop
+            @dragstart.self.stop
             v-for="widget in cardWidgets" 
             :key="widget.id" 
             class="widget" 
@@ -109,6 +111,7 @@ export default {
 }
 .button-container {
     padding: 10px;
+    padding-top: unset;
 }
 .resource-edit-button {
     display: flex;

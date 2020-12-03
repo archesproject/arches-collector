@@ -1,44 +1,42 @@
 <template>
-    <div style="height: 100%; width: 100%;">
+    <div style="height: 100%">
         <v-ons-progress-circular indeterminate v-if="loading"></v-ons-progress-circular>
-        <div style="height: 100%; width: 100%;">
-            <div :id="mapId" v-on:touchstart="stopPropagation"></div>
-            <div class="map-control-templates">
-                <div ref="attribution">
-                    <a href="http://www.openmaptiles.org/" target="_blank">
-                        &copy; OpenMapTiles
-                    </a>
-                    <a href="http://www.openstreetmap.org/about/" target="_blank">
-                        &copy; OpenStreetMap contributors
-                    </a>
+        <div :id="mapId" v-on:touchstart="stopPropagation"></div>
+        <div class="map-control-templates">
+            <div ref="attribution">
+                <a href="http://www.openmaptiles.org/" target="_blank">
+                    &copy; OpenMapTiles
+                </a>
+                <a href="http://www.openstreetmap.org/about/" target="_blank">
+                    &copy; OpenStreetMap contributors
+                </a>
+            </div>
+        </div>
+        <div class="popup" v-if="selectedResource">
+            <div class="popup-content">
+                <div class="popup-header">
+                    <div class="icon-circle" v-bind:style="{ background: [resource_types[selectedResource.graph_id].color], color: '#fff' }">
+                        <v-ons-icon class="resource-model-icon" v-bind:icon="resource_types[selectedResource.graph_id].iconclass.replace('fa ', '')"></v-ons-icon>
+                    </div>
+                    <span class='resource-model-title'>
+                        <span style="padding-left: 0; padding-right: 10px;">
+                            {{selectedResource.displayname.replace(/['"]+/g,'')}}
+                        </span>
+                        <span class="resource-model-subtitle">
+                            {{resource_types[selectedResource.graph_id].name}}
+                        </span>
+                    </span>
+                    <span @click="closePopup()">
+                        <div class="popup-close fa fa-times"></div>
+                    </span>
+                </div>
+                <div class="description">
+                    {{ selectedResource.displaydescription.replace(/['"]+/g,'') }}
                 </div>
             </div>
-            <div class="popup" v-if="selectedResource">
-                <div class="popup-content">
-                    <div class="popup-header">
-                        <div class="icon-circle" v-bind:style="{ background: [resource_types[selectedResource.graph_id].color], color: '#fff' }">
-                            <v-ons-icon class="resource-model-icon" v-bind:icon="resource_types[selectedResource.graph_id].iconclass.replace('fa ', '')"></v-ons-icon>
-                        </div>
-                        <span class='resource-model-title'>
-                            <span style="padding-left: 0; padding-right: 10px;">
-                                {{selectedResource.displayname.replace(/['"]+/g,'')}}
-                            </span>
-                            <span class="resource-model-subtitle">
-                                {{resource_types[selectedResource.graph_id].name}}
-                            </span>
-                        </span>
-                        <span @click="closePopup()">
-                            <div class="popup-close fa fa-times"></div>
-                        </span>
-                    </div>
-                    <div class="description">
-                        {{ selectedResource.displaydescription.replace(/['"]+/g,'') }}
-                    </div>
-                </div>
-                <v-ons-button class="edit-button" v-on:click="selectResourceInstance(selectedResource)">
-                    <span>Edit Resource</span>
-                </v-ons-button>
-            </div>
+            <v-ons-button class="edit-button" v-on:click="selectResourceInstance(selectedResource)">
+                <span>Edit Resource</span>
+            </v-ons-button>
         </div>
     </div>
 </template>
@@ -105,6 +103,12 @@ export default {
                 });
             });
         },
+        setupBasemaps: function() {
+            return this.$store.dispatch(
+                'setupProjectBasemaps',
+                this.project
+            );
+        },
         getResourceData: function() {
             var self = this;
             return this.$store.dispatch(
@@ -148,7 +152,7 @@ export default {
                 self.addResourceFeatures(map);
                 self.setMapExtent(map);
                 self.$emit('map-init', map);
-
+                self.loading = false;
                 console.log('map load complete')
             });
         },
@@ -372,12 +376,11 @@ export default {
         console.log(this.project.useonlinebasemaps);
         if (this.project.useonlinebasemaps) {
             self.getResourceData()
-                .then(self.mapOnlineInit)
-                .then(() => {
-                    this.loading = false;
-                });
+                .then(
+                    self.mapOnlineInit
+                );
         } else {
-            self.getResourceData()
+            this.getResourceData()
                 .then(this.mapOfflineInit)
                 .then(() => {
                     this.loading = false;
@@ -405,7 +408,7 @@ export default {
     }
     ons-progress-circular {
         display: block;
-        /* margin: 20% auto; */
+        margin: 20% auto;
     }
     .map-control-templates {
         display: none;
