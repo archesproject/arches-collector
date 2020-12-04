@@ -111,7 +111,7 @@
                             @dragend="handleCarouselDragEnd(feature.id);"
                         >
                             <v-ons-carousel-item style="display:flex; align-items:center;">
-                                <div style="display:flex; align-items: center;">
+                                <div class="feature-info-container">
                                     <v-ons-button
                                         modifier="cta"
                                         class="zoom-button"
@@ -134,12 +134,12 @@
                             </v-ons-carousel-item>
 
                             <v-ons-carousel-item style="display:flex; align-items:center;">
-                                <div class="delete-container" @click.stop>
+                                <div class="feature-info-container delete-controls-container" @click.stop>
                                     <div style="width:50%;">
                                         Delete this {{ feature.geometry.type }}?
                                     </div>
 
-                                    <div style="display: flex; width:50%; justify-content: space-between;">
+                                    <div class="delete-button-container">
                                         <v-ons-button
                                             v-if="shouldShowDeleteButton(feature.id)"
                                             class="feature-control-button"
@@ -616,7 +616,8 @@ export default {
     overflow: scroll;
 }
 .feature-control-button {
-    display:flex; 
+    display:flex;
+    flex: 1;
     justify-content: center; 
     align-items: center; 
     min-width: 80px; 
@@ -631,11 +632,18 @@ export default {
 .selected {
     background-color: #d9d9d9;
 }
-.delete-container {
-    width: 80vw;
-    margin-left: -5px; /* workaround to keep children cenetered with onsen carousel logic */
-    display: flex;
+.feature-info-container {
+    width: 80vw; 
+    display:flex; 
     align-items: center;
+}
+.delete-controls-container {
+    margin-left: -5px; /* workaround to keep children cenetered with onsen carousel logic */
+    justify-content: space-between;
+}
+.delete-button-container {
+    display: flex; 
+    width:50%; 
     justify-content: space-between;
 }
 .zoom-button {
