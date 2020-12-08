@@ -128,13 +128,9 @@ export default {
         mapOnlineInit: function() {
             var self = this;
             mapboxgl.accessToken = self.project.mapboxkey;
-            console.log('make map');
             var map = new mapboxgl.Map(this.getMapConfig(false));
 
-            console.log('map made');
             map.on('load', function() {
-                console.log('map loaded')
-
                 map.addSource('resources', { 
                     type: 'geojson', 
                     data: self.resourceGeoJSON,
@@ -154,7 +150,6 @@ export default {
 
                 self.$emit('map-init', map);
                 self.loading = false;
-                console.log('map load complete')
             });
         },
         mapOfflineInit: function() {
@@ -178,8 +173,6 @@ export default {
         },
         getMapConfig: function(offline) {
             console.log('getting geojson');
-            console.log(Performance)
-            console.log("MAPBOX VERSION: " + mapboxgl.version);
             this.resourceGeoJSON = this.getResourceGeoJson();
             var offlineStyle = {
                 version: 8,
