@@ -27,3 +27,4 @@ node_modules
 *.sublime-workspace
 gradlew
 gradlew.bat
+jsconfig.json
