@@ -1,7 +1,6 @@
 <template>
-    <div style="height: 100%">
-        <ons-progress-circular indeterminate v-if="loading">
-        </ons-progress-circular>
+    <div style="height: 100%; width: 100%;">
+        <v-ons-progress-circular indeterminate v-if="loading"></v-ons-progress-circular>
         <div :id="mapId" v-on:touchstart="stopPropagation"></div>
         <div class="map-control-templates">
             <div ref="attribution">
@@ -131,9 +130,20 @@ export default {
             mapboxgl.accessToken = self.project.mapboxkey;
             console.log('make map');
             var map = new mapboxgl.Map(this.getMapConfig(false));
+
             console.log('map made');
             map.on('load', function() {
                 console.log('map loaded')
+
+                map.addSource('resources', { 
+                    type: 'geojson', 
+                    data: self.resourceGeoJSON,
+                    generateId: true,
+                });
+
+                self.addResourceFeatures(map);
+                self.setMapExtent(map);
+                            
                 map.addControl(new mapboxgl.NavigationControl());
                 map.addControl(new mapboxgl.GeolocateControl({
                     positionOptions: {
@@ -141,9 +151,7 @@ export default {
                     },
                     trackUserLocation: true
                 }));
-                self.setMapExtent(map);
-                map.addSource('resources', { type: 'geojson', data: self.resourceGeoJSON });
-                self.addResourceFeatures(map);
+
                 self.$emit('map-init', map);
                 self.loading = false;
                 console.log('map load complete')
@@ -369,9 +377,7 @@ export default {
         console.log(this.project.useonlinebasemaps);
         if (this.project.useonlinebasemaps) {
             self.getResourceData()
-                .then(
-                    self.mapOnlineInit
-                );
+                .then(self.mapOnlineInit);
         } else {
             this.getResourceData()
                 .then(this.mapOfflineInit)
@@ -396,11 +402,12 @@ export default {
 <style scoped>
     .mapboxgl-map {
         height: 100%;
+        width: 100%;
         border: 1px solid rgb(200, 200, 200);
     }
     ons-progress-circular {
         display: block;
-        /* margin: 20% auto; */
+        margin: 20% auto;
     }
     .map-control-templates {
         display: none;

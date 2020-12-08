@@ -54,10 +54,10 @@ export default {
                 var widgetMappingItem = this.$widgetMapping[widgetComponentName];
                 if (widgetMappingItem.hasOwnProperty('widgetVersions')) {
                     // this widget is versioned
-                    var version = Object.keys(widgetMappingItem['widgetVersions']).find(function(version){
+                    var version = Object.keys(widgetMappingItem['widgetVersions']).find(function(version) {
                         return semverSatisfies(server.version, version);
                     });
-                    if(!!version) {
+                    if (!!version) {
                         return Object.keys(widgetMappingItem['widgetVersions'][version])[0];
                     }
                 }

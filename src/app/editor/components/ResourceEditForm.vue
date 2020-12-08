@@ -1,8 +1,36 @@
 <template>
     <div>
-        <component v-for="widget in cardWidgets" class="widget" :allNodes="allNodes" :tile="tile" :tiles="tiles" :widget="widget" :context="'editor'" :save="throttle(saveTile, tile, saveDelay)" v-bind:is="'base-widget'"></component>
-        <div class="done-btn"><v-ons-button @click="back"><v-ons-icon class="done-btn-icon resource-header" icon="fa-arrow-alt-circle-left"></v-ons-icon>Done</v-ons-button></div>
-        <div class="done-btn" v-if="allowDelete"><v-ons-button @click="deleteTiles(tile, $event, back)" class="warning"><v-ons-icon class="done-btn-icon resource-header" icon="fa-trash"></v-ons-icon>Delete this Record</v-ons-button></div>
+        <component 
+            @touchstart.self.stop
+            @dragstart.self.stop
+            v-for="widget in cardWidgets" 
+            :key="widget.id" 
+            class="widget" 
+            :allNodes="allNodes" 
+            :tile="tile" 
+            :tiles="tiles" 
+            :widget="widget" 
+            :context="'editor'" 
+            :save="throttle(saveTile, tile, saveDelay)" 
+            v-bind:is="'base-widget'"
+        ></component>
+        
+        <div class="button-container">
+            <div style="display: flex; justify-content: space-between;">
+                <v-ons-button class="resource-edit-button" @click="back">
+                    <v-ons-icon class="btn-icon resource-header" icon="fa-arrow-alt-circle-left"></v-ons-icon>
+                    Done
+                </v-ons-button>
+                <v-ons-button 
+                    id="delete-resource-button" 
+                    class="resource-edit-button warning" 
+                    v-show="allowDelete" @click="deleteTiles(tile, $event, back)"
+                >
+                    <v-ons-icon class="btn-icon resource-header" icon="fa-trash"></v-ons-icon>
+                    Delete this Record
+                </v-ons-button>
+            </div>
+        </div>
     </div>
 </template>
 <script>
@@ -34,6 +62,7 @@ export default {
                     var widgets = this.$underscore.filter(this.allWidgets, function(widget) {
                         return widget.card_id === this.card.cardid;
                     }, this);
+
                     return this.$underscore.sortBy(widgets, 'sortorder');
                 } else {
                     return [];
@@ -75,13 +104,22 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .widget {
-    padding: 15px;
-}
-.done-btn {
-    float: right;
     padding: 10px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
 }
-.done-btn-icon {
+.button-container {
+    padding: 10px;
+    padding-top: unset;
+}
+.resource-edit-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 40%;
+}
+.btn-icon {
     padding-right: 7px;
 }
 </style>

@@ -14,7 +14,7 @@
                 </v-ons-list-item>
             </div>
             <div v-show="hasTiles(card) || activeObject === 'card'">
-                <div tappable modifier="longdivider" v-for="tile in cardTiles" v-if="canEdit(tile)" :key="tile.tileid" @click="setTileContext(tile)" class="tile-instance">
+                <div tappable modifier="longdivider" v-for="tile in editableCardTiles" :key="tile.tileid" @click="setTileContext(tile)" class="tile-instance">
                     <div class="flex relative">
                         <span class="fa5 fa-ellipsis-v drag-bars"></span>
                         <component v-if="displayWidget(card)" class="widget" :allNodes="allNodes" :tile="tile" :tiles="tiles" :widget="displayWidget(card)" :context="'nav'" v-bind:is="'base-widget'"></component>
@@ -31,7 +31,7 @@
             <div v-if="(activeObject === 'tile' && hasWidgets(card))">
                 <v-ons-list-item tappable @click="setTileContext(tile, true)">
                     <span style="width: 90%">
-                        <div class="widget" v-for="value, key in tile.data" :key="key" v-if="typeof value === 'string' || value instanceof String">
+                        <div class="widget" v-for="(value, key) in tile.data" :key="key" v-if="(typeof value === 'string' || value instanceof String)">
                             {{getTileData(tile, card).value}}
                         </div>
                         <div>Edit record</div>
@@ -42,7 +42,7 @@
                 </v-ons-list-item>
             </div>
             <div v-if="(activeObject === 'tile')">
-                <v-ons-list-item class="root-card" tappable modifier="longdivider" v-for="childCard in childCards" :key="childCard.resourceinstanceid" v-if="canEdit(childCard)" @click="navigateChildCard(childCard)">
+                <v-ons-list-item class="root-card" tappable modifier="longdivider" v-for="childCard in editableChildCards" :key="childCard.resourceinstanceid" @click="navigateChildCard(childCard)">
                     <span style="display: flex; width: 100%">
                         <span style="width: 93%">
                             <div class="card-name">{{childCard.name}}</div>
@@ -59,14 +59,14 @@
                 </v-ons-list-item>
             </div>
         </v-ons-list>
+        
         <div class="done-btn btn-delete" v-show="(!showForm && activeObject === 'tile' && !!tile && canDeleteTile(tile))">
             <v-ons-button @click="deleteTiles(tile, $event, back)" class="warning">
                 <v-ons-icon class="done-btn-icon resource-header" icon="fa-trash"></v-ons-icon> Delete this Record
             </v-ons-button>
         </div>
-        <div v-show="showForm">
-            <resource-edit-form :back="back" :tile="tile" :tiles="tiles" :card="card" />
-        </div>
+
+        <resource-edit-form v-show="showForm" :back="back" :tile="tile" :tiles="tiles" :card="card" />
     </v-ons-page>
 </template>
 <script>
@@ -148,6 +148,13 @@ export default {
                 }, this);
             }
         },
+        editableChildCards: {
+            get: function() {
+                return this.$underscore.filter(this.childCards, function(childCard) {
+                    return this.canEdit(childCard);
+                }, this);
+            }
+        },
         cardTiles: {
             get: function() {
                 return this.$underscore.filter(this.tiles, function(tile) {
@@ -155,11 +162,18 @@ export default {
                 }, this);
             }
         },
+        editableCardTiles: {
+            get: function() {
+                return this.$underscore.filter(this.cardTiles, function(cardTile) {
+                    return this.canEdit(cardTile);
+                }, this);
+            }
+        },
         cardinality: {
             get: function() {
                 return this.getCardinality(this);
             }
-        }
+        },
     },
     watch: {
         goBack: function() {

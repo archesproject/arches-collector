@@ -8,12 +8,12 @@
             @input="onChange">
         </model-select>
     </div>
-    <ons-row class="report-widget" v-else-if="context=='report'">
-        <ons-col>
+    <v-ons-row class="report-widget" v-else-if="context=='report'">
+        <v-ons-col>
             <span class="report widget-label">{{widget.label}}</span>
             <span class="report widget-value">{{displayValue}}</span>
-        </ons-col>
-    </ons-row>
+        </v-ons-col>
+    </v-ons-row>
     <span class="flex tile-data" v-else-if="context=='nav'">
         <div v-if="!!displayValue">{{displayValue}}</div>
         <div v-else>no data</div>
