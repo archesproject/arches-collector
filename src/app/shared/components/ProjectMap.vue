@@ -127,7 +127,10 @@ export default {
         },
         mapOnlineInit: function() {
             var self = this;
+            self.$emit('map-load');
+
             mapboxgl.accessToken = self.project.mapboxkey;
+
             var map = new mapboxgl.Map(this.getMapConfig(false));
 
             map.on('load', function() {
