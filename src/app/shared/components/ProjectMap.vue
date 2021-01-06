@@ -1,5 +1,5 @@
 <template>
-    <div style="height: 100%; width: 100%;">
+    <div style="height: 100%; width: 100%; overflow: hidden;">
         <v-ons-progress-circular indeterminate v-if="loading"></v-ons-progress-circular>
         <div :id="mapId" v-on:touchstart="stopPropagation"></div>
         <div class="map-control-templates">

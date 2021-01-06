@@ -331,8 +331,6 @@ export default {
     border: 1px solid #429895;
     margin-left: -4px;
     background: #6BBBB8;
-    width: 35px;
-    height: 35px;
 }
 
 .toolbar-button--material > a .instance-list-back-btn {

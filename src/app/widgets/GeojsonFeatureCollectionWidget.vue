@@ -2,7 +2,26 @@
     <div v-if="value !== null">
     <div v-if="context == 'editor' || context == 'report'">
         <div class="mapboxgl-ctrl mapboxgl-ctrl-group fullscreen-control">
-
+            <button 
+                type="button"
+                v-if="map"
+                v-on:click="toggleFullscreen" 
+                v-bind:class="{
+                    'mapboxgl-ctrl-shrink': fullscreenActive,
+                    'mapboxgl-ctrl-fullscreen': !fullscreenActive
+                }"
+            >
+                <v-ons-icon 
+                    v-if="!fullscreenActive"
+                    size="14px"
+                    icon="fa-expand-arrows-alt"
+                ></v-ons-icon>
+                <v-ons-icon 
+                    v-else 
+                    size="14px"
+                    icon="fa-compress-arrows-alt"
+                ></v-ons-icon>
+            </button>
         </div>
         <div v-if="context=='editor'" class="editor-widget">
             <div class="editor widget-label">{{widget.label}}</div>
@@ -162,7 +181,7 @@
                         </v-ons-carousel>
 
                         <div
-                            v-show="(selectedFeatureId === feature.id) && !deleteModeActive "
+                            v-show="(selectedFeatureId === feature.id) && !deleteModeActive && !fullscreenActive"
                             class="delete-icon-container right" 
                             @click.stop="handleDeleteIconClick(feature.id)"
                             @dragstart.stop.prevent
@@ -271,8 +290,8 @@ export default {
             this.selectedFeatureId = null;
             this.zoomActive = false;
             this.deleteModeActive = false;
-            this.fullscreenActive = false;
             this.activeDrawMode = null;
+            this.fullscreenActive = false;
         },
         mapInit(map) {
             const fullscreenEl = this.$el.querySelector('.fullscreen-control');
@@ -403,7 +422,10 @@ export default {
                 this.resetCarousel(this.selectedFeatureId)
             }
 
-            this.resetDefaultData();
+            this.selectedFeatureId = null;
+            this.zoomActive = false;
+            this.deleteModeActive = false;
+            this.activeDrawMode = null;
 
             /* roundabout way to create valid feature from current geometry */ 
             this.draw.changeMode('simple_select', { 
@@ -692,15 +714,21 @@ export default {
     margin-right: 20px;
 }
 
-.fullscreen.map-wrapper {
+.fullscreen {
     height: auto;
     position: absolute;
+    display: flex;
+    flex-direction: column;
     top: 0;
     bottom: 0;
     right: 0;
     left: 0;
     z-index: 10;
     margin: 0;
+}
+
+.fullscreen .map-wrapper {
+    height: 100%;
 }
 
 .tile-data {
