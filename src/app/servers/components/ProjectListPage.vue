@@ -472,6 +472,7 @@ export default {
     }
 
     .menu-icon {
+        padding: 14px 0;
         width: 25px;
     }
 

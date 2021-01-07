@@ -3,13 +3,24 @@
     <div v-if="context == 'editor' || context == 'report'">
         <div class="mapboxgl-ctrl mapboxgl-ctrl-group fullscreen-control">
             <button 
-                class="mapboxgl-ctrl-icon" 
-                type="button" 
+                type="button"
+                v-if="map"
                 v-on:click="toggleFullscreen" 
                 v-bind:class="{
                     'mapboxgl-ctrl-shrink': fullscreenActive,
                     'mapboxgl-ctrl-fullscreen': !fullscreenActive
-                }">
+                }"
+            >
+                <v-ons-icon 
+                    v-if="!fullscreenActive"
+                    size="14px"
+                    icon="fa-expand-arrows-alt"
+                ></v-ons-icon>
+                <v-ons-icon 
+                    v-else 
+                    size="14px"
+                    icon="fa-compress-arrows-alt"
+                ></v-ons-icon>
             </button>
         </div>
         <div v-if="context=='editor'" class="editor-widget">
@@ -17,7 +28,7 @@
             <div class="editor widget-value">
                 <div v-bind:class="{ fullscreen: fullscreenActive }">
                     <div class="map-wrapper">
-                        <project-map v-on:map-init="mapInit" :extent="bounds"></project-map>
+                        <project-map v-on:map-init="mapInit" v-on:map-load="resetDefaultData" :extent="bounds"></project-map>
                     </div>
 
                     <div v-if="!activeDrawMode" class="draw-button-container">
@@ -93,7 +104,7 @@
                         v-bind:key="feature.id" 
                         v-bind:class="{
                             selected: selectedFeatureId === feature.id,
-                            'delete-mode': (selectedFeatureId === feature.id) && deleteModeActive
+                            'delete-mode': shouldShowDeleteMode(feature.id)
                         }" 
                         @click.stop="handleListItemClick(feature.id);" 
                         @dragstart="selectFeature(feature.id);"
@@ -112,20 +123,27 @@
                         >
                             <v-ons-carousel-item style="display:flex; align-items:center;">
                                 <div class="feature-info-container">
-                                    <v-ons-button
-                                        modifier="cta"
-                                        class="zoom-button"
+                                    <v-ons-fab
+                                        modifier="mini"
                                         v-bind:style="{
                                             'opacity': selectedFeatureId === feature.id ? '90%' : '70%',
-                                            'background-color': (selectedFeatureId === feature.id) && zoomActive ? 'rgba(255, 0, 0, 0.2)' : 'rgba(37,166,217, 1)'
+                                            'background-color': shouldShowActiveZoom(feature.id) ? 'rgba(255, 0, 0, 0.2)' : 'rgba(37,166,217,1)'
                                         }"
                                         @click.stop="handleZoomClick(feature.id);"
                                     >
-                                        <v-ons-icon v-if="(selectedFeatureId === feature.id) && zoomActive" icon="fa-search-minus"></v-ons-icon>
-                                        <v-ons-icon v-else icon="fa-search-plus"></v-ons-icon>
-                                    </v-ons-button>
+                                        <v-ons-icon 
+                                            v-if="shouldShowActiveZoom(feature.id)"
+                                            size="20px"
+                                            icon="fa-search-minus"
+                                        ></v-ons-icon>
+                                        <v-ons-icon 
+                                            v-else 
+                                            size="20px"
+                                            icon="fa-search-plus"
+                                        ></v-ons-icon>
+                                    </v-ons-fab>
                                     <div 
-                                        style="padding-left: 15px;"
+                                        style="padding-left: 25px;"
                                         v-bind:style="{'font-weight': selectedFeatureId === feature.id ? 'bold' : 'normal'}"
                                     >
                                         {{ feature.geometry.type }}
@@ -141,7 +159,6 @@
 
                                     <div class="delete-button-container">
                                         <v-ons-button
-                                            v-if="shouldShowDeleteButton(feature.id)"
                                             class="feature-control-button"
                                             style="color:rgba(255,0,0,0.8); border-color: rgba(255,0,0,0.6);" 
                                             modifier="outline"
@@ -164,18 +181,22 @@
                         </v-ons-carousel>
 
                         <div
-                            v-show="(selectedFeatureId === feature.id) && !deleteModeActive "
-                            class="right" 
-                            style="position:absolute; height:100%; right:0px; color:rgba(255,0,0,0.7);"
+                            v-show="(selectedFeatureId === feature.id) && !deleteModeActive && !fullscreenActive"
+                            class="delete-icon-container right" 
+                            @click.stop="handleDeleteIconClick(feature.id)"
+                            @dragstart.stop.prevent
+                            @dragend.stop="handleDeleteIconClick(feature.id)"
                         >
                             <v-ons-icon 
                                 v-bind:class=" /* necessary to maintain bounce with v-show on parent */ {
                                     bounce: (selectedFeatureId === feature.id) && !deleteModeActive 
                                 }"
                                 icon="fa-caret-left"
+                                size="18px"
+                                style="margin-right: 8px;"
                             ></v-ons-icon>
                             <v-ons-icon 
-                                style="padding:5px; padding-right: 15px;" 
+                                size="18px"
                                 icon="fa-trash"
                             ></v-ons-icon>
                         </div>
@@ -187,7 +208,7 @@
             <v-ons-col class="report widget-label">{{widget.label}}</v-ons-col>
             <v-ons-col class="report widget-value">
                 <div class="map-wrapper" v-bind:class="{ fullscreen: fullscreenActive }">
-                    <project-map v-on:map-init="mapInit" :extent="bounds"></project-map>
+                    <project-map v-on:map-init="mapInit" v-on:map-load="resetDefaultData" :extent="bounds"></project-map>
                 </div>
             </v-ons-col>
         </div>
@@ -221,6 +242,10 @@ export default {
             activeDrawMode: null,
         };
     },
+    destroyed() {
+        this.draw = undefined;
+        this.map = undefined;
+    },
     computed: {
         featureCollection() {
             return typeof this.value === 'object' ? this.value : {
@@ -245,7 +270,7 @@ export default {
     },
     watch: {
         featureCollection(value) {
-            if (this.map) {
+            if (value && this.map) {
                 if (this.context === 'editor') {
                     if (this.draw) {
                         this.draw.set(value);
@@ -261,6 +286,13 @@ export default {
         },
     },
     methods: {
+        resetDefaultData() {
+            this.selectedFeatureId = null;
+            this.zoomActive = false;
+            this.deleteModeActive = false;
+            this.activeDrawMode = null;
+            this.fullscreenActive = false;
+        },
         mapInit(map) {
             const fullscreenEl = this.$el.querySelector('.fullscreen-control');
             const tileFilter = ['!=', 'tileid', this.tile.tileid];
@@ -284,6 +316,10 @@ export default {
             });
 
             this.map.addControl(this.draw);
+
+            this.map.on('dragstart', () => {
+                this.zoomActive = false;
+            });
 
             this.map.on('draw.create', () => this.updateDrawings('create'));
             this.map.on('draw.update', () => this.updateDrawings('update'));
@@ -311,20 +347,14 @@ export default {
         },
         initReport() {
             const style = this.map.getStyle();
+
             style.sources['report-data'] = {
                 type: 'geojson',
                 data: this.featureCollection
             };
             style.layers.push(...reportLayers);
-            this.map.setStyle(style);
-        },
-        canEditResource() { /* roundabout way to access logic of ResourceEditForm */ 
-            const deleteResourceButton = document.querySelector('#delete-resource-button');
 
-            return Boolean(
-                deleteResourceButton 
-                && window.getComputedStyle(deleteResourceButton).getPropertyValue('display') !== 'none'
-            );
+            this.map.setStyle(style);
         },
         checkIfFeatureIsValid(fc) {
             var valid;
@@ -402,9 +432,15 @@ export default {
                 featureIds: [],
             });
         },
+        shouldShowActiveZoom(featureId) {
+            if (this.zoomActive && this.selectedFeatureId === featureId) {
+                return true;
+            }
+            return false;
+        },
         zoomToFeature(featureId) {
-            const feature = this.features.find(bar => {
-                return bar.id === featureId;
+            const feature = this.features.find(feature => {
+                return feature.id === featureId;
             })
 
             this.zoomActive = true;
@@ -478,8 +514,7 @@ export default {
             } 
         },
         handleCarouselDragEnd(featureId) {
-            /* need setTimeout here to ensure the drag motion has completed before asserting carousel index */ 
-            setTimeout(() => {
+            this.$nextTick(() => {
                 this.selectFeature(featureId);
                 
                 const carousel = document.querySelector(`#carousel-${featureId}`);
@@ -491,7 +526,7 @@ export default {
                 else {
                     this.deleteModeActive = false;
                 }
-            }, 0);
+            });
         },
         beginDrawFeature(featureType) {
             this.deselectFeature();
@@ -516,19 +551,35 @@ export default {
         finishDrawFeature() {
             this.deselectFeature();
 
-            /* setTimeout necessary for proper seleciton UX for LineString and Polygon features */ 
-            setTimeout(() => {
+            this.$nextTick(() => {
                 const feature = this.features[(this.features.length - 1)];
                 this.selectFeature(feature.id);
                 this.scrollListItemIntoView(feature.id)
-            }, 0);
+            });
         },
-        shouldShowDeleteButton(featureId) {
+        shouldShowDeleteMode(featureId) {
+            if (
+                this.selectedFeatureId === featureId
+                && this.deleteModeActive
+            ) {
+                return true;
+            }
+
+            return false;
+        },
+        handleDeleteIconClick(featureId){
+            this.selectFeature(featureId);
+
             const carousel = document.querySelector(`#carousel-${featureId}`);
-            return Boolean(carousel && carousel.getActiveIndex() === 1 && this.canEditResource());
+            carousel.setActiveIndex(1);
+
+            this.deleteModeActive = true;
+            this.zoomToFeature(featureId);
         },
         handleDeleteFeature() {
             this.draw.trash();
+
+            this.selectedFeatureId = null;  /* prevents `deselectFeature` from resetting nonexistent carousel */
             this.deselectFeature();
             this.zoomToFeatureCollection();
         },
@@ -536,10 +587,6 @@ export default {
             this.resetCarousel(featureId)
             this.deleteModeActive = false;
         },
-    },
-    destroyed() {
-        this.draw = undefined;
-        this.map = undefined;
     }
 };
 </script>
@@ -613,7 +660,7 @@ export default {
     margin-top: 10px;
     max-height: 25vh;
     width: 100%;
-    overflow: scroll;
+    overflow-y: scroll;
 }
 .feature-control-button {
     display:flex;
@@ -641,14 +688,20 @@ export default {
     margin-left: -5px; /* workaround to keep children cenetered with onsen carousel logic */
     justify-content: space-between;
 }
+.delete-icon-container {
+    position: absolute; 
+    z-index: 10; 
+    height: 100%; 
+    right: 10px; 
+    color: rgba(255,0,0,0.7);
+}
 .delete-button-container {
     display: flex; 
     width:50%; 
     justify-content: space-between;
 }
 .zoom-button {
-    padding: 0 8px;
-    margin: 4px 0;
+    padding: 0 12px;
     border-radius: 50%;
 }
 .report-widget {
@@ -661,15 +714,21 @@ export default {
     margin-right: 20px;
 }
 
-.fullscreen.map-wrapper {
+.fullscreen {
     height: auto;
     position: absolute;
+    display: flex;
+    flex-direction: column;
     top: 0;
     bottom: 0;
     right: 0;
     left: 0;
     z-index: 10;
     margin: 0;
+}
+
+.fullscreen .map-wrapper {
+    height: 100%;
 }
 
 .tile-data {

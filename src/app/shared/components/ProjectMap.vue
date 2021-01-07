@@ -1,5 +1,5 @@
 <template>
-    <div style="height: 100%; width: 100%;">
+    <div style="height: 100%; width: 100%; overflow: hidden;">
         <v-ons-progress-circular indeterminate v-if="loading"></v-ons-progress-circular>
         <div :id="mapId" v-on:touchstart="stopPropagation"></div>
         <div class="map-control-templates">
@@ -127,7 +127,10 @@ export default {
         },
         mapOnlineInit: function() {
             var self = this;
+            self.$emit('map-load');
+
             mapboxgl.accessToken = self.project.mapboxkey;
+
             var map = new mapboxgl.Map(this.getMapConfig(false));
 
             map.on('load', function() {
