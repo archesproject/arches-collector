@@ -1,6 +1,6 @@
 {
     "name": "arches_mobile",
-    "version": "0.2.2",
+    "version": "0.3.0",
     "description": "A mobile app to manage Arches resources",
     "author": "Farallon Geographics, Inc.",
     "private": true,
